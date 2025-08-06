@@ -1,6 +1,13 @@
 #include <iostream>
 
+#include "engine/core/EngineController.hpp"
+
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    const auto engineController = std::make_unique<Engine::Core::EngineController>();
+    engineController->Initialize();
+    engineController->Update();
+    engineController->Shutdown();
+
+
     return 0;
 }
