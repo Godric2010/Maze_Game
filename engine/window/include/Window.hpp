@@ -15,7 +15,6 @@ namespace Engine::Window {
         OpenGL,
         Vulkan,     // Not implemented, only here for reference
         Metal,      // Not implemented, only here for reference
-        DirectX,    // Not implemented, only here for reference
     };
 
     /**
@@ -33,8 +32,8 @@ namespace Engine::Window {
      * @brief Configuration struct for creating a window
      */
     struct WindowConfig {
-        uint32_t width;
-        uint32_t height;
+        int width;
+        int height;
         std::string title;
         API renderApi;
         WindowMode windowMode;
@@ -55,8 +54,8 @@ namespace Engine::Window {
      * The window context contains all data to initialize a renderer in this window
      */
     struct WindowContext {
-        uint32_t width{};
-        uint32_t height{};
+        int width{};
+        int height{};
         OpenGLContext openGLContext{};
     };
 
@@ -89,7 +88,7 @@ namespace Engine::Window {
         /**
          * Poll the events of this window for further processing
          */
-        virtual void PollEvents() = 0;
+        virtual bool PollEvents() = 0;
 
         /**
          * Destroy the window and all its content. Note: Destroy all dependencies

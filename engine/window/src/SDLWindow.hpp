@@ -14,8 +14,13 @@ namespace Engine::Window {
 
         void Setup(WindowConfig config) override;
         WindowContext GetWindowContext() override;
-        void PollEvents() override;
+
+        bool PollEvents() override;
         void Shutdown() override;
+
+    private:
+        SDL_Window* m_window;
+        WindowContext m_context;
 
     };
 }

@@ -7,12 +7,22 @@ namespace Engine::Core {
 
     void EngineController::Initialize() {
         m_window = Window::CreateWindow();
-        Window::WindowConfig config{};
+        Window::WindowConfig config{
+            .width = 800,
+            .height = 600,
+            .title = "MazeGame",
+            .renderApi = Window::API::OpenGL,
+            .windowMode = Window::WindowMode::Window
+        };
         m_window->Setup(config);
     }
 
     void EngineController::Update() {
-        m_window->PollEvents();
+        while (true) {
+            if (!m_window->PollEvents()) {
+                return;
+            }
+        }
     }
 
     void EngineController::Shutdown() {

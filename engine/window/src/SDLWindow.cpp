@@ -4,24 +4,69 @@
 #include <ostream>
 
 namespace Engine::Window {
-    SDLWindow::SDLWindow() = default;
+    SDLWindow::SDLWindow() {
+        m_window = nullptr;
+        m_context = {};
+    };
 
     SDLWindow::~SDLWindow() = default;
 
     void SDLWindow::Setup(WindowConfig config) {
-        std::cout << "SDLWindow::Setup" << std::endl;
+        uint32_t windowFlags = 0;
+        switch (config.renderApi) {
+            case API::OpenGL:
+                windowFlags |= SDL_WINDOW_OPENGL;
+                break;
+            case API::Vulkan:
+                windowFlags |= SDL_WINDOW_VULKAN;
+                break;
+            case API::Metal:
+                windowFlags |= SDL_WINDOW_METAL;
+                break;
+        }
+
+        m_window = SDL_CreateWindow(config.title.c_str(),
+                                    SDL_WINDOWPOS_CENTERED,
+                                    SDL_WINDOWPOS_CENTERED,
+                                    config.width,
+                                    config.height,
+                                    windowFlags);
+        if (m_window == nullptr) {
+            throw std::runtime_error(SDL_GetError());
+        }
+
+        m_context.width = config.width;
+        m_context.height = config.height;
+        switch (config.renderApi) {
+            case API::OpenGL:
+                m_context.openGLContext = OpenGLContext{
+                    .windowHandle = m_window,
+                    .context = SDL_GL_CreateContext(m_window),
+                };
+                break;
+            case API::Vulkan:
+            case API::Metal:
+                break;
+        }
     }
 
     WindowContext SDLWindow::GetWindowContext() {
-        std::cout << "SDLWindow::GetWindowContext" << std::endl;
-        return WindowContext{};
+        return m_context;
     }
 
-    void SDLWindow::PollEvents() {
-        std::cout << "SDLWindow::PollEvents" << std::endl;
+    bool SDLWindow::PollEvents() {
+        SDL_Event event;
+        SDL_PollEvent(&event);
+        switch (event.type) {
+            case SDL_QUIT:
+                return false;
+            default:
+                return true;
+        }
     }
 
     void SDLWindow::Shutdown() {
         std::cout << "SDLWindow::Shutdown" << std::endl;
+        SDL_DestroyWindow(m_window);
     }
 }
