@@ -1,5 +1,7 @@
 #include "EngineController.hpp"
 
+#include "RendererBuilder.hpp"
+
 namespace Engine::Core {
     EngineController::EngineController() = default;
 
@@ -15,6 +17,9 @@ namespace Engine::Core {
             .windowMode = Window::WindowMode::Window
         };
         m_window->Setup(config);
+
+        m_renderer = Renderer::CreateRenderer(m_window->GetWindowContext());
+        m_renderer->Initialize();
     }
 
     void EngineController::Update() {
@@ -22,10 +27,12 @@ namespace Engine::Core {
             if (!m_window->PollEvents()) {
                 return;
             }
+            m_renderer->Render();
         }
     }
 
     void EngineController::Shutdown() {
+        m_renderer->Shutdown();
         m_window->Shutdown();
     }
 } // namespace

@@ -9,12 +9,10 @@ add_library(Window STATIC
     include/WindowBuilder.hpp
 )
 
-target_include_directories(Window 
-    PUBLIC 
+target_include_directories(Window PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(Window 
-    PUBLIC 
+target_link_libraries(Window PUBLIC
         SDL2::SDL2
 )
