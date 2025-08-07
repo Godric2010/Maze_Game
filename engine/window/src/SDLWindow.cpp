@@ -19,6 +19,7 @@ namespace Engine::Window {
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,4);
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,1);
                 SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+                SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
                 SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
                 SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
                 SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
@@ -55,6 +56,13 @@ namespace Engine::Window {
             case API::Metal:
                 break;
         }
+
+        int major = 0, minor = 0, profile = 0, flags = 0;
+        SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
+        SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
+        SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &profile);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, flags);
+        std::cout << "Requested OpenGL: " << major << "." << minor << " Profile:" << profile << " Flags: " << flags << std::endl;
     }
 
     WindowContext SDLWindow::GetWindowContext() {
@@ -70,6 +78,10 @@ namespace Engine::Window {
             default:
                 return true;
         }
+    }
+
+    void SDLWindow::SwapBuffers() {
+        SDL_GL_SwapWindow(m_window);
     }
 
     void SDLWindow::Shutdown() {

@@ -28,6 +28,8 @@ namespace Engine::Core {
                 return;
             }
             m_renderer->Render();
+
+            m_window->SwapBuffers();
         }
     }
 

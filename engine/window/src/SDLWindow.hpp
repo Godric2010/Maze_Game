@@ -16,6 +16,7 @@ namespace Engine::Window {
         WindowContext GetWindowContext() override;
 
         bool PollEvents() override;
+        void SwapBuffers() override;
         void Shutdown() override;
 
     private:

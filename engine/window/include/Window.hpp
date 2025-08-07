@@ -13,8 +13,8 @@ namespace Engine::Window {
      */
     enum class API {
         OpenGL,
-        Vulkan,     // Not implemented, only here for reference
-        Metal,      // Not implemented, only here for reference
+        Vulkan, // Not implemented, only here for reference
+        Metal, // Not implemented, only here for reference
     };
 
     /**
@@ -23,8 +23,8 @@ namespace Engine::Window {
      */
     enum class WindowMode {
         Window,
-        Fullscreen,     // Not implemented, only here for reference
-        Borderless,     // Not implemented, only here for reference
+        Fullscreen, // Not implemented, only here for reference
+        Borderless, // Not implemented, only here for reference
     };
 
     /**
@@ -45,7 +45,7 @@ namespace Engine::Window {
      * an OpenGL Renderer with this window
      */
     struct OpenGLContext {
-        SDL_Window* windowHandle;
+        SDL_Window *windowHandle;
         SDL_GLContext context;
     };
 
@@ -92,11 +92,14 @@ namespace Engine::Window {
         virtual bool PollEvents() = 0;
 
         /**
+         * Swap the window buffers
+         */
+        virtual void SwapBuffers() = 0;
+
+        /**
          * Destroy the window and all its content. Note: Destroy all dependencies
          * in this window first to avoid errors.
          */
         virtual void Shutdown() = 0;
-
-
     };
 }
