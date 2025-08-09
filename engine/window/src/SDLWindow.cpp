@@ -12,6 +12,11 @@ namespace Engine::Window {
     SDLWindow::~SDLWindow() = default;
 
     void SDLWindow::Setup(WindowConfig config) {
+
+        if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+            throw std::runtime_error("SDL_Init failed: " + std::string(SDL_GetError()));
+        }
+
         uint32_t windowFlags = 0;
         switch (config.renderApi) {
             case API::OpenGL:
@@ -61,7 +66,7 @@ namespace Engine::Window {
         SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
         SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
         SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &profile);
-        SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, flags);
+        SDL_GL_GetAttribute(SDL_GL_CONTEXT_FLAGS, &flags);
         std::cout << "Requested OpenGL: " << major << "." << minor << " Profile:" << profile << " Flags: " << flags << std::endl;
     }
 
