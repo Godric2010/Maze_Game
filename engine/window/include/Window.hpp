@@ -3,8 +3,9 @@
 //
 
 #pragma once
-#include <string>
+#define SDL_MAIN_HANDLED
 #include <SDL.h>
+#include <string>
 
 namespace Engine::Window {
     /**

@@ -1,9 +1,11 @@
 cmake_minimum_required(VERSION 3.31)
 
 if(DEFINED ENV{VCPKG_ROOT})
-    set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake")
+    cmake_path(SET _VCPKG_ROOT NORMALIZE "$ENV{VCPKG_ROOT}")
+    set(CMAKE_TOOLCHAIN_FILE "${_VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "vcpkg toolchain")
 elseif (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
-    set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
+    cmake_path(SET _LOCAL_VCPKG NORMALIZE "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
+    set(CMAKE_TOOLCHAIN_FILE "${_LOCAL_VCPKG}" CACHE FILEPATH "vcpkg toolchain")
 endif ()
 
 project(Maze_Game)
