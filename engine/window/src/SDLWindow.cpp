@@ -12,22 +12,15 @@ namespace Engine::Window {
     SDLWindow::~SDLWindow() = default;
 
     void SDLWindow::Setup(WindowConfig config) {
-
         if (SDL_Init(SDL_INIT_VIDEO) != 0) {
             throw std::runtime_error("SDL_Init failed: " + std::string(SDL_GetError()));
         }
 
-        uint32_t windowFlags = 0;
+        uint32_t windowFlags = SDL_WINDOW_ALLOW_HIGHDPI;
         switch (config.renderApi) {
             case API::OpenGL:
                 windowFlags |= SDL_WINDOW_OPENGL;
-                SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION,4);
-                SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION,1);
-                SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-                SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-                SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-                SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-                SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+                SetupOpenGL();
                 break;
             case API::Vulkan:
                 windowFlags |= SDL_WINDOW_VULKAN;
@@ -61,13 +54,6 @@ namespace Engine::Window {
             case API::Metal:
                 break;
         }
-
-        int major = 0, minor = 0, profile = 0, flags = 0;
-        SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
-        SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
-        SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &profile);
-        SDL_GL_GetAttribute(SDL_GL_CONTEXT_FLAGS, &flags);
-        std::cout << "Requested OpenGL: " << major << "." << minor << " Profile:" << profile << " Flags: " << flags << std::endl;
     }
 
     WindowContext SDLWindow::GetWindowContext() {
@@ -91,5 +77,24 @@ namespace Engine::Window {
 
     void SDLWindow::Shutdown() {
         SDL_DestroyWindow(m_window);
+    }
+
+    void SDLWindow::SetupOpenGL() {
+        SDL_GL_ResetAttributes();
+
+        auto ok = [](int rc, const char *name) {
+            if (rc != 0) {
+                throw std::runtime_error(
+                    std::string("SDL_GL_SetAttribute failed for") + name + ": " + std::string(SDL_GetError()));
+            }
+        };
+
+        ok(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4), "Major version");
+        ok(SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1), "Minor version");
+        ok(SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE), "Profile Mask");
+        ok(SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG), "Forward Compat");
+        ok(SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1), "Double buffering");
+        ok(SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24), "Depth size");
+        ok(SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8), "Stencil size");
     }
 }

@@ -8,12 +8,6 @@ namespace Engine::Renderer {
         if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
             throw std::runtime_error("Failed to initialize OpenGL context");
         }
-
-        std::cout << "OpenGL version (reported): " << glGetString(GL_VERSION) << std::endl;
-        std::cout << "GL Vendor: " << glGetString(GL_VENDOR) << std::endl;
-        std::cout << "GL Renderer: " << glGetString(GL_RENDERER) << std::endl;
-        std::cout << "GL Shading Language: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-
         m_VAO = 0;
         m_VBO = 0;
         m_shaderProgram = 0;

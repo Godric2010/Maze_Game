@@ -20,8 +20,10 @@ namespace Engine::Window {
         void Shutdown() override;
 
     private:
+
+        static void SetupOpenGL();
+
         SDL_Window* m_window;
         WindowContext m_context;
-
     };
 }
