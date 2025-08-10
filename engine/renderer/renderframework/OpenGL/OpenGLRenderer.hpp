@@ -4,10 +4,12 @@
 #include <glad/glad.h>
 #include <array>
 
+#include "../../shadermanagement/ShaderManager.hpp"
+
 namespace Engine::Renderer::RenderFramework::OpenGL {
     class OpenGLRenderer final : public IRenderer {
     public:
-        explicit OpenGLRenderer(Window::WindowContext windowContext);
+        explicit OpenGLRenderer(Window::WindowContext windowContext, ShaderManagement::ShaderManager* shaderManager);
 
         ~OpenGLRenderer() override;
 
@@ -22,6 +24,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         unsigned int m_VBO;
         unsigned int m_shaderProgram;
 
-        static unsigned int LoadShaders();
+        ShaderManagement::ShaderManager* m_shaderManager;
+        unsigned int LoadShaders() const;
     };
 } // namespace

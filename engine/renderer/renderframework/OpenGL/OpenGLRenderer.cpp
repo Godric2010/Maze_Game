@@ -3,10 +3,14 @@
 #include <ostream>
 
 namespace Engine::Renderer::RenderFramework::OpenGL {
-    OpenGLRenderer::OpenGLRenderer(Window::WindowContext windowContext) {
+    OpenGLRenderer::OpenGLRenderer(Window::WindowContext windowContext,
+                                   ShaderManagement::ShaderManager *shaderManager) {
         if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
             throw std::runtime_error("Failed to initialize OpenGL context");
         }
+
+        m_shaderManager = shaderManager;
+
         m_VAO = 0;
         m_VBO = 0;
         m_shaderProgram = 0;
@@ -52,14 +56,14 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         glDeleteVertexArrays(1, &m_VAO);
     }
 
-    unsigned int OpenGLRenderer::LoadShaders() {
-        const std::string vertexShaderCode =
-                "#version 410 core\nlayout(location = 0) in vec3 aPos;\nvoid main() {\n  gl_Position = vec4(aPos, 1.0);\n}";
-        const std::string fragmentShaderCode =
-                "#version 410 core\n out vec4 FragColor;\n void main() {\n FragColor= vec4(1.0,0.4,0.2,1.0);\n}";
+    unsigned int OpenGLRenderer::LoadShaders() const {
+        auto shader = m_shaderManager->GetShader("test");
+        if (!shader.has_value()) {
+            throw std::runtime_error("Failed to load shader");
+        }
 
-        const char *vSrc = vertexShaderCode.c_str();
-        const char *fSrc = fragmentShaderCode.c_str();
+        const char *vSrc = shader.value().vertexShader.c_str();
+        const char *fSrc = shader.value().fragmentShader.c_str();
 
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShader, 1, &vSrc, nullptr);
