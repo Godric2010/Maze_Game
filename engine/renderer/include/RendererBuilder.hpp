@@ -3,7 +3,7 @@
 
 #include "Renderer.hpp"
 #include "Window.hpp"
-#include "../src/OpenGLRenderer.hpp"
+#include "../renderframework/OpenGL/OpenGLRenderer.hpp"
 
 namespace Engine::Renderer {
     /**

@@ -1,6 +1,5 @@
 #include "OpenGLRenderer.hpp"
 
-#include <iostream>
 #include <ostream>
 
 namespace Engine::Renderer {

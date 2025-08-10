@@ -1,6 +1,6 @@
 #pragma once
 #include "Window.hpp"
-#include "../include/Renderer.hpp"
+#include "../../include/Renderer.hpp"
 #include <glad/glad.h>
 #include <array>
 
