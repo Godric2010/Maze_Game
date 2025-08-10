@@ -1,10 +1,10 @@
 #pragma once
 #include "Window.hpp"
-#include "../../include/Renderer.hpp"
+#include "../Renderer.hpp"
 #include <glad/glad.h>
 #include <array>
 
-namespace Engine::Renderer {
+namespace Engine::Renderer::RenderFramework::OpenGL {
     class OpenGLRenderer final : public IRenderer {
     public:
         explicit OpenGLRenderer(Window::WindowContext windowContext);

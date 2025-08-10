@@ -1,5 +1,4 @@
 #include "EngineController.hpp"
-#include "RendererBuilder.hpp"
 #include "WindowBuilder.hpp"
 
 namespace Engine::Core {
@@ -18,8 +17,7 @@ namespace Engine::Core {
         };
         m_window->Setup(config);
 
-        m_renderer = Renderer::CreateRenderer(m_window->GetWindowContext());
-        m_renderer->Initialize();
+        m_rendererController = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
     }
 
     void EngineController::Update() {
@@ -27,14 +25,14 @@ namespace Engine::Core {
             if (!m_window->PollEvents()) {
                 return;
             }
-            m_renderer->Render();
+            m_rendererController->Render();
 
             m_window->SwapBuffers();
         }
     }
 
     void EngineController::Shutdown() {
-        m_renderer->Shutdown();
+        m_rendererController.reset();
         m_window->Shutdown();
     }
 } // namespace

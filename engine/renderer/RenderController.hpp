@@ -5,26 +5,22 @@
 #pragma once
 #include <memory>
 
-#include "Renderer.hpp"
 #include "Window.hpp"
+#include "renderframework/Renderer.hpp"
 #include "shadermanagement/ShaderManager.hpp"
 
 namespace Engine::Renderer {
 	class RenderController {
 		public:
-			RenderController();
+			explicit RenderController(const Window::WindowContext &windowContext);
 
 			~RenderController();
 
-			void Initialize();
-
 			void Render();
 
-			void Shutdown();
-
 		private:
-			Engine::Window::WindowContext m_windowContext;
-			std::unique_ptr<IRenderer> m_renderer;
+			Window::WindowContext m_windowContext;
+			std::unique_ptr<RenderFramework::IRenderer> m_renderer;
 			std::unique_ptr<ShaderManagement::ShaderManager> m_shaderManager;
 	};
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Engine::Renderer {
+namespace Engine::Renderer::RenderFramework {
     /**
      *@class IRenderer
      * Interface to access the renderer and its functions to display an image on the screen

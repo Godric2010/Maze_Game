@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-#include "Renderer.hpp"
+#include "../renderer/RenderController.hpp"
 #include "../window/include/Window.hpp"
 
 namespace Engine::Core {
@@ -33,6 +33,6 @@ namespace Engine::Core {
 
     private:
         std::unique_ptr<Window::IWindow> m_window;
-        std::unique_ptr<Renderer::IRenderer> m_renderer;
+        std::unique_ptr<Renderer::RenderController> m_rendererController;
     };
 } // namespace
