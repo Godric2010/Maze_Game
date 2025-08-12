@@ -13,6 +13,22 @@ namespace Engine::Renderer {
         m_shaderManager = std::make_unique<ShaderManagement::ShaderManager>();
         m_shaderManager->LoadShader("test");
 
+        m_meshManager = std::make_unique<Meshmanagement::MeshManager>();
+        auto quad_mesh = Meshmanagement::Mesh();
+        quad_mesh.vertices = std::vector<glm::vec3>();
+        quad_mesh.indices = std::vector<unsigned int>();
+        quad_mesh.vertices.emplace_back(0.0, 0.0, 0.0);
+        quad_mesh.vertices.emplace_back(1.0, 0.0, 0.0);
+        quad_mesh.vertices.emplace_back(1.0, 1.0, 0.0);
+        quad_mesh.vertices.emplace_back(0.0, 1.0, 0.0);
+        quad_mesh.indices.push_back(0);
+        quad_mesh.indices.push_back(1);
+        quad_mesh.indices.push_back(2);
+        quad_mesh.indices.push_back(2);
+        quad_mesh.indices.push_back(3);
+        quad_mesh.indices.push_back(0);
+        m_meshManager->AddMesh(quad_mesh);
+
         switch (windowContext.renderApi) {
             case Window::API::OpenGL:
                 m_renderer = std::make_unique<RenderFramework::OpenGL::OpenGLRenderer>(
@@ -26,6 +42,7 @@ namespace Engine::Renderer {
                 break;
         }
         m_renderer->Initialize();
+        m_renderer->AddMesh(quad_mesh);
     }
 
     RenderController::~RenderController() {

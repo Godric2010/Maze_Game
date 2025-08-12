@@ -2,6 +2,8 @@
 
 #include <ostream>
 
+#include "../../meshmanagement/Mesh.hpp"
+
 namespace Engine::Renderer::RenderFramework::OpenGL {
     OpenGLRenderer::OpenGLRenderer(Window::WindowContext windowContext,
                                    ShaderManagement::ShaderManager *shaderManager) {
@@ -11,8 +13,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
         m_shaderManager = shaderManager;
 
-        m_VAO = 0;
-        m_VBO = 0;
+        m_meshes = std::vector<OpenGLMesh>();
         m_shaderProgram = 0;
     }
 
@@ -20,25 +21,6 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
     void OpenGLRenderer::Initialize() {
         m_shaderProgram = LoadShaders();
-
-        std::array<float, 9> vertices = {
-            0.0f, 0.5f, 0.0f,
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-        };
-
-        glGenVertexArrays(1, &m_VAO);
-        glGenBuffers(1, &m_VBO);
-
-        glBindVertexArray(m_VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
-        glEnableVertexAttribArray(0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
     }
 
     void OpenGLRenderer::Render() {
@@ -46,14 +28,52 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(m_shaderProgram);
-        glBindVertexArray(m_VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        for (const auto & mesh : m_meshes) {
+            glBindVertexArray(mesh.VAO);
+            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
+        }
+
+        glBindVertexArray(0);
+        glUseProgram(0);
+    }
+
+    void OpenGLRenderer::AddMesh(const Meshmanagement::Mesh &mesh) {
+        OpenGLMesh m = {};
+        m.numVertices = mesh.vertices.size();
+        m.numIndices = mesh.indices.size();
+
+        glGenVertexArrays(1, &m.VAO);
+        glGenBuffers(1, &m.VBO);
+        glGenBuffers(1, &m.EBO);
+
+        glBindVertexArray(m.VAO);
+
+        // Bind vertex buffer
+        glBindBuffer(GL_ARRAY_BUFFER, m.VBO);
+        const auto size = static_cast<GLsizeiptr>(m.numVertices * sizeof(glm::vec3));
+        glBufferData(GL_ARRAY_BUFFER, size , mesh.vertices.data(), GL_STATIC_DRAW);
+
+        // Bind index buffer
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(uint32_t)* m.numIndices),mesh.indices.data(),GL_STATIC_DRAW);
+
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3),static_cast<void *>(0));
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+        m_meshes.emplace_back(m);
+    }
+
+    void OpenGLRenderer::RemoveMesh() {
     }
 
     void OpenGLRenderer::Shutdown() {
         glDeleteProgram(m_shaderProgram);
-        glDeleteBuffers(1, &m_VBO);
-        glDeleteVertexArrays(1, &m_VAO);
+        for (auto & meshes : m_meshes) {
+            glDeleteBuffers(1, &meshes.VBO);
+            glDeleteVertexArrays(1, &meshes.VAO);
+        }
     }
 
     unsigned int OpenGLRenderer::LoadShaders() const {
@@ -65,15 +85,15 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         const char *vSrc = shader.value().vertexShader.c_str();
         const char *fSrc = shader.value().fragmentShader.c_str();
 
-        GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+        const GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertexShader, 1, &vSrc, nullptr);
         glCompileShader(vertexShader);
 
-        GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+        const GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShader, 1, &fSrc, nullptr);
         glCompileShader(fragmentShader);
 
-        GLuint shaderProgram = glCreateProgram();
+        const GLuint shaderProgram = glCreateProgram();
         glAttachShader(shaderProgram, vertexShader);
         glAttachShader(shaderProgram, fragmentShader);
         glLinkProgram(shaderProgram);

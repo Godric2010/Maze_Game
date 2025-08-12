@@ -1,5 +1,9 @@
 #pragma once
 
+namespace Engine::Renderer::Meshmanagement {
+    struct Mesh;
+}
+
 namespace Engine::Renderer::RenderFramework {
     /**
      *@class IRenderer
@@ -18,6 +22,16 @@ namespace Engine::Renderer::RenderFramework {
          * Call to render to the screen
          */
         virtual void Render() = 0;
+
+       /**
+        * Add a mesh to the renderer to display it
+        */
+        virtual void AddMesh(const Meshmanagement::Mesh& mesh) = 0;
+
+       /**
+        * Remove a mesh from the renderer to free its resources.
+        */
+        virtual void RemoveMesh() = 0;
 
         /**
          * Disable the renderer and free its resources.
