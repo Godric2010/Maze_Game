@@ -3,11 +3,16 @@
 #include "../Renderer.hpp"
 #include <glad/glad.h>
 #include <array>
+#include <string>
+#include <string_view>
+#include <ostream>
+#include <sstream>
+#include <stdexcept>
+#include <spdlog/spdlog.h>
 
 #include "../../shadermanagement/ShaderManager.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGL {
-
     struct OpenGLMesh {
         unsigned int VAO;
         unsigned int VBO;
@@ -18,7 +23,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
     class OpenGLRenderer final : public IRenderer {
     public:
-        explicit OpenGLRenderer(Window::WindowContext windowContext, ShaderManagement::ShaderManager* shaderManager);
+        explicit OpenGLRenderer(Window::WindowContext windowContext, ShaderManagement::ShaderManager *shaderManager);
 
         ~OpenGLRenderer() override;
 
@@ -26,7 +31,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
         void Render() override;
 
-        void AddMesh(const Meshmanagement::Mesh& mesh) override;
+        void AddMesh(const Meshmanagement::Mesh &mesh) override;
 
         void RemoveMesh() override;
 
@@ -34,9 +39,14 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
     private:
         std::vector<OpenGLMesh> m_meshes;
-        unsigned int m_shaderProgram;
+        GLuint m_shaderProgram;
 
-        ShaderManagement::ShaderManager* m_shaderManager;
-        unsigned int LoadShaders() const;
+        ShaderManagement::ShaderManager *m_shaderManager;
+
+        static void logSourceWithLineNumbers(std::string_view source);
+
+        [[nodiscard]] GLuint LoadShaders() const;
+        static GLuint CompileShader(GLenum type, std::string_view source, std::string_view debugName);
+        static GLuint LinkShaderProgram(GLuint vertexShader, GLuint fragmentShader, std::string_view debugName);
     };
 } // namespace
