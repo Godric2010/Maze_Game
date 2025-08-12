@@ -75,9 +75,18 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         }
     }
 
+    void OpenGLRenderer::logSourceWithLineNumbers(std::string_view source) {
+        std::istringstream iss{std::string(source)};
+        std::string line;
+        int lineNumber = 1;
+        while (std::getline(iss, line)) {
+            spdlog::info("{:4d}: {}", lineNumber++, line);
+        }
+    }
+
     GLuint OpenGLRenderer::LoadShaders() const {
         const std::string shaderName = "test";
-        auto shader = m_shaderManager->GetShader(shaderName);
+        const auto shader = m_shaderManager->GetShader(shaderName);
         if (!shader.has_value()) {
             throw std::runtime_error("Failed to load shader");
         }
@@ -92,7 +101,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         return shaderProgram;
     }
 
-    GLuint OpenGLRenderer::CompileShader(GLenum type, std::string_view source, std::string_view debugName) {
+    GLuint OpenGLRenderer::CompileShader(const GLenum type, const std::string_view source, const std::string_view debugName) {
         const GLuint shader = glCreateShader(type);
         const char *ptr = source.data();
         const auto length = static_cast<GLint>(source.size());
@@ -115,8 +124,9 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         return shader;
     }
 
-    GLuint OpenGLRenderer::LinkShaderProgram(GLuint vertexShader, GLuint fragmentShader, std::string_view debugName) {
-        GLuint program = glCreateProgram();
+
+    GLuint OpenGLRenderer::LinkShaderProgram(const GLuint vertexShader, const GLuint fragmentShader, std::string_view debugName) {
+        const GLuint program = glCreateProgram();
         glAttachShader(program, vertexShader);
         glAttachShader(program, fragmentShader);
         glLinkProgram(program);
@@ -143,15 +153,5 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         glDeleteShader(fragmentShader);
 
         return program;
-    }
-
-
-    void OpenGLRenderer::logSourceWithLineNumbers(std::string_view source) {
-        std::istringstream iss{std::string(source)};
-        std::string line;
-        int lineNumber = 1;
-        while (std::getline(iss, line)) {
-            spdlog::info("{:4d}: {}", lineNumber++, line);
-        }
     }
 } // namespace
