@@ -9,6 +9,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
             throw std::runtime_error("Failed to initialize OpenGL context");
         }
 
+        glViewport(0, 0, windowContext.width, windowContext.height);
         m_shaderManager = shaderManager;
 
         m_meshes = std::vector<OpenGLMesh>();

@@ -7,7 +7,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <__filesystem/filesystem_error.h>
 
 namespace Engine::Renderer::ShaderManagement {
     ShaderManager::ShaderManager() {
@@ -24,8 +23,8 @@ namespace Engine::Renderer::ShaderManagement {
         }
 
         std::filesystem::path resourcePath = std::filesystem::current_path() / "resources/shaders";
-        std::string vertexPath = resourcePath / std::string(shaderName + ".vert");
-        std::string fragmentPath = resourcePath / std::string(shaderName + ".frag");
+        std::string vertexPath = (resourcePath / (shaderName + ".vert")).string();
+        std::string fragmentPath = (resourcePath / (shaderName + ".frag")).string();
 
         std::cout << "Loading shader " << shaderName << "..." << std::endl;
         std::cout << vertexPath << std::endl;
