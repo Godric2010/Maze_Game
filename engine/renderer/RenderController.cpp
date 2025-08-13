@@ -10,6 +10,8 @@
 namespace Engine::Renderer {
     RenderController::RenderController(const Window::WindowContext &windowContext) {
         m_windowContext = windowContext;
+        m_camera = std::make_unique<Camera>(glm::vec3(0, 0, 3), windowContext.width, windowContext.height, 60, 0.01,
+                                            100.0);
         m_shaderManager = std::make_unique<ShaderManagement::ShaderManager>();
         m_shaderManager->LoadShader("test");
 
@@ -47,12 +49,13 @@ namespace Engine::Renderer {
 
     RenderController::~RenderController() {
         m_renderer->Shutdown();
-        m_renderer.release();
-        m_shaderManager.release();
+        m_renderer.reset();
+        m_shaderManager.reset();
     }
 
 
-    void RenderController::Render() {
-        m_renderer->Render();
+    void RenderController::Render() const {
+        m_renderer->PrepareFrame(m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), m_camera->GetPosition());
+        m_renderer->DrawFrame();
     }
 }

@@ -29,7 +29,9 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
         void Initialize() override;
 
-        void Render() override;
+        void PrepareFrame(glm::mat4 camView, glm::mat4 camProj, glm::vec3 camPos) override;
+
+        void DrawFrame() override;
 
         void AddMesh(const Meshmanagement::Mesh &mesh) override;
 
@@ -40,6 +42,14 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
     private:
         std::vector<OpenGLMesh> m_meshes;
         GLuint m_shaderProgram;
+
+        GLuint m_cameraUBO;
+        static constexpr GLuint CAMERA_BINDING_POINT = 0;
+        struct CameraGPUData {
+            glm::mat4 camView;
+            glm::mat4 camProj;
+            glm::vec4 camPos;
+        };
 
         ShaderManagement::ShaderManager *m_shaderManager;
 

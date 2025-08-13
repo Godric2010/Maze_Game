@@ -1,8 +1,7 @@
 #pragma once
-
-namespace Engine::Renderer::Meshmanagement {
-    struct Mesh;
-}
+#include <glm/fwd.hpp>
+#include <glm/vec4.hpp>
+#include "../meshmanagement/Mesh.hpp"
 
 namespace Engine::Renderer::RenderFramework {
     /**
@@ -19,9 +18,14 @@ namespace Engine::Renderer::RenderFramework {
         virtual void Initialize() = 0;
 
         /**
+         * Prepare the frame of the renderer
+         */
+        virtual void PrepareFrame(glm::mat4 camView, glm::mat4 camProj, glm::vec3 camPos) = 0;
+
+        /**
          * Call to render to the screen
          */
-        virtual void Render() = 0;
+        virtual void DrawFrame() = 0;
 
        /**
         * Add a mesh to the renderer to display it

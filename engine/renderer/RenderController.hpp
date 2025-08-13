@@ -5,6 +5,7 @@
 #pragma once
 #include <memory>
 
+#include "Camera.hpp"
 #include "Window.hpp"
 #include "meshmanagement/MeshManager.hpp"
 #include "renderframework/Renderer.hpp"
@@ -17,12 +18,13 @@ namespace Engine::Renderer {
 
 			~RenderController();
 
-			void Render();
+			void Render() const;
 
 		private:
 			Window::WindowContext m_windowContext;
 			std::unique_ptr<RenderFramework::IRenderer> m_renderer;
 			std::unique_ptr<ShaderManagement::ShaderManager> m_shaderManager;
 			std::unique_ptr<Meshmanagement::MeshManager> m_meshManager;
+			std::unique_ptr<Camera> m_camera;
 	};
 }

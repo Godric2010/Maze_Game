@@ -19,13 +19,39 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
     void OpenGLRenderer::Initialize() {
         m_shaderProgram = LoadShaders();
+
+        glGenBuffers(1, &m_cameraUBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, m_cameraUBO);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraGPUData), nullptr, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+        glBindBufferBase(GL_UNIFORM_BUFFER, CAMERA_BINDING_POINT, m_cameraUBO);
+        glEnable(GL_DEPTH_TEST);
+
+        const GLuint camBlockIndex = glGetUniformBlockIndex(m_shaderProgram, "Camera");
+        if (camBlockIndex == GL_INVALID_INDEX) {
+            glUniformBlockBinding(m_shaderProgram, camBlockIndex, CAMERA_BINDING_POINT);
+        }
     }
 
-    void OpenGLRenderer::Render() {
-        glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+    void OpenGLRenderer::PrepareFrame(const glm::mat4 camView, const glm::mat4 camProj, const glm::vec3 camPos) {
+        CameraGPUData camData{};
+        camData.camView = camView;
+        camData.camProj = camProj;
+        camData.camPos = glm::vec4(camPos, 1.0f);
 
+        glBindBuffer(GL_UNIFORM_BUFFER, m_cameraUBO);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, static_cast<GLsizeiptr>(sizeof(CameraGPUData)), &camData);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+        glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+
+    void OpenGLRenderer::DrawFrame() {
         glUseProgram(m_shaderProgram);
+
         for (const auto &mesh: m_meshes) {
             glBindVertexArray(mesh.VAO);
             glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
@@ -101,7 +127,8 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         return shaderProgram;
     }
 
-    GLuint OpenGLRenderer::CompileShader(const GLenum type, const std::string_view source, const std::string_view debugName) {
+    GLuint OpenGLRenderer::CompileShader(const GLenum type, const std::string_view source,
+                                         const std::string_view debugName) {
         const GLuint shader = glCreateShader(type);
         const char *ptr = source.data();
         const auto length = static_cast<GLint>(source.size());
@@ -125,7 +152,8 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
     }
 
 
-    GLuint OpenGLRenderer::LinkShaderProgram(const GLuint vertexShader, const GLuint fragmentShader, std::string_view debugName) {
+    GLuint OpenGLRenderer::LinkShaderProgram(const GLuint vertexShader, const GLuint fragmentShader,
+                                             std::string_view debugName) {
         const GLuint program = glCreateProgram();
         glAttachShader(program, vertexShader);
         glAttachShader(program, fragmentShader);
@@ -139,7 +167,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
             glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
             std::string log(logLength > 1 ? logLength - 1 : 0, '\0');
             if (logLength > 1) {
-                glGetProgramInfoLog(program, logLength, nullptr, reinterpret_cast<GLchar*>(log.data()));
+                glGetProgramInfoLog(program, logLength, nullptr, reinterpret_cast<GLchar *>(log.data()));
             }
             spdlog::error("[Program Link] {} failed: \n{}", std::string(debugName).c_str(), log.c_str());
 
