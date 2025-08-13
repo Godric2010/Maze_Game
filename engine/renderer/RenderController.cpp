@@ -32,7 +32,7 @@ namespace Engine::Renderer {
         quad_mesh.indices.push_back(0);
         m_meshManager->AddMesh(quad_mesh);
 
-        m_renderables.emplace_back(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1),
+        m_renderables.emplace_back(glm::vec3(0, 0, 0), glm::vec3(10, 30, 0), glm::vec3(1, 1, 1),
                                            glm::vec4(1, 0, 0, 1));
 
 
