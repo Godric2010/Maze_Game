@@ -2,6 +2,7 @@
 #include <glm/fwd.hpp>
 #include <glm/vec4.hpp>
 #include "../meshmanagement/Mesh.hpp"
+#include "../Renderable.hpp"
 
 namespace Engine::Renderer::RenderFramework {
     /**
@@ -25,7 +26,7 @@ namespace Engine::Renderer::RenderFramework {
         /**
          * Call to render to the screen
          */
-        virtual void DrawFrame() = 0;
+        virtual void DrawFrame(std::vector<Renderable> renderInstances) = 0;
 
        /**
         * Add a mesh to the renderer to display it

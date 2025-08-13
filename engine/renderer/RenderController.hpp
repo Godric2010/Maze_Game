@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "Camera.hpp"
+#include "Renderable.hpp"
 #include "Window.hpp"
 #include "meshmanagement/MeshManager.hpp"
 #include "renderframework/Renderer.hpp"
@@ -26,5 +27,6 @@ namespace Engine::Renderer {
 			std::unique_ptr<ShaderManagement::ShaderManager> m_shaderManager;
 			std::unique_ptr<Meshmanagement::MeshManager> m_meshManager;
 			std::unique_ptr<Camera> m_camera;
+			std::vector<Renderable> m_renderables;
 	};
 }

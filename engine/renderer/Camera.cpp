@@ -11,7 +11,7 @@ namespace Engine::Renderer {
         m_zFar = far;
         m_aspect = m_width / m_height;
 
-        m_projectionMatrix = glm::perspective(m_fovY, m_aspect, m_zNear, m_zFar);
+        m_projectionMatrix = glm::perspective(glm::radians(m_fovY), m_aspect, m_zNear, m_zFar);
         m_viewMatrix = glm::lookAt(m_position, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
         m_modelMatrix = glm::mat4(1.0f);
     }

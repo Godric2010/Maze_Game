@@ -29,7 +29,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         glEnable(GL_DEPTH_TEST);
 
         const GLuint camBlockIndex = glGetUniformBlockIndex(m_shaderProgram, "Camera");
-        if (camBlockIndex == GL_INVALID_INDEX) {
+        if (camBlockIndex != GL_INVALID_INDEX) {
             glUniformBlockBinding(m_shaderProgram, camBlockIndex, CAMERA_BINDING_POINT);
         }
     }
@@ -49,11 +49,18 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
     }
 
 
-    void OpenGLRenderer::DrawFrame() {
+    void OpenGLRenderer::DrawFrame(const std::vector<Renderable> renderInstances) {
+        GLint uModel = glGetUniformLocation(m_shaderProgram, "u_Model");
+        GLint uColor = glGetUniformLocation(m_shaderProgram, "u_Color");
         glUseProgram(m_shaderProgram);
 
+        const auto instance = renderInstances[0];
         for (const auto &mesh: m_meshes) {
             glBindVertexArray(mesh.VAO);
+
+            glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(instance.GetModelMatrix()));
+            glUniform4fv(uColor, 1, glm::value_ptr(instance.GetColor()));
+
             glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
         }
 
@@ -97,6 +104,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         glDeleteProgram(m_shaderProgram);
         for (auto &meshes: m_meshes) {
             glDeleteBuffers(1, &meshes.VBO);
+            glDeleteBuffers(1, &meshes.EBO);
             glDeleteVertexArrays(1, &meshes.VAO);
         }
     }

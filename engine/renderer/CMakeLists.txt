@@ -11,7 +11,9 @@ add_library(Renderer STATIC
         meshmanagement/MeshManager.hpp
         meshmanagement/Mesh.hpp
         Camera.cpp
-        Camera.hpp)
+        Camera.hpp
+        Renderable.cpp
+        Renderable.hpp)
 
 target_include_directories(Renderer PUBLIC RenderController.hpp)
 target_link_libraries(Renderer PRIVATE Window glad::glad glm::glm spdlog::spdlog)

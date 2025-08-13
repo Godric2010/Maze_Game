@@ -9,6 +9,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <spdlog/spdlog.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "../../shadermanagement/ShaderManager.hpp"
 
@@ -31,7 +32,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
         void PrepareFrame(glm::mat4 camView, glm::mat4 camProj, glm::vec3 camPos) override;
 
-        void DrawFrame() override;
+        void DrawFrame(std::vector<Renderable> renderInstances) override;
 
         void AddMesh(const Meshmanagement::Mesh &mesh) override;
 

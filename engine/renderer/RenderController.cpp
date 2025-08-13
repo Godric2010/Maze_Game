@@ -4,6 +4,7 @@
 
 #include "RenderController.hpp"
 
+#include "Renderable.hpp"
 #include "renderframework/OpenGL/OpenGLRenderer.hpp"
 
 
@@ -19,10 +20,10 @@ namespace Engine::Renderer {
         auto quad_mesh = Meshmanagement::Mesh();
         quad_mesh.vertices = std::vector<glm::vec3>();
         quad_mesh.indices = std::vector<unsigned int>();
-        quad_mesh.vertices.emplace_back(0.0, 0.0, 0.0);
-        quad_mesh.vertices.emplace_back(1.0, 0.0, 0.0);
-        quad_mesh.vertices.emplace_back(1.0, 1.0, 0.0);
-        quad_mesh.vertices.emplace_back(0.0, 1.0, 0.0);
+        quad_mesh.vertices.emplace_back(-0.5, -0.5, 0.0);
+        quad_mesh.vertices.emplace_back(0.5, -0.5, 0.0);
+        quad_mesh.vertices.emplace_back(0.5, 0.5, 0.0);
+        quad_mesh.vertices.emplace_back(-0.5, 0.5, 0.0);
         quad_mesh.indices.push_back(0);
         quad_mesh.indices.push_back(1);
         quad_mesh.indices.push_back(2);
@@ -30,6 +31,10 @@ namespace Engine::Renderer {
         quad_mesh.indices.push_back(3);
         quad_mesh.indices.push_back(0);
         m_meshManager->AddMesh(quad_mesh);
+
+        m_renderables.emplace_back(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1),
+                                           glm::vec4(1, 0, 0, 1));
+
 
         switch (windowContext.renderApi) {
             case Window::API::OpenGL:
@@ -56,6 +61,6 @@ namespace Engine::Renderer {
 
     void RenderController::Render() const {
         m_renderer->PrepareFrame(m_camera->GetViewMatrix(), m_camera->GetProjectionMatrix(), m_camera->GetPosition());
-        m_renderer->DrawFrame();
+        m_renderer->DrawFrame(m_renderables);
     }
 }
