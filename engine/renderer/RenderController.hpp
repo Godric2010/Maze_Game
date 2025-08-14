@@ -5,28 +5,29 @@
 #pragma once
 #include <memory>
 
-#include "Camera.hpp"
-#include "Renderable.hpp"
 #include "Window.hpp"
-#include "meshmanagement/MeshManager.hpp"
 #include "renderframework/Renderer.hpp"
 #include "shadermanagement/ShaderManager.hpp"
+#include "Datatypes.hpp"
 
 namespace Engine::Renderer {
-	class RenderController {
-		public:
-			explicit RenderController(const Window::WindowContext &windowContext);
+    class RenderController {
+    public:
+        explicit RenderController(const Window::WindowContext &windowContext);
 
-			~RenderController();
+        ~RenderController();
 
-			void Render() const;
+        MeshHandle RegisterMesh(const MeshAsset &mesh) const;
 
-		private:
-			Window::WindowContext m_windowContext;
-			std::unique_ptr<RenderFramework::IRenderer> m_renderer;
-			std::unique_ptr<ShaderManagement::ShaderManager> m_shaderManager;
-			std::unique_ptr<Meshmanagement::MeshManager> m_meshManager;
-			std::unique_ptr<Camera> m_camera;
-			std::vector<Renderable> m_renderables;
-	};
+        void UnregisterMesh(const MeshHandle &handle) const;
+
+        void BeginFrame(const CameraAsset &cameraAsset) const;
+
+        void SubmitFrame(const std::vector<DrawAsset> &drawAssets) const;
+
+    private:
+        Window::WindowContext m_windowContext;
+        std::unique_ptr<RenderFramework::IRenderer> m_renderer;
+        std::unique_ptr<ShaderManagement::ShaderManager> m_shaderManager;
+    };
 }

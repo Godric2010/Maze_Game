@@ -1,7 +1,5 @@
 #include "OpenGLRenderer.hpp"
 
-#include "../../meshmanagement/Mesh.hpp"
-
 namespace Engine::Renderer::RenderFramework::OpenGL {
     OpenGLRenderer::OpenGLRenderer(Window::WindowContext windowContext,
                                    ShaderManagement::ShaderManager *shaderManager) {
@@ -9,10 +7,12 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
             throw std::runtime_error("Failed to initialize OpenGL context");
         }
 
-        glViewport(0, 0, windowContext.width, windowContext.height);
+         // glViewport(0, 0, windowContext.width, windowContext.height);
         m_shaderManager = shaderManager;
+        m_meshManager = std::make_unique<OpenGLMeshManager>();
 
-        m_meshes = std::vector<OpenGLMesh>();
+        m_cameraAsset = {};
+        m_cameraUBO = 0;
         m_shaderProgram = 0;
     }
 
@@ -23,7 +23,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
         glGenBuffers(1, &m_cameraUBO);
         glBindBuffer(GL_UNIFORM_BUFFER, m_cameraUBO);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraGPUData), nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraAsset), nullptr, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glBindBufferBase(GL_UNIFORM_BUFFER, CAMERA_BINDING_POINT, m_cameraUBO);
@@ -35,14 +35,9 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         }
     }
 
-    void OpenGLRenderer::PrepareFrame(const glm::mat4 camView, const glm::mat4 camProj, const glm::vec3 camPos) {
-        CameraGPUData camData{};
-        camData.camView = camView;
-        camData.camProj = camProj;
-        camData.camPos = glm::vec4(camPos, 1.0f);
-
+    void OpenGLRenderer::PrepareFrame(const CameraAsset &cameraAsset) {
         glBindBuffer(GL_UNIFORM_BUFFER, m_cameraUBO);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, static_cast<GLsizeiptr>(sizeof(CameraGPUData)), &camData);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, static_cast<GLsizeiptr>(sizeof(CameraAsset)), &cameraAsset);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
@@ -50,64 +45,35 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
     }
 
 
-    void OpenGLRenderer::DrawFrame(const std::vector<Renderable> renderInstances) {
+    void OpenGLRenderer::DrawFrame(const std::vector<DrawAsset> &drawAssets) {
         GLint uModel = glGetUniformLocation(m_shaderProgram, "u_Model");
         GLint uColor = glGetUniformLocation(m_shaderProgram, "u_Color");
         glUseProgram(m_shaderProgram);
 
-        const auto instance = renderInstances[0];
-        for (const auto &mesh: m_meshes) {
-            glBindVertexArray(mesh.VAO);
+        const auto instance = drawAssets[0];
+        const auto mesh = m_meshManager->GetMesh(instance.mesh);
+        glBindVertexArray(mesh.VAO);
 
-            glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(instance.GetModelMatrix()));
-            glUniform4fv(uColor, 1, glm::value_ptr(instance.GetColor()));
+        glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(instance.model));
+        glUniform4fv(uColor, 1, glm::value_ptr(instance.color));
 
-            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
-        }
+        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
 
         glBindVertexArray(0);
         glUseProgram(0);
     }
 
-    void OpenGLRenderer::AddMesh(const Meshmanagement::Mesh &mesh) {
-        OpenGLMesh m = {};
-        m.numVertices = mesh.vertices.size();
-        m.numIndices = mesh.indices.size();
-
-        glGenVertexArrays(1, &m.VAO);
-        glGenBuffers(1, &m.VBO);
-        glGenBuffers(1, &m.EBO);
-
-        glBindVertexArray(m.VAO);
-
-        // Bind vertex buffer
-        glBindBuffer(GL_ARRAY_BUFFER, m.VBO);
-        const auto size = static_cast<GLsizeiptr>(m.numVertices * sizeof(glm::vec3));
-        glBufferData(GL_ARRAY_BUFFER, size, mesh.vertices.data(), GL_STATIC_DRAW);
-
-        // Bind index buffer
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(uint32_t) * m.numIndices),
-                     mesh.indices.data(),GL_STATIC_DRAW);
-
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), static_cast<void *>(0));
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-        m_meshes.emplace_back(m);
+    MeshHandle OpenGLRenderer::AddMesh(const MeshAsset &mesh) {
+        return m_meshManager->AddMesh(mesh);
     }
 
-    void OpenGLRenderer::RemoveMesh() {
+    void OpenGLRenderer::RemoveMesh(const MeshHandle &meshHandle) {
+        m_meshManager->RemoveMesh(meshHandle);
     }
 
     void OpenGLRenderer::Shutdown() {
         glDeleteProgram(m_shaderProgram);
-        for (auto &meshes: m_meshes) {
-            glDeleteBuffers(1, &meshes.VBO);
-            glDeleteBuffers(1, &meshes.EBO);
-            glDeleteVertexArrays(1, &meshes.VAO);
-        }
+        m_meshManager->Clear();
     }
 
     void OpenGLRenderer::logSourceWithLineNumbers(std::string_view source) {

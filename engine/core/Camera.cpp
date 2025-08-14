@@ -1,6 +1,6 @@
 #include "Camera.hpp"
 
-namespace Engine::Renderer {
+namespace Engine::Core {
     Camera::Camera(const glm::vec3 position, const float width, const float height, const float fov, const float near,
                    const float far) {
         m_position = position;
@@ -20,7 +20,7 @@ namespace Engine::Renderer {
 
     void Camera::SetPosition(const glm::vec3 &position) {
         m_position = position;
-        m_viewMatrix = glm::lookAt(m_position, m_position + glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        m_viewMatrix = glm::lookAt(m_position,  glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     }
 
     glm::vec3 Camera::GetPosition() const {

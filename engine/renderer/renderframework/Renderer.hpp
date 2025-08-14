@@ -1,8 +1,5 @@
 #pragma once
-#include <glm/fwd.hpp>
-#include <glm/vec4.hpp>
-#include "../meshmanagement/Mesh.hpp"
-#include "../Renderable.hpp"
+#include "../Datatypes.hpp"
 
 namespace Engine::Renderer::RenderFramework {
     /**
@@ -21,22 +18,22 @@ namespace Engine::Renderer::RenderFramework {
         /**
          * Prepare the frame of the renderer
          */
-        virtual void PrepareFrame(glm::mat4 camView, glm::mat4 camProj, glm::vec3 camPos) = 0;
+        virtual void PrepareFrame(const CameraAsset& cameraAsset) = 0;
 
         /**
          * Call to render to the screen
          */
-        virtual void DrawFrame(std::vector<Renderable> renderInstances) = 0;
+        virtual void DrawFrame(const std::vector<DrawAsset> &drawAssets) = 0;
 
        /**
         * Add a mesh to the renderer to display it
         */
-        virtual void AddMesh(const Meshmanagement::Mesh& mesh) = 0;
+        virtual MeshHandle AddMesh(const MeshAsset &mesh) = 0;
 
        /**
         * Remove a mesh from the renderer to free its resources.
         */
-        virtual void RemoveMesh() = 0;
+        virtual void RemoveMesh(const MeshHandle &meshHandle) = 0;
 
         /**
          * Disable the renderer and free its resources.

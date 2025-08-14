@@ -1,0 +1,28 @@
+#pragma once
+#include <unordered_map>
+#include <glm/glm.hpp>
+#include <glad/glad.h>
+
+#include "OpenGLMesh.hpp"
+#include "../../Datatypes.hpp"
+
+namespace Engine::Renderer::RenderFramework::OpenGL {
+    class OpenGLMeshManager {
+    public:
+        OpenGLMeshManager();
+
+        ~OpenGLMeshManager();
+
+        MeshHandle AddMesh(const MeshAsset &mesh);
+
+        OpenGLMesh &GetMesh(const MeshHandle &handle);
+
+        void RemoveMesh(const MeshHandle &handle);
+
+        void Clear();
+
+    private:
+        MeshHandle m_meshHandle;
+        std::unordered_map<MeshHandle, OpenGLMesh> m_meshes;
+    };
+} // namespace

@@ -2,25 +2,16 @@
 #include "Window.hpp"
 #include "../Renderer.hpp"
 #include <glad/glad.h>
-#include <array>
-#include <string>
 #include <string_view>
-#include <ostream>
-#include <sstream>
-#include <stdexcept>
 #include <spdlog/spdlog.h>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "OpenGLMesh.hpp"
+#include "OpenGLMeshManager.hpp"
 #include "../../shadermanagement/ShaderManager.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGL {
-    struct OpenGLMesh {
-        unsigned int VAO;
-        unsigned int VBO;
-        unsigned int EBO;
-        size_t numVertices;
-        size_t numIndices;
-    };
+
 
     class OpenGLRenderer final : public IRenderer {
     public:
@@ -30,29 +21,26 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
         void Initialize() override;
 
-        void PrepareFrame(glm::mat4 camView, glm::mat4 camProj, glm::vec3 camPos) override;
+        void PrepareFrame(const CameraAsset& cameraAsset) override;
 
-        void DrawFrame(std::vector<Renderable> renderInstances) override;
+        void DrawFrame(const std::vector<DrawAsset> &drawAssets) override;
 
-        void AddMesh(const Meshmanagement::Mesh &mesh) override;
+        MeshHandle AddMesh(const MeshAsset &mesh) override;
 
-        void RemoveMesh() override;
+        void RemoveMesh(const MeshHandle &meshHandle) override;
 
         void Shutdown() override;
 
     private:
-        std::vector<OpenGLMesh> m_meshes;
-        GLuint m_shaderProgram;
+        CameraAsset m_cameraAsset;
 
+        GLuint m_shaderProgram;
         GLuint m_cameraUBO;
         static constexpr GLuint CAMERA_BINDING_POINT = 0;
-        struct CameraGPUData {
-            glm::mat4 camView;
-            glm::mat4 camProj;
-            glm::vec4 camPos;
-        };
+
 
         ShaderManagement::ShaderManager *m_shaderManager;
+        std::unique_ptr<OpenGLMeshManager> m_meshManager;
 
         static void logSourceWithLineNumbers(std::string_view source);
 

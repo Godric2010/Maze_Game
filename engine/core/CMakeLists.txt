@@ -1,7 +1,10 @@
 
 add_library(Core STATIC
         EngineController.cpp
-        EngineController.hpp)
+        EngineController.hpp
+        Transform.cpp
+        Transform.hpp
+)
 
 target_include_directories(Core
     PUBLIC

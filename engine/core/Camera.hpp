@@ -3,7 +3,7 @@
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace Engine::Renderer {
+namespace Engine::Core {
     class Camera {
     public:
         Camera(glm::vec3 position, float width, float height, float fov, float near, float far);
