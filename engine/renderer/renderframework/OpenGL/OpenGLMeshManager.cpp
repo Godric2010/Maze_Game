@@ -12,7 +12,10 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
     OpenGLMeshManager::~OpenGLMeshManager() = default;
 
     MeshHandle OpenGLMeshManager::AddMesh(const MeshAsset &mesh) {
+
+        MeshHandle handle = m_meshHandle;
         m_meshHandle++;
+
         OpenGLMesh m = {};
         m.numVertices = mesh.vertices.size();
         m.numIndices = mesh.indices.size();
@@ -38,13 +41,18 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-        m_meshes[m_meshHandle] = m;
-        return m_meshHandle;
+        m_meshes[handle] = m;
+        return handle;
     }
 
     OpenGLMesh &OpenGLMeshManager::GetMesh(const MeshHandle &handle) {
         return m_meshes[handle];
     }
+
+    uint32_t OpenGLMeshManager::Size() const {
+        return m_meshes.size();
+    }
+
 
     void OpenGLMeshManager::RemoveMesh(const MeshHandle &handle) {
         m_meshes.erase(handle);

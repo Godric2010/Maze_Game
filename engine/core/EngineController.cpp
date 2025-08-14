@@ -45,6 +45,14 @@ namespace Engine::Core {
             .color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
         };
         m_drawAssets.push_back(drawAsset);
+
+        const auto transform2 = Transform(glm::vec3(0.5, 0, 1), glm::vec3(0, -10, 0), glm::vec3(1, 1, 1));
+        const auto drawAsset2 = Renderer::DrawAsset{
+            .mesh = meshHandle,
+            .model = transform2.GetTransform(),
+            .color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)
+        };
+        m_drawAssets.push_back(drawAsset2);
     }
 
     void EngineController::Update() const {

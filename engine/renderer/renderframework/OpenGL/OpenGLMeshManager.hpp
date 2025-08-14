@@ -17,6 +17,8 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
         OpenGLMesh &GetMesh(const MeshHandle &handle);
 
+        uint32_t Size() const;
+
         void RemoveMesh(const MeshHandle &handle);
 
         void Clear();

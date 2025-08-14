@@ -1,5 +1,7 @@
 #include "OpenGLRenderer.hpp"
 
+#include <vector>
+
 namespace Engine::Renderer::RenderFramework::OpenGL {
     OpenGLRenderer::OpenGLRenderer(Window::WindowContext windowContext,
                                    ShaderManagement::ShaderManager *shaderManager) {
@@ -7,7 +9,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
             throw std::runtime_error("Failed to initialize OpenGL context");
         }
 
-         // glViewport(0, 0, windowContext.width, windowContext.height);
+        // glViewport(0, 0, windowContext.width, windowContext.height);
         m_shaderManager = shaderManager;
         m_meshManager = std::make_unique<OpenGLMeshManager>();
 
@@ -46,19 +48,31 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
 
     void OpenGLRenderer::DrawFrame(const std::vector<DrawAsset> &drawAssets) {
+        std::vector<std::vector<const DrawAsset *> > buckets(m_meshManager->Size());
+        for (const auto &drawAsset: drawAssets) {
+            buckets[drawAsset.mesh].push_back(&drawAsset);
+        }
+
         GLint uModel = glGetUniformLocation(m_shaderProgram, "u_Model");
         GLint uColor = glGetUniformLocation(m_shaderProgram, "u_Color");
         glUseProgram(m_shaderProgram);
 
-        const auto instance = drawAssets[0];
-        const auto mesh = m_meshManager->GetMesh(instance.mesh);
-        glBindVertexArray(mesh.VAO);
+        for (MeshHandle h = 0; h < buckets.size(); ++h) {
+            const auto &list = buckets[h];
+            if (list.empty()) {
+                continue;
+            }
 
-        glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(instance.model));
-        glUniform4fv(uColor, 1, glm::value_ptr(instance.color));
+            const auto &mesh = m_meshManager->GetMesh(h);
+            glBindVertexArray(mesh.VAO);
 
-        glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
+            for (const DrawAsset *drawAsset: list) {
+                glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(drawAsset->model));
+                glUniform4fv(uColor, 1, glm::value_ptr(drawAsset->color));
 
+                glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
+            }
+        }
         glBindVertexArray(0);
         glUseProgram(0);
     }
