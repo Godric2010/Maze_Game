@@ -3,10 +3,13 @@ message(STATUS "SDL2 found: ${SDL2_FOUND}")
 message(STATUS "SDL2_INCLUDE_DIRS: ${SDL2_INCLUDE_DIRS}")
 message(STATUS "SDL2_LIBRARIES: ${SDL2_LIBRARIES}")
 
-add_library(Window STATIC 
-    include/Window.hpp 
-    src/SDLWindow.cpp
-    include/WindowBuilder.hpp
+add_library(Window STATIC
+        include/Window.hpp
+        src/SDLWindow.cpp
+        include/EnvironmentBuilder.hpp
+        include/Input.hpp
+        src/SDLInput.cpp
+        src/SDLInput.hpp
 )
 
 target_include_directories(Window PUBLIC

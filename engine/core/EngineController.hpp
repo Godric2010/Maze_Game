@@ -3,7 +3,8 @@
 
 #include "Camera.hpp"
 #include "../renderer/RenderController.hpp"
-#include "../window/include/Window.hpp"
+#include "../environment/include/Window.hpp"
+#include "../environment/include/Input.hpp"
 
 namespace Engine::Core {
     /**
@@ -25,7 +26,7 @@ namespace Engine::Core {
         /**
          * Update the engines systems, like drawing, the objects in the world, etc.
          */
-        void Update() const;
+        void Update();
 
         /**
          * Shutdown the engines system and free all resources.
@@ -34,9 +35,17 @@ namespace Engine::Core {
 
     private:
 
+        Environment::InputSnapshot PumpInput();
+
+        void UpdateSystems(float dt, const Environment::InputSnapshot &snapshot) const;
+
         void RenderFrame() const;
 
-        std::unique_ptr<Window::IWindow> m_window;
+        bool m_isClosed;
+        bool m_isPaused;
+
+        std::unique_ptr<Environment::IWindow> m_window;
+        std::unique_ptr<Environment::IInput> m_input;
         std::unique_ptr<Renderer::RenderController> m_rendererController;
 
         // TODO: Move this into the ECS as soon as Version 0.3 is in the making

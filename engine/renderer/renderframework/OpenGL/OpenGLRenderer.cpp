@@ -3,7 +3,7 @@
 #include <vector>
 
 namespace Engine::Renderer::RenderFramework::OpenGL {
-    OpenGLRenderer::OpenGLRenderer(Window::WindowContext windowContext,
+    OpenGLRenderer::OpenGLRenderer(Environment::WindowContext windowContext,
                                    ShaderManagement::ShaderManager *shaderManager) {
         if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
             throw std::runtime_error("Failed to initialize OpenGL context");

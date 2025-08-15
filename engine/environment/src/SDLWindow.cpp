@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ostream>
 
-namespace Engine::Window {
+namespace Engine::Environment {
     SDLWindow::SDLWindow() {
         m_window = nullptr;
         m_context = {};
@@ -60,7 +60,7 @@ namespace Engine::Window {
         return m_context;
     }
 
-    bool SDLWindow::PollEvents() {
+    bool SDLWindow::PollEvents_old() {
         SDL_Event event;
         SDL_PollEvent(&event);
         switch (event.type) {
@@ -78,6 +78,13 @@ namespace Engine::Window {
     void SDLWindow::Shutdown() {
         SDL_DestroyWindow(m_window);
     }
+
+    void SDLWindow::PollEvents(const std::function<void(const SDL_Event &)> &callback) {
+        SDL_Event event;
+        SDL_PollEvent(&event);
+        callback(event);
+    }
+
 
     void SDLWindow::SetupOpenGL() {
         SDL_GL_ResetAttributes();

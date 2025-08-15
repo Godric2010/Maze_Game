@@ -15,7 +15,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
     class OpenGLRenderer final : public IRenderer {
     public:
-        explicit OpenGLRenderer(Window::WindowContext windowContext, ShaderManagement::ShaderManager *shaderManager);
+        explicit OpenGLRenderer(Environment::WindowContext windowContext, ShaderManagement::ShaderManager *shaderManager);
 
         ~OpenGLRenderer() override;
 

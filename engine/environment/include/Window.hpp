@@ -7,7 +7,7 @@
 #include <SDL.h>
 #include <string>
 
-namespace Engine::Window {
+namespace Engine::Environment {
     /**
      * @enum API
      * @brief Represents various graphics APIs that can be used in the application.
@@ -90,7 +90,7 @@ namespace Engine::Window {
         /**
          * Poll the events of this window for further processing
          */
-        virtual bool PollEvents() = 0;
+        virtual bool PollEvents_old() = 0;
 
         /**
          * Swap the window buffers

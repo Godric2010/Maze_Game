@@ -21,7 +21,7 @@ endif()
 add_subdirectory(engine)
 
 add_executable(Maze_Game main.cpp
-        engine/window/include/Window.hpp)
+        engine/environment/include/Window.hpp)
 target_link_libraries(Maze_Game PRIVATE Engine)
 
 file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})

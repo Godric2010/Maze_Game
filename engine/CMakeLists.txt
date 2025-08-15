@@ -1,6 +1,6 @@
 
 add_subdirectory(core)
-add_subdirectory(window)
+add_subdirectory(environment)
 add_subdirectory(renderer)
 
 add_library(Engine INTERFACE)

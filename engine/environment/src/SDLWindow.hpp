@@ -3,9 +3,11 @@
 //
 
 #pragma once
+#include <functional>
+
 #include "../include/Window.hpp"
 
-namespace Engine::Window {
+namespace Engine::Environment {
     class SDLWindow final : public IWindow{
 
     public:
@@ -15,9 +17,12 @@ namespace Engine::Window {
         void Setup(WindowConfig config) override;
         WindowContext GetWindowContext() override;
 
-        bool PollEvents() override;
+        bool PollEvents_old() override;
         void SwapBuffers() override;
         void Shutdown() override;
+
+        void PollEvents(const std::function<void(const SDL_Event &)> &callback);
+
 
     private:
 
