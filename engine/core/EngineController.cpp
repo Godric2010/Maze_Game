@@ -14,10 +14,11 @@ namespace Engine::Core {
     EngineController::~EngineController() = default;
 
     void EngineController::Initialize() {
+
         m_window = Environment::CreateWindow();
         const Environment::WindowConfig config{
-            .width = 800,
-            .height = 600,
+            .width = 1920,
+            .height = 1080,
             .title = "MazeGame",
             .renderApi = Environment::API::OpenGL,
             .windowMode = Environment::WindowMode::Window
