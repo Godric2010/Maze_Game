@@ -42,6 +42,7 @@ if (BUILD_TESTING)
     elseif (CMAKE_BUILD_TYPE)
         set(_CTEST_CONFIG_ARG "-C;${CMAKE_BUILD_TYPE}")
     endif ()
+    set(CTEST_OUTPUT_ON_FAILURE ON)
 
     add_custom_target(check
             COMMAND ${CMAKE_CTEST_COMMAND}

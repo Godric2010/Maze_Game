@@ -4,6 +4,9 @@ add_library(ECS STATIC
         src/ComponentManager.cpp
         src/ComponentManager.hpp
         include/IComponent.hpp
+        include/IWorld.hpp
+        src/EntityManager.cpp
+        src/EntityManager.hpp
 )
 
 target_include_directories(ECS
@@ -14,11 +17,15 @@ target_include_directories(ECS
 
 if (BUILD_TESTING)
     include(testing)
+
+    file(GLOB TEST_SOURCES
+            CONFIGURE_DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp")
     add_catch2_tests(
             TARGET ECS_tests
             PREFIX "ecs."
             LINK ECS
-            SOURCES tests/ComponentTests.cpp
+            SOURCES ${TEST_SOURCES}
     )
 
 endif ()

@@ -37,6 +37,9 @@ function(add_catch2_tests)
     target_link_libraries(${APP_TARGET} PRIVATE Catch2::Catch2WithMain ${APP_LINK})
 
     include(Catch)
+    set(_EXTRA_ARGS
+            --reporter;compact
+    )
 
     if (NOT APP_DISABLE_REPORTS)
         if (NOT DEFINED APP_TEST_REPORT_DIR)
@@ -46,14 +49,16 @@ function(add_catch2_tests)
 
         catch_discover_tests(${APP_TARGET}
                 TEST_PREFIX "${APP_PREFIX}"
-                REPORTER junit
-                OUTPUT_DIR "${APP_TARGET}-"
+                EXTRA_ARGS ${_EXTRA_ARGS}
                 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )
     else ()
         catch_discover_tests(${APP_TARGET}
                 TEST_PREFIX "${APP_PREFIX}"
+                EXTRA_ARGS ${_EXTRA_ARGS}
                 WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )
     endif ()
+
+    #    set_tests_properties(${APP_PREFIX}${APP_TARGET} PROPERTIES TIMEOUT 15)
 endfunction()
