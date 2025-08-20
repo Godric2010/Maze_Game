@@ -10,6 +10,7 @@ add_library(ECS STATIC
         src/WorldManager.hpp
         src/ComponentPool.cpp
         src/ComponentPool.hpp
+        src/Entity.hpp
 )
 
 target_include_directories(ECS

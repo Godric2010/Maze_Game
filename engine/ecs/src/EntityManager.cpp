@@ -47,12 +47,4 @@ namespace Engine::Ecs {
         m_generations[idx] = gen;
         m_freeEntities.push_back(entity);
     }
-
-    uint64_t EntityManager::GetEntityIndex(const EntityId entity) {
-        return (entity & INDEX_MASK);
-    }
-
-    uint64_t EntityManager::GetEntityGenration(const EntityId entity) {
-        return (entity >> INDEX_BITS) & GENRATION_MASK;
-    }
 } // namespace
