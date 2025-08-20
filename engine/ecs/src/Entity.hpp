@@ -21,7 +21,7 @@ namespace Engine::Ecs {
      * The mask is computed as `(1u << INDEX_BITS) - 1u`, where `INDEX_BITS`
      * determines the number of bits allocated for the index in the entity ID.
      */
-    static uint64_t INDEX_MASK = (1u << INDEX_BITS) - 1u;
+    static constexpr std::uint64_t INDEX_MASK = (1ull << INDEX_BITS) - 1u;
 
     /**
      * @brief A bitmask used to extract the generation portion of an entity ID.
@@ -34,7 +34,7 @@ namespace Engine::Ecs {
      * The mask is computed as `(1u << GENRATION_BITS) - 1u`, where `GENRATION_BITS`
      * specifies the number of bits reserved for the generation in the entity ID.
      */
-    static uint64_t GENRATION_MASK = (1u << GENRATION_BITS) - 1u;
+    static constexpr uint64_t GENRATION_MASK = (1u << GENRATION_BITS) - 1u;
 
     /**
      * Get the underlying index of the entity
