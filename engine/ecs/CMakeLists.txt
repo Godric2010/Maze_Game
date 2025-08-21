@@ -8,7 +8,7 @@ add_library(ECS STATIC
         src/EntityManager.hpp
         src/WorldManager.cpp
         src/WorldManager.hpp
-        src/ComponentPool.cpp
+        src/ComponentPool.inl
         src/ComponentPool.hpp
         src/Entity.hpp
 )

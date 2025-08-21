@@ -7,9 +7,9 @@ namespace Engine::Ecs {
     template<class T>
     class ComponentPool {
     public:
-        ComponentPool();
+        ComponentPool<T>();
 
-        ~ComponentPool();
+        ~ComponentPool<T>();
 
         T &Add(EntityId entity, T value);
 
@@ -33,3 +33,4 @@ namespace Engine::Ecs {
         std::vector<uint64_t> m_sparseToDense;
     };
 } // namespace
+#include "ComponentPool.inl"

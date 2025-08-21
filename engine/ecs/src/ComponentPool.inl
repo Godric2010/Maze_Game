@@ -10,6 +10,9 @@ namespace Engine::Ecs {
 
     template<class T>
     T &ComponentPool<T>::Add(const EntityId entity, T value) {
+        if (entity == INVALID_ENTITY_ID) {
+            throw std::invalid_argument("Cannot add component with invalid EntityId");
+        }
         const uint64_t idx = GetEntityIndex(entity);
         if (idx >= m_sparseToDense.size()) {
             m_sparseToDense.resize(idx + 1, m_none);
@@ -33,13 +36,13 @@ namespace Engine::Ecs {
         }
         const uint64_t idx = GetEntityIndex(entity);
         uint64_t componentIndex = m_sparseToDense[idx];
-        uint64_t lastComponentIndex = m_sparseToDense.size() - 1;
+        uint64_t lastComponentIndex = m_denseComponents.size() - 1;
 
         if (componentIndex != lastComponentIndex) {
             std::swap(m_denseComponents[componentIndex], m_denseComponents[lastComponentIndex]);
             std::swap(m_denseEntities[componentIndex], m_denseEntities[lastComponentIndex]);
 
-            const uint64_t swappedIndex = m_denseEntities[componentIndex];
+            const uint64_t swappedIndex = GetEntityIndex(m_denseEntities[componentIndex]);
             m_sparseToDense[swappedIndex] = componentIndex;
         }
         m_denseComponents.pop_back();
