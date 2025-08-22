@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include <cstdint>
 
 namespace Engine::Ecs {
     using EntityId = uint64_t;
@@ -21,7 +22,7 @@ namespace Engine::Ecs {
      * The mask is computed as `(1u << INDEX_BITS) - 1u`, where `INDEX_BITS`
      * determines the number of bits allocated for the index in the entity ID.
      */
-    static constexpr std::uint64_t INDEX_MASK = (1ull << INDEX_BITS) - 1u;
+    static constexpr uint64_t INDEX_MASK = (1ull << INDEX_BITS) - 1u;
 
     /**
      * @brief A bitmask used to extract the generation portion of an entity ID.

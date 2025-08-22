@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.31)
 
 add_library(ECS STATIC
-        src/ComponentManager.cpp
+        src/ComponentManager.inl
         src/ComponentManager.hpp
         include/IWorld.hpp
         src/EntityManager.cpp
