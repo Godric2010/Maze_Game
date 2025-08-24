@@ -47,7 +47,7 @@ namespace Engine::Ecs {
         return entities;
     }
 
-    void ComponentManager::OnDestroyEntity(const EntityId entity) const {
+    inline void ComponentManager::OnDestroyEntity(const EntityId entity) const {
         for (const auto &component_pool: m_pool | std::views::values) {
             if (component_pool->Contains(entity)) {
                 component_pool->Remove(entity);

@@ -89,3 +89,33 @@ TEST_CASE_METHOD(ComponentManagerFixture,
     REQUIRE(entities[0] == entityA);
     REQUIRE(entities[1] == entityB);
 }
+
+TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::OnEntityDestroy - All components that have the entity are removed", "[ecs][fast]") {
+    EntityId entityA = 1u;
+    EntityId entityB = 2u;
+
+    m_componentManager.AddComponent(entityA, TestClassA{.testVal = 1});
+    m_componentManager.AddComponent(entityA, TestClassB{.testVal = -2});
+    m_componentManager.AddComponent(entityA, TestClassC{.testVal = 3.3f});
+
+    m_componentManager.AddComponent(entityB, TestClassA{.testVal = 4});
+    m_componentManager.AddComponent(entityB, TestClassB{.testVal = -3});
+    m_componentManager.AddComponent(entityB, TestClassC{.testVal = 4.3f});
+    REQUIRE(m_componentManager.HasComponent<TestClassA>(entityA));
+    REQUIRE(m_componentManager.HasComponent<TestClassB>(entityB));
+
+    m_componentManager.OnDestroyEntity(entityA);
+
+    auto resultA = m_componentManager.GetEntitiesWithComponent<TestClassA>();
+    auto resultB = m_componentManager.GetEntitiesWithComponent<TestClassB>();
+    auto resultC = m_componentManager.GetEntitiesWithComponent<TestClassC>();
+
+    REQUIRE(resultA.size() == 1);
+    REQUIRE(resultA[0] == entityB);
+
+    REQUIRE(resultB.size() == 1);
+    REQUIRE(resultB[0] == entityB);
+
+    REQUIRE(resultC.size() == 1);
+    REQUIRE(resultC[0] == entityB);
+}

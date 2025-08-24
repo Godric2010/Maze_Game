@@ -1,6 +1,5 @@
 #include "../include/SystemManager.hpp"
 
-#include <iostream>
 #include <ostream>
 
 namespace Engine::Ecs {
