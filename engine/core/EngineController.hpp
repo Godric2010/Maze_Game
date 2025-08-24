@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "Camera.hpp"
+#include "SystemManager.hpp"
 #include "../ecs/include/World.hpp"
 #include "../renderer/RenderController.hpp"
 #include "../environment/include/Window.hpp"
@@ -22,7 +23,7 @@ namespace Engine::Core {
         /**
          * Initialize the engine backend
          */
-        void Initialize();
+        void Initialize(const std::vector<Ecs::SystemMeta>& systems);
 
         /**
          * Update the engines systems, like drawing, the objects in the world, etc.

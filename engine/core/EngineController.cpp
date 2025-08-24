@@ -4,6 +4,7 @@
 
 #include "Transform.hpp"
 #include "EnvironmentBuilder.hpp"
+#include "SystemManager.hpp"
 
 namespace Engine::Core {
     EngineController::EngineController() {
@@ -13,7 +14,7 @@ namespace Engine::Core {
 
     EngineController::~EngineController() = default;
 
-    void EngineController::Initialize() {
+    void EngineController::Initialize(const std::vector<Ecs::SystemMeta>& systems) {
         m_window = Environment::CreateWindow();
         const Environment::WindowConfig config{
             .width = 1920,
@@ -25,7 +26,13 @@ namespace Engine::Core {
         m_window->Setup(config);
 
         m_input = Environment::CreateInput(*m_window);
-        m_world = std::unique_ptr<Ecs::World>();
+        m_world = std::make_unique<Ecs::World>();
+        Ecs::EntityId entityA = m_world->CreateEntity();
+        std::cout<< "Entity A: " << entityA << std::endl;
+        auto systemManager = std::make_unique<Ecs::SystemManager>();
+        for (const auto& system : systems) {
+            systemManager->RegisterSystem(system);
+        }
 
         m_rendererController = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
         m_camera = std::make_unique<Camera>(glm::vec3(0, 0, 3), config.width, config.height, 60, 0.01, 100.0);

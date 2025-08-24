@@ -4,6 +4,8 @@ add_library(Core STATIC
         EngineController.hpp
         Transform.cpp
         Transform.hpp
+        systems/EngineTestSystem.cpp
+        systems/EngineTestSystem.hpp
 )
 
 target_include_directories(Core
@@ -11,4 +13,4 @@ target_include_directories(Core
     ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/../environment/include
 )
-target_link_libraries(Core PUBLIC Window Renderer)
+target_link_libraries(Core PUBLIC Window Renderer ECS)

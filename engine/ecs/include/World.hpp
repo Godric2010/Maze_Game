@@ -8,7 +8,7 @@
 namespace Engine::Ecs {
     class World {
     public:
-        World();
+        explicit World();
         ~World();
 
         [[nodiscard]] EntityId CreateEntity() const;

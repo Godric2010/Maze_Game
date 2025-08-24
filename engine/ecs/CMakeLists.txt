@@ -10,6 +10,9 @@ add_library(ECS STATIC
         src/ComponentPool.inl
         src/ComponentPool.hpp
         src/Entity.hpp
+        include/ISystem.hpp
+        src/SystemManager.cpp
+        include/SystemManager.hpp
 )
 
 target_include_directories(ECS

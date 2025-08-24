@@ -25,10 +25,10 @@ if(BUILD_TESTING)
 endif ()
 
 add_subdirectory(engine)
+add_subdirectory(gameplay)
 
-add_executable(Maze_Game main.cpp
-        engine/environment/include/Window.hpp)
-target_link_libraries(Maze_Game PRIVATE Engine)
+add_executable(Maze_Game main.cpp)
+target_link_libraries(Maze_Game PRIVATE Engine gameplay)
 
 file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
 
