@@ -3,11 +3,10 @@ cmake_minimum_required(VERSION 3.31)
 add_library(ECS STATIC
         src/ComponentManager.inl
         src/ComponentManager.hpp
-        include/IWorld.hpp
+        include/World.hpp
         src/EntityManager.cpp
         src/EntityManager.hpp
-        src/WorldManager.cpp
-        src/WorldManager.hpp
+        src/World.cpp
         src/ComponentPool.inl
         src/ComponentPool.hpp
         src/Entity.hpp

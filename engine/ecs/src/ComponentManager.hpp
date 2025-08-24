@@ -34,6 +34,8 @@ namespace Engine::Ecs {
 		template<typename T>
 		std::vector<EntityId> GetEntitiesWithComponent();
 
+		void OnDestroyEntity(EntityId entity) const;
+
 	private:
 		mutable std::unordered_map<std::type_index, std::unique_ptr<IComponentPool>> m_pool;
 

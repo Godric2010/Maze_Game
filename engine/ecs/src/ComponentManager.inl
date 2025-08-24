@@ -2,6 +2,8 @@
 // Created by Godri on 8/17/2025.
 //
 
+#include <ranges>
+
 #include "ComponentManager.hpp"
 
 namespace Engine::Ecs {
@@ -36,13 +38,21 @@ namespace Engine::Ecs {
 
     template<typename T>
     std::vector<EntityId> ComponentManager::GetEntitiesWithComponent() {
-        auto& pool = getPool<T>();
+        auto &pool = getPool<T>();
         std::vector<EntityId> entities;
         entities.reserve(pool.Count());
-        pool.ForEach([&](const EntityId entity,T val) {
+        pool.ForEach([&](const EntityId entity, T val) {
             entities.push_back(entity);
         });
         return entities;
+    }
+
+    void ComponentManager::OnDestroyEntity(const EntityId entity) const {
+        for (const auto &component_pool: m_pool | std::views::values) {
+            if (component_pool->Contains(entity)) {
+                component_pool->Remove(entity);
+            }
+        }
     }
 
     template<typename T>
@@ -50,9 +60,9 @@ namespace Engine::Ecs {
         auto key = std::type_index(typeid(T));
         auto it = m_pool.find(key);
         if (it == m_pool.end()) {
-            it = m_pool.emplace(key, std::make_unique<TypedComponentPool<T>>()).first;
+            it = m_pool.emplace(key, std::make_unique<TypedComponentPool<T> >()).first;
         }
-        return *static_cast<TypedComponentPool<T>*>(it->second.get());
+        return *static_cast<TypedComponentPool<T> *>(it->second.get());
     }
 
     template<typename T>
@@ -63,6 +73,6 @@ namespace Engine::Ecs {
             throw std::runtime_error("No such component");
         }
 
-        return *static_cast<const TypedComponentPool<T>*>(it->second.get());
+        return *static_cast<const TypedComponentPool<T> *>(it->second.get());
     }
 } // ECS

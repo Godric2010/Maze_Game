@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "Camera.hpp"
+#include "../ecs/include/World.hpp"
 #include "../renderer/RenderController.hpp"
 #include "../environment/include/Window.hpp"
 #include "../environment/include/Input.hpp"
@@ -47,6 +48,7 @@ namespace Engine::Core {
         std::unique_ptr<Environment::IWindow> m_window;
         std::unique_ptr<Environment::IInput> m_input;
         std::unique_ptr<Renderer::RenderController> m_rendererController;
+        std::unique_ptr<Ecs::World> m_world;
 
         // TODO: Move this into the ECS as soon as Version 0.3 is in the making
         std::unique_ptr<Camera> m_camera;

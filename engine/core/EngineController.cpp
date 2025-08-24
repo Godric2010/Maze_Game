@@ -14,7 +14,6 @@ namespace Engine::Core {
     EngineController::~EngineController() = default;
 
     void EngineController::Initialize() {
-
         m_window = Environment::CreateWindow();
         const Environment::WindowConfig config{
             .width = 1920,
@@ -26,6 +25,7 @@ namespace Engine::Core {
         m_window->Setup(config);
 
         m_input = Environment::CreateInput(*m_window);
+        m_world = std::unique_ptr<Ecs::World>();
 
         m_rendererController = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
         m_camera = std::make_unique<Camera>(glm::vec3(0, 0, 3), config.width, config.height, 60, 0.01, 100.0);
