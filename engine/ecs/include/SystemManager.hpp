@@ -1,4 +1,6 @@
 #pragma once
+#include <unordered_map>
+
 #include "ISystem.hpp"
 
 namespace Engine::Ecs {
@@ -26,6 +28,12 @@ namespace Engine::Ecs {
 
         void RegisterSystem(const SystemMeta& meta);
 
+        void RunSystems(World& world, float deltaTime);
+
     private:
+        std::vector<Phase> m_phaseOrder;
+        std::unordered_map<Phase, std::vector<std::unique_ptr<ISystem>>> m_phaseMap;
+
+        void RunPhase(Phase phase, World& world, float deltaTime);
     };
 } // namespace

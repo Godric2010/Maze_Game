@@ -1,7 +1,7 @@
 #pragma once
 #include "ISystem.hpp"
 
-ECS_SYSTEM(EngineTestSystem, Update, [core])
+ECS_SYSTEM(EngineTestSystem, Render, [core])
 namespace Engine::Core::Systems {
     class EngineTestSystem : public Ecs::ISystem {
     public:

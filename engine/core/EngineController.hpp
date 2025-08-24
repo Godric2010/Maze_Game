@@ -50,6 +50,7 @@ namespace Engine::Core {
         std::unique_ptr<Environment::IInput> m_input;
         std::unique_ptr<Renderer::RenderController> m_rendererController;
         std::unique_ptr<Ecs::World> m_world;
+        std::unique_ptr<Ecs::SystemManager> m_systemManager;
 
         // TODO: Move this into the ECS as soon as Version 0.3 is in the making
         std::unique_ptr<Camera> m_camera;

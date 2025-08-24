@@ -1,7 +1,7 @@
 #pragma once
 #include "ISystem.hpp"
 
-ECS_SYSTEM(TestSystem, Update, [core])
+ECS_SYSTEM(TestSystem, Physics, [core])
 namespace Gameplay {
 
     class TestSystem final : public Engine::Ecs::ISystem {

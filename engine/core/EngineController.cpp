@@ -29,9 +29,9 @@ namespace Engine::Core {
         m_world = std::make_unique<Ecs::World>();
         Ecs::EntityId entityA = m_world->CreateEntity();
         std::cout<< "Entity A: " << entityA << std::endl;
-        auto systemManager = std::make_unique<Ecs::SystemManager>();
+        m_systemManager = std::make_unique<Ecs::SystemManager>();
         for (const auto& system : systems) {
-            systemManager->RegisterSystem(system);
+            m_systemManager->RegisterSystem(system);
         }
 
         m_rendererController = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
@@ -83,6 +83,7 @@ namespace Engine::Core {
                 continue;
             }
 
+            m_systemManager->RunSystems(*m_world, deltaTime);
             UpdateSystems(deltaTime, input);
 
             RenderFrame();
