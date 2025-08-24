@@ -15,4 +15,5 @@ namespace Engine::Ecs {
         const auto system = meta.factory();
         std::cout << "Registering system " << meta.name << " - " << system << std::endl;
     }
+
 } // namespace

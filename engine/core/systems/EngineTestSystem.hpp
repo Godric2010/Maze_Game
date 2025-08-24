@@ -1,9 +1,8 @@
 #pragma once
 #include "ISystem.hpp"
 
+ECS_SYSTEM(EngineTestSystem, Update, [core])
 namespace Engine::Core::Systems {
-    ECS_SYSTEM(EngineTestSystem, Update, [core])
-
     class EngineTestSystem : public Ecs::ISystem {
     public:
         EngineTestSystem();
@@ -13,5 +12,6 @@ namespace Engine::Core::Systems {
         void Run(Ecs::World &world, float deltaTime) override;
 
     private:
+        std::string test;
     };
 } // namespace

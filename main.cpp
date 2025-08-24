@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "generated/Generated.hpp"
 #include "engine/core/EngineController.hpp"
 
 struct App {
@@ -8,7 +9,7 @@ struct App {
     ~App() = default;
 
     void Initialize() {
-        std::vector<Engine::Ecs::SystemMeta> systems;
+        const std::vector<Engine::Ecs::SystemMeta> systems = MazeGame::GetSystemsFromGeneratedSource();
         m_engineController = std::make_unique<Engine::Core::EngineController>();
         m_engineController->Initialize(systems);
     }

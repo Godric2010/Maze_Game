@@ -27,7 +27,13 @@ endif ()
 add_subdirectory(engine)
 add_subdirectory(gameplay)
 
-add_executable(Maze_Game main.cpp)
+include(ecs_system_codegen)
+
+add_executable(Maze_Game main.cpp generated/Generated.hpp "${GENERATED_SRC}")
+add_dependencies(Maze_Game ecs_codegen)
+target_include_directories(Maze_Game PRIVATE "${GENERATED_DIR}")
+
+
 target_link_libraries(Maze_Game PRIVATE Engine gameplay)
 
 file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
