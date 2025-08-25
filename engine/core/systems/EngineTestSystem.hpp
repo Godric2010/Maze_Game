@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 #include "ISystem.hpp"
 
 ECS_SYSTEM(EngineTestSystem, Render, [core])

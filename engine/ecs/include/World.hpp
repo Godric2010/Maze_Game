@@ -3,6 +3,8 @@
 //
 
 #pragma once
+#include <memory>
+
 #include "../src/EntityManager.hpp"
 
 namespace Engine::Ecs {
