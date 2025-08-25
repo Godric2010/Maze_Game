@@ -34,7 +34,7 @@ namespace Engine::Ecs {
     }
 
     template<typename T>
-    T &World::GetComponent(const EntityId entity) {
+    T *World::GetComponent(const EntityId entity) {
         if (!m_impl->EntityManager->IsEntityAlive(entity)) {
             return nullptr;
         }

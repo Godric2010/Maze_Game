@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include <glm/glm.hpp>
 
 namespace Engine::Core::Components {
     struct Camera {
@@ -12,5 +13,8 @@ namespace Engine::Core::Components {
         float AspectRatio;
         float NearClip;
         float FarClip;
+        glm::mat4 projection;
+        glm::mat4 view;
+        glm::mat4 model;
     };
 }

@@ -19,7 +19,7 @@ namespace Engine::Ecs {
         std::optional<std::reference_wrapper<T>> AddComponent(EntityId entity, T component);
 
         template<typename T>
-        T& GetComponent(EntityId entity);
+        T* GetComponent(EntityId entity);
 
         template<typename T>
         std::vector<std::pair<T*, EntityId>> GetComponentsOfType();

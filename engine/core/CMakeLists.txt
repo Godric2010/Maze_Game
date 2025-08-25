@@ -4,14 +4,16 @@ add_library(Core STATIC
         EngineController.hpp
         Transform.cpp
         Transform.hpp
-        systems/EngineTestSystem.cpp
-        systems/EngineTestSystem.hpp
         components/Transform.hpp
         components/Mesh.hpp
         components/Camera.hpp
         components/InputReceiver.hpp
         systems/TransformSystem.cpp
         systems/TransformSystem.hpp
+        systems/CameraSystem.cpp
+        systems/CameraSystem.hpp
+        systems/InputReceiver.cpp
+        systems/InputReceiver.hpp
 )
 
 target_include_directories(Core PUBLIC

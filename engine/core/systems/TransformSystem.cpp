@@ -12,7 +12,6 @@ namespace Engine::Core::Systems {
     TransformSystem::~TransformSystem() = default;
 
     void TransformSystem::Run(Ecs::World &world, float deltaTime) {
-        std::cout<< "Run transform system" << std::endl;
         auto transformComponents = world.GetComponentsOfType<Components::Transform>();
         for (const auto transform: transformComponents | std::views::keys) {
             transform->Matrix = CalculateMatrix(transform->Position, transform->Rotation, transform->Scale);
