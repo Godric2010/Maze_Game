@@ -96,14 +96,20 @@ namespace Engine::Core {
         m_window->Shutdown();
     }
 
+    Ecs::World &EngineController::GetWorld() const {
+        return *m_world;
+    }
+
+
+
     Environment::InputSnapshot EngineController::PumpInput() {
         m_input->PrepareFrame();
         m_input->PumpInput();
         const auto input = m_input->GetInputSnapshot();
 
-        m_isClosed = input.IsClosed;
+        m_isClosed = input->IsClosed;
         // m_isPaused = !input.HasFocus;
-        return input;
+        return *input;
     }
 
 

@@ -25,6 +25,15 @@ namespace Engine::Ecs {
         return entity;
     }
 
+    std::vector<EntityId> EntityManager::GetAllActiveEntities() const {
+        auto entities = std::vector<EntityId>(m_generations.size());
+        for (uint64_t i = 0; i < m_generations.size(); ++i) {
+            entities[i] = (m_generations[i]&GENRATION_MASK) << INDEX_BITS | (i & INDEX_MASK);
+        }
+        return entities;
+    }
+
+
     bool EntityManager::IsEntityAlive(const EntityId entity) const {
         if (entity == INVALID_ENTITY_ID) {
             return false;

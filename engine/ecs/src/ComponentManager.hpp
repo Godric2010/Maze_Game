@@ -23,7 +23,7 @@ namespace Engine::Ecs {
 		void RemoveComponent(EntityId entity);
 
 		template<typename T>
-		T& GetComponent(EntityId entity);
+		T *GetComponent(EntityId entity);
 
 		template<typename T>
 		const T& GetComponent(EntityId entity) const;
@@ -42,7 +42,7 @@ namespace Engine::Ecs {
 		template<typename T>
 		TypedComponentPool<T>& getPool();
 		template<typename T>
-		const TypedComponentPool<T>& getPoolConst() const;
+		const TypedComponentPool<T> *getPoolConst() const;
 	};
 } // ECS
 

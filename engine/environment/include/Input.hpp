@@ -33,10 +33,12 @@ namespace Engine::Environment {
         Pressed,
     };
 
-    struct InputSnapshot {
+    class InputSnapshot {
         friend class SDLInput;
 
     public:
+        InputSnapshot() = default;
+        ~InputSnapshot() = default;
         [[nodiscard]] bool IsKeyDown(const Key key) const { return m_keyPressedThisFrame.contains(key); };
         [[nodiscard]] bool IsKeyUp(const Key key) const { return m_keyReleasedThisFrame.contains(key); };
         [[nodiscard]] bool IsKeyHeld(const Key key) const { return m_keyHeldThisFrame.contains(key); };
@@ -67,7 +69,7 @@ namespace Engine::Environment {
         std::unordered_set<MouseButton> m_mouseReleasedThisFrame;
         std::unordered_set<MouseButton> m_mouseHeldThisFrame;
 
-        glm::vec2 m_mouseDelta;
+        glm::vec2 m_mouseDelta{};
     };
 
     /**
@@ -84,6 +86,6 @@ namespace Engine::Environment {
 
         virtual void PumpInput() = 0;
 
-        virtual InputSnapshot GetInputSnapshot() = 0;
+        virtual InputSnapshot *GetInputSnapshot() = 0;
     };
 }

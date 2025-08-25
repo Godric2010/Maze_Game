@@ -20,6 +20,8 @@ namespace Engine::Ecs {
 
         EntityId GenerateEntity();
 
+        std::vector<EntityId> GetAllActiveEntities() const;
+
         void DestroyEntity(EntityId entity);
 
         [[nodiscard]] bool IsEntityAlive(EntityId entity) const;

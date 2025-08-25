@@ -24,8 +24,8 @@ namespace Engine::Environment {
         Poll();
     }
 
-    InputSnapshot SDLInput::GetInputSnapshot() {
-        return m_inputSnapshot;
+    InputSnapshot *SDLInput::GetInputSnapshot() {
+        return &m_inputSnapshot;
     }
 
     inline Key mapScancode(SDL_Scancode scancode) {

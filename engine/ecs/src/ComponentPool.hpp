@@ -27,7 +27,7 @@ namespace Engine::Ecs {
 
         bool Contains(EntityId entity) const override { return m_pool.Contains(entity); };
 
-        T &Get(EntityId entity) { return m_pool.Get(entity); };
+        T *Get(EntityId entity) { return m_pool.Get(entity); };
 
         const T &Get(EntityId entity) const { return m_pool.Get(entity); };
 
@@ -53,7 +53,7 @@ namespace Engine::Ecs {
 
         [[nodiscard]] bool Contains(EntityId entity) const;
 
-        T &Get(EntityId entity);
+        T* Get(EntityId entity);
 
         const T &Get(EntityId entity) const;
 

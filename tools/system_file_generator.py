@@ -15,6 +15,7 @@ class SystemMeta(TypedDict):
     class_name: str
     phase: str
     tags: List[str]
+    isSystem: bool
 
 
 def iter_files(roots):
@@ -31,6 +32,8 @@ def iter_files(roots):
 def build_includes(metas):
     include_str = "#include \"Generated.hpp\"\n"
     for meta in metas:
+        if meta['isSystem'] is False:
+            continue
         include_str += "#include \"" + meta['include'] + "\"\n"
 
     include_str += "\n\n"
@@ -41,6 +44,8 @@ def build_system_ctors(metas):
     system_ctors = ""
 
     for meta in metas:
+        if meta['isSystem'] is False:
+            continue
         ctor = "static std::unique_ptr<Engine::Ecs::ISystem> Create_" + meta['name'] + "(){\n"
         ctor += "\treturn std::make_unique<" + meta['namespace'] + "::" + meta['name'] + ">();\n}\n\n"
         system_ctors += ctor
@@ -49,6 +54,8 @@ def build_system_ctors(metas):
 
 
 def build_meta_list_entry(meta):
+    if meta['isSystem'] is False:
+        return ""
     meta_string = "\t\tEngine::Ecs::SystemMeta{\n"
     meta_string += "\t\t\t.name = \"" + meta['name'] + "\",\n"
     meta_string += "\t\t\t.phase = Engine::Ecs::Phase::" + meta['phase'] + ",\n"
@@ -59,7 +66,7 @@ def build_meta_list_entry(meta):
 
 
 def find_ecs_meta_in_file(file):
-    sys_meta = SystemMeta(name="", namespace="", include="", class_name="", phase="", tags=[])
+    sys_meta = SystemMeta(name="", namespace="", include="", class_name="", phase="", tags=[], isSystem=False)
 
     file_path = str(file)
     file_path = file_path.split("Maze Game")[-1]
@@ -82,6 +89,7 @@ def find_ecs_meta_in_file(file):
                 sys_meta['name'] = meta[0].strip()
                 sys_meta['phase'] = meta[1].strip()
                 sys_meta['tags'] = meta[2].strip().split(",")
+                sys_meta['isSystem'] = True
 
             if line.startswith("namespace"):
                 l = line.split(" ")

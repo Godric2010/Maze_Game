@@ -34,7 +34,7 @@ add_dependencies(Maze_Game ecs_codegen)
 target_include_directories(Maze_Game PRIVATE "${GENERATED_DIR}")
 
 
-target_link_libraries(Maze_Game PRIVATE Engine gameplay)
+target_link_libraries(Maze_Game PRIVATE Engine Gameplay)
 
 file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
 

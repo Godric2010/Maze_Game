@@ -22,7 +22,7 @@ namespace Engine::Ecs {
     }
 
     template<typename T>
-    T &ComponentManager::GetComponent(EntityId entity) {
+    T *ComponentManager::GetComponent(EntityId entity) {
         return getPool<T>().Get(entity);
     }
 
@@ -33,7 +33,11 @@ namespace Engine::Ecs {
 
     template<typename T>
     bool ComponentManager::HasComponent(EntityId entity) const {
-        return getPoolConst<T>().Contains(entity);
+        auto pool = getPoolConst<T>();
+        if (pool == nullptr) {
+            return false;
+        }
+        return pool->Contains(entity);
     }
 
     template<typename T>
@@ -66,13 +70,13 @@ namespace Engine::Ecs {
     }
 
     template<typename T>
-    const TypedComponentPool<T> &ComponentManager::getPoolConst() const {
-        auto key = std::type_index(typeid(T));
-        auto it = m_pool.find(key);
+    const TypedComponentPool<T> *ComponentManager::getPoolConst() const {
+        const auto key = std::type_index(typeid(T));
+        const auto it = m_pool.find(key);
         if (it == m_pool.end()) {
-            throw std::runtime_error("No such component");
+            return nullptr;
         }
 
-        return *static_cast<const TypedComponentPool<T> *>(it->second.get());
+        return static_cast<const TypedComponentPool<T> *>(it->second.get());
     }
 } // ECS

@@ -58,12 +58,12 @@ namespace Engine::Ecs {
 
 
     template<class T>
-    T &ComponentPool<T>::Get(const EntityId entity) {
+    T *ComponentPool<T>::Get(const EntityId entity) {
         if (!Contains(entity)) {
             throw std::out_of_range("Component for entity does not exist");
         }
         const uint64_t idx = GetEntityIndex(entity);
-        return m_denseComponents[m_sparseToDense[idx]];
+        return &m_denseComponents[m_sparseToDense[idx]];
     }
 
     template<class T>

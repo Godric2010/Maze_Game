@@ -6,11 +6,19 @@ add_library(Core STATIC
         Transform.hpp
         systems/EngineTestSystem.cpp
         systems/EngineTestSystem.hpp
+        components/Transform.hpp
+        components/Mesh.hpp
+        components/Camera.hpp
+        components/InputReceiver.hpp
+        systems/TransformSystem.cpp
+        systems/TransformSystem.hpp
 )
 
-target_include_directories(Core
-    PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
+target_include_directories(Core PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/../environment/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/components
+        ${CMAKE_CURRENT_SOURCE_DIR}/systems
+
 )
 target_link_libraries(Core PUBLIC Window Renderer ECS)

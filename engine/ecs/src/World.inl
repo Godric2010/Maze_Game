@@ -1,6 +1,6 @@
+#pragma once
 #include "World.hpp"
 #include "ComponentManager.hpp"
-#include "SystemManager.hpp"
 
 namespace Engine::Ecs {
     struct World::WorldImpl {
@@ -8,26 +8,26 @@ namespace Engine::Ecs {
         std::unique_ptr<ComponentManager> ComponentManager;
     };
 
-    World::World() : m_impl(std::make_unique<WorldImpl>()) {
+    inline World::World() : m_impl(std::make_unique<WorldImpl>()) {
         m_impl->EntityManager = std::make_unique<EntityManager>();
         m_impl->ComponentManager = std::make_unique<ComponentManager>();
     }
 
-    World::~World() = default;
+    inline World::~World() = default;
 
-    EntityId World::CreateEntity() const {
+    inline EntityId World::CreateEntity() const {
         const auto entity = m_impl->EntityManager->GenerateEntity();
         return entity;
     }
 
     template<typename T>
-    bool World::AddComponent(EntityId entity, T component) {
+    std::optional<std::reference_wrapper<T>> World::AddComponent(EntityId entity, T component) {
         if (!m_impl->EntityManager->IsEntityAlive(entity)) {
-            return false;
+            return std::nullopt;
         }
 
         if (m_impl->ComponentManager->HasComponent<T>(entity)) {
-            return true;
+            return *m_impl->ComponentManager->GetComponent<T>(entity);
         }
 
         return m_impl->ComponentManager->AddComponent(entity, component);
@@ -46,8 +46,22 @@ namespace Engine::Ecs {
         return m_impl->ComponentManager->GetComponent<T>(entity);
     }
 
+    template<typename T>
+    std::vector<std::pair<T *, EntityId> > World::GetComponentsOfType() {
+        const auto entities = m_impl->EntityManager->GetAllActiveEntities();
+        std::vector<std::pair<T*, EntityId> > components;
+        for (const auto &entity : entities) {
+            if (m_impl->ComponentManager->HasComponent<T>(entity)) {
+                auto component = m_impl->ComponentManager->GetComponent<T>(entity);
+                components.emplace_back(std::make_pair(component, entity));
+            }
+        }
+        return components;
+    }
 
-    void World::DestroyEntity(const EntityId entity) const {
+
+
+    inline void World::DestroyEntity(const EntityId entity) const {
         m_impl->ComponentManager->OnDestroyEntity(entity);
         m_impl->EntityManager->DestroyEntity(entity);
     }

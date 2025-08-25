@@ -35,6 +35,8 @@ namespace Engine::Core {
          */
         void Shutdown();
 
+        Ecs::World& GetWorld() const;
+
     private:
 
         Environment::InputSnapshot PumpInput();

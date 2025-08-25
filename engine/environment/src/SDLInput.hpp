@@ -13,7 +13,7 @@ namespace Engine::Environment {
 
         void PrepareFrame() override;
 
-        InputSnapshot GetInputSnapshot() override;
+        InputSnapshot *GetInputSnapshot() override;
 
         void PumpInput() override;
 
