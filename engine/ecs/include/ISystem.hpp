@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include "IServiceToEcsProvider.hpp"
 #include "World.hpp"
 
 namespace Engine::Ecs {
@@ -10,8 +11,9 @@ namespace Engine::Ecs {
 
     class ISystem {
     public:
-
         virtual ~ISystem() = default;
+
+        virtual void SetServices(IServiceToEcsProvider* serviceLocator) = 0;
 
         virtual void Run(World& world, float deltaTime) = 0;
     };

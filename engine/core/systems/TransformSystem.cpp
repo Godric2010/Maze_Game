@@ -11,6 +11,10 @@ namespace Engine::Core::Systems {
 
     TransformSystem::~TransformSystem() = default;
 
+    void TransformSystem::SetServices(Ecs::IServiceToEcsProvider *serviceLocator) {
+
+    }
+
     void TransformSystem::Run(Ecs::World &world, float deltaTime) {
         auto transformComponents = world.GetComponentsOfType<Components::Transform>();
         for (const auto transform: transformComponents | std::views::keys) {

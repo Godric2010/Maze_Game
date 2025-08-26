@@ -100,11 +100,11 @@ TEST_CASE_METHOD(SystemManagerFixture,
     };
 
     // Messing up the order on purpose here
-    systemManager.RegisterSystem(systemD);
-    systemManager.RegisterSystem(systemE);
-    systemManager.RegisterSystem(systemC);
-    systemManager.RegisterSystem(systemA);
-    systemManager.RegisterSystem(systemB);
+    systemManager.RegisterSystems(systemD, TODO);
+    systemManager.RegisterSystems(systemE, TODO);
+    systemManager.RegisterSystems(systemC, TODO);
+    systemManager.RegisterSystems(systemA, TODO);
+    systemManager.RegisterSystems(systemB, TODO);
 
     systemManager.RunSystems(world, 0.0f);
 

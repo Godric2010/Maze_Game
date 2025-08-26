@@ -10,11 +10,12 @@ namespace Engine::Core {
     EngineController::EngineController() {
         m_isClosed = false;
         m_isPaused = false;
+        m_services = std::make_unique<ServiceLocator>();
     };
 
     EngineController::~EngineController() = default;
 
-    void EngineController::Initialize(const std::vector<Ecs::SystemMeta>& systems) {
+    void EngineController::Initialize(const std::vector<Ecs::SystemMeta> &systems) {
         m_window = Environment::CreateWindow();
         const Environment::WindowConfig config{
             .width = 1920,
@@ -25,14 +26,14 @@ namespace Engine::Core {
         };
         m_window->Setup(config);
 
-        m_input = Environment::CreateInput(*m_window);
+        auto input = Environment::CreateInput(*m_window);
+        m_services->RegisterService(std::move(input));
+
         m_world = std::make_unique<Ecs::World>();
         Ecs::EntityId entityA = m_world->CreateEntity();
-        std::cout<< "Entity A: " << entityA << std::endl;
+        std::cout << "Entity A: " << entityA << std::endl;
         m_systemManager = std::make_unique<Ecs::SystemManager>();
-        for (const auto& system : systems) {
-            m_systemManager->RegisterSystem(system);
-        }
+        m_systemManager->RegisterSystems(systems, m_services.get());
 
         m_rendererController = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
         m_camera = std::make_unique<Camera>(glm::vec3(0, 0, 3), config.width, config.height, 60, 0.01, 100.0);
@@ -70,12 +71,11 @@ namespace Engine::Core {
     }
 
     void EngineController::Update() {
-
         auto lastTime = std::chrono::high_resolution_clock::now();
 
         while (!m_isClosed) {
             auto now = std::chrono::high_resolution_clock::now();
-            float deltaTime = std::chrono::duration_cast<std::chrono::duration<float>>(now - lastTime).count();
+            float deltaTime = std::chrono::duration_cast<std::chrono::duration<float> >(now - lastTime).count();
             lastTime = now;
 
             auto input = PumpInput();
@@ -101,11 +101,11 @@ namespace Engine::Core {
     }
 
 
-
     Environment::InputSnapshot EngineController::PumpInput() {
-        m_input->PrepareFrame();
-        m_input->PumpInput();
-        const auto input = m_input->GetInputSnapshot();
+        const auto input1 = m_services->TryGetService<Environment::IInput>();
+        input1->PrepareFrame();
+        input1->PumpInput();
+        const auto input = input1->GetInputSnapshot();
 
         m_isClosed = input->IsClosed;
         // m_isPaused = !input.HasFocus;

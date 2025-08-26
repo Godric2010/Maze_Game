@@ -13,6 +13,8 @@ namespace Engine::Core::Systems {
 
         ~CameraSystem() override;
 
+        void SetServices(Ecs::IServiceToEcsProvider *serviceLocator) override;
+
         void Run(Ecs::World &world, float deltaTime) override;
 
     private:

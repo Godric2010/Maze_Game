@@ -13,6 +13,7 @@ add_library(ECS STATIC
         include/ISystem.hpp
         src/SystemManager.cpp
         include/SystemManager.hpp
+        include/IServiceToEcsProvider.hpp
 )
 
 target_include_directories(ECS

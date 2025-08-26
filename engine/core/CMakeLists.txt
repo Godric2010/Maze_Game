@@ -14,6 +14,8 @@ add_library(Core STATIC
         systems/CameraSystem.hpp
         systems/InputReceiver.cpp
         systems/InputReceiver.hpp
+        ServiceLocator.inl
+        ServiceLocator.hpp
 )
 
 target_include_directories(Core PUBLIC

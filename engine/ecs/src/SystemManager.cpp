@@ -17,9 +17,12 @@ namespace Engine::Ecs {
     SystemManager::~SystemManager() {
     }
 
-    void SystemManager::RegisterSystem(const SystemMeta &meta) {
-        auto system = meta.factory();
-        m_phaseMap[meta.phase].push_back(std::move(system));
+    void SystemManager::RegisterSystems(const std::vector<SystemMeta>& systemMetas, IServiceToEcsProvider *serviceProvider) {
+        for (const auto& sysMeta : systemMetas) {
+            auto system = sysMeta.factory();
+            system->SetServices(serviceProvider);
+            m_phaseMap[sysMeta.phase].push_back(std::move(system));
+        }
     }
 
     void SystemManager::RunSystems(World &world, const float deltaTime) {

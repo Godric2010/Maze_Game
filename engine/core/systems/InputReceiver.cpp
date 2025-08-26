@@ -2,17 +2,21 @@
 #include "components/InputReceiver.hpp"
 
 namespace Engine::Core::Systems {
-    InputReceiver::InputReceiver() =default;
+    InputReceiver::InputReceiver() = default;
 
     InputReceiver::~InputReceiver() = default;
 
-    void InputReceiver::Run(Ecs::World &world, float deltaTime) {
-        auto receivers = world.GetComponentsOfType<Components::InputReceiver>();
-        for (const auto &inputReceiver: receivers | std::views::keys) {
-            inputReceiver->Input = nullptr;
-        }
+    void InputReceiver::SetServices(Ecs::IServiceToEcsProvider *serviceLocator) {
+        const auto i = serviceLocator->GetService<Environment::IInput>();
+        m_input = i;
     }
 
 
-
+    void InputReceiver::Run(Ecs::World &world, float deltaTime) {
+        const auto inputSnapshot = m_input->GetInputSnapshot();
+        auto receivers = world.GetComponentsOfType<Components::InputReceiver>();
+        for (const auto &inputReceiver: receivers | std::views::keys) {
+            inputReceiver->Input = inputSnapshot;
+        }
+    }
 } // namespace

@@ -15,6 +15,10 @@ namespace Engine::Core::Systems {
 
     CameraSystem::~CameraSystem() = default;
 
+    void CameraSystem::SetServices(Ecs::IServiceToEcsProvider *serviceLocator) {
+
+    }
+
     void CameraSystem::Run(Ecs::World &world, float deltaTime) {
         for (const auto cameras = world.GetComponentsOfType<Components::Camera>(); auto camera: cameras) {
             const auto entity = camera.second;
