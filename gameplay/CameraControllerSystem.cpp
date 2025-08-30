@@ -1,0 +1,48 @@
+#include "CameraControllerSystem.hpp"
+
+#include "InputReceiver.hpp"
+#include "components/Camera.hpp"
+#include "components/Transform.hpp"
+
+namespace Gameplay {
+    CameraControllerSystem::CameraControllerSystem() = default;
+
+    CameraControllerSystem::~CameraControllerSystem() = default;
+
+    void CameraControllerSystem::SetServices(Engine::Ecs::IServiceToEcsProvider *serviceLocator) {
+    }
+
+    void CameraControllerSystem::Run(Engine::Ecs::World &world, const float deltaTime) {
+        for (const auto cameras = world.GetComponentsOfType<Engine::Core::Components::Camera>(); auto camera: cameras) {
+            const auto entity = camera.second;
+            const auto cameraTransform = world.GetComponent<Engine::Core::Components::Transform>(entity);
+            const auto cameraInput = world.GetComponent<Engine::Core::Components::InputReceiver>(entity);
+            CalculateNewTransform(*cameraTransform, cameraInput->Input, deltaTime);
+        }
+    }
+
+    void CameraControllerSystem::CalculateNewTransform(Engine::Core::Components::Transform &transform,
+                                                       const Engine::Environment::InputSnapshot *input,
+                                                       const float deltaTime) const {
+        auto cameraPos = transform.Position;
+        if (input->IsKeyHeld(Engine::Environment::Key::W)) {
+            cameraPos.z -= m_velocity * deltaTime;
+        }
+        if (input->IsKeyHeld(Engine::Environment::Key::S)) {
+            cameraPos.z += m_velocity * deltaTime;
+        }
+        if (input->IsKeyHeld(Engine::Environment::Key::A)) {
+            cameraPos.x -= m_velocity * deltaTime;
+        }
+        if (input->IsKeyHeld(Engine::Environment::Key::D)) {
+            cameraPos.x += m_velocity * deltaTime;
+        }
+        transform.Position = cameraPos;
+
+        const auto mouseDelta = input->GetMouseDelta();
+        const float yawDelta = mouseDelta.x * m_sensitivity;
+        const float pitchDelta = mouseDelta.y * m_sensitivity;
+        transform.Rotation = glm::vec3(transform.Rotation.x + pitchDelta, transform.Rotation.y + yawDelta,
+                                       transform.Rotation.z);
+    }
+} // namespace

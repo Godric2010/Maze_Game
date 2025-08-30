@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <glm/glm.hpp>
+
 namespace Engine::Core::Components {
     struct Transform {
         glm::vec3 Position;
