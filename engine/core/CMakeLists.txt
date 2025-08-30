@@ -16,6 +16,9 @@ add_library(Core STATIC
         systems/InputReceiver.hpp
         ServiceLocator.inl
         ServiceLocator.hpp
+        systems/RenderSystem.cpp
+        systems/RenderSystem.hpp
+        IEngine.hpp
 )
 
 target_include_directories(Core PUBLIC

@@ -4,7 +4,7 @@
 namespace Gameplay {
     class GameplayManager {
     public:
-        GameplayManager(Engine::Core::EngineController* engineController);
+        explicit GameplayManager(Engine::Core::IEngine& iEngine);
 
         ~GameplayManager();
 
@@ -12,12 +12,12 @@ namespace Gameplay {
 
         void Shutdown();
     private:
-        Engine::Core::EngineController* EngineController;
+         Engine::Core::IEngine& IEngine;
 
         Engine::Ecs::EntityId m_cameraEntity;
         std::vector<Engine::Ecs::EntityId> m_objects;
 
         void createCamera();
-        void createObjects();
+        void createObjects() const;
     };
 } // namespace

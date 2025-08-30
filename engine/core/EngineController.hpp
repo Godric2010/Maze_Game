@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "Camera.hpp"
+#include "IEngine.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
 #include "../ecs/include/World.hpp"
@@ -15,11 +16,11 @@ namespace Engine::Core {
      * The central engine controller that brings all elements of the engine together.
      * All systems and their events are managed through this instance.
      */
-    class EngineController {
+    class EngineController final : public IEngine {
     public:
         EngineController();
 
-        ~EngineController();
+        ~EngineController() override;
 
         /**
          * Initialize the engine backend
@@ -34,9 +35,11 @@ namespace Engine::Core {
         /**
          * Shutdown the engines system and free all resources.
          */
-        void Shutdown();
+        void Shutdown() const;
 
-        Ecs::World& GetWorld() const;
+        [[nodiscard]] Ecs::World& GetWorld() const override;
+
+        Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &meshAsset) override;
 
     private:
 
@@ -44,21 +47,15 @@ namespace Engine::Core {
 
         void UpdateSystems(float dt, const Environment::InputSnapshot &snapshot) const;
 
-        void RenderFrame() const;
-
         bool m_isClosed;
         bool m_isPaused;
 
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;
-        std::unique_ptr<Renderer::RenderController> m_rendererController;
         std::unique_ptr<Ecs::World> m_world;
         std::unique_ptr<Ecs::SystemManager> m_systemManager;
 
         // TODO: Move this into the ECS as soon as Version 0.3 is in the making
         std::unique_ptr<Camera> m_camera;
-        std::vector<Renderer::MeshAsset> m_meshes;
-        std::vector<Renderer::MeshHandle> m_meshHandles;
-        std::vector<Renderer::DrawAsset> m_drawAssets;
     };
 } // namespace

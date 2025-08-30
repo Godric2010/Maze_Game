@@ -1,7 +1,5 @@
 #include "EngineController.hpp"
 
-#include <iostream>
-
 #include "Transform.hpp"
 #include "EnvironmentBuilder.hpp"
 #include "SystemManager.hpp"
@@ -29,45 +27,14 @@ namespace Engine::Core {
         auto input = Environment::CreateInput(*m_window);
         m_services->RegisterService(std::move(input));
 
+        auto renderController = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
+        m_services->RegisterService(std::move(renderController));
+
         m_world = std::make_unique<Ecs::World>();
-        Ecs::EntityId entityA = m_world->CreateEntity();
-        std::cout << "Entity A: " << entityA << std::endl;
         m_systemManager = std::make_unique<Ecs::SystemManager>();
         m_systemManager->RegisterSystems(systems, m_services.get());
 
-        m_rendererController = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
         m_camera = std::make_unique<Camera>(glm::vec3(0, 0, 3), config.width, config.height, 60, 0.01, 100.0);
-
-        auto quad_mesh = Renderer::MeshAsset{};
-        quad_mesh.vertices = std::vector<glm::vec3>();
-        quad_mesh.vertices.emplace_back(-0.5, -0.5, 0.0);
-        quad_mesh.vertices.emplace_back(0.5, -0.5, 0.0);
-        quad_mesh.vertices.emplace_back(0.5, 0.5, 0.0);
-        quad_mesh.vertices.emplace_back(-0.5, 0.5, 0.0);
-        quad_mesh.indices = std::vector<unsigned int>();
-        quad_mesh.indices.push_back(0);
-        quad_mesh.indices.push_back(1);
-        quad_mesh.indices.push_back(2);
-        quad_mesh.indices.push_back(2);
-        quad_mesh.indices.push_back(3);
-        quad_mesh.indices.push_back(0);
-        const Renderer::MeshHandle meshHandle = m_rendererController->RegisterMesh(quad_mesh);
-
-        const auto transform = Transform(glm::vec3(0, 0, 0), glm::vec3(10, 30, 0), glm::vec3(1, 1, 1));
-        const auto drawAsset = Renderer::DrawAsset{
-            .mesh = meshHandle,
-            .model = transform.GetTransform(),
-            .color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f)
-        };
-        m_drawAssets.push_back(drawAsset);
-
-        const auto transform2 = Transform(glm::vec3(0.5, 0, 1), glm::vec3(0, -10, 0), glm::vec3(1, 1, 1));
-        const auto drawAsset2 = Renderer::DrawAsset{
-            .mesh = meshHandle,
-            .model = transform2.GetTransform(),
-            .color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)
-        };
-        m_drawAssets.push_back(drawAsset2);
     }
 
     void EngineController::Update() {
@@ -86,13 +53,11 @@ namespace Engine::Core {
             m_systemManager->RunSystems(*m_world, deltaTime);
             UpdateSystems(deltaTime, input);
 
-            RenderFrame();
             m_window->SwapBuffers();
         }
     }
 
-    void EngineController::Shutdown() {
-        m_rendererController.reset();
+    void EngineController::Shutdown() const {
         m_window->Shutdown();
     }
 
@@ -100,6 +65,10 @@ namespace Engine::Core {
         return *m_world;
     }
 
+    Renderer::MeshHandle EngineController::RegisterMesh(const Renderer::MeshAsset &meshAsset) {
+        const auto meshHandle = m_services->TryGetService<Renderer::RenderController>()->RegisterMesh(meshAsset);
+        return meshHandle;
+    }
 
     Environment::InputSnapshot EngineController::PumpInput() {
         const auto input1 = m_services->TryGetService<Environment::IInput>();
@@ -110,17 +79,6 @@ namespace Engine::Core {
         m_isClosed = input->IsClosed;
         // m_isPaused = !input.HasFocus;
         return *input;
-    }
-
-
-    void EngineController::RenderFrame() const {
-        Renderer::CameraAsset camAsset = {};
-        camAsset.view = m_camera->GetViewMatrix();
-        camAsset.projection = m_camera->GetProjectionMatrix();
-        camAsset.cameraPosition = glm::vec4(m_camera->GetPosition(), 1.0f);
-
-        m_rendererController->BeginFrame(camAsset);
-        m_rendererController->SubmitFrame(m_drawAssets);
     }
 
     void EngineController::UpdateSystems(const float dt, const Environment::InputSnapshot &snapshot) const {
@@ -140,7 +98,7 @@ namespace Engine::Core {
         }
         m_camera->SetPosition(newCameraPosition);
 
-        const float sensitivity = 0.3f;
+        constexpr float sensitivity = 0.3f;
         const auto mouseDelta = snapshot.GetMouseDelta();
         const float yawDelta = mouseDelta.x * sensitivity;
         const float pitchDelta = mouseDelta.y * sensitivity;

@@ -1,19 +1,17 @@
 #include "GameplayManager.hpp"
 
 #include "InputReceiver.hpp"
+#include "Mesh.hpp"
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
 
 namespace Gameplay {
-    GameplayManager::GameplayManager(Engine::Core::EngineController *engineController) {
-        EngineController = engineController;
+    GameplayManager::GameplayManager(Engine::Core::IEngine &iEngine) : IEngine(iEngine) {
         m_objects.clear();
         m_cameraEntity = Engine::Ecs::INVALID_ENTITY_ID;
     }
 
-    GameplayManager::~GameplayManager() {
-        EngineController = nullptr;
-    }
+    GameplayManager::~GameplayManager() = default;
 
     void GameplayManager::Initialize() {
         createCamera();
@@ -24,7 +22,7 @@ namespace Gameplay {
     }
 
     void GameplayManager::createCamera() {
-        m_cameraEntity = EngineController->GetWorld().CreateEntity();
+        m_cameraEntity = IEngine.GetWorld().CreateEntity();
         constexpr auto cameraComponent = Engine::Core::Components::Camera{
             .Width = 1920, // TODO: Use direct data from config later
             .Height = 1080,
@@ -34,23 +32,63 @@ namespace Gameplay {
             .FarClip = 1000.0f,
 
         };
-        EngineController->GetWorld().AddComponent<Engine::Core::Components::Camera>(m_cameraEntity, cameraComponent);
+        IEngine.GetWorld().AddComponent<Engine::Core::Components::Camera>(m_cameraEntity, cameraComponent);
 
         constexpr auto cameraTransform = Engine::Core::Components::Transform{
             .Position = glm::vec3(0.0f, 0.0f, 3.0f),
             .Rotation = glm::vec3(0.0f, 0.0f, 0.0f),
             .Scale = glm::vec3(1.0f, 1.0f, 1.0f),
         };
-        EngineController->GetWorld().AddComponent(m_cameraEntity, cameraTransform);
+        IEngine.GetWorld().AddComponent(m_cameraEntity, cameraTransform);
 
 
         constexpr auto inputReceiver = Engine::Core::Components::InputReceiver{
             .Input = nullptr,
         };
-        EngineController->GetWorld().AddComponent(m_cameraEntity, inputReceiver);
-
+        IEngine.GetWorld().AddComponent(m_cameraEntity, inputReceiver);
     }
 
-    void GameplayManager::createObjects() {
+    void GameplayManager::createObjects() const {
+        auto quad_mesh = Engine::Renderer::MeshAsset{};
+        quad_mesh.vertices = std::vector<glm::vec3>();
+        quad_mesh.vertices.emplace_back(-0.5, -0.5, 0.0);
+        quad_mesh.vertices.emplace_back(0.5, -0.5, 0.0);
+        quad_mesh.vertices.emplace_back(0.5, 0.5, 0.0);
+        quad_mesh.vertices.emplace_back(-0.5, 0.5, 0.0);
+        quad_mesh.indices = std::vector<unsigned int>();
+        quad_mesh.indices.push_back(0);
+        quad_mesh.indices.push_back(1);
+        quad_mesh.indices.push_back(2);
+        quad_mesh.indices.push_back(2);
+        quad_mesh.indices.push_back(3);
+        quad_mesh.indices.push_back(0);
+        const Engine::Renderer::MeshHandle meshHandle = IEngine.RegisterMesh(quad_mesh);
+
+
+        auto entityA = IEngine.GetWorld().CreateEntity();
+        auto transformA = Engine::Core::Components::Transform{
+            .Position = glm::vec3(0.0f, 0.0f, 3.0f),
+            .Rotation = glm::vec3(10.0f, 30.0f, 0.0f),
+            .Scale = glm::vec3(1.0f, 1.0f, 1.0f),
+        };
+        IEngine.GetWorld().AddComponent(entityA, transformA);
+        auto meshA = Engine::Core::Components::Mesh{
+            .mesh = meshHandle,
+            .color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+        };
+        IEngine.GetWorld().AddComponent(entityA, meshA);
+
+        auto entityB = IEngine.GetWorld().CreateEntity();
+        auto transformB = Engine::Core::Components::Transform{
+            .Position = glm::vec3(0.5f, 0.0f, 5.0f),
+            .Rotation = glm::vec3(0.0f, -10.0f, 0.0f),
+            .Scale = glm::vec3(1.0f, 1.0f, 1.0f),
+        };
+        IEngine.GetWorld().AddComponent(entityB, transformB);
+        auto meshB = Engine::Core::Components::Mesh{
+            .mesh = meshHandle,
+            .color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+        };
+        IEngine.GetWorld().AddComponent(entityB, meshB);
     }
 } // namespace

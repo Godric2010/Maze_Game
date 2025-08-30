@@ -14,7 +14,7 @@ struct App {
         m_engineController = std::make_unique<Engine::Core::EngineController>();
         m_engineController->Initialize(systems);
 
-        m_gameplayManager = std::make_unique<Gameplay::GameplayManager>(m_engineController.get());
+        m_gameplayManager = std::make_unique<Gameplay::GameplayManager>(*m_engineController);
         m_gameplayManager->Initialize();
     }
 
