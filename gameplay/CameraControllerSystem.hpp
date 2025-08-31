@@ -18,7 +18,7 @@ namespace Gameplay {
 
     private:
         const float m_velocity = 1.0f;
-        const float m_sensitivity = 0.3f;
+        const float m_sensitivity = 0.1f;
 
         void CalculateNewTransform(Engine::Core::Components::Transform& transform,
                                    const Engine::Environment::InputSnapshot *input,

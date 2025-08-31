@@ -39,8 +39,8 @@ namespace Engine::Core::Systems {
             .view = cameraComponent->view,
             .projection = cameraComponent->projection,
             .cameraPosition = glm::vec4(cameraTransform->Position, 1.0f)
-
         };
+
         return cameraAsset;
     }
 

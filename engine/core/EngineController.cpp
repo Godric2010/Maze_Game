@@ -51,8 +51,6 @@ namespace Engine::Core {
             }
 
             m_systemManager->RunSystems(*m_world, deltaTime);
-            UpdateSystems(deltaTime, input);
-
             m_window->SwapBuffers();
         }
     }
@@ -77,31 +75,7 @@ namespace Engine::Core {
         const auto input = input1->GetInputSnapshot();
 
         m_isClosed = input->IsClosed;
-        // m_isPaused = !input.HasFocus;
         return *input;
     }
 
-    void EngineController::UpdateSystems(const float dt, const Environment::InputSnapshot &snapshot) const {
-        constexpr float velocity = 1.0f;
-        glm::vec3 newCameraPosition = m_camera->GetPosition();
-        if (snapshot.IsKeyHeld(Environment::Key::W)) {
-            newCameraPosition.z -= velocity * dt;
-        }
-        if (snapshot.IsKeyHeld(Environment::Key::S)) {
-            newCameraPosition.z += velocity * dt;
-        }
-        if (snapshot.IsKeyHeld(Environment::Key::A)) {
-            newCameraPosition.x -= velocity * dt;
-        }
-        if (snapshot.IsKeyHeld(Environment::Key::D)) {
-            newCameraPosition.x += velocity * dt;
-        }
-        m_camera->SetPosition(newCameraPosition);
-
-        constexpr float sensitivity = 0.3f;
-        const auto mouseDelta = snapshot.GetMouseDelta();
-        const float yawDelta = mouseDelta.x * sensitivity;
-        const float pitchDelta = mouseDelta.y * sensitivity;
-        m_camera->AddYawPitch(yawDelta, -pitchDelta);
-    }
 } // namespace

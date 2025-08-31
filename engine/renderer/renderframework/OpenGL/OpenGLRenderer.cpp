@@ -30,6 +30,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
         glBindBufferBase(GL_UNIFORM_BUFFER, CAMERA_BINDING_POINT, m_cameraUBO);
         glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
 
         const GLuint camBlockIndex = glGetUniformBlockIndex(m_shaderProgram, "Camera");
         if (camBlockIndex != GL_INVALID_INDEX) {

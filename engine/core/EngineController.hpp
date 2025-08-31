@@ -45,8 +45,6 @@ namespace Engine::Core {
 
         Environment::InputSnapshot PumpInput();
 
-        void UpdateSystems(float dt, const Environment::InputSnapshot &snapshot) const;
-
         bool m_isClosed;
         bool m_isPaused;
 

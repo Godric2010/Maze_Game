@@ -36,7 +36,7 @@ namespace Gameplay {
 
         constexpr auto cameraTransform = Engine::Core::Components::Transform{
             .Position = glm::vec3(0.0f, 0.0f, 3.0f),
-            .Rotation = glm::vec3(0.0f, 0.0f, 0.0f),
+            .Rotation = glm::vec3(1.0f, 0.0f, 0.0f),
             .Scale = glm::vec3(1.0f, 1.0f, 1.0f),
         };
         IEngine.GetWorld().AddComponent(m_cameraEntity, cameraTransform);
@@ -67,9 +67,10 @@ namespace Gameplay {
 
         auto entityA = IEngine.GetWorld().CreateEntity();
         auto transformA = Engine::Core::Components::Transform{
-            .Position = glm::vec3(0.0f, 0.0f, 3.0f),
+            .Position = glm::vec3(0.0f, 0.0f, -2.0f),
             .Rotation = glm::vec3(10.0f, 30.0f, 0.0f),
             .Scale = glm::vec3(1.0f, 1.0f, 1.0f),
+            .Matrix = glm::mat4(1.0f),
         };
         IEngine.GetWorld().AddComponent(entityA, transformA);
         auto meshA = Engine::Core::Components::Mesh{
@@ -80,9 +81,10 @@ namespace Gameplay {
 
         auto entityB = IEngine.GetWorld().CreateEntity();
         auto transformB = Engine::Core::Components::Transform{
-            .Position = glm::vec3(0.5f, 0.0f, 5.0f),
+            .Position = glm::vec3(0.5f, 0.0f, -1.0f),
             .Rotation = glm::vec3(0.0f, -10.0f, 0.0f),
             .Scale = glm::vec3(1.0f, 1.0f, 1.0f),
+            .Matrix = glm::mat4(1.0f),
         };
         IEngine.GetWorld().AddComponent(entityB, transformB);
         auto meshB = Engine::Core::Components::Mesh{

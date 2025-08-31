@@ -1,17 +1,8 @@
 #include "CameraSystem.hpp"
 
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/matrix_transform.hpp>
-
-#include "components/Camera.hpp"
-#include "components/Transform.hpp"
 
 namespace Engine::Core::Systems {
-    CameraSystem::CameraSystem() {
-        m_front = glm::vec3(0.0f, 0.0f, -1.0f);
-        m_up = glm::vec3(0.0f, 1.0f, 0.0f);
-        m_right = glm::vec3(1.0f, 0.0f, 0.0f);
-    }
+    CameraSystem::CameraSystem() = default;
 
     CameraSystem::~CameraSystem() = default;
 
@@ -33,19 +24,21 @@ namespace Engine::Core::Systems {
                                                        cameraComponent->AspectRatio,
                                                        cameraComponent->NearClip,
                                                        cameraComponent->FarClip);
-        const float yawRad = glm::radians(transform->Rotation.y);
         const float pitchRad = glm::radians(transform->Rotation.x);
+        const float yawRad = glm::radians(transform->Rotation.y);
+        const float rollRad = glm::radians(transform->Rotation.z);
 
-        glm::vec3 front;
-        front.x = cos(yawRad) * cos(pitchRad);
-        front.y = sin(pitchRad);
-        front.z = sin(yawRad) * cos(pitchRad);
-        m_front = glm::normalize(front);
+        const glm::mat4 R = glm::yawPitchRoll(yawRad, pitchRad, rollRad);
 
-        m_right = glm::normalize(glm::cross(m_front, WORLD_UP));
-        m_up = glm::normalize(glm::cross(m_right, m_front));
+        const glm::vec3 localForward = glm::vec3(0,0,-1);
+        const glm::vec3 localUp = glm::vec3(0,1,0);
+        const glm::vec3 forward = glm::normalize(R * glm::vec4(localForward, 0.0f));
+        const glm::vec3 up = glm::normalize(R * glm::vec4(localUp, 0.0f));
 
-        cameraComponent->view = glm::lookAt(m_front, transform->Position + m_right, m_up);
+        const glm::vec3 eye = transform->Position;
+        const glm::vec3 target = eye + forward;
+
+        cameraComponent->view = glm::lookAt(eye, target, up);
         cameraComponent->model = glm::mat4(1.0f);
     }
 } // namespace

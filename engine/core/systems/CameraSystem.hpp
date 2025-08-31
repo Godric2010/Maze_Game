@@ -1,13 +1,21 @@
 #pragma once
 #include <glm/vec3.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
 
+#include "components/Camera.hpp"
+#include "components/Transform.hpp"
 #include "ISystem.hpp"
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
 
-ECS_SYSTEM(CameraSystem, Render, [])
+ECS_SYSTEM(CameraSystem, LateUpdate, [])
+
 namespace Engine::Core::Systems {
-    class CameraSystem : public Ecs::ISystem{
+    class CameraSystem : public Ecs::ISystem {
     public:
         CameraSystem();
 
@@ -18,11 +26,6 @@ namespace Engine::Core::Systems {
         void Run(Ecs::World &world, float deltaTime) override;
 
     private:
-        glm::vec3 m_front{};
-        glm::vec3 m_up{};
-        glm::vec3 m_right{};
-        static constexpr auto WORLD_UP = glm::vec3(0.0f, 1.0f, 0.0f);
-
-        void CalculateOrientation(Components::Camera* cameraComponent, const Components::Transform* transform);
+        void CalculateOrientation(Components::Camera *cameraComponent, const Components::Transform *transform);
     };
 } // namespace
