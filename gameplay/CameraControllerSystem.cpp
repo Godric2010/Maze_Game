@@ -1,5 +1,8 @@
 #include "CameraControllerSystem.hpp"
 
+#include <iostream>
+#include <ostream>
+
 #include "InputReceiver.hpp"
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
@@ -24,7 +27,6 @@ namespace Gameplay {
     void CameraControllerSystem::CalculateNewTransform(Engine::Core::Components::Transform &transform,
                                                        const Engine::Environment::InputSnapshot *input,
                                                        const float deltaTime) const {
-
         auto cameraPos = transform.Position;
         if (input->IsKeyHeld(Engine::Environment::Key::W)) {
             cameraPos.z -= m_velocity * deltaTime;
@@ -43,6 +45,10 @@ namespace Gameplay {
         const auto mouseDelta = input->GetMouseDelta();
         const float yawDelta = mouseDelta.x * m_sensitivity;
         const float pitchDelta = mouseDelta.y * m_sensitivity;
-        transform.Rotation = glm::vec3(transform.Rotation.x + pitchDelta, transform.Rotation.y + yawDelta, transform.Rotation.z);
+
+        const float pitch = glm::clamp(transform.Rotation.x + pitchDelta, m_minPitch, m_maxPitch);
+        std::cout << "pitch: " << pitch << std::endl;
+
+        transform.Rotation = glm::vec3(pitch, transform.Rotation.y + yawDelta, transform.Rotation.z);
     }
 } // namespace

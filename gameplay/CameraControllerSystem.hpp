@@ -20,6 +20,9 @@ namespace Gameplay {
         const float m_velocity = 1.0f;
         const float m_sensitivity = 0.1f;
 
+        const float m_minPitch = -60.0f;
+        const float m_maxPitch = 75.0f;
+
         void CalculateNewTransform(Engine::Core::Components::Transform& transform,
                                    const Engine::Environment::InputSnapshot *input,
                                    float deltaTime) const;
