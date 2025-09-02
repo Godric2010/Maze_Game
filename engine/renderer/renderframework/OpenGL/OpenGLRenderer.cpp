@@ -3,13 +3,13 @@
 #include <vector>
 
 namespace Engine::Renderer::RenderFramework::OpenGL {
-    OpenGLRenderer::OpenGLRenderer(Environment::WindowContext windowContext,
+    OpenGLRenderer::OpenGLRenderer(const Environment::WindowContext &windowContext,
                                    ShaderManagement::ShaderManager *shaderManager) {
-        if (!gladLoadGLLoader((GLADloadproc) SDL_GL_GetProcAddress)) {
+        if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
             throw std::runtime_error("Failed to initialize OpenGL context");
         }
 
-        // glViewport(0, 0, windowContext.width, windowContext.height);
+        glViewport(0, 0, windowContext.drawableWidth, windowContext.drawableHeight);
         m_shaderManager = shaderManager;
         m_meshManager = std::make_unique<OpenGLMeshManager>();
 

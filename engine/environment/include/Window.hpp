@@ -57,6 +57,8 @@ namespace Engine::Environment {
     struct WindowContext {
         int width{};
         int height{};
+        int drawableWidth{};
+        int drawableHeight{};
         API renderApi{};
         OpenGLContext openGLContext{};
     };

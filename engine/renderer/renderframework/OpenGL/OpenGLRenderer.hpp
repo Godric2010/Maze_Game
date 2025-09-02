@@ -15,7 +15,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
     class OpenGLRenderer final : public IRenderer {
     public:
-        explicit OpenGLRenderer(Environment::WindowContext windowContext, ShaderManagement::ShaderManager *shaderManager);
+        explicit OpenGLRenderer(const Environment::WindowContext &windowContext, ShaderManagement::ShaderManager *shaderManager);
 
         ~OpenGLRenderer() override;
 
@@ -32,7 +32,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
         void Shutdown() override;
 
     private:
-        CameraAsset m_cameraAsset;
+        CameraAsset m_cameraAsset{};
 
         GLuint m_shaderProgram;
         GLuint m_cameraUBO;

@@ -3,7 +3,15 @@
 namespace Engine::Environment {
     SDLInput::SDLInput(SDLWindow &window) {
         m_inputSnapshot = {};
-        m_lastMousePos = glm::vec2(0);
+
+        const auto windowContext = window.GetWindowContext();
+        const auto windowCenter = glm::vec2(windowContext.width / 2, windowContext.height / 2);
+        SDL_WarpMouseInWindow(windowContext.openGLContext.windowHandle,
+                              static_cast<int>(windowCenter.x),
+                              static_cast<int>(windowCenter.y));
+        SDL_ShowCursor(SDL_DISABLE);
+
+        m_lastMousePos = windowCenter;
 
         Poll = [&window, this]() {
             window.PollEvents([this](const SDL_Event &event) { this->ProcessInput(event); });

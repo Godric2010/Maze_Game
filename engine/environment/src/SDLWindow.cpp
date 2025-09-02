@@ -42,6 +42,7 @@ namespace Engine::Environment {
 
         m_context.width = config.width;
         m_context.height = config.height;
+        SDL_GL_GetDrawableSize(m_window, &m_context.drawableWidth, &m_context.drawableHeight);
         switch (config.renderApi) {
             case API::OpenGL:
                 m_context.openGLContext = OpenGLContext{
