@@ -13,6 +13,8 @@ namespace Engine::Environment {
 
         void PrepareFrame() override;
 
+        AppEventsSnapshot *GetAppEventSnapshot() override;
+
         InputSnapshot *GetInputSnapshot() override;
 
         void PumpInput() override;
@@ -22,6 +24,7 @@ namespace Engine::Environment {
         std::function<void()> Poll;
         void ProcessInput(const SDL_Event &event);
 
+        AppEventsSnapshot m_appEvents;
         InputSnapshot m_inputSnapshot;
         glm::vec2 m_lastMousePos{};
     };

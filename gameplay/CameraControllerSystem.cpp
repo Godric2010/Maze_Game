@@ -1,7 +1,5 @@
 #include "CameraControllerSystem.hpp"
 
-#include <iostream>
-#include <ostream>
 
 #include "InputReceiver.hpp"
 #include "components/Camera.hpp"
@@ -47,8 +45,6 @@ namespace Gameplay {
         const float pitchDelta = mouseDelta.y * m_sensitivity;
 
         const float pitch = glm::clamp(transform.Rotation.x + pitchDelta, m_minPitch, m_maxPitch);
-        std::cout << "pitch: " << pitch << std::endl;
-
         transform.Rotation = glm::vec3(pitch, transform.Rotation.y + yawDelta, transform.Rotation.z);
     }
 } // namespace

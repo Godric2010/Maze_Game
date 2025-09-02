@@ -6,8 +6,6 @@
 
 namespace Engine::Core {
     EngineController::EngineController() {
-        m_isClosed = false;
-        m_isPaused = false;
         m_services = std::make_unique<ServiceLocator>();
     };
 
@@ -33,22 +31,17 @@ namespace Engine::Core {
         m_world = std::make_unique<Ecs::World>();
         m_systemManager = std::make_unique<Ecs::SystemManager>();
         m_systemManager->RegisterSystems(systems, m_services.get());
-
-        m_camera = std::make_unique<Camera>(glm::vec3(0, 0, 3), config.width, config.height, 60, 0.01, 100.0);
     }
 
-    void EngineController::Update() {
+    void EngineController::Update() const {
         auto lastTime = std::chrono::high_resolution_clock::now();
 
-        while (!m_isClosed) {
-            auto now = std::chrono::high_resolution_clock::now();
-            float deltaTime = std::chrono::duration_cast<std::chrono::duration<float> >(now - lastTime).count();
-            lastTime = now;
+        const auto appEvents = m_services->TryGetService<Environment::IInput>()->GetAppEventSnapshot();
 
-            auto input = PumpInput();
-            if (m_isPaused) {
-                continue;
-            }
+        while (!appEvents->IsClosed) {
+            auto now = std::chrono::high_resolution_clock::now();
+            const float deltaTime = std::chrono::duration_cast<std::chrono::duration<float> >(now - lastTime).count();
+            lastTime = now;
 
             m_systemManager->RunSystems(*m_world, deltaTime);
             m_window->SwapBuffers();
@@ -66,16 +59,6 @@ namespace Engine::Core {
     Renderer::MeshHandle EngineController::RegisterMesh(const Renderer::MeshAsset &meshAsset) {
         const auto meshHandle = m_services->TryGetService<Renderer::RenderController>()->RegisterMesh(meshAsset);
         return meshHandle;
-    }
-
-    Environment::InputSnapshot EngineController::PumpInput() {
-        const auto input1 = m_services->TryGetService<Environment::IInput>();
-        input1->PrepareFrame();
-        input1->PumpInput();
-        const auto input = input1->GetInputSnapshot();
-
-        m_isClosed = input->IsClosed;
-        return *input;
     }
 
 } // namespace

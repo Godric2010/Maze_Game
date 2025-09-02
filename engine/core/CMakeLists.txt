@@ -2,8 +2,6 @@
 add_library(Core STATIC
         EngineController.cpp
         EngineController.hpp
-        Transform.cpp
-        Transform.hpp
         components/Transform.hpp
         components/Mesh.hpp
         components/Camera.hpp

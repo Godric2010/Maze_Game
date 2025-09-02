@@ -30,7 +30,7 @@ namespace Engine::Core {
         /**
          * Update the engines systems, like drawing, the objects in the world, etc.
          */
-        void Update();
+        void Update() const;
 
         /**
          * Shutdown the engines system and free all resources.
@@ -42,18 +42,9 @@ namespace Engine::Core {
         Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &meshAsset) override;
 
     private:
-
-        Environment::InputSnapshot PumpInput();
-
-        bool m_isClosed;
-        bool m_isPaused;
-
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;
         std::unique_ptr<Ecs::World> m_world;
         std::unique_ptr<Ecs::SystemManager> m_systemManager;
-
-        // TODO: Move this into the ECS as soon as Version 0.3 is in the making
-        std::unique_ptr<Camera> m_camera;
     };
 } // namespace

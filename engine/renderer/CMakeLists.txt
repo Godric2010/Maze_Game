@@ -7,8 +7,6 @@ add_library(Renderer STATIC
         renderframework/Renderer.hpp
         renderframework/OpenGL/OpenGLRenderer.cpp
         shadermanagement/Shader.hpp
-        ../core/Camera.cpp
-        ../core/Camera.hpp
         Datatypes.hpp
         renderframework/OpenGL/OpenGLMesh.hpp
         renderframework/OpenGL/OpenGLMeshManager.cpp

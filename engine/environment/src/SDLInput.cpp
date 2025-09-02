@@ -32,6 +32,10 @@ namespace Engine::Environment {
         Poll();
     }
 
+    AppEventsSnapshot *SDLInput::GetAppEventSnapshot() {
+        return &m_appEvents;
+    }
+
     InputSnapshot *SDLInput::GetInputSnapshot() {
         return &m_inputSnapshot;
     }
@@ -76,15 +80,15 @@ namespace Engine::Environment {
     void SDLInput::ProcessInput(const SDL_Event &event) {
         switch (event.type) {
             case SDL_QUIT:
-                m_inputSnapshot.IsClosed = true;
+                m_appEvents.IsClosed = true;
                 break;
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
-                    m_inputSnapshot.HasFocus = true;
+                    m_appEvents.HasFocus = true;
                 } else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-                    m_inputSnapshot.HasFocus = false;
+                    m_appEvents.HasFocus = false;
                 } else if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
-                    m_inputSnapshot.IsClosed = true;
+                    m_appEvents.IsClosed = true;
                 }
                 break;
             case SDL_KEYDOWN: {

@@ -33,12 +33,19 @@ namespace Engine::Environment {
         Pressed,
     };
 
+    struct AppEventsSnapshot {
+        bool IsClosed;
+        bool HasFocus;
+    };
+
     class InputSnapshot {
         friend class SDLInput;
 
     public:
         InputSnapshot() = default;
+
         ~InputSnapshot() = default;
+
         [[nodiscard]] bool IsKeyDown(const Key key) const { return m_keyPressedThisFrame.contains(key); };
         [[nodiscard]] bool IsKeyUp(const Key key) const { return m_keyReleasedThisFrame.contains(key); };
         [[nodiscard]] bool IsKeyHeld(const Key key) const { return m_keyHeldThisFrame.contains(key); };
@@ -56,9 +63,6 @@ namespace Engine::Environment {
         };
 
         [[nodiscard]] glm::vec2 GetMouseDelta() const { return m_mouseDelta; };
-
-        bool HasFocus = true;
-        bool IsClosed = false;
 
     private:
         std::unordered_set<Key> m_keyPressedThisFrame;
@@ -85,6 +89,8 @@ namespace Engine::Environment {
         virtual void PrepareFrame() = 0;
 
         virtual void PumpInput() = 0;
+
+        virtual AppEventsSnapshot *GetAppEventSnapshot() = 0;
 
         virtual InputSnapshot *GetInputSnapshot() = 0;
     };
