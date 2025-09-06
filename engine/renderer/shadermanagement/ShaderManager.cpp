@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 namespace Engine::Renderer::ShaderManagement {
     ShaderManager::ShaderManager() {

@@ -4,6 +4,7 @@
 
 #pragma once
 #include <memory>
+#include <optional>
 
 #include "../src/EntityManager.hpp"
 

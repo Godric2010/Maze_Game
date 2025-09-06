@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <stdexcept>
+#include <limits>
 #include "EntityManager.hpp"
 
 namespace Engine::Ecs {
@@ -25,7 +25,7 @@ namespace Engine::Ecs {
 
         void Remove(EntityId entity) override { return m_pool.Remove(entity); };
 
-        bool Contains(EntityId entity) const override { return m_pool.Contains(entity); };
+        [[nodiscard]] bool Contains(EntityId entity) const override { return m_pool.Contains(entity); };
 
         T *Get(EntityId entity) { return m_pool.Get(entity); };
 
@@ -43,9 +43,9 @@ namespace Engine::Ecs {
     template<class T>
     class ComponentPool {
     public:
-        ComponentPool<T>();
+        ComponentPool();
 
-        ~ComponentPool<T>();
+        ~ComponentPool();
 
         T &Add(EntityId entity, T value);
 
