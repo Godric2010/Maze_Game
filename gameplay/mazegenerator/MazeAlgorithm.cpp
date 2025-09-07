@@ -1,5 +1,7 @@
 #include "MazeAlgorithm.hpp"
 
+#include <ranges>
+
 namespace Gameplay::Mazegenerator {
     MazeAlgorithm::MazeAlgorithm(const uint32_t width, const uint32_t height, const int seed) {
         m_grid_width = width;
@@ -18,7 +20,13 @@ namespace Gameplay::Mazegenerator {
         CarveMaze();
         BraidMaze();
         DefineCells();
-        return Maze(m_grid_width, m_grid_height, m_seed, std::vector<Cell>(), m_start_cell, m_exit_cell);
+
+        auto cells  = std::vector<Cell>();
+        for (auto &cell: m_cells | std::views::values) {
+            cells.push_back(cell);
+        }
+
+        return Maze(m_grid_width, m_grid_height, m_seed, cells, m_start_cell, m_exit_cell);
     }
 
     void MazeAlgorithm::DefineCells() {
@@ -44,7 +52,7 @@ namespace Gameplay::Mazegenerator {
                 const auto cell = Cell{
                     .cell_index = cell_index,
                     .visited = false,
-                    .wall_bits = 1,
+                    .wall_bits = (1u << 4) - 1,
                     .adjacent_cells = neighbors,
                 };
 

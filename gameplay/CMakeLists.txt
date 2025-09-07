@@ -7,6 +7,8 @@ add_library(Gameplay STATIC
         CameraControllerSystem.hpp
         mazegenerator/MazeAlgorithm.cpp
         mazegenerator/MazeAlgorithm.hpp
-        mazegenerator/Cell.hpp)
+        mazegenerator/Cell.hpp
+        DebugGridDrawer.cpp
+        DebugGridDrawer.hpp)
 
 target_link_libraries(Gameplay PUBLIC Engine)

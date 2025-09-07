@@ -1,5 +1,6 @@
 #include "GameplayManager.hpp"
 
+#include "DebugGridDrawer.hpp"
 #include "InputReceiver.hpp"
 #include "Mesh.hpp"
 #include "components/Camera.hpp"
@@ -16,6 +17,8 @@ namespace Gameplay {
 
     void GameplayManager::Initialize() {
         auto maze = m_maze_algorithm->GenerateMaze();
+        const auto debug_grid_drawer = std::make_unique<DebugGridDrawer>();
+        debug_grid_drawer->DrawGrid(maze);
         createCamera();
         createObjects();
     }
