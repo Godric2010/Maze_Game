@@ -9,11 +9,13 @@ namespace Gameplay {
     GameplayManager::GameplayManager(Engine::Core::IEngine &iEngine) : IEngine(iEngine) {
         m_objects.clear();
         m_cameraEntity = Engine::Ecs::INVALID_ENTITY_ID;
+        m_maze_algorithm = std::make_unique<Mazegenerator::MazeAlgorithm>(5, 5, 1337);
     }
 
     GameplayManager::~GameplayManager() = default;
 
     void GameplayManager::Initialize() {
+        auto maze = m_maze_algorithm->GenerateMaze();
         createCamera();
         createObjects();
     }

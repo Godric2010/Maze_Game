@@ -4,6 +4,9 @@ add_library(Gameplay STATIC
         GameplayManager.cpp
         GameplayManager.hpp
         CameraControllerSystem.cpp
-        CameraControllerSystem.hpp)
+        CameraControllerSystem.hpp
+        mazegenerator/MazeAlgorithm.cpp
+        mazegenerator/MazeAlgorithm.hpp
+        mazegenerator/Cell.hpp)
 
 target_link_libraries(Gameplay PUBLIC Engine)

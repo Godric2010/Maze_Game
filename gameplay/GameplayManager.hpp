@@ -1,6 +1,8 @@
 #pragma once
 #include <EngineController.hpp>
 
+#include "mazegenerator/MazeAlgorithm.hpp"
+
 namespace Gameplay {
     class GameplayManager {
     public:
@@ -16,6 +18,7 @@ namespace Gameplay {
 
         Engine::Ecs::EntityId m_cameraEntity;
         std::vector<Engine::Ecs::EntityId> m_objects;
+        std::unique_ptr<Mazegenerator::MazeAlgorithm> m_maze_algorithm;
 
         void createCamera();
         void createObjects() const;
