@@ -22,6 +22,13 @@ namespace Gameplay::Mazegenerator {
         uint8_t wall_bits;
         std::vector<CellIndex> adjacent_cells;
     };
+
+    enum Direction {
+        down = 0,
+        left = 1,
+        up = 2,
+        right = 3,
+    };
 }
 
 template<>

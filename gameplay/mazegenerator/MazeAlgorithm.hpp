@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <cstddef>
 #include <cstdint>
+#include <stack>
 
 #include "Cell.hpp"
 
@@ -33,6 +34,12 @@ namespace Gameplay::Mazegenerator {
         void BraidMaze();
 
         void DefinePoIs();
+
+        std::optional<CellIndex> SelectNextCell(const Cell& current_cell);
+
+        std::optional<CellIndex> WalkBack(std::stack<CellIndex>& stack);
+
+        static void OpenCellBorder(Cell& cell, int dx, int dy);
 
         uint32_t m_grid_width;
         uint32_t m_grid_height;

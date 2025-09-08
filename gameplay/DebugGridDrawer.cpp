@@ -10,17 +10,17 @@ namespace Gameplay {
 
     void DebugGridDrawer::DrawGrid(Mazegenerator::Maze &maze) {
         std::string output;
-        for (uint32_t y = 0; y < maze.height; y++) {
+        for (uint32_t y = maze.height; y > 0; --y) {
             for (uint32_t x = 0; x < maze.width; x++) {
-                output += DrawCellTop(GetCell(maze.cells, x, y));
+                output += DrawCellTop(GetCell(maze.cells, x, y - 1));
             }
             output += "\n";
             for (uint32_t x = 0; x < maze.width; x++) {
-                output += DrawCellMid(GetCell(maze.cells, x, y));
+                output += DrawCellMid(GetCell(maze.cells, x, y - 1));
             }
             output += "\n";
             for (uint32_t x = 0; x < maze.width; x++) {
-                output += DrawCellBottom(GetCell(maze.cells, x, y));
+                output += DrawCellBottom(GetCell(maze.cells, x, y - 1));
             }
             output += "\n";
         }
