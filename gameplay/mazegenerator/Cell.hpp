@@ -6,6 +6,11 @@
 #include <vector>
 
 namespace Gameplay::Mazegenerator {
+    /**
+     * @struct CellIndex
+     * @brief Represents a utility struct to manage and work with the index of a cell
+     *        in a grid or matrix structure.
+     */
     struct CellIndex {
         uint32_t x;
         uint32_t y;
@@ -14,6 +19,17 @@ namespace Gameplay::Mazegenerator {
             return x == rhs.x && y == rhs.y;
         }
     };
+
+    /**
+     * @enum Direction
+     * @brief Defines the possible directions for movement or wall orientation in a grid system.
+     *
+     * The Direction enum is used to represent four primary cardinal directions:
+     * - down: Represents movement or orientation towards the lower part of the grid (y - 1).
+     * - left: Represents movement or orientation towards the left side of the grid (x - 1).
+     * - up: Represents movement or orientation towards the upper part of the grid (y + 1).
+     * - right: Represents movement or orientation towards the right side of the grid (x + 1).
+     */
     enum Direction {
         down = 0,
         left = 1,
@@ -21,6 +37,22 @@ namespace Gameplay::Mazegenerator {
         right = 3,
     };
 
+
+    /**
+     * @struct Cell
+     * @brief Represents a cell in the maze grid with attributes for walls, adjacency,
+     *        visit state, and utility functions for maze generation operations.
+     *
+     * The Cell struct encapsulates data and behaviors related to individual maze cells:
+     * - Stores its unique index within the grid using CellIndex.
+     * - Tracks whether the cell has been visited during maze generation.
+     * - Encodes wall states using a bitmask, where each bit represents the presence of
+     *   a wall in a specific direction (0 = down, 1 = left, 2 = up, 3 = right).
+     * - Maintains a list of indices corresponding to adjacent cells in the grid.
+     *
+     * Additionally, the struct provides utility functions for working with walls,
+     * identifying dead ends, and modifying the cell's wall configuration.
+     */
     struct Cell {
         CellIndex cell_index;
         bool visited;
@@ -32,20 +64,18 @@ namespace Gameplay::Mazegenerator {
         }
 
         [[nodiscard]] bool IsDeadEnd() const noexcept {
-            int wall_count = 0;
-            if (HasWall(left)) wall_count += 1;
-            if (HasWall(right)) wall_count += 1;
-            if (HasWall(up)) wall_count += 1;
-            if (HasWall(down)) wall_count += 1;
-            return wall_count == 3;
+            int open_wall_count = 0;
+            if (!HasWall(left)) open_wall_count += 1;
+            if (!HasWall(right)) open_wall_count += 1;
+            if (!HasWall(up)) open_wall_count += 1;
+            if (!HasWall(down)) open_wall_count += 1;
+            return open_wall_count == 1;
         }
 
         void RemoveWall(const Direction dir) noexcept {
             wall_bits &= ~(1u << dir);
         }
     };
-
-
 }
 
 template<>

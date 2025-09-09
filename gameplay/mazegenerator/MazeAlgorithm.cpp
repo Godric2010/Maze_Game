@@ -28,8 +28,6 @@ namespace Gameplay::Mazegenerator {
             cells.push_back(cell);
         }
         DefinePoIs(cells);
-
-
         return Maze(m_grid_width, m_grid_height, m_seed, cells, m_start_cell, m_exit_cell, m_key_cell);
     }
 
@@ -68,6 +66,7 @@ namespace Gameplay::Mazegenerator {
         m_start_cell = CellIndex(start_x, 0);
     }
 
+    // Carve maze section
     void MazeAlgorithm::CarveMaze() {
         std::stack<CellIndex> m_path;
 
@@ -95,14 +94,6 @@ namespace Gameplay::Mazegenerator {
             current_cell_idx = next_idx.value();
             m_path.push(current_cell_idx);
         }
-    }
-
-    void MazeAlgorithm::BraidMaze() {
-    }
-
-    void MazeAlgorithm::DefinePoIs(const std::vector<Cell> &cells) {
-        m_exit_cell = DefineExitCell();
-        m_key_cell = DefineKeyCell(cells);
     }
 
     std::optional<CellIndex> MazeAlgorithm::SelectNextCell(const Cell &current_cell) {
@@ -134,26 +125,15 @@ namespace Gameplay::Mazegenerator {
         return std::nullopt;
     }
 
+    // Braid maze section
+    void MazeAlgorithm::BraidMaze() {
+    }
 
-    void MazeAlgorithm::OpenCellBorder(Cell &cell, const int dx, const int dy) {
-        if (dx == 0 && dy == -1) {
-            cell.RemoveWall(down);
-            return;
-        }
-        if (dx == 0 && dy == 1) {
-            cell.RemoveWall(up);
-            return;
-        }
-        if (dx == -1 && dy == 0) {
-            cell.RemoveWall(left);
-            return;
-        }
-        if (dx == 1 && dy == 0) {
-            cell.RemoveWall(right);
-            return;
-        }
 
-        throw std::runtime_error("Delta was not correct!");
+    // Define POIs section
+    void MazeAlgorithm::DefinePoIs(const std::vector<Cell> &cells) {
+        m_exit_cell = DefineExitCell();
+        m_key_cell = DefineKeyCell(cells);
     }
 
     CellIndex MazeAlgorithm::DefineExitCell() {
@@ -192,7 +172,7 @@ namespace Gameplay::Mazegenerator {
             int dist_to_end = distances_to_end[i];
 
             const auto primary = std::min(dist_to_start, dist_to_end);
-            const auto secondary  = std::sqrt(dist_to_start * dist_to_end);
+            const auto secondary = std::sqrt(dist_to_start * dist_to_end);
             if (const auto score = primary + secondary; score > best_score) {
                 best_score = score;
                 best_cell_idx = cell;
@@ -203,6 +183,29 @@ namespace Gameplay::Mazegenerator {
         return best_cell_idx;
     }
 
+    // Helper functions
+
+
+    void MazeAlgorithm::OpenCellBorder(Cell &cell, const int dx, const int dy) {
+        if (dx == 0 && dy == -1) {
+            cell.RemoveWall(down);
+            return;
+        }
+        if (dx == 0 && dy == 1) {
+            cell.RemoveWall(up);
+            return;
+        }
+        if (dx == -1 && dy == 0) {
+            cell.RemoveWall(left);
+            return;
+        }
+        if (dx == 1 && dy == 0) {
+            cell.RemoveWall(right);
+            return;
+        }
+
+        throw std::runtime_error("Delta was not correct!");
+    }
 
     std::vector<int> MazeAlgorithm::CalculatePathLengths(const CellIndex start) {
         std::vector<int> dist(m_grid_width * m_grid_height, -1);

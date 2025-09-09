@@ -9,6 +9,9 @@
 #include "Cell.hpp"
 
 namespace Gameplay::Mazegenerator {
+    /**
+     * The maze struct contains all information needed to build a maze from.
+     */
     struct Maze {
         uint32_t width;
         uint32_t height;
@@ -19,12 +22,28 @@ namespace Gameplay::Mazegenerator {
         CellIndex key_cell;
     };
 
+    /**
+     * The MazeAlgorithm class provides the functionality to generate and configure a maze.
+     * It includes methods to define cells, carve paths, braid dead ends, and specify points
+     * of interest (PoIs) like the exit and key cells. It relies heavily on the usage of the dfs algorithm
+     * to carve and follow paths, to calculate distances between various points.
+     */
     class MazeAlgorithm {
     public:
+        /**
+         * Create the maze algorithm class with all necessary data to generate a maze.
+         * @param width The width of the maze (number of cells on the x-axis)
+         * @param height The height of the maze (number of cells on the y-axis)
+         * @param seed The seed the rng will use to generate the maze.
+         */
         MazeAlgorithm(uint32_t width, uint32_t height, int seed);
 
         ~MazeAlgorithm();
 
+        /**
+         * Create a mathematical representation of the maze.
+         * @return The maze data that can be used to create a maze in 3D space.
+         */
         Maze GenerateMaze();
 
     private:
