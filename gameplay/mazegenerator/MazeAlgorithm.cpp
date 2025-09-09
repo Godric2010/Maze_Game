@@ -1,5 +1,6 @@
 #include "MazeAlgorithm.hpp"
 
+#include <queue>
 #include <ranges>
 #include <stack>
 
@@ -11,6 +12,7 @@ namespace Gameplay::Mazegenerator {
         m_rng = std::mt19937(seed);
         m_start_cell = {};
         m_exit_cell = {};
+        m_key_cell = {};
         m_cells = std::unordered_map<CellIndex, Cell>();
     }
 
@@ -20,14 +22,15 @@ namespace Gameplay::Mazegenerator {
         DefineCells();
         CarveMaze();
         BraidMaze();
-        DefinePoIs();
 
         auto cells = std::vector<Cell>();
         for (auto &cell: m_cells | std::views::values) {
             cells.push_back(cell);
         }
+        DefinePoIs(cells);
 
-        return Maze(m_grid_width, m_grid_height, m_seed, cells, m_start_cell, m_exit_cell);
+
+        return Maze(m_grid_width, m_grid_height, m_seed, cells, m_start_cell, m_exit_cell, m_key_cell);
     }
 
     void MazeAlgorithm::DefineCells() {
@@ -97,7 +100,9 @@ namespace Gameplay::Mazegenerator {
     void MazeAlgorithm::BraidMaze() {
     }
 
-    void MazeAlgorithm::DefinePoIs() {
+    void MazeAlgorithm::DefinePoIs(const std::vector<Cell> &cells) {
+        m_exit_cell = DefineExitCell();
+        m_key_cell = DefineKeyCell(cells);
     }
 
     std::optional<CellIndex> MazeAlgorithm::SelectNextCell(const Cell &current_cell) {
@@ -132,22 +137,112 @@ namespace Gameplay::Mazegenerator {
 
     void MazeAlgorithm::OpenCellBorder(Cell &cell, const int dx, const int dy) {
         if (dx == 0 && dy == -1) {
-            cell.wall_bits &= ~(1u << down);
+            cell.RemoveWall(down);
             return;
         }
         if (dx == 0 && dy == 1) {
-            cell.wall_bits &= ~(1u << up);
+            cell.RemoveWall(up);
             return;
         }
         if (dx == -1 && dy == 0) {
-            cell.wall_bits &= ~(1u << left);
+            cell.RemoveWall(left);
             return;
         }
         if (dx == 1 && dy == 0) {
-            cell.wall_bits &= ~(1u << right);
+            cell.RemoveWall(right);
             return;
         }
 
         throw std::runtime_error("Delta was not correct!");
+    }
+
+    CellIndex MazeAlgorithm::DefineExitCell() {
+        int best_x = 0;
+        int best_dist = -1;
+
+        const auto distances = CalculatePathLengths(m_start_cell);
+        for (int x = 0; x < m_grid_width; ++x) {
+            const int i = static_cast<int>(CellIndexAs1D(CellIndex(x, m_grid_height - 1), m_grid_width));
+            if (distances[i] < best_dist) {
+                continue;
+            }
+            best_dist = distances[i];
+            best_x = x;
+        }
+        return CellIndex(best_x, m_grid_height - 1);
+    }
+
+    CellIndex MazeAlgorithm::DefineKeyCell(const std::vector<Cell> &cells) {
+        std::vector<CellIndex> dead_ends;
+        for (auto &cell: cells) {
+            if (cell.IsDeadEnd()) {
+                dead_ends.push_back(cell.cell_index);
+            }
+        }
+
+        const auto distances_to_start = CalculatePathLengths(m_start_cell);
+        const auto distances_to_end = CalculatePathLengths(m_exit_cell);
+
+        CellIndex best_cell_idx{};
+        double best_score = -1;
+
+        for (const auto &cell: dead_ends) {
+            const int i = static_cast<int>(CellIndexAs1D(cell, m_grid_width));
+            int dist_to_start = distances_to_start[i];
+            int dist_to_end = distances_to_end[i];
+
+            const auto primary = std::min(dist_to_start, dist_to_end);
+            const auto secondary  = std::sqrt(dist_to_start * dist_to_end);
+            if (const auto score = primary + secondary; score > best_score) {
+                best_score = score;
+                best_cell_idx = cell;
+                continue;
+            }
+        }
+
+        return best_cell_idx;
+    }
+
+
+    std::vector<int> MazeAlgorithm::CalculatePathLengths(const CellIndex start) {
+        std::vector<int> dist(m_grid_width * m_grid_height, -1);
+        std::queue<CellIndex> path;
+        dist[CellIndexAs1D(start, m_grid_width)] = 0;
+        path.push(start);
+
+        while (!path.empty()) {
+            CellIndex idx = path.front();
+            path.pop();
+            const Cell &current_cell = m_cells[idx];
+            const int cell_dist = dist[CellIndexAs1D(idx, m_grid_width)];
+
+            auto try_push = [&](const CellIndex next) {
+                if (next.x < 0 || next.x >= m_grid_width || next.y < 0 || next.y >= m_grid_height) {
+                    return;
+                }
+                const uint32_t next_idx = CellIndexAs1D(next, m_grid_width);
+                if (dist[next_idx] != -1) return;
+                dist[next_idx] = cell_dist + 1;
+                path.push(next);
+            };
+
+            if (!current_cell.HasWall(down)) {
+                try_push(CellIndex{idx.x, idx.y - 1});
+            }
+            if (!current_cell.HasWall(up)) {
+                try_push(CellIndex{idx.x, idx.y + 1});
+            }
+            if (!current_cell.HasWall(right)) {
+                try_push(CellIndex{idx.x + 1, idx.y});
+            }
+            if (!current_cell.HasWall(left)) {
+                try_push(CellIndex{idx.x - 1, idx.y});
+            }
+        }
+        return dist;
+    }
+
+    uint32_t MazeAlgorithm::CellIndexAs1D(const CellIndex idx, const uint32_t grid_width) {
+        return idx.y * grid_width + idx.x;
     }
 } // namespace

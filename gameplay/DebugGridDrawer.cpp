@@ -9,6 +9,10 @@ namespace Gameplay {
     DebugGridDrawer::~DebugGridDrawer() = default;
 
     void DebugGridDrawer::DrawGrid(Mazegenerator::Maze &maze) {
+        m_start_idx = maze.entrance_cell;
+        m_end_idx = maze.exit_cell;
+        m_key_idx = maze.key_cell;
+
         std::string output;
         for (uint32_t y = maze.height; y > 0; --y) {
             for (uint32_t x = 0; x < maze.width; x++) {
@@ -37,8 +41,19 @@ namespace Gameplay {
 
     std::string DebugGridDrawer::DrawCellMid(const Mazegenerator::Cell &c) {
         std::string left = c.wall_bits & (1u << 1) ? "|" : " ";
-        std::string mid = c.visited ? "   " : " . ";
-        std::string right = c.wall_bits & (1u << 3) ? "|" : " ";
+
+        std::string mid = " . ";
+        if (c.visited) {
+            mid = "   ";
+        }
+        if (c.cell_index == m_key_idx) {
+            mid = " K ";
+        } else if (c.cell_index == m_start_idx) {
+            mid = " S ";
+        } else if (c.cell_index == m_end_idx) {
+            mid = " E ";
+        }
+        const std::string right = c.wall_bits & (1u << 3) ? "|" : " ";
 
         return left + mid + right;
     }

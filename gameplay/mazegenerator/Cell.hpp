@@ -14,21 +14,38 @@ namespace Gameplay::Mazegenerator {
             return x == rhs.x && y == rhs.y;
         }
     };
-
-
-    struct Cell {
-        CellIndex cell_index;
-        bool visited;
-        uint8_t wall_bits;
-        std::vector<CellIndex> adjacent_cells;
-    };
-
     enum Direction {
         down = 0,
         left = 1,
         up = 2,
         right = 3,
     };
+
+    struct Cell {
+        CellIndex cell_index;
+        bool visited;
+        uint8_t wall_bits;
+        std::vector<CellIndex> adjacent_cells;
+
+        [[nodiscard]] bool HasWall(const Direction dir) const noexcept {
+            return (wall_bits & (1u << dir)) != 0;
+        }
+
+        [[nodiscard]] bool IsDeadEnd() const noexcept {
+            int wall_count = 0;
+            if (HasWall(left)) wall_count += 1;
+            if (HasWall(right)) wall_count += 1;
+            if (HasWall(up)) wall_count += 1;
+            if (HasWall(down)) wall_count += 1;
+            return wall_count == 3;
+        }
+
+        void RemoveWall(const Direction dir) noexcept {
+            wall_bits &= ~(1u << dir);
+        }
+    };
+
+
 }
 
 template<>

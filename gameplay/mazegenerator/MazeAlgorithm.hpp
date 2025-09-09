@@ -16,6 +16,7 @@ namespace Gameplay::Mazegenerator {
         std::vector<Cell> cells;
         CellIndex entrance_cell;
         CellIndex exit_cell;
+        CellIndex key_cell;
     };
 
     class MazeAlgorithm {
@@ -33,7 +34,7 @@ namespace Gameplay::Mazegenerator {
 
         void BraidMaze();
 
-        void DefinePoIs();
+        void DefinePoIs(const std::vector<Cell> &cells);
 
         std::optional<CellIndex> SelectNextCell(const Cell& current_cell);
 
@@ -41,14 +42,23 @@ namespace Gameplay::Mazegenerator {
 
         static void OpenCellBorder(Cell& cell, int dx, int dy);
 
+        CellIndex DefineExitCell();
+
+        CellIndex DefineKeyCell(const std::vector<Cell> &cells);
+
+        std::vector<int> CalculatePathLengths(CellIndex start);
+
+        static uint32_t CellIndexAs1D(CellIndex idx, uint32_t grid_width);
+
         uint32_t m_grid_width;
         uint32_t m_grid_height;
         std::mt19937 m_rng;
         int m_seed;
         std::unordered_map<CellIndex, Cell> m_cells;
         std::vector<CellIndex> m_dead_ends;
-        CellIndex m_start_cell;
-        CellIndex m_exit_cell;
+        CellIndex m_start_cell{};
+        CellIndex m_key_cell{};
+        CellIndex m_exit_cell{};
     };
 }
 
