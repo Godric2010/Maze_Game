@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <limits>
+#include <stdexcept>
 #include "EntityManager.hpp"
 
 namespace Engine::Ecs {

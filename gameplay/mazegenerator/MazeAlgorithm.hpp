@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 #include <stack>
 
 #include "Cell.hpp"
