@@ -44,5 +44,7 @@ namespace Gameplay {
         void CreateMazeCell(const Mazegenerator::Maze &maze, const Mazegenerator::Cell &cell,
                             const Engine::Renderer::MeshHandle &floor_mesh_handle,
                             const Engine::Renderer::MeshHandle &wall_mesh_handle) const;
+
+        static glm::vec3 ConvertDirection(const Mazegenerator::Direction &direction);
     };
 } // namespace

@@ -18,13 +18,13 @@ namespace Gameplay {
 
     private:
         const float m_velocity = 1.0f;
-        const float m_sensitivity = 0.1f;
+        const float m_sensitivity = 0.4f;
 
-        const float m_minPitch = -60.0f;
-        const float m_maxPitch = 75.0f;
+        const float m_min_pitch = -60.0f;
+        const float m_max_pitch = 75.0f;
 
         void CalculateNewTransform(Engine::Core::Components::Transform& transform,
                                    const Engine::Environment::InputSnapshot *input,
-                                   float deltaTime) const;
+                                   float delta_time) const;
     };
 } // namespace

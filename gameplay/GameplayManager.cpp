@@ -40,7 +40,7 @@ namespace Gameplay {
         m_engine.GetWorld().AddComponent<Engine::Core::Components::Camera>(m_camera_entity, camera_component);
 
         const auto camera_transform = Engine::Core::Components::Transform(glm::vec3(start_pos.x, 1.0f, start_pos.y),
-                                                                          glm::vec3(10.f, 180.0f, 0.0f));
+                                                                          glm::vec3(-10.f, 180.0f, 0.0f));
         m_engine.GetWorld().AddComponent(m_camera_entity, camera_transform);
 
 
@@ -183,6 +183,21 @@ namespace Gameplay {
         }
         if (cell.HasWall(Mazegenerator::right)) {
             CreateWallFloorTile(wall_mesh_handle, cell.cell_index, wall_tile_color, Mazegenerator::Direction::right);
+        }
+    }
+
+    glm::vec3 GameplayManager::ConvertDirection(const Mazegenerator::Direction &direction) {
+        switch (direction) {
+            case Mazegenerator::Direction::back:
+                return glm::vec3(0.0f, 0.0f, -1.0f);
+            case Mazegenerator::Direction::front:
+                return glm::vec3(0.0f, 0.0f, 1.0f);
+            case Mazegenerator::Direction::left:
+                return glm::vec3(-1.0f, 0.0f, 0.0f);
+            case Mazegenerator::Direction::right:
+                return glm::vec3(1.0f, 0.0f, 0.0f);
+            default:
+                return glm::vec3(0.0f, 0.0f, 0.0f);
         }
     }
 } // namespace
