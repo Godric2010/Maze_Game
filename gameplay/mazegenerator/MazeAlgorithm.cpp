@@ -188,11 +188,11 @@ namespace Gameplay::Mazegenerator {
 
     void MazeAlgorithm::OpenCellBorder(Cell &cell, const int dx, const int dy) {
         if (dx == 0 && dy == -1) {
-            cell.RemoveWall(down);
+            cell.RemoveWall(back);
             return;
         }
         if (dx == 0 && dy == 1) {
-            cell.RemoveWall(up);
+            cell.RemoveWall(front);
             return;
         }
         if (dx == -1 && dy == 0) {
@@ -229,10 +229,10 @@ namespace Gameplay::Mazegenerator {
                 path.push(next);
             };
 
-            if (!current_cell.HasWall(down)) {
+            if (!current_cell.HasWall(back)) {
                 try_push(CellIndex{idx.x, idx.y - 1});
             }
-            if (!current_cell.HasWall(up)) {
+            if (!current_cell.HasWall(front)) {
                 try_push(CellIndex{idx.x, idx.y + 1});
             }
             if (!current_cell.HasWall(right)) {

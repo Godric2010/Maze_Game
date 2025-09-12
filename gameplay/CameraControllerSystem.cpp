@@ -25,7 +25,7 @@ namespace Gameplay {
     void CameraControllerSystem::CalculateNewTransform(Engine::Core::Components::Transform &transform,
                                                        const Engine::Environment::InputSnapshot *input,
                                                        const float deltaTime) const {
-        auto cameraPos = transform.Position;
+        auto cameraPos = transform.position;
         if (input->IsKeyHeld(Engine::Environment::Key::W)) {
             cameraPos.z -= m_velocity * deltaTime;
         }
@@ -38,13 +38,13 @@ namespace Gameplay {
         if (input->IsKeyHeld(Engine::Environment::Key::D)) {
             cameraPos.x += m_velocity * deltaTime;
         }
-        transform.Position = cameraPos;
+        transform.position = cameraPos;
 
         const auto mouseDelta = input->GetMouseDelta();
         const float yawDelta = mouseDelta.x * m_sensitivity;
         const float pitchDelta = mouseDelta.y * m_sensitivity;
 
-        const float pitch = glm::clamp(transform.Rotation.x + pitchDelta, m_minPitch, m_maxPitch);
-        transform.Rotation = glm::vec3(pitch, transform.Rotation.y + yawDelta, transform.Rotation.z);
+        const float pitch = glm::clamp(transform.rotation.x + pitchDelta, m_minPitch, m_maxPitch);
+        transform.rotation = glm::vec3(pitch, transform.rotation.y + yawDelta, transform.rotation.z);
     }
 } // namespace

@@ -38,7 +38,7 @@ namespace Engine::Core::Systems {
         const Renderer::CameraAsset cameraAsset{
             .view = cameraComponent->view,
             .projection = cameraComponent->projection,
-            .cameraPosition = glm::vec4(cameraTransform->Position, 1.0f)
+            .cameraPosition = glm::vec4(cameraTransform->position, 1.0f)
         };
 
         return cameraAsset;
@@ -50,7 +50,7 @@ namespace Engine::Core::Systems {
         for (size_t i = 0; i < drawData.size(); ++i) {
             drawAssets[i] = Renderer::DrawAsset{
                 .mesh = drawData[i].first->mesh,
-                .model = drawData[i].second->Matrix,
+                .model = drawData[i].second->matrix,
                 .color = drawData[i].first->color,
             };
         }

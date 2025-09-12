@@ -25,15 +25,15 @@ namespace Gameplay::Mazegenerator {
      * @brief Defines the possible directions for movement or wall orientation in a grid system.
      *
      * The Direction enum is used to represent four primary cardinal directions:
-     * - down: Represents movement or orientation towards the lower part of the grid (y - 1).
+     * - back: Represents movement or orientation towards the lower part of the grid (y - 1).
      * - left: Represents movement or orientation towards the left side of the grid (x - 1).
-     * - up: Represents movement or orientation towards the upper part of the grid (y + 1).
+     * - front: Represents movement or orientation towards the upper part of the grid (y + 1).
      * - right: Represents movement or orientation towards the right side of the grid (x + 1).
      */
     enum Direction {
-        down = 0,
+        back = 0,
         left = 1,
-        up = 2,
+        front = 2,
         right = 3,
     };
 
@@ -67,8 +67,8 @@ namespace Gameplay::Mazegenerator {
             int open_wall_count = 0;
             if (!HasWall(left)) open_wall_count += 1;
             if (!HasWall(right)) open_wall_count += 1;
-            if (!HasWall(up)) open_wall_count += 1;
-            if (!HasWall(down)) open_wall_count += 1;
+            if (!HasWall(front)) open_wall_count += 1;
+            if (!HasWall(back)) open_wall_count += 1;
             return open_wall_count == 1;
         }
 

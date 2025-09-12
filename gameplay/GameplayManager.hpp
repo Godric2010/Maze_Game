@@ -1,26 +1,48 @@
 #pragma once
 #include <EngineController.hpp>
 
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Mesh.hpp"
 #include "mazegenerator/MazeAlgorithm.hpp"
 
 namespace Gameplay {
     class GameplayManager {
     public:
-        explicit GameplayManager(Engine::Core::IEngine& iEngine);
+        explicit GameplayManager(Engine::Core::IEngine &engine);
 
         ~GameplayManager();
 
         void Initialize();
 
         void Shutdown();
-    private:
-         Engine::Core::IEngine& IEngine;
 
-        Engine::Ecs::EntityId m_cameraEntity;
+    private:
+        Engine::Core::IEngine &m_engine;
+
+        Engine::Ecs::EntityId m_camera_entity;
         std::vector<Engine::Ecs::EntityId> m_objects;
         std::unique_ptr<Mazegenerator::MazeAlgorithm> m_maze_algorithm;
 
-        void createCamera();
-        void createObjects() const;
+        void CreateCamera(const Mazegenerator::CellIndex &start_pos);
+
+        void CreateCellFloorTile(const Engine::Renderer::MeshHandle mesh_handle,
+                                 const Mazegenerator::CellIndex &cell_idx, const glm::vec4 &tile_color) const;
+
+        void CreateWallFloorTile(const Engine::Renderer::MeshHandle mesh_handle, const ::Gameplay::Mazegenerator::CellIndex &cell_idx,
+                                 const glm::vec4 &tile_color, const Mazegenerator::Direction &direction) const;
+
+        static glm::vec4 DetermineFloorColorForCell(const Mazegenerator::Maze &maze,
+                                                    const Mazegenerator::CellIndex &cell_idx);
+
+        void CreateObjects(const Mazegenerator::Maze &maze) const;
+
+        Engine::Renderer::MeshHandle CreateFloorMesh() const;
+
+        Engine::Renderer::MeshHandle CreateWallMesh() const;
+
+        void CreateMazeCell(const Mazegenerator::Maze &maze, const Mazegenerator::Cell &cell,
+                            const Engine::Renderer::MeshHandle &floor_mesh_handle,
+                            const Engine::Renderer::MeshHandle &wall_mesh_handle) const;
     };
 } // namespace

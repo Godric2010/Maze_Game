@@ -18,7 +18,7 @@ namespace Engine::Core::Systems {
     void TransformSystem::Run(Ecs::World &world, float deltaTime) {
         auto transformComponents = world.GetComponentsOfType<Components::Transform>();
         for (const auto transform: transformComponents | std::views::keys) {
-            transform->Matrix = CalculateMatrix(transform->Position, transform->Rotation, transform->Scale);
+            transform->matrix = CalculateMatrix(transform->position, transform->rotation, transform->scale);
         }
     }
 

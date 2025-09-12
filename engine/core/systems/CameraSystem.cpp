@@ -24,9 +24,9 @@ namespace Engine::Core::Systems {
                                                        cameraComponent->AspectRatio,
                                                        cameraComponent->NearClip,
                                                        cameraComponent->FarClip);
-        const float pitchRad = glm::radians(transform->Rotation.x);
-        const float yawRad = glm::radians(transform->Rotation.y);
-        const float rollRad = glm::radians(transform->Rotation.z);
+        const float pitchRad = glm::radians(transform->rotation.x);
+        const float yawRad = glm::radians(transform->rotation.y);
+        const float rollRad = glm::radians(transform->rotation.z);
 
         const glm::mat4 R = glm::yawPitchRoll(yawRad, pitchRad, rollRad);
 
@@ -35,7 +35,7 @@ namespace Engine::Core::Systems {
         const glm::vec3 forward = glm::normalize(R * glm::vec4(localForward, 0.0f));
         const glm::vec3 up = glm::normalize(R * glm::vec4(localUp, 0.0f));
 
-        const glm::vec3 eye = transform->Position;
+        const glm::vec3 eye = transform->position;
         const glm::vec3 target = eye + forward;
 
         cameraComponent->view = glm::lookAt(eye, target, up);
