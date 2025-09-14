@@ -26,10 +26,10 @@ namespace Gameplay {
 
         void CreateCamera(const Mazegenerator::CellIndex &start_pos);
 
-        void CreateCellFloorTile(const Engine::Renderer::MeshHandle mesh_handle,
+        void CreateCellFloorTile(Engine::Renderer::MeshHandle mesh_handle,
                                  const Mazegenerator::CellIndex &cell_idx, const glm::vec4 &tile_color) const;
 
-        void CreateWallFloorTile(const Engine::Renderer::MeshHandle mesh_handle, const ::Gameplay::Mazegenerator::CellIndex &cell_idx,
+        void CreateWallFloorTile(Engine::Renderer::MeshHandle mesh_handle, const Mazegenerator::CellIndex &cell_idx,
                                  const glm::vec4 &tile_color, const Mazegenerator::Direction &direction) const;
 
         static glm::vec4 DetermineFloorColorForCell(const Mazegenerator::Maze &maze,
@@ -37,9 +37,14 @@ namespace Gameplay {
 
         void CreateObjects(const Mazegenerator::Maze &maze) const;
 
-        Engine::Renderer::MeshHandle CreateFloorMesh() const;
+        [[nodiscard]] Engine::Renderer::MeshHandle CreateFloorMesh() const;
 
-        Engine::Renderer::MeshHandle CreateWallMesh() const;
+        [[nodiscard]] Engine::Renderer::MeshHandle CreateWallMesh() const;
+
+        [[nodiscard]] Engine::Renderer::MeshHandle CreateKeyMesh() const;
+
+        void CreateKeyObject(const Mazegenerator::CellIndex &cell_index,
+                             const Engine::Renderer::MeshHandle &key_mesh_handle) const;
 
         void CreateMazeCell(const Mazegenerator::Maze &maze, const Mazegenerator::Cell &cell,
                             const Engine::Renderer::MeshHandle &floor_mesh_handle,

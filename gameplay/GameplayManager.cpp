@@ -122,10 +122,12 @@ namespace Gameplay {
         const auto wall_mesh_handle = CreateWallMesh();
 
         const auto maze_cells = maze.cells;
-        for (uint32_t i = 0; i < maze_cells.size(); ++i) {
-            auto &cell = maze_cells[i];
+        for (const auto &cell: maze_cells) {
             CreateMazeCell(maze, cell, floor_mesh_handle, wall_mesh_handle);
         }
+
+        const auto key_mesh_handle = CreateKeyMesh();
+        CreateKeyObject(maze.key_cell, key_mesh_handle);
     }
 
     Engine::Renderer::MeshHandle GameplayManager::CreateFloorMesh() const {
@@ -164,6 +166,102 @@ namespace Gameplay {
         return mesh_handle;
     }
 
+    Engine::Renderer::MeshHandle GameplayManager::CreateKeyMesh() const {
+        auto cube_mesh = Engine::Renderer::MeshAsset{};
+        cube_mesh.vertices = std::vector<glm::vec3>();
+        cube_mesh.indices = std::vector<unsigned int>();
+
+        // front face
+        cube_mesh.vertices.emplace_back(-0.5, -0.5, -0.5);
+        cube_mesh.vertices.emplace_back(0.5, -0.5, -0.5);
+        cube_mesh.vertices.emplace_back(0.5, 0.5, -0.5);
+        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
+        cube_mesh.indices.push_back(0);
+        cube_mesh.indices.push_back(1);
+        cube_mesh.indices.push_back(2);
+        cube_mesh.indices.push_back(2);
+        cube_mesh.indices.push_back(3);
+        cube_mesh.indices.push_back(0);
+
+        // back face
+        cube_mesh.vertices.emplace_back(-0.5, -0.5, 0.5);
+        cube_mesh.vertices.emplace_back(0.5, -0.5, 0.5);
+        cube_mesh.vertices.emplace_back(0.5, 0.5, 0.5);
+        cube_mesh.vertices.emplace_back(-0.5, 0.5, 0.5);
+        cube_mesh.indices.push_back(4);
+        cube_mesh.indices.push_back(5);
+        cube_mesh.indices.push_back(6);
+        cube_mesh.indices.push_back(6);
+        cube_mesh.indices.push_back(7);
+        cube_mesh.indices.push_back(4);
+
+        // top face
+        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
+        cube_mesh.vertices.emplace_back(0.5, 0.5, -0.5);
+        cube_mesh.vertices.emplace_back(0.5, 0.5, 0.5);
+        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
+        cube_mesh.indices.push_back(8);
+        cube_mesh.indices.push_back(9);
+        cube_mesh.indices.push_back(10);
+        cube_mesh.indices.push_back(10);
+        cube_mesh.indices.push_back(11);
+        cube_mesh.indices.push_back(8);
+
+        // bottom face
+        cube_mesh.vertices.emplace_back(-0.5, -0.5, -0.5);
+        cube_mesh.vertices.emplace_back(0.5, -0.5, -0.5);
+        cube_mesh.vertices.emplace_back(0.5, -0.5, 0.5);
+        cube_mesh.vertices.emplace_back(-0.5, -0.5, 0.5);
+        cube_mesh.indices.push_back(12);
+        cube_mesh.indices.push_back(13);
+        cube_mesh.indices.push_back(14);
+        cube_mesh.indices.push_back(14);
+        cube_mesh.indices.push_back(15);
+        cube_mesh.indices.push_back(12);
+
+        // left face
+        cube_mesh.vertices.emplace_back(-0.5, -0.5, 0.5);
+        cube_mesh.vertices.emplace_back(-0.5, -0.5, -0.5);
+        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
+        cube_mesh.vertices.emplace_back(-0.5, 0.5, 0.5);
+        cube_mesh.indices.push_back(16);
+        cube_mesh.indices.push_back(17);
+        cube_mesh.indices.push_back(18);
+        cube_mesh.indices.push_back(18);
+        cube_mesh.indices.push_back(19);
+        cube_mesh.indices.push_back(16);
+
+        // right face
+        cube_mesh.vertices.emplace_back(0.5, -0.5, -0.5);
+        cube_mesh.vertices.emplace_back(0.5, -0.5, 0.5);
+        cube_mesh.vertices.emplace_back(0.5, 0.5, 0.5);
+        cube_mesh.vertices.emplace_back(0.5, 0.5, -0.5);
+        cube_mesh.indices.push_back(20);
+        cube_mesh.indices.push_back(21);
+        cube_mesh.indices.push_back(22);
+        cube_mesh.indices.push_back(22);
+        cube_mesh.indices.push_back(23);
+        cube_mesh.indices.push_back(20);
+
+        const auto mesh_handle = m_engine.RegisterMesh(cube_mesh);
+        return mesh_handle;
+    }
+
+    void GameplayManager::CreateKeyObject(const Mazegenerator::CellIndex &cell_index,
+                                          const Engine::Renderer::MeshHandle &key_mesh_handle) const {
+        const auto entity = m_engine.GetWorld().CreateEntity();
+        const auto mesh_component = Engine::Core::Components::Mesh{
+            .mesh = key_mesh_handle,
+            .color = {0.3, 1.0, 1.0, 1.0},
+        };
+        m_engine.GetWorld().AddComponent(entity, mesh_component);
+        const auto position = glm::vec3(cell_index.x, 0.5f, cell_index.y);
+        constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+        constexpr auto scale = glm::vec3(0.2f, 0.2f, 0.2f);
+        const auto transform_component = Engine::Core::Components::Transform(position, rotation, scale);
+        m_engine.GetWorld().AddComponent(entity, transform_component);
+    }
+
     void GameplayManager::CreateMazeCell(const Mazegenerator::Maze &maze, const Mazegenerator::Cell &cell,
                                          const Engine::Renderer::MeshHandle &floor_mesh_handle,
                                          const Engine::Renderer::MeshHandle &wall_mesh_handle) const {
@@ -189,15 +287,15 @@ namespace Gameplay {
     glm::vec3 GameplayManager::ConvertDirection(const Mazegenerator::Direction &direction) {
         switch (direction) {
             case Mazegenerator::Direction::back:
-                return glm::vec3(0.0f, 0.0f, -1.0f);
+                return {0.0f, 0.0f, -1.0f};
             case Mazegenerator::Direction::front:
-                return glm::vec3(0.0f, 0.0f, 1.0f);
+                return {0.0f, 0.0f, 1.0f};
             case Mazegenerator::Direction::left:
-                return glm::vec3(-1.0f, 0.0f, 0.0f);
+                return {-1.0f, 0.0f, 0.0f};
             case Mazegenerator::Direction::right:
-                return glm::vec3(1.0f, 0.0f, 0.0f);
+                return {1.0f, 0.0f, 0.0f};
             default:
-                return glm::vec3(0.0f, 0.0f, 0.0f);
+                return {0.0f, 0.0f, 0.0f};
         }
     }
 } // namespace
