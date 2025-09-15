@@ -3,6 +3,8 @@
 namespace Engine::Environment {
     SDLInput::SDLInput(SDLWindow &window) {
         m_inputSnapshot = {};
+        m_appEvents.HasFocus = true;
+        m_appEvents.IsClosed = false;
 
         const auto windowContext = window.GetWindowContext();
         const auto windowCenter = glm::vec2(windowContext.width / 2, windowContext.height / 2);
@@ -21,6 +23,7 @@ namespace Engine::Environment {
     SDLInput::~SDLInput() = default;
 
     void SDLInput::PrepareFrame() {
+
         m_inputSnapshot.m_keyPressedThisFrame.clear();
         m_inputSnapshot.m_keyReleasedThisFrame.clear();
         m_inputSnapshot.m_mousePressedThisFrame.clear();

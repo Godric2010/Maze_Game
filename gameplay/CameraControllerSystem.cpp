@@ -49,10 +49,10 @@ namespace Gameplay {
             camera_displacement.z += m_velocity * delta_time;
         }
         if (input->IsKeyHeld(Engine::Environment::Key::A)) {
-            camera_displacement.x -= m_velocity * delta_time;
+            camera_displacement.x += m_velocity * delta_time;
         }
         if (input->IsKeyHeld(Engine::Environment::Key::D)) {
-            camera_displacement.x += m_velocity * delta_time;
+            camera_displacement.x -= m_velocity * delta_time;
         }
         const glm::vec3 pos_delta= right_vec * camera_displacement.x + forward_vec * camera_displacement.z;
         transform.position += pos_delta;
