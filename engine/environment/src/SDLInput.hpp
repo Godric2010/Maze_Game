@@ -24,7 +24,7 @@ namespace Engine::Environment {
         std::function<void()> Poll;
         void ProcessInput(const SDL_Event &event);
 
-        AppEventsSnapshot m_appEvents;
+        AppEventsSnapshot m_appEvents{};
         InputSnapshot m_inputSnapshot;
         glm::vec2 m_lastMousePos{};
     };

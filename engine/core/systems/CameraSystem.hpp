@@ -9,13 +9,11 @@
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
 #include "ISystem.hpp"
-#include "components/Camera.hpp"
-#include "components/Transform.hpp"
 
 ECS_SYSTEM(CameraSystem, LateUpdate, [])
 
 namespace Engine::Core::Systems {
-    class CameraSystem : public Ecs::ISystem {
+    class CameraSystem final : public Ecs::ISystem {
     public:
         CameraSystem();
 
@@ -26,6 +24,6 @@ namespace Engine::Core::Systems {
         void Run(Ecs::World &world, float deltaTime) override;
 
     private:
-        void CalculateOrientation(Components::Camera *cameraComponent, const Components::Transform *transform);
+        static void CalculateOrientation(Components::Camera *cameraComponent, const Components::Transform *transform);
     };
 } // namespace
