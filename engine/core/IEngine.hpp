@@ -13,6 +13,6 @@ namespace Engine::Core {
 
         virtual Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &meshAsset) = 0;
 
-        [[nodiscard]] virtual Ecs::World &GetWorld() const = 0;
+        [[nodiscard]] virtual GameWorld &GetWorld() const = 0;
     };
 }

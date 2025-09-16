@@ -11,14 +11,14 @@ namespace Engine::Core::Systems {
 
     TransformSystem::~TransformSystem() = default;
 
-    void TransformSystem::SetServices(Ecs::IServiceToEcsProvider *serviceLocator) {
-
+    void TransformSystem::SetServices(Ecs::IServiceToEcsProvider *service_locator) {
     }
 
-    void TransformSystem::Run(Ecs::World &world, float deltaTime) {
-        auto transformComponents = world.GetComponentsOfType<Components::Transform>();
-        for (const auto transform: transformComponents | std::views::keys) {
-            transform->matrix = CalculateMatrix(transform->position, transform->rotation, transform->scale);
+    void TransformSystem::Run(Ecs::World &world, float delta_time) {
+        auto transform_components = world.GetComponentsOfType<Components::Transform>();
+        for (const auto transform: transform_components | std::views::keys) {
+            auto matrix = CalculateMatrix(transform->GetPosition(), transform->GetRotation(), transform->GetScale());
+            transform->SetMatrix(matrix);
         }
     }
 

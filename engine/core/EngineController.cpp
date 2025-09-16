@@ -25,25 +25,26 @@ namespace Engine::Core {
         auto input = Environment::CreateInput(*m_window);
         m_services->RegisterService(std::move(input));
 
-        auto renderController = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
-        m_services->RegisterService(std::move(renderController));
+        auto render_controller = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
+        m_services->RegisterService(std::move(render_controller));
 
         m_world = std::make_unique<Ecs::World>();
-        m_systemManager = std::make_unique<Ecs::SystemManager>();
-        m_systemManager->RegisterSystems(systems, m_services.get());
+        m_game_world = std::make_unique<GameWorld>(m_world.get());
+        m_system_manager = std::make_unique<Ecs::SystemManager>();
+        m_system_manager->RegisterSystems(systems, m_services.get());
     }
 
     void EngineController::Update() const {
-        auto lastTime = std::chrono::high_resolution_clock::now();
+        auto last_time = std::chrono::high_resolution_clock::now();
 
-        const auto appEvents = m_services->TryGetService<Environment::IInput>()->GetAppEventSnapshot();
+        const auto app_events = m_services->TryGetService<Environment::IInput>()->GetAppEventSnapshot();
 
-        while (!appEvents->IsClosed) {
+        while (!app_events->IsClosed) {
             auto now = std::chrono::high_resolution_clock::now();
-            const float deltaTime = std::chrono::duration_cast<std::chrono::duration<float> >(now - lastTime).count();
-            lastTime = now;
+            const float delta_time = std::chrono::duration_cast<std::chrono::duration<float> >(now - last_time).count();
+            last_time = now;
 
-            m_systemManager->RunSystems(*m_world, deltaTime);
+            m_system_manager->RunSystems(*m_world, delta_time);
             m_window->SwapBuffers();
         }
     }
@@ -52,13 +53,12 @@ namespace Engine::Core {
         m_window->Shutdown();
     }
 
-    Ecs::World &EngineController::GetWorld() const {
-        return *m_world;
+    GameWorld &EngineController::GetWorld() const {
+        return *m_game_world;
     }
 
-    Renderer::MeshHandle EngineController::RegisterMesh(const Renderer::MeshAsset &meshAsset) {
-        const auto meshHandle = m_services->TryGetService<Renderer::RenderController>()->RegisterMesh(meshAsset);
-        return meshHandle;
+    Renderer::MeshHandle EngineController::RegisterMesh(const Renderer::MeshAsset &mesh_asset) {
+        const auto mesh_handle = m_services->TryGetService<Renderer::RenderController>()->RegisterMesh(mesh_asset);
+        return mesh_handle;
     }
-
 } // namespace

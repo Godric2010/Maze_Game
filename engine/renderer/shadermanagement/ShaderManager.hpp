@@ -10,18 +10,18 @@
 #include "Shader.hpp"
 
 namespace Engine::Renderer::ShaderManagement {
-	class ShaderManager {
-		public:
-		ShaderManager();
-		~ShaderManager();
+    class ShaderManager {
+        public:
+        ShaderManager();
+        ~ShaderManager();
 
-		void LoadShader(const std::string& shaderName);
-		std::optional<Shader> GetShader(const std::string& shaderName);
+        void LoadShader(const std::string& shaderName);
+        std::optional<Shader> GetShader(const std::string& shaderName);
 
-	private:
-		static std::string readShaderFile(std::filesystem::path filepath);
+    private:
+        static std::string readShaderFile(std::filesystem::path filepath);
 
-		std::unordered_map<std::string, Shader> m_shaders;
-		const std::string m_shaderPath = "shaders";
-	};
+        std::unordered_map<std::string, Shader> m_shaders;
+        const std::string m_shaderPath = "shaders";
+    };
 }

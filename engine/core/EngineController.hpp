@@ -2,6 +2,7 @@
 #include <memory>
 
 #include "Camera.hpp"
+#include "GameWorld.hpp"
 #include "IEngine.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
@@ -37,14 +38,15 @@ namespace Engine::Core {
          */
         void Shutdown() const;
 
-        [[nodiscard]] Ecs::World& GetWorld() const override;
+        [[nodiscard]] GameWorld &GetWorld() const override;
 
-        Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &meshAsset) override;
+        Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) override;
 
     private:
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;
         std::unique_ptr<Ecs::World> m_world;
-        std::unique_ptr<Ecs::SystemManager> m_systemManager;
+        std::unique_ptr<GameWorld> m_game_world;
+        std::unique_ptr<Ecs::SystemManager> m_system_manager;
     };
 } // namespace

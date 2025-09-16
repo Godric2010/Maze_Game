@@ -19,11 +19,11 @@ namespace Engine::Core::Systems {
 
         ~CameraSystem() override;
 
-        void SetServices(Ecs::IServiceToEcsProvider *serviceLocator) override;
+        void SetServices(Ecs::IServiceToEcsProvider *service_locator) override;
 
-        void Run(Ecs::World &world, float deltaTime) override;
+        void Run(Ecs::World &world, float delta_time) override;
 
     private:
-        static void CalculateOrientation(Components::Camera *cameraComponent, const Components::Transform *transform);
+        static void CalculateOrientation(Components::Camera *camera_component, const Components::Transform *transform);
     };
 } // namespace

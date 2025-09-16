@@ -10,7 +10,7 @@
 
 namespace Engine::Renderer {
 
-	typedef uint32_t MeshHandle;
+    typedef uint32_t MeshHandle;
 
     struct MeshAsset {
         std::vector<glm::vec3> vertices;

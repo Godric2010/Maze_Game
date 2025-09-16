@@ -12,9 +12,9 @@ namespace Engine::Core::Systems {
 
         ~TransformSystem() override;
 
-        void SetServices(Ecs::IServiceToEcsProvider *serviceLocator) override;
+        void SetServices(Ecs::IServiceToEcsProvider *service_locator) override;
 
-        void Run(Ecs::World &world, float deltaTime) override;
+        void Run(Ecs::World &world, float delta_time) override;
 
     private:
         static glm::mat4 CalculateMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);

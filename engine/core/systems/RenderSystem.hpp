@@ -14,17 +14,17 @@ namespace Engine::Core::Systems {
 
         ~RenderSystem() override;
 
-        void SetServices(Ecs::IServiceToEcsProvider *serviceLocator) override;
+        void SetServices(Ecs::IServiceToEcsProvider *service_locator) override;
 
-        void Run(Ecs::World &world, float deltaTime) override;
+        void Run(Ecs::World &world, float delta_time) override;
 
     private:
         const Renderer::RenderController *m_renderController;
 
-        static Renderer::CameraAsset CreateCameraAsset(const Components::Camera *cameraComponent,
-                                                       const Components::Transform *cameraTransform);
+        static Renderer::CameraAsset CreateCameraAsset(const Components::Camera *camera_component,
+                                                       const Components::Transform *camera_transform);
 
         static std::vector<Renderer::DrawAsset> CreateDrawAssets(
-            const std::vector<std::pair<Components::Mesh *, Components::Transform *>> &drawData);
+            const std::vector<std::pair<Components::Mesh *, Components::Transform *>> &draw_data);
     };
 } // namespace
