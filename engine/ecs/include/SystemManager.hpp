@@ -9,6 +9,7 @@ namespace Engine::Ecs {
         Input,
         Physics,
         Update,
+        Commands,
         LateUpdate,
         Render,
     };
@@ -27,14 +28,14 @@ namespace Engine::Ecs {
 
         ~SystemManager();
 
-        void RegisterSystems(const std::vector<SystemMeta>& systemMetas, IServiceToEcsProvider *serviceProvider);
+        void RegisterSystems(const std::vector<SystemMeta>& system_metas, IServiceToEcsProvider *service_provider);
 
-        void RunSystems(World& world, float deltaTime);
+        void RunSystems(World& world, float delta_time);
 
     private:
-        std::vector<Phase> m_phaseOrder;
-        std::unordered_map<Phase, std::vector<std::unique_ptr<ISystem>>> m_phaseMap;
+        std::vector<Phase> m_phase_order;
+        std::unordered_map<Phase, std::vector<std::unique_ptr<ISystem>>> m_phase_map;
 
-        void RunPhase(Phase phase, World& world, float deltaTime);
+        void RunPhase(Phase phase, World& world, float delta_time);
     };
 } // namespace

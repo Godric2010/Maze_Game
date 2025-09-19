@@ -20,13 +20,13 @@ namespace Engine::Core {
         void DestroyEntity(const Ecs::EntityId &entity) const { return m_world->DestroyEntity(entity); }
 
         template<typename T>
-        std::optional<std::reference_wrapper<T> > AddComponent(const Ecs::EntityId entity, T component) {
-            return m_world->AddComponent<T>(entity, component);
+        void AddComponent(const Ecs::EntityId entity, T component) {
+            m_world->AddComponent<T>(entity, component);
         }
 
         template<typename T>
-        [[nodiscard]] bool RemoveComponent(const Ecs::EntityId entity) const {
-            return m_world->RemoveComponent<T>(entity);
+        void RemoveComponent(const Ecs::EntityId entity) const {
+            m_world->RemoveComponent<T>(entity);
         }
 
         template<typename T>
@@ -36,6 +36,6 @@ namespace Engine::Core {
         std::vector<std::pair<T *, Ecs::EntityId> > GetComponentsOfType() { return m_world->GetComponentsOfType<T>(); }
 
     private:
-        Ecs::World* m_world;
+        Ecs::World *m_world;
     };
 }

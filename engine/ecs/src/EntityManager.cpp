@@ -4,35 +4,83 @@ namespace Engine::Ecs {
     EntityManager::EntityManager() {
         // Never use index 0 since it is the indicator for a non-existing entity
         m_generations.push_back(1);
+        m_alive_entities.push_back(0);
+        m_pending_entities.push_back(0);
+        m_alive_count = 0;
     }
 
     EntityManager::~EntityManager() {
         m_generations.clear();
-        m_generations.clear();
+        m_alive_entities.clear();
+        m_pending_entities.clear();
+        m_free_entity_indices.clear();
     }
 
 
-    EntityId EntityManager::GenerateEntity() {
+    EntityId EntityManager::ReserveEntity() {
         uint64_t idx;
-        if (!m_freeEntities.empty()) {
-            idx = m_freeEntities.back();
-            m_freeEntities.pop_back();
+        if (!m_free_entity_indices.empty()) {
+            idx = m_free_entity_indices.back();
+            m_free_entity_indices.pop_back();
         } else {
             idx = static_cast<uint64_t>(m_generations.size());
-            m_generations.push_back(0);
+            EnsureCapacity(idx);
         }
-        const auto entity = ((m_generations[idx] & GENRATION_MASK) << INDEX_BITS) | (idx & INDEX_MASK);
+
+        m_pending_entities[idx] = 1;
+
+        const uint64_t generation = m_generations[idx] & GENRATION_MASK;
+        const auto entity = (generation << INDEX_BITS) | (idx & INDEX_MASK);
         return entity;
     }
 
-    std::vector<EntityId> EntityManager::GetAllActiveEntities() const {
-        auto entities = std::vector<EntityId>(m_generations.size());
-        for (uint64_t i = 0; i < m_generations.size(); ++i) {
-            entities[i] = (m_generations[i]&GENRATION_MASK) << INDEX_BITS | (i & INDEX_MASK);
+    void EntityManager::CommitEntity(const EntityId entity) {
+        if (entity == INVALID_ENTITY_ID) {
+            return;
         }
-        return entities;
+
+        const uint64_t idx = GetEntityIndex(entity);
+        if (idx >= m_generations.size()) {
+            return;
+        }
+
+        const uint64_t generation = GetEntityGenration(entity);
+        if ((m_generations[idx] & GENRATION_MASK) != generation) {
+            return;
+        }
+
+        if (m_pending_entities[idx]) {
+            m_pending_entities[idx] = 0;
+            if (!m_alive_entities[idx]) {
+                m_alive_entities[idx] = 1;
+                ++m_alive_count;
+            }
+        }
     }
 
+    void EntityManager::DestroyEntity(const EntityId entity) {
+        if (!IsEntityAlive(entity) && !IsEntityPending(entity)) {
+            return;
+        }
+        const uint64_t idx = GetEntityIndex(entity);
+        if (idx >= m_generations.size()) { return; }
+
+        if (m_alive_entities[idx]) {
+            m_alive_entities[idx] = 0;
+            if (m_alive_count > 0) {
+                --m_alive_count;
+            }
+        }
+        if (m_pending_entities[idx]) {
+            m_pending_entities[idx] = 0;
+        }
+
+        uint64_t gen = m_generations[idx] & GENRATION_MASK;
+        gen = (gen + 1u) & GENRATION_MASK;
+        m_generations[idx] = gen;
+        m_generations[idx] = static_cast<uint32_t>(gen);
+        m_free_entity_indices.push_back(entity);
+    }
 
     bool EntityManager::IsEntityAlive(const EntityId entity) const {
         if (entity == INVALID_ENTITY_ID) {
@@ -43,17 +91,51 @@ namespace Engine::Ecs {
             return false;
         }
         const uint64_t gen = GetEntityGenration(entity);
-        return m_generations[idx] == gen;
+        if ((m_generations[idx] & GENRATION_MASK) != gen) {
+            return false;
+        }
+        return m_alive_entities[idx] != 0;
     }
 
-    void EntityManager::DestroyEntity(const EntityId entity) {
-        if (!IsEntityAlive(entity)) {
-            return;
+    bool EntityManager::IsEntityPending(EntityId entity) const {
+        if (entity == INVALID_ENTITY_ID) {
+            return false;
         }
         const uint64_t idx = GetEntityIndex(entity);
-        uint64_t gen = m_generations[idx];
-        gen = (gen + 1u) & GENRATION_MASK;
-        m_generations[idx] = gen;
-        m_freeEntities.push_back(entity);
+        if (idx >= m_generations.size()) {
+            return false;
+        }
+        const uint64_t gen = GetEntityGenration(entity);
+        if ((m_generations[idx] & GENRATION_MASK) != gen) {
+            return false;
+        }
+        return m_pending_entities[idx] != 0;
+    }
+
+    std::vector<EntityId> EntityManager::GetAllActiveEntities() const {
+        std::vector<EntityId> result;
+        result.reserve(m_alive_count);
+
+        for (uint64_t i = 1; i < m_generations.size(); ++i) {
+            if (m_alive_entities[i]) {
+                const uint64_t gen = m_generations[i] & GENRATION_MASK;
+                const auto entity = (gen << INDEX_BITS) | (i & INDEX_MASK);
+                result.push_back(entity);
+            }
+        }
+
+        return result;
+    }
+
+    void EntityManager::EnsureCapacity(
+        const uint64_t idx) {
+        const auto need = static_cast<size_t>(idx + 1);
+        const auto size = m_generations.size();
+        if (size < need) {
+            const auto new_size = std::max(need, size );
+            m_generations.resize(new_size, 0);
+            m_alive_entities.resize(new_size, 0);
+            m_pending_entities.resize(new_size, 0);
+        }
     }
 } // namespace

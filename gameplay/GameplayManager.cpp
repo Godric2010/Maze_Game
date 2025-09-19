@@ -1,5 +1,7 @@
 #include "GameplayManager.hpp"
 
+#include <iostream>
+
 #include "DebugGridDrawer.hpp"
 #include "InputReceiver.hpp"
 #include "Mesh.hpp"
@@ -122,10 +124,20 @@ namespace Gameplay {
         const auto wall_mesh_handle = CreateWallMesh();
 
         const auto maze_cells = maze.cells;
+        const size_t cells = maze_cells.size();
+        int count = 1;
         for (const auto &cell: maze_cells) {
+            std::cout << "creating cell " << count << " of " << cells << std::endl;
             CreateMazeCell(maze, cell, floor_mesh_handle, wall_mesh_handle);
+            ++count;
         }
 
+        // CreateMazeCell(maze, maze_cells[0], floor_mesh_handle, wall_mesh_handle);
+        // CreateMazeCell(maze, maze_cells[1], floor_mesh_handle, wall_mesh_handle);
+        // CreateMazeCell(maze, maze_cells[2], floor_mesh_handle, wall_mesh_handle);
+        // CreateMazeCell(maze, maze_cells[3], floor_mesh_handle, wall_mesh_handle);
+        // CreateMazeCell(maze, maze_cells[4], floor_mesh_handle, wall_mesh_handle);
+        // CreateMazeCell(maze, maze_cells[5], floor_mesh_handle, wall_mesh_handle);
         const auto key_mesh_handle = CreateKeyMesh();
         CreateKeyObject(maze.key_cell, key_mesh_handle);
     }

@@ -5,36 +5,36 @@
 namespace Engine::Ecs {
     SystemManager::SystemManager() {
 
-        m_phaseOrder = std::vector{
+        m_phase_order = std::vector{
             Phase::Input,
             Phase::Physics,
             Phase::Update,
+            Phase::Commands,
             Phase::LateUpdate,
             Phase::Render
         };
     }
 
-    SystemManager::~SystemManager() {
-    }
+    SystemManager::~SystemManager() = default;
 
-    void SystemManager::RegisterSystems(const std::vector<SystemMeta>& systemMetas, IServiceToEcsProvider *serviceProvider) {
-        for (const auto& sysMeta : systemMetas) {
-            auto system = sysMeta.factory();
-            system->SetServices(serviceProvider);
-            m_phaseMap[sysMeta.phase].push_back(std::move(system));
+    void SystemManager::RegisterSystems(const std::vector<SystemMeta>& system_metas, IServiceToEcsProvider *service_provider) {
+        for (const auto& sys_meta : system_metas) {
+            auto system = sys_meta.factory();
+            system->SetServices(service_provider);
+            m_phase_map[sys_meta.phase].push_back(std::move(system));
         }
     }
 
-    void SystemManager::RunSystems(World &world, const float deltaTime) {
-        for (const auto phase : m_phaseOrder) {
-            RunPhase(phase, world, deltaTime);
+    void SystemManager::RunSystems(World &world, const float delta_time) {
+        for (const auto phase : m_phase_order) {
+            RunPhase(phase, world, delta_time);
         }
     }
 
 
-    void SystemManager::RunPhase(const Phase phase, World &world, const float deltaTime) {
-        for (const auto &system: m_phaseMap[phase]) {
-            system->Run(world, deltaTime);
+    void SystemManager::RunPhase(const Phase phase, World &world, const float delta_time) {
+        for (const auto &system: m_phase_map[phase]) {
+            system->Run(world, delta_time);
         }
     }
 } // namespace

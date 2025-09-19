@@ -14,6 +14,8 @@ add_library(ECS STATIC
         src/SystemManager.cpp
         include/SystemManager.hpp
         include/IServiceToEcsProvider.hpp
+        src/CommandBuffer.cpp
+        src/CommandBuffer.hpp
 )
 
 target_include_directories(ECS

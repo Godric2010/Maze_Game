@@ -66,19 +66,19 @@ namespace Gameplay::Mazegenerator {
         m_start_cell = CellIndex(start_x, 0);
     }
 
-    // Carve maze section
+    // Carve a maze section
     void MazeAlgorithm::CarveMaze() {
-        std::stack<CellIndex> m_path;
+        std::stack<CellIndex> path;
 
         CellIndex current_cell_idx = m_start_cell;
-        m_path.push(current_cell_idx);
+        path.push(current_cell_idx);
 
-        while (!m_path.empty()) {
+        while (!path.empty()) {
             Cell &current_cell = m_cells[current_cell_idx];
             current_cell.visited = true;
             auto next_idx = SelectNextCell(current_cell);
             if (!next_idx.has_value()) {
-                if (auto fallback_idx = WalkBack(m_path); fallback_idx.has_value()) {
+                if (auto fallback_idx = WalkBack(path); fallback_idx.has_value()) {
                     current_cell_idx = fallback_idx.value();
                     continue;
                 }
@@ -92,7 +92,7 @@ namespace Gameplay::Mazegenerator {
             OpenCellBorder(next_cell, dx * -1, dy * -1);
 
             current_cell_idx = next_idx.value();
-            m_path.push(current_cell_idx);
+            path.push(current_cell_idx);
         }
     }
 

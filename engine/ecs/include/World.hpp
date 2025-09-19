@@ -4,8 +4,8 @@
 
 #pragma once
 #include <memory>
-#include <optional>
 
+#include "../src/CommandBuffer.hpp"
 #include "../src/EntityManager.hpp"
 
 namespace Engine::Ecs {
@@ -21,10 +21,12 @@ namespace Engine::Ecs {
             void DestroyEntity(EntityId entity) const;
 
             template<typename T>
-            std::optional<std::reference_wrapper<T>> AddComponent(EntityId entity, T component);
+            void AddComponent(EntityId entity, T component);
 
             template<typename T>
-            [[nodiscard]] bool RemoveComponent(EntityId entity) const;
+            void RemoveComponent(EntityId entity) const;
+
+            void ApplyCommands() const;
 
             template<typename T>
             T* GetComponent(EntityId entity);
@@ -35,6 +37,7 @@ namespace Engine::Ecs {
         private:
             struct WorldImpl;
             std::unique_ptr<WorldImpl> m_impl;
+            std::unique_ptr<CommandBuffer> m_command_buffer;
     };
 }
 

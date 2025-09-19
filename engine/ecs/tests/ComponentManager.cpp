@@ -10,112 +10,112 @@
 using namespace Engine::Ecs;
 
 struct ComponentManagerFixture {
-    ComponentManager m_componentManager;
+    ComponentManager component_manager;
 };
 
 struct TestClassA {
-    uint32_t testVal;
+    uint32_t test_val;
 };
 
 struct TestClassB {
-    int testVal;
+    int test_val;
 };
 
 struct TestClassC {
-    float testVal;
+    float test_val;
 };
 
 TEST_CASE_METHOD(ComponentManagerFixture,
                  "ComponentManager::AddComponent - Add Components to manager with various entities", "[ecs][fast]") {
-    EntityId entityA = 1u;
-    EntityId entityB = 2u;
-    EntityId entityC = 3u;
+    EntityId entity_a = 1u;
+    EntityId entity_b = 2u;
+    EntityId entity_c = 3u;
 
 
-    m_componentManager.AddComponent(entityA, TestClassA{.testVal = 1});
-    REQUIRE(m_componentManager.HasComponent<TestClassA>(entityA));
+    component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
+    REQUIRE(component_manager.HasComponent<TestClassA>(entity_a));
 
-    m_componentManager.AddComponent(entityB, TestClassB{.testVal = -2});
-    REQUIRE(m_componentManager.HasComponent<TestClassB>(entityB));
-    REQUIRE_FALSE(m_componentManager.HasComponent<TestClassA>(entityB));
-    REQUIRE_FALSE(m_componentManager.HasComponent<TestClassB>(entityA));
+    component_manager.AddComponent(entity_b, TestClassB{.test_val = -2});
+    REQUIRE(component_manager.HasComponent<TestClassB>(entity_b));
+    REQUIRE_FALSE(component_manager.HasComponent<TestClassA>(entity_b));
+    REQUIRE_FALSE(component_manager.HasComponent<TestClassB>(entity_a));
 
-    m_componentManager.AddComponent(entityC, TestClassC{.testVal = 3.3f});
-    REQUIRE(m_componentManager.HasComponent<TestClassC>(entityC));
-    REQUIRE(m_componentManager.GetComponent<TestClassC>(entityC).testVal == 3.3f);
+    component_manager.AddComponent(entity_c, TestClassC{.test_val = 3.3f});
+    REQUIRE(component_manager.HasComponent<TestClassC>(entity_c));
+    REQUIRE(component_manager.GetComponent<TestClassC>(entity_c).test_val == 3.3f);
 }
 
 TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::AddComponent - Add multiple components to one entity", "[ecs][fast]") {
-    EntityId entityA = 1u;
+    EntityId entity_a = 1u;
 
-    m_componentManager.AddComponent(entityA, TestClassA{.testVal = 1});
-    m_componentManager.AddComponent(entityA, TestClassB{.testVal = -2});
-    m_componentManager.AddComponent(entityA, TestClassC{.testVal = 3.3f});
+    component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
+    component_manager.AddComponent(entity_a, TestClassB{.test_val = -2});
+    component_manager.AddComponent(entity_a, TestClassC{.test_val = 3.3f});
 
-    REQUIRE(m_componentManager.HasComponent<TestClassA>(entityA));
-    REQUIRE(m_componentManager.HasComponent<TestClassB>(entityA));
-    REQUIRE(m_componentManager.HasComponent<TestClassC>(entityA));
+    REQUIRE(component_manager.HasComponent<TestClassA>(entity_a));
+    REQUIRE(component_manager.HasComponent<TestClassB>(entity_a));
+    REQUIRE(component_manager.HasComponent<TestClassC>(entity_a));
 
-    REQUIRE(m_componentManager.GetComponent<TestClassA>(entityA).testVal == 1);
-    REQUIRE(m_componentManager.GetComponent<TestClassB>(entityA).testVal == -2);
-    REQUIRE(m_componentManager.GetComponent<TestClassC>(entityA).testVal == 3.3f);
+    REQUIRE(component_manager.GetComponent<TestClassA>(entity_a).test_val == 1);
+    REQUIRE(component_manager.GetComponent<TestClassB>(entity_a).test_val == -2);
+    REQUIRE(component_manager.GetComponent<TestClassC>(entity_a).test_val == 3.3f);
 }
 
 TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::RemoveComponent - Remove Component", "[ecs][fast]") {
-    EntityId entityA = 1u;
-    EntityId entityB = 2u;
+    constexpr EntityId entity_a = 1u;
+    constexpr EntityId entity_b = 2u;
 
-    m_componentManager.AddComponent(entityA, TestClassA{.testVal = 1});
-    m_componentManager.AddComponent(entityB, TestClassA{.testVal = 2});
+    component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
+    component_manager.AddComponent(entity_b, TestClassA{.test_val = 2});
 
-    m_componentManager.RemoveComponent<TestClassA>(entityA);
-    REQUIRE_FALSE(m_componentManager.HasComponent<TestClassA>(entityA));
-    REQUIRE(m_componentManager.GetComponent<TestClassA>(entityB).testVal == 2);
+    component_manager.RemoveComponent<TestClassA>(entity_a);
+    REQUIRE_FALSE(component_manager.HasComponent<TestClassA>(entity_a));
+    REQUIRE(component_manager.GetComponent<TestClassA>(entity_b).test_val == 2);
 }
 
 TEST_CASE_METHOD(ComponentManagerFixture,
                  "ComponentManager::GetEntitiesWithComponent - Get all entities that have one component",
                  "[ecs][fast]") {
-    EntityId entityA = 1u;
-    EntityId entityB = 2u;
-    EntityId entityC = 3u;
+    constexpr EntityId entity_a = 1u;
+    constexpr EntityId entity_b = 2u;
+    constexpr EntityId entity_c = 3u;
 
-    m_componentManager.AddComponent(entityA, TestClassA{.testVal = 1});
-    m_componentManager.AddComponent(entityB, TestClassA{.testVal = 42});
-    m_componentManager.AddComponent(entityC, TestClassC{.testVal = 43.33f});
+    component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
+    component_manager.AddComponent(entity_b, TestClassA{.test_val = 42});
+    component_manager.AddComponent(entity_c, TestClassC{.test_val = 43.33f});
 
-    const auto entities = m_componentManager.GetEntitiesWithComponent<TestClassA>();
+    const auto entities = component_manager.GetEntitiesWithComponent<TestClassA>();
     REQUIRE(entities.size() == 2);
-    REQUIRE(entities[0] == entityA);
-    REQUIRE(entities[1] == entityB);
+    REQUIRE(entities[0] == entity_a);
+    REQUIRE(entities[1] == entity_b);
 }
 
 TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::OnEntityDestroy - All components that have the entity are removed", "[ecs][fast]") {
-    EntityId entityA = 1u;
-    EntityId entityB = 2u;
+    EntityId entity_a = 1u;
+    EntityId entity_b = 2u;
 
-    m_componentManager.AddComponent(entityA, TestClassA{.testVal = 1});
-    m_componentManager.AddComponent(entityA, TestClassB{.testVal = -2});
-    m_componentManager.AddComponent(entityA, TestClassC{.testVal = 3.3f});
+    component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
+    component_manager.AddComponent(entity_a, TestClassB{.test_val = -2});
+    component_manager.AddComponent(entity_a, TestClassC{.test_val = 3.3f});
 
-    m_componentManager.AddComponent(entityB, TestClassA{.testVal = 4});
-    m_componentManager.AddComponent(entityB, TestClassB{.testVal = -3});
-    m_componentManager.AddComponent(entityB, TestClassC{.testVal = 4.3f});
-    REQUIRE(m_componentManager.HasComponent<TestClassA>(entityA));
-    REQUIRE(m_componentManager.HasComponent<TestClassB>(entityB));
+    component_manager.AddComponent(entity_b, TestClassA{.test_val = 4});
+    component_manager.AddComponent(entity_b, TestClassB{.test_val = -3});
+    component_manager.AddComponent(entity_b, TestClassC{.test_val = 4.3f});
+    REQUIRE(component_manager.HasComponent<TestClassA>(entity_a));
+    REQUIRE(component_manager.HasComponent<TestClassB>(entity_b));
 
-    m_componentManager.OnDestroyEntity(entityA);
+    component_manager.OnDestroyEntity(entity_a);
 
-    auto resultA = m_componentManager.GetEntitiesWithComponent<TestClassA>();
-    auto resultB = m_componentManager.GetEntitiesWithComponent<TestClassB>();
-    auto resultC = m_componentManager.GetEntitiesWithComponent<TestClassC>();
+    auto result_a = component_manager.GetEntitiesWithComponent<TestClassA>();
+    auto result_b = component_manager.GetEntitiesWithComponent<TestClassB>();
+    auto result_c = component_manager.GetEntitiesWithComponent<TestClassC>();
 
-    REQUIRE(resultA.size() == 1);
-    REQUIRE(resultA[0] == entityB);
+    REQUIRE(result_a.size() == 1);
+    REQUIRE(result_a[0] == entity_b);
 
-    REQUIRE(resultB.size() == 1);
-    REQUIRE(resultB[0] == entityB);
+    REQUIRE(result_b.size() == 1);
+    REQUIRE(result_b[0] == entity_b);
 
-    REQUIRE(resultC.size() == 1);
-    REQUIRE(resultC[0] == entityB);
+    REQUIRE(result_c.size() == 1);
+    REQUIRE(result_c[0] == entity_b);
 }

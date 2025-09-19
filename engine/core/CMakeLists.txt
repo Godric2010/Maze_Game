@@ -18,6 +18,8 @@ add_library(Core STATIC
         systems/RenderSystem.hpp
         IEngine.hpp
         GameWorld.hpp
+        systems/CommandSystem.cpp
+        systems/CommandSystem.hpp
 )
 
 target_include_directories(Core PUBLIC
