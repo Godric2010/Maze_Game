@@ -6,13 +6,18 @@
 
 #include <glm/glm.hpp>
 
+#include "PhysicsSystem.hpp"
+
 namespace Engine::Core::Components {
     struct Transform {
+        friend Systems::PhysicsSystem;
+
     private:
         glm::vec3 m_position{};
         glm::vec3 m_rotation{};
         glm::vec3 m_scale{};
         glm::mat4 m_matrix{};
+        bool m_dirty;
 
     public:
         Transform() {
@@ -20,6 +25,7 @@ namespace Engine::Core::Components {
             m_rotation = glm::vec3(0.0f);
             m_scale = glm::vec3(1.0f);
             m_matrix = glm::mat4(1.0f);
+            m_dirty = false;
         }
 
         Transform(const glm::vec3 position, const glm::vec3 rotation) {
@@ -27,6 +33,7 @@ namespace Engine::Core::Components {
             this->m_rotation = rotation;
             this->m_scale = glm::vec3(1.0f, 1.0f, 1.0f);
             m_matrix = glm::mat4(1.0f);
+            m_dirty = true;
         }
 
         Transform(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale) {
@@ -34,12 +41,14 @@ namespace Engine::Core::Components {
             this->m_rotation = rotation;
             this->m_scale = scale;
             m_matrix = glm::mat4(1.0f);
+            m_dirty = true;
         }
 
         [[nodiscard]] glm::vec3 GetPosition() const { return this->m_position; }
         [[nodiscard]] glm::vec3 GetRotation() const { return this->m_rotation; }
         [[nodiscard]] glm::vec3 GetScale() const { return this->m_scale; }
         [[nodiscard]] glm::mat4 GetMatrix() const { return this->m_matrix; }
+        [[nodiscard]] bool IsDirty() const { return this->m_dirty; }
         void SetMatrix(const glm::mat4 &matrix) { this->m_matrix = matrix; }
     };
 }

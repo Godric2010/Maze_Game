@@ -1,0 +1,20 @@
+//
+// Created by Sebastian Borsch on 20.09.25.
+//
+
+#pragma once
+#include <glm/vec3.hpp>
+
+namespace Engine::Core::Components {
+    struct MotionIntent {
+        glm::vec3 translation{};
+        glm::vec3 rotation{};
+        glm::vec3 scale{};
+
+        MotionIntent() {
+            this->translation = glm::vec3(0.0f);
+            this->rotation = glm::vec3(0.0f);
+            this->scale = glm::vec3(1.0f);
+        }
+    };
+}

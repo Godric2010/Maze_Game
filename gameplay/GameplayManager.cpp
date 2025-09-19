@@ -5,6 +5,7 @@
 #include "DebugGridDrawer.hpp"
 #include "InputReceiver.hpp"
 #include "Mesh.hpp"
+#include "MotionIntent.hpp"
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
 
@@ -44,6 +45,8 @@ namespace Gameplay {
         const auto camera_transform = Engine::Core::Components::Transform(glm::vec3(start_pos.x, 1.0f, start_pos.y),
                                                                           glm::vec3(-10.f, 180.0f, 0.0f));
         m_engine.GetWorld().AddComponent(m_camera_entity, camera_transform);
+        const auto camera_motion_intent = Engine::Core::Components::MotionIntent();
+        m_engine.GetWorld().AddComponent(m_camera_entity, camera_motion_intent);
 
 
         constexpr auto input_receiver = Engine::Core::Components::InputReceiver{
@@ -132,12 +135,6 @@ namespace Gameplay {
             ++count;
         }
 
-        // CreateMazeCell(maze, maze_cells[0], floor_mesh_handle, wall_mesh_handle);
-        // CreateMazeCell(maze, maze_cells[1], floor_mesh_handle, wall_mesh_handle);
-        // CreateMazeCell(maze, maze_cells[2], floor_mesh_handle, wall_mesh_handle);
-        // CreateMazeCell(maze, maze_cells[3], floor_mesh_handle, wall_mesh_handle);
-        // CreateMazeCell(maze, maze_cells[4], floor_mesh_handle, wall_mesh_handle);
-        // CreateMazeCell(maze, maze_cells[5], floor_mesh_handle, wall_mesh_handle);
         const auto key_mesh_handle = CreateKeyMesh();
         CreateKeyObject(maze.key_cell, key_mesh_handle);
     }

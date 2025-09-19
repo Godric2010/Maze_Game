@@ -20,6 +20,9 @@ add_library(Core STATIC
         GameWorld.hpp
         systems/CommandSystem.cpp
         systems/CommandSystem.hpp
+        components/MotionIntent.hpp
+        systems/PhysicsSystem.cpp
+        systems/PhysicsSystem.hpp
 )
 
 target_include_directories(Core PUBLIC

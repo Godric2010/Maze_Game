@@ -8,7 +8,6 @@ namespace Engine::Core::Systems {
     }
 
     void CommandSystem::Run(Ecs::World &world, float delta_time) {
-        std::cout << "Apply commands..." << std::endl;
         world.ApplyCommands();
     }
 } // namespace
