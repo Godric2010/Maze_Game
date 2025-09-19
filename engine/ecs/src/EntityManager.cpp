@@ -7,6 +7,7 @@ namespace Engine::Ecs {
         m_alive_entities.push_back(0);
         m_pending_entities.push_back(0);
         m_alive_count = 0;
+        m_next_idx = 1;
     }
 
     EntityManager::~EntityManager() {
@@ -23,7 +24,7 @@ namespace Engine::Ecs {
             idx = m_free_entity_indices.back();
             m_free_entity_indices.pop_back();
         } else {
-            idx = static_cast<uint64_t>(m_generations.size());
+            idx = m_next_idx++;
             EnsureCapacity(idx);
         }
 
@@ -127,12 +128,11 @@ namespace Engine::Ecs {
         return result;
     }
 
-    void EntityManager::EnsureCapacity(
-        const uint64_t idx) {
+    void EntityManager::EnsureCapacity(const uint64_t idx) {
         const auto need = static_cast<size_t>(idx + 1);
         const auto size = m_generations.size();
         if (size < need) {
-            const auto new_size = std::max(need, size );
+            const auto new_size = std::max(need, size * 2);
             m_generations.resize(new_size, 0);
             m_alive_entities.resize(new_size, 0);
             m_pending_entities.resize(new_size, 0);

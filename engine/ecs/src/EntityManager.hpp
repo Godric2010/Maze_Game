@@ -77,6 +77,7 @@ namespace Engine::Ecs {
          */
         std::vector<uint8_t> m_pending_entities;
         uint64_t m_alive_count;
+        uint64_t m_next_idx;
 
         void EnsureCapacity(uint64_t idx);
     };
