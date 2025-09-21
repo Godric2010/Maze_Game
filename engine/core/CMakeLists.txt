@@ -23,6 +23,7 @@ add_library(Core STATIC
         components/MotionIntent.hpp
         systems/PhysicsSystem.cpp
         systems/PhysicsSystem.hpp
+        components/Collider.hpp
 )
 
 target_include_directories(Core PUBLIC

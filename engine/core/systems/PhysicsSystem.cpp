@@ -1,5 +1,6 @@
 #include "PhysicsSystem.hpp"
 
+#include "Collider.hpp"
 #include "MotionIntent.hpp"
 #include "Transform.hpp"
 
@@ -10,6 +11,9 @@ namespace Engine::Core::Systems {
     }
 
     void PhysicsSystem::Run(Ecs::World &world, float delta_time) {
+        const auto box_colliders = world.GetComponentsOfType<Components::BoxCollider>();
+        const auto sphere_colliders = world.GetComponentsOfType<Components::SphereCollider>();
+
         const auto movable_objects = world.GetComponentsOfType<Components::MotionIntent>();
         for (const auto [motion_intent, entity]: movable_objects) {
             const auto transform = world.GetComponent<Components::Transform>(entity);

@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "Collider.hpp"
 #include "DebugGridDrawer.hpp"
 #include "InputReceiver.hpp"
 #include "Mesh.hpp"
@@ -47,6 +48,11 @@ namespace Gameplay {
         m_engine.GetWorld().AddComponent(m_camera_entity, camera_transform);
         const auto camera_motion_intent = Engine::Core::Components::MotionIntent();
         m_engine.GetWorld().AddComponent(m_camera_entity, camera_motion_intent);
+
+        constexpr auto camera_collider = Engine::Core::Components::SphereCollider{
+            .radius = 0.1f
+        };
+        m_engine.GetWorld().AddComponent(m_camera_entity, camera_collider);
 
 
         constexpr auto input_receiver = Engine::Core::Components::InputReceiver{
@@ -115,11 +121,15 @@ namespace Gameplay {
                 break;
         }
 
-
         const auto position = glm::vec3(cell_idx.x, 0.5f, cell_idx.y) + shift_vector;
         const auto rotation = glm::vec3(0.0f, 0.0f, 0.0f) + rotation_shift;
         const auto transform_component = Engine::Core::Components::Transform(position, rotation);
         m_engine.GetWorld().AddComponent(entity, transform_component);
+
+        constexpr auto collider = Engine::Core::Components::BoxCollider{
+            .width = 0.5f, .height = 0.5f, .depth = 1e-6f
+        };
+        m_engine.GetWorld().AddComponent(entity, collider);
     }
 
     void GameplayManager::CreateObjects(const Mazegenerator::Maze &maze) const {
