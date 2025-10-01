@@ -13,8 +13,8 @@ namespace Engine::Ecs {
     public:
         virtual ~ISystem() = default;
 
-        virtual void SetServices(IServiceToEcsProvider* service_locator) = 0;
+        virtual void Initialize(Ecs::World *world, IServiceToEcsProvider *service_locator) = 0;
 
-        virtual void Run(World& world, float delta_time) = 0;
+        virtual void Run(World &world, float delta_time) = 0;
     };
 }

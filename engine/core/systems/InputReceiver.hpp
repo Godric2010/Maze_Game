@@ -10,7 +10,7 @@ namespace Engine::Core::Systems {
 
         ~InputReceiver() override;
 
-        void SetServices(Ecs::IServiceToEcsProvider *service_locator) override;
+        void Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) override;
 
         void Run(Ecs::World &world, float delta_time) override;
 

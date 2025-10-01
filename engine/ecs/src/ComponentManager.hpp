@@ -7,6 +7,7 @@
 #include <vector>
 #include <typeindex>
 
+#include "../include/ComponentEventBus.hpp"
 #include "ComponentPool.hpp"
 #include "Entity.hpp"
 
@@ -25,6 +26,10 @@ namespace Engine::Ecs {
         void (*remove)(ComponentManager &, EntityId);
 
         bool (*contains)(ComponentManager &, EntityId);
+
+        void (*on_add_event)(ComponentEventBus &, EntityId, const void *) = nullptr;
+
+        void (*on_remove_event)(ComponentEventBus &, EntityId) = nullptr;
     };
 
 
@@ -75,6 +80,8 @@ namespace Engine::Ecs {
         bool ContainsById(EntityId entity, ComponentTypeId component_type);
 
         void OnDestroyEntity(EntityId entity) const;
+
+        ComponentMeta GetComponentMeta(ComponentTypeId component_type_id) const;
 
     private:
         template<typename T>

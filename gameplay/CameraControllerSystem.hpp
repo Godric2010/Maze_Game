@@ -13,7 +13,7 @@ namespace Gameplay {
 
         ~CameraControllerSystem() override;
 
-        void SetServices(Engine::Ecs::IServiceToEcsProvider *service_locator) override;
+        void Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) override;
 
         void Run(Engine::Ecs::World &world, float delta_time) override;
 

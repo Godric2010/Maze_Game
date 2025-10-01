@@ -24,6 +24,7 @@ add_library(Core STATIC
         systems/PhysicsSystem.cpp
         systems/PhysicsSystem.hpp
         components/Collider.hpp
+        ColliderCache.hpp
 )
 
 target_include_directories(Core PUBLIC

@@ -1,6 +1,5 @@
 #pragma once
 #include "ComponentManager.hpp"
-#include <assert.h>
 
 namespace Engine::Ecs {
     struct World::WorldImpl {
@@ -12,6 +11,7 @@ namespace Engine::Ecs {
         m_impl->entity_manager = std::make_unique<EntityManager>();
         m_impl->component_manager = std::make_unique<ComponentManager>();
         m_command_buffer = std::make_unique<CommandBuffer>();
+        m_component_event_bus = std::make_unique<ComponentEventBus>();
     }
 
     inline World::~World() = default;
@@ -69,11 +69,20 @@ namespace Engine::Ecs {
                     break;
                 }
                 case CommandType::AddComponent: {
+                    const ComponentMeta component_meta = m_impl->component_manager->GetComponentMeta(component_type_id);
                     m_impl->component_manager->AddById(entity, component_type_id, payload.data());
+                    if (component_meta.on_add_event) {
+                        component_meta.on_add_event(*m_component_event_bus, entity, payload.data());
+                    }
+
                     break;
                 }
                 case CommandType::RemoveComponent: {
+                    const ComponentMeta component_meta = m_impl->component_manager->GetComponentMeta(component_type_id);
                     m_impl->component_manager->RemoveById(entity, component_type_id);
+                    if (component_meta.on_remove_event) {
+                        component_meta.on_remove_event(*m_component_event_bus, entity);
+                    }
                     break;
                 }
                 case CommandType::UpdateComponent: {

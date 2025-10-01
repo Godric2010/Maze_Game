@@ -34,10 +34,19 @@ namespace Engine::Ecs {
             template<typename T>
             std::vector<std::pair<T *, EntityId>> GetComponentsOfType();
 
+            ComponentEventBus *GetEventBus() const {
+                return m_component_event_bus.get();
+            }
+
+            const ComponentEventBus *GetEventBusConst() const {
+                return m_component_event_bus.get();
+            }
+
         private:
             struct WorldImpl;
             std::unique_ptr<WorldImpl> m_impl;
             std::unique_ptr<CommandBuffer> m_command_buffer;
+            std::unique_ptr<ComponentEventBus> m_component_event_bus;
     };
 }
 

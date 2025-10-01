@@ -9,14 +9,13 @@ namespace Engine::Core::Systems {
 
     InputReceiver::~InputReceiver() = default;
 
-    void InputReceiver::SetServices(Ecs::IServiceToEcsProvider *service_locator) {
+    void InputReceiver::Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) {
         const auto i = service_locator->GetService<Environment::IInput>();
         m_input = i;
     }
 
 
     void InputReceiver::Run(Ecs::World &world, float delta_time) {
-        std::cout<<"InputReceiver::Run"<<std::endl;
         m_input->PrepareFrame();
         m_input->PumpInput();
         const auto input_snapshot = m_input->GetInputSnapshot();

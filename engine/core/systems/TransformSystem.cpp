@@ -11,7 +11,7 @@ namespace Engine::Core::Systems {
 
     TransformSystem::~TransformSystem() = default;
 
-    void TransformSystem::SetServices(Ecs::IServiceToEcsProvider *service_locator) {
+    void TransformSystem::Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) {
     }
 
     void TransformSystem::Run(Ecs::World &world, float delta_time) {

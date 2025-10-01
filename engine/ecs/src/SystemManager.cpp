@@ -4,7 +4,6 @@
 
 namespace Engine::Ecs {
     SystemManager::SystemManager() {
-
         m_phase_order = std::vector{
             Phase::Input,
             Phase::Physics,
@@ -17,16 +16,18 @@ namespace Engine::Ecs {
 
     SystemManager::~SystemManager() = default;
 
-    void SystemManager::RegisterSystems(const std::vector<SystemMeta>& system_metas, IServiceToEcsProvider *service_provider) {
-        for (const auto& sys_meta : system_metas) {
+    void SystemManager::RegisterSystems(const std::vector<SystemMeta> &system_metas,
+                                        World *world,
+                                        IServiceToEcsProvider *service_provider) {
+        for (const auto &sys_meta: system_metas) {
             auto system = sys_meta.factory();
-            system->SetServices(service_provider);
+            system->Initialize(world, service_provider);
             m_phase_map[sys_meta.phase].push_back(std::move(system));
         }
     }
 
     void SystemManager::RunSystems(World &world, const float delta_time) {
-        for (const auto phase : m_phase_order) {
+        for (const auto phase: m_phase_order) {
             RunPhase(phase, world, delta_time);
         }
     }

@@ -9,7 +9,7 @@ namespace Engine::Core::Systems {
 
     RenderSystem::~RenderSystem() = default;
 
-    void RenderSystem::SetServices(Ecs::IServiceToEcsProvider *service_locator) {
+    void RenderSystem::Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) {
         const Renderer::RenderController *render_controller = service_locator->GetService<Renderer::RenderController>();
         m_renderController = render_controller;
     }

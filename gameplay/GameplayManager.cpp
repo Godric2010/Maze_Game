@@ -50,7 +50,7 @@ namespace Gameplay {
         m_engine.GetWorld().AddComponent(m_camera_entity, camera_motion_intent);
 
         constexpr auto camera_collider = Engine::Core::Components::SphereCollider{
-            .radius = 0.1f
+            .is_static = false, .radius = 0.1f
         };
         m_engine.GetWorld().AddComponent(m_camera_entity, camera_collider);
 
@@ -127,7 +127,7 @@ namespace Gameplay {
         m_engine.GetWorld().AddComponent(entity, transform_component);
 
         constexpr auto collider = Engine::Core::Components::BoxCollider{
-            .width = 0.5f, .height = 0.5f, .depth = 1e-6f
+            .is_static = true, .width = 0.5f, .height = 0.5f, .depth = 1e-6f
         };
         m_engine.GetWorld().AddComponent(entity, collider);
     }

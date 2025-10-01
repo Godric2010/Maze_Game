@@ -5,6 +5,8 @@
 
 #include <ranges>
 
+#include "../include/ComponentEventBus.hpp"
+
 namespace Engine::Ecs {
     inline ComponentManager::ComponentManager() = default;
 
@@ -78,6 +80,12 @@ namespace Engine::Ecs {
                                      [](ComponentManager &cm, EntityId entity) {
                                          return cm.GetPool<T>().Contains(entity);
                                      },
+                                     [](ComponentEventBus &event_bus, EntityId entity, const void *data) {
+                                         event_bus.RaiseAddComponentEvent<T>(entity, *static_cast<const T *>(data));
+                                     },
+                                     [](ComponentEventBus &event_bus, EntityId entity) {
+                                         event_bus.RaiseRemoveComponentEvent<T>(entity, {});
+                                     }
                                  });
         m_id_to_index.emplace(id, std::type_index(typeid(T)));
         return id;
@@ -135,6 +143,11 @@ namespace Engine::Ecs {
             }
         }
     }
+
+    inline ComponentMeta ComponentManager::GetComponentMeta(const ComponentTypeId component_type_id) const {
+        return m_component_meta.at(component_type_id);
+    }
+
 
     template<typename T>
     TypedComponentPool<T> &ComponentManager::GetPool() {

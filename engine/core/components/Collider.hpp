@@ -7,10 +7,12 @@
 namespace Engine::Core::Components{
 
     struct SphereCollider {
+        bool is_static;
         float radius;
     };
 
     struct BoxCollider {
+        bool is_static;
         float width;
         float height;
         float depth;

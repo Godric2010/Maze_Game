@@ -28,7 +28,7 @@ namespace Engine::Ecs {
 
         ~SystemManager();
 
-        void RegisterSystems(const std::vector<SystemMeta>& system_metas, IServiceToEcsProvider *service_provider);
+        void RegisterSystems(const std::vector<SystemMeta>& system_metas, World *world, IServiceToEcsProvider *service_provider);
 
         void RunSystems(World& world, float delta_time);
 

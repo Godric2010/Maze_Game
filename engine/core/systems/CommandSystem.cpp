@@ -4,7 +4,7 @@
 #include <ostream>
 
 namespace Engine::Core::Systems {
-    void CommandSystem::SetServices(Ecs::IServiceToEcsProvider *service_locator) {
+    void CommandSystem::Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) {
     }
 
     void CommandSystem::Run(Ecs::World &world, float delta_time) {

@@ -31,7 +31,7 @@ namespace Engine::Core {
         m_world = std::make_unique<Ecs::World>();
         m_game_world = std::make_unique<GameWorld>(m_world.get());
         m_system_manager = std::make_unique<Ecs::SystemManager>();
-        m_system_manager->RegisterSystems(systems, m_services.get());
+        m_system_manager->RegisterSystems(systems, m_world.get(), m_services.get());
     }
 
     void EngineController::Update() const {

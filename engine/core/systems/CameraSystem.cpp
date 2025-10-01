@@ -5,7 +5,7 @@ namespace Engine::Core::Systems {
 
     CameraSystem::~CameraSystem() = default;
 
-    void CameraSystem::SetServices(Ecs::IServiceToEcsProvider* service_locator) {
+    void CameraSystem::Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider* service_locator) {
     }
 
     void CameraSystem::Run(Ecs::World&world, float delta_time) {

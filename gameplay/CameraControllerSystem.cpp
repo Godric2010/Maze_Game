@@ -14,11 +14,10 @@ namespace Gameplay {
 
     CameraControllerSystem::~CameraControllerSystem() = default;
 
-    void CameraControllerSystem::SetServices(Engine::Ecs::IServiceToEcsProvider *service_locator) {
+    void CameraControllerSystem::Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) {
     }
 
     void CameraControllerSystem::Run(Engine::Ecs::World &world, const float delta_time) {
-        std::cout << "CameraControllerSystem::Run" << std::endl;
         for (const auto cameras = world.GetComponentsOfType<Engine::Core::Components::Camera>(); auto camera: cameras) {
             const auto entity = camera.second;
             const auto camera_transform = world.GetComponent<Engine::Core::Components::Transform>(entity);
