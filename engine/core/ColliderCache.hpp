@@ -6,13 +6,13 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Types.hpp"
+#include "../physics/include/math/Types.hpp"
 #include "../ecs/src/Entity.hpp"
 
 namespace Engine::Core {
     struct ColliderCache {
-        std::unordered_map<Ecs::EntityId, Physics::AABB> box_colliders;
-        std::unordered_map<Ecs::EntityId, Physics::Sphere> sphere_colliders;
+        std::unordered_map<Ecs::EntityId, Physics::Math::AABB> box_colliders;
+        std::unordered_map<Ecs::EntityId, Physics::Math::Sphere> sphere_colliders;
 
         std::unordered_set<Ecs::EntityId> static_colliders;
     };

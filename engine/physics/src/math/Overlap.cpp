@@ -1,6 +1,6 @@
-#include "../include/Overlap.hpp"
+#include "../../include/math/Overlap.hpp"
 
-namespace Engine::Physics {
+namespace Engine::Physics::Math {
     bool Overlap(const AABB &bounds_a, const AABB &bounds_b) noexcept {
         if (bounds_a.max.x < bounds_b.min.x || bounds_a.min.x > bounds_b.max.x) return false;
         if (bounds_a.max.y < bounds_b.min.y || bounds_a.min.y > bounds_b.max.y) return false;

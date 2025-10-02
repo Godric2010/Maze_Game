@@ -38,7 +38,7 @@ namespace Engine::Core::Systems {
 
     void PhysicsSystem::BuildBoxCollider(Ecs::EntityId entity, const Components::BoxCollider box_collider,
                                          const glm::vec3 position) const {
-        Physics::AABB aabb;
+        Physics::Math::AABB aabb;
         aabb.min = glm::vec3(position.x - box_collider.width / 2, position.y - box_collider.height / 2,
                              position.z - box_collider.depth / 2);
         aabb.max = glm::vec3(position.x + box_collider.width / 2, position.y + box_collider.height / 2,
@@ -53,7 +53,7 @@ namespace Engine::Core::Systems {
     void PhysicsSystem::BuildSphereCollider(Ecs::EntityId entity, const Components::SphereCollider sphere_collider,
         const glm::vec3 position) const {
 
-        Physics::Sphere sphere;
+        Physics::Math::Sphere sphere;
         sphere.radius = sphere_collider.radius;
         sphere.center = position;
 

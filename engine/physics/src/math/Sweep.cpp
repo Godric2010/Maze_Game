@@ -1,8 +1,8 @@
-#include "../include/Sweep.hpp"
+#include "../../include/math/Sweep.hpp"
 
 #include <algorithm>
 
-namespace Engine::Physics {
+namespace Engine::Physics::Math {
     namespace {
         constexpr float k_epsilon = 1e-6f;
 

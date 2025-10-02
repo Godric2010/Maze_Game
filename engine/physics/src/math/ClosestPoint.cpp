@@ -1,6 +1,6 @@
-#include "../include/ClosestPoint.hpp"
+#include "../../include/math/ClosestPoint.hpp"
 
-namespace Engine::Physics {
+namespace Engine::Physics::Math {
     glm::vec3 ClosestPoint(const glm::vec3 &point, const AABB &box) noexcept {
         return clamp(point, box.min, box.max);
     }

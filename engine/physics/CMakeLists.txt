@@ -3,14 +3,17 @@ cmake_minimum_required(VERSION 3.31)
 find_package(glm CONFIG REQUIRED)
 
 add_library(Physics STATIC
-        include/Types.hpp
-        src/Overlap.cpp
-        src/ClosestPoint.cpp
-        include/ClosestPoint.hpp
-        src/Sweep.cpp
-        include/Sweep.hpp
-        src/Resolve.cpp
-        include/Resolve.hpp
+        include/math/Types.hpp
+        src/math/Overlap.cpp
+        src/math/ClosestPoint.cpp
+        include/math/ClosestPoint.hpp
+        src/math/Sweep.cpp
+        include/math/Sweep.hpp
+        src/math/Resolve.cpp
+        include/math/Resolve.hpp
+        src/collision/SpatialHashBroadphase.cpp
+        src/collision/SpatialHashBroadphase.hpp
+        include/collision/IBroadphase.hpp
 )
 
 target_include_directories(Physics

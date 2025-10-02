@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
-namespace Engine::Physics {
+namespace Engine::Physics::Math {
     /**
      * @brief Checks for overlap between a sphere and an axis-aligned bounding box (AABB).
      *

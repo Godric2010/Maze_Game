@@ -1,7 +1,7 @@
 #pragma once
 #include "Types.hpp"
 
-namespace Engine::Physics {
+namespace Engine::Physics::Math {
     /**
      * Performs swept collision detection between a moving sphere and an axis-aligned bounding box (AABB).
      *

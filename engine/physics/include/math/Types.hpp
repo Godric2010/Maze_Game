@@ -5,7 +5,7 @@
 #pragma once
 #include <glm/glm.hpp>
 
-namespace Engine::Physics {
+namespace Engine::Physics::Math {
     /**
      * @struct Ray
      * @brief Represents a 3D ray in space.
