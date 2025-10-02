@@ -41,6 +41,7 @@ namespace Engine::Ecs {
             }
         }
 
+        // TODO: This uses the same event as the add... consider using another func for this in order to keep things clean and avoid errors in the future
         template<typename T>
         void RaiseRemoveComponentEvent(const EntityId entity, const void *bytes) const {
             const auto it = m_buckets.find(std::type_index(typeid(T)));

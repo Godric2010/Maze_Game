@@ -1,12 +1,13 @@
 #include "PhysicsSystem.hpp"
 
 #include "Collider.hpp"
-#include "MotionIntent.hpp"
 #include "Transform.hpp"
+#include "../../physics/src/collision/SpatialHashBroadphase.hpp"
 
 namespace Engine::Core::Systems {
     PhysicsSystem::PhysicsSystem() {
         m_collider_cache = std::make_unique<ColliderCache>();
+        m_broadphase = std::make_unique<Physics::Collision::SpatialHashBroadphase>(2);
     }
 
     void PhysicsSystem::Initialize(Ecs::World *world,
@@ -19,7 +20,7 @@ namespace Engine::Core::Systems {
 
         world->GetEventBus()->Subscribe<Components::SphereCollider>(
             [this, world](const Ecs::EntityId entity, const Components::SphereCollider &sphere_collider) {
-                Components::Transform *transform = world->GetComponent<Components::Transform>(entity);
+                const Components::Transform *transform = world->GetComponent<Components::Transform>(entity);
                 this->BuildSphereCollider(entity, sphere_collider, transform->GetPosition());
             });
     }
@@ -27,6 +28,11 @@ namespace Engine::Core::Systems {
     void PhysicsSystem::Run(Ecs::World &world, float delta_time) {
         const auto movable_objects = world.GetComponentsOfType<Components::MotionIntent>();
         for (const auto [motion_intent, entity]: movable_objects) {
+            auto swept_area = UpdateAndGetSweptArea(entity, motion_intent);
+            std::vector<Ecs::EntityId> collision_candidates;
+            m_broadphase->QueryAABB(swept_area, collision_candidates);
+
+
             const auto transform = world.GetComponent<Components::Transform>(entity);
 
             transform->m_position = motion_intent->translation;
@@ -36,9 +42,27 @@ namespace Engine::Core::Systems {
         }
     }
 
+    Physics::Math::AABB PhysicsSystem::UpdateAndGetSweptArea(const Ecs::EntityId entity,
+                                                             const Components::MotionIntent *motion_intent) const {
+        if (m_collider_cache->static_colliders.contains(entity)) {
+            throw std::runtime_error("PhysicsSystem: Static colliders are not allowed to move!");
+        }
+
+        if (m_collider_cache->sphere_colliders.contains(entity)) {
+            auto &sphere = m_collider_cache->sphere_colliders.at(entity);
+            sphere.center = motion_intent->translation;
+            m_broadphase->Update(entity, Physics::Collision::IBroadphase::FromSphere(sphere));
+
+            return {sphere.center - sphere.radius, sphere.center + sphere.radius};
+        }
+
+        throw std::runtime_error("PhysicsSystem: Tried to move collider that is not supported in broadphase!");
+    }
+
+
     void PhysicsSystem::BuildBoxCollider(Ecs::EntityId entity, const Components::BoxCollider box_collider,
                                          const glm::vec3 position) const {
-        Physics::Math::AABB aabb;
+        Physics::Math::AABB aabb{};
         aabb.min = glm::vec3(position.x - box_collider.width / 2, position.y - box_collider.height / 2,
                              position.z - box_collider.depth / 2);
         aabb.max = glm::vec3(position.x + box_collider.width / 2, position.y + box_collider.height / 2,
@@ -48,12 +72,12 @@ namespace Engine::Core::Systems {
         if (box_collider.is_static) {
             m_collider_cache->static_colliders.emplace(entity);
         }
+        m_broadphase->Insert({entity, aabb, box_collider.is_static});
     }
 
     void PhysicsSystem::BuildSphereCollider(Ecs::EntityId entity, const Components::SphereCollider sphere_collider,
-        const glm::vec3 position) const {
-
-        Physics::Math::Sphere sphere;
+                                            const glm::vec3 position) const {
+        Physics::Math::Sphere sphere{};
         sphere.radius = sphere_collider.radius;
         sphere.center = position;
 
@@ -61,7 +85,8 @@ namespace Engine::Core::Systems {
         if (sphere_collider.is_static) {
             m_collider_cache->static_colliders.emplace(entity);
         }
+
+        const auto proxy_sphere = Physics::Collision::IBroadphase::FromSphere(sphere);
+        m_broadphase->Insert({entity, proxy_sphere, sphere_collider.is_static});
     }
-
-
 } // namespace
