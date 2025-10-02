@@ -30,7 +30,15 @@ namespace Engine::Core::Systems {
         for (const auto [motion_intent, entity]: movable_objects) {
             auto swept_area = UpdateAndGetSweptArea(entity, motion_intent);
             std::vector<Ecs::EntityId> collision_candidates;
-            m_broadphase->QueryAABB(swept_area, collision_candidates);
+            m_broadphase->QueryAABB(swept_area, collision_candidates, nullptr);
+
+            // Remove target entity from possible colliders
+            // TODO: This is very ugly but works for now. In the future, this should be handled via the layering system
+            auto it = std::ranges::find(collision_candidates, entity);
+            if (it != collision_candidates.end()) {
+                collision_candidates.erase(it);
+            }
+
 
 
             const auto transform = world.GetComponent<Components::Transform>(entity);

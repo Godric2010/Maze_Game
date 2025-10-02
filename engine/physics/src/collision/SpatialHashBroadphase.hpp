@@ -29,7 +29,7 @@ namespace Engine::Physics::Collision {
         void Remove(Ecs::EntityId entity) override;
         void Update(Ecs::EntityId entity, const Math::AABB &new_aabb) override;
 
-        void QueryAABB(const Math::AABB &area, std::vector<Ecs::EntityId> &out) override;
+        void QueryAABB(const Math::AABB &area, std::vector<Ecs::EntityId> &out, const QueryFilter *filter) override;
 
     private:
         float m_cell_size;
@@ -44,6 +44,11 @@ namespace Engine::Physics::Collision {
         }
 
         void BoxToCells(const Math::AABB& aabb, std::vector<CellKey>& tmp) const;
+
+        static inline bool PassFilter(const BroadphaseProxy& proxy, const QueryFilter* filter) {
+            if (!filter) return true;
+            return (proxy.category_bits & filter->mask_bits) && (filter->category_bits & proxy.mask_bits);
+        }
 
         static void Dedupe(std::vector<Ecs::EntityId>& vec);
     };

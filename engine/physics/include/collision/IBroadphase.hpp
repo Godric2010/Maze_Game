@@ -9,9 +9,17 @@
 #include "math/Types.hpp"
 
 namespace Engine::Physics::Collision {
+
+    struct QueryFilter {
+        uint32_t category_bits{0xFFFFFFFF};
+        uint32_t mask_bits{0xFFFFFFFF};
+    };
+
     struct BroadphaseProxy {
-        Ecs::EntityId entity;
-        Math::AABB aabb;
+        Ecs::EntityId entity{};
+        Math::AABB aabb{};
+        uint32_t category_bits{0xFFFFFFFF};
+        uint32_t mask_bits{0xFFFFFFFF};
         bool is_static{false};
     };
 
@@ -25,7 +33,7 @@ namespace Engine::Physics::Collision {
 
         virtual void Update(Ecs::EntityId entity, const Math::AABB &new_aabb) = 0;
 
-        virtual void QueryAABB(const Math::AABB &area, std::vector<Ecs::EntityId> &out) = 0;
+        virtual void QueryAABB(const Math::AABB &area, std::vector<Ecs::EntityId> &out, const QueryFilter *filter) = 0;
 
         static inline Math::AABB FromSphere(const Math::Sphere &sphere) {
             const glm::vec3 r(sphere.radius);

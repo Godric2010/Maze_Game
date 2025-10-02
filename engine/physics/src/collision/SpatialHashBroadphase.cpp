@@ -120,7 +120,8 @@ namespace Engine::Physics::Collision {
         vec.erase(std::ranges::unique(vec).begin(), vec.end());
     }
 
-    void SpatialHashBroadphase::QueryAABB(const Math::AABB &area, std::vector<Ecs::EntityId> &out) {
+    void SpatialHashBroadphase::QueryAABB(const Math::AABB &area, std::vector<Ecs::EntityId> &out,
+                                          const QueryFilter *filter) {
         out.clear();
         std::vector<CellKey> cells;
         BoxToCells(area, cells);
@@ -132,10 +133,14 @@ namespace Engine::Physics::Collision {
             }
             const auto &vec = it->second;
 
-            for (Ecs::EntityId entity: vec) {
-                auto proxy_it = m_proxies.find(entity);
-                if (proxy_it != m_proxies.end()) {
-                    out.push_back(entity);
+            if (!filter) {
+                out.insert(out.end(), vec.begin(), vec.end());
+            } else {
+                for (Ecs::EntityId entity: vec) {
+                    auto proxy_it = m_proxies.find(entity);
+                    if (proxy_it != m_proxies.end() && PassFilter(proxy_it->second, filter)) {
+                        out.push_back(entity);
+                    }
                 }
             }
         }
