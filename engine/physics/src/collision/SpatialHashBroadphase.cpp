@@ -1,5 +1,6 @@
 #include "SpatialHashBroadphase.hpp"
 
+#include <algorithm>
 #include <unordered_set>
 
 namespace Engine::Physics::Collision {
