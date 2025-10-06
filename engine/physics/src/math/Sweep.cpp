@@ -1,6 +1,8 @@
 #include "../../include/math/Sweep.hpp"
 
 #include <algorithm>
+#include <iostream>
+#include <ostream>
 
 namespace Engine::Physics::Math {
     namespace {
@@ -20,13 +22,12 @@ namespace Engine::Physics::Math {
          *         if there's no intersection.
          */
         float RayAABB_tEnter(const glm::vec3 &origin, const glm::vec3 &dir, const float len, const AABB &box) noexcept {
-            float tmin = 0.0f;
-            float tmax = len;
+            float t_near = 0.0f;
+            float t_far = len;
 
             for (int i = 0; i < 3; ++i) {
                 const float o = origin[i];
                 const float d = dir[i];
-                float t1, t2;
 
                 if (std::abs(d) < k_epsilon) {
                     if (o < box.min[i] || o > box.max[i]) {
@@ -35,18 +36,21 @@ namespace Engine::Physics::Math {
                     continue;
                 }
 
-                t1 = (box.min[i] - o) / d;
-                t2 = (box.max[i] - o) / d;
+                float t1 = (box.min[i] - o) / d;
+                float t2 = (box.max[i] - o) / d;
                 if (t1 > t2) {
                     std::swap(t1, t2);
                 }
-                tmin = std::min(tmin, t1);
-                tmax = std::max(tmax, t1);
-                if (tmin > tmax) {
+                t_near = std::max(t_near, t1);
+                t_far = std::min(t_far, t2);
+                if (t_near > t_far) {
                     return len + 1.0f;
                 }
             }
-            return tmin;
+            if (t_far < 0.0) {
+                return len + 1.0f;
+            }
+            return t_near;
         }
 
         /**
@@ -166,6 +170,7 @@ namespace Engine::Physics::Math {
         const AABB expanded = ExpandedByRadius(box, sphere.radius);
         const float t_enter = RayAABB_tEnter(sphere.center, dir, len, expanded);
 
+        std::cout << t_enter <<" <= " << len << std::endl;
         if (t_enter <= len) {
             hit.hit = true;
 

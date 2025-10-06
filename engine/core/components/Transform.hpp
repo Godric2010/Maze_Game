@@ -5,6 +5,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
 
 #include "PhysicsSystem.hpp"
 
@@ -17,7 +18,15 @@ namespace Engine::Core::Components {
         glm::vec3 m_rotation{};
         glm::vec3 m_scale{};
         glm::mat4 m_matrix{};
-        bool m_dirty;
+        bool m_dirty{};
+
+        void Set(const glm::vec3 pos, const glm::vec3 rot, const glm::vec3 scale) {
+            m_position = pos;
+            m_rotation = rot;
+            m_scale = scale;
+            m_matrix = glm::mat4(1.0f);
+            m_dirty = true;
+        }
 
     public:
         Transform() {
@@ -29,19 +38,11 @@ namespace Engine::Core::Components {
         }
 
         Transform(const glm::vec3 position, const glm::vec3 rotation) {
-            this->m_position = position;
-            this->m_rotation = rotation;
-            this->m_scale = glm::vec3(1.0f, 1.0f, 1.0f);
-            m_matrix = glm::mat4(1.0f);
-            m_dirty = true;
+            Set(position, rotation, glm::vec3(1.0f));
         }
 
         Transform(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale) {
-            this->m_position = position;
-            this->m_rotation = rotation;
-            this->m_scale = scale;
-            m_matrix = glm::mat4(1.0f);
-            m_dirty = true;
+            Set(position, rotation, scale);
         }
 
         [[nodiscard]] glm::vec3 GetPosition() const { return this->m_position; }

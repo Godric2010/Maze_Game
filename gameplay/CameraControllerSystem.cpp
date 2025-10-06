@@ -48,22 +48,23 @@ namespace Gameplay {
 
         auto camera_displacement = glm::vec3(0.0f);
         if (input->IsKeyHeld(Engine::Environment::Key::W)) {
-            camera_displacement.z -= m_velocity * delta_time;
+            camera_displacement.z -= 1;//m_movement_speed * delta_time;
         }
         if (input->IsKeyHeld(Engine::Environment::Key::S)) {
-            camera_displacement.z += m_velocity * delta_time;
+            camera_displacement.z += 1;//m_movement_speed * delta_time;
         }
         if (input->IsKeyHeld(Engine::Environment::Key::A)) {
-            camera_displacement.x += m_velocity * delta_time;
+            camera_displacement.x += 1;//m_movement_speed * delta_time;
         }
         if (input->IsKeyHeld(Engine::Environment::Key::D)) {
-            camera_displacement.x -= m_velocity * delta_time;
+            camera_displacement.x -= 1;//m_movement_speed * delta_time;
         }
         const glm::vec3 pos_delta = right_vec * camera_displacement.x + forward_vec * camera_displacement.z;
         const auto camera_position = transform.GetPosition();
         auto new_camera_position = glm::vec3(camera_position.x + pos_delta.x, camera_position.y + pos_delta.y,
                                              camera_position.z + pos_delta.z);
 
-        motion_intent.translation = new_camera_position;
+        motion_intent.translation = pos_delta;
+        motion_intent.speed_multiplier = m_movement_speed;
     }
 } // namespace
