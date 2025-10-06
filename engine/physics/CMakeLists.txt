@@ -14,6 +14,7 @@ add_library(Physics STATIC
         src/collision/SpatialHashBroadphase.cpp
         src/collision/SpatialHashBroadphase.hpp
         include/collision/IBroadphase.hpp
+        tests/SweepTests.cpp
 )
 
 target_include_directories(Physics

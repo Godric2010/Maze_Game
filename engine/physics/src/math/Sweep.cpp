@@ -170,7 +170,6 @@ namespace Engine::Physics::Math {
         const AABB expanded = ExpandedByRadius(box, sphere.radius);
         const float t_enter = RayAABB_tEnter(sphere.center, dir, len, expanded);
 
-        std::cout << t_enter <<" <= " << len << std::endl;
         if (t_enter <= len) {
             hit.hit = true;
 
