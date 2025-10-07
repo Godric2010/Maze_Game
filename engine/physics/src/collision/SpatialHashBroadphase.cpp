@@ -90,7 +90,7 @@ namespace Engine::Physics::Collision {
             for (const auto &cell: old_cells) {
                 if (!new_set.contains(cell)) {
                     auto bucket_it = m_buckets.find(cell);
-                    if (bucket_it == m_buckets.end()) {
+                    if (bucket_it != m_buckets.end()) {
                         auto &vec = bucket_it->second;
                         auto it = std::ranges::remove(vec, entity).begin();
                         vec.erase(it, vec.end());
