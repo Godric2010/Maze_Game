@@ -7,11 +7,11 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-#include "PhysicsSystem.hpp"
+#include "../systems/physics/PhysicsSystem.hpp"
 
 namespace Engine::Core::Components {
     struct Transform {
-        friend Systems::PhysicsSystem;
+        friend Systems::Physics::PhysicsSystem;
 
     private:
         glm::vec3 m_position{};

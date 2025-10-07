@@ -21,10 +21,11 @@ add_library(Core STATIC
         systems/CommandSystem.cpp
         systems/CommandSystem.hpp
         components/MotionIntent.hpp
-        systems/PhysicsSystem.cpp
-        systems/PhysicsSystem.hpp
+        systems/physics/PhysicsSystem.cpp
+        systems/physics/PhysicsSystem.hpp
         components/Collider.hpp
-        ColliderCache.hpp
+        systems/physics/ColliderCache.hpp
+        ../physics/include/collision/CollisionQueryService.hpp
 )
 
 target_include_directories(Core PUBLIC

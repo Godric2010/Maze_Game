@@ -4,9 +4,10 @@
 #include "ColliderCache.hpp"
 #include "ISystem.hpp"
 #include "MotionIntent.hpp"
+#include "collision/CollisionQueryService.hpp"
 #include "collision/IBroadphase.hpp"
 
-namespace Engine::Core::Systems {
+namespace Engine::Core::Systems::Physics {
     ECS_SYSTEM(PhysicsSystem, Physics, [])
 
     class PhysicsSystem final : public Ecs::ISystem {
@@ -20,21 +21,18 @@ namespace Engine::Core::Systems {
         void Run(Ecs::World &world, float delta_time) override;
 
     private:
-        const float m_epsilon = 1e-4f;
+        const float m_epsilon = 1e-6f;
 
         std::unique_ptr<ColliderCache> m_collider_cache;
-        std::unique_ptr<Physics::Collision::IBroadphase> m_broadphase;
-
-        [[nodiscard]] Physics::Math::AABB UpdateAndGetSweptArea(Ecs::EntityId entity,
-                                                                const glm::vec3 &position,
-                                                                const glm::vec3 &intent) const;
+        std::unique_ptr<Engine::Physics::Collision::IBroadphase> m_broadphase;
+        std::unique_ptr<Engine::Physics::Collision::ICollisionQueryService> m_collision_query_service;
 
         void BuildBoxCollider(Ecs::EntityId entity, Components::BoxCollider box_collider, glm::vec3 position) const;
 
         void BuildSphereCollider(Ecs::EntityId entity, Components::SphereCollider sphere_collider,
                                  glm::vec3 position) const;
 
-        glm::vec3 IntentToDelta(const ::Engine::Core::Components::MotionIntent *intent, const glm::vec3 &world_pos,
+        glm::vec3 IntentToDelta(const Components::MotionIntent *intent, const glm::vec3 &world_pos,
                                 const glm::vec3 &world_rot, float delta_time) const;
     };
 } // namespace

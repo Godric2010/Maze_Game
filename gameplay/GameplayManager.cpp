@@ -127,7 +127,7 @@ namespace Gameplay {
         m_engine.GetWorld().AddComponent(entity, transform_component);
 
         constexpr auto collider = Engine::Core::Components::BoxCollider{
-            .is_static = true, .width = 0.5f, .height = 0.5f, .depth = 1e-6f
+            .is_static = true, .width = 0.5f, .height = 1.0f, .depth = 1e-6f
         };
         m_engine.GetWorld().AddComponent(entity, collider);
     }
@@ -140,7 +140,6 @@ namespace Gameplay {
         const size_t cells = maze_cells.size();
         int count = 1;
         for (const auto &cell: maze_cells) {
-            std::cout << "creating cell " << count << " of " << cells << std::endl;
             CreateMazeCell(maze, cell, floor_mesh_handle, wall_mesh_handle);
             ++count;
         }

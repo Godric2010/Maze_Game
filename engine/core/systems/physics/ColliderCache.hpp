@@ -6,8 +6,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "../physics/include/math/Types.hpp"
-#include "../ecs/src/Entity.hpp"
+#include "../../../physics/include/math/Types.hpp"
+#include "../../../ecs/src/Entity.hpp"
 
 namespace Engine::Core {
     struct ColliderCache {
