@@ -175,7 +175,7 @@ namespace Engine::Physics::Math {
 
             hit.time_of_impact = std::max(0.0f, std::min(t_enter, len));
             hit.point = sphere.center + dir * hit.time_of_impact;
-            hit.normal = NormalFromEntryPoint(hit.point, dir, 0.0f, expanded);
+            hit.normal = NormalFromEntryPoint(hit.point, dir, hit.time_of_impact, expanded);
             hit.penetration_depth = 0.0f;
         }
         return hit;

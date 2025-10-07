@@ -55,7 +55,7 @@ namespace Engine::Physics::Collision {
                 }
                 if (best_time_of_impact <= length(rest)) {
                     glm::vec3 direction = normalize(rest);
-                    position += direction * best_time_of_impact;
+                    position += direction * best_time_of_impact + best_normal * 1e-6f;
                     glm::vec3 remaining = rest - direction * best_time_of_impact;
                     rest = Math::Slide(remaining, best_normal);
                     out.collided = true;

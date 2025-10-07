@@ -18,7 +18,7 @@ namespace Gameplay {
         void Run(Engine::Ecs::World &world, float delta_time) override;
 
     private:
-        const float m_movement_speed = 0.3f;
+        const float m_movement_speed = 0.6f;
         const float m_sensitivity = 0.4f;
 
         const float m_min_pitch = -60.0f;
