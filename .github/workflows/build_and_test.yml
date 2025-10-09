@@ -27,41 +27,28 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Set up LLVM/Clang
-        uses: llvm/actions/setup-llvm@v1
+      
+      - name: Get CMake & Ninja
+        uses: lukka/get-cmake@v4
         with:
-          version: 17
+          cmakeVersion: 3.31.x
+          ninjaVersion: latest
 
-      - name: Set up Ninja
-        uses: seanmiddleditch/gha-setup-ninja@v3
-
-      - name: Set up vcpkg (manifest & cache)
-        uses: microsoft/vcpkg-action@v0
+      - name: Setup vcpkg (manifest + cache)
+        uses: lukka/run-vcpkg@v11
         with:
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
-          appendedCacheKey: ${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+          vcpkgJsonGlob: 'vcpkg.json'
+          runVcpkgInstall: true
 
       - name: Configure (CMake)
         run: |
           cmake -S . -B build -G Ninja \
-            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
-            -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
-            -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_INSTALLATION_ROOT }}/scripts/buildsystems/vcpkg.cmake
-
+           -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
+           -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake
+      
       - name: Build
         run: cmake --build build --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
 
-      - name: Run tests (ctest)
+      - name: Test
         run: ctest --test-dir build --output-on-failure --timeout 180
-
-      - name: Upload test artifacts
-        if: always()
-        uses: actions/upload-artifacts@v4
-        with:
-          name: test-logs-${{ matrix.os }}
-          path: |
-            build/Testing/Temporary/LastTest.log
-            build/Testing/**/Test.xml
-            build/**/test-results.xml
-          if-no-files-found: ignore
