@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  CMAKE_BUILD_TYPE: Release
+  VCPKG_COMMIT: 1d86fc5936d17f8fc77b17634627b746e2f7145a
+
+jobs:
+  build-and-test:
+    name: Build & Test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-latest, windows-latest ]
+    env:
+      CC: clang
+      CXX: clang++
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up LLVM/Clang
+        uses: llvm/actions/setup-llvm@v1
+        with:
+          version: 17
+
+      - name: Set up Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v3
+
+      - name: Set up vcpkg (manifest & cache)
+        uses: microsoft/vcpkg-action@v0
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+          appendedCacheKey: ${{ hashFiles('vcpkg.json', 'vcpkg-configuration.json') }}
+
+      - name: Configure (CMake)
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
+            -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+            -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_INSTALLATION_ROOT }}/scripts/buildsystems/vcpkg.cmake
+
+      - name: Build
+        run: cmake --build build --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
+
+      - name: Run tests (ctest)
+        run: ctest --test-dir build --output-on-failure --timeout 180
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifacts@v4
+        with:
+          name: test-logs-${{ matrix.os }}
+          path: |
+            build/Testing/Temporary/LastTest.log
+            build/Testing/**/Test.xml
+            build/**/test-results.xml
+          if-no-files-found: ignore
