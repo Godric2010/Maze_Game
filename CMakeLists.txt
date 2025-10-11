@@ -24,16 +24,17 @@ if(BUILD_TESTING)
     find_package(Catch2 CONFIG REQUIRED)
 endif ()
 
+include(ecs_system_codegen)
+
 add_subdirectory(engine)
 add_subdirectory(gameplay)
 
-include(ecs_system_codegen)
-
-add_executable(Maze_Game main.cpp generated/Generated.hpp "${GENERATED_SRC}")
+add_executable(Maze_Game
+        main.cpp
+        "${GENERATED_CPP}"
+)
 add_dependencies(Maze_Game ecs_codegen)
-target_include_directories(Maze_Game PRIVATE "${GENERATED_DIR}")
-
-
+target_include_directories(Maze_Game PRIVATE "${GENERATED_FILES_DIR}")
 target_link_libraries(Maze_Game PRIVATE Engine Gameplay)
 
 file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
