@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["master"]
+    branches: [ "master" ]
   pull_request:
 
 permissions:
@@ -27,7 +27,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Get CMake & Ninja
         uses: lukka/get-cmake@latest
         with:
@@ -41,13 +41,20 @@ jobs:
           vcpkgJsonGlob: 'vcpkg.json'
           runVcpkgInstall: true
 
+      - name: Debug vcpkg
+        shell: bash
+        run: |
+          echo "VCPKG_ROOT=${VCPKG_ROOT}"
+          ls -la "${VCPKG_ROOT}/scripts/buildsystems" || true
+
       - name: Configure (CMake)
+        if: runner.os == 'macOS'
         shell: bash
         run: |
           cmake -S . -B build -G Ninja \
            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
-           -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake
-      
+           -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+
       - name: Build
         shell: bash
         run: cmake --build build --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
