@@ -42,13 +42,16 @@ jobs:
           runVcpkgInstall: true
 
       - name: Configure (CMake)
+        shell: bash
         run: |
           cmake -S . -B build -G Ninja \
            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
            -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake
       
       - name: Build
+        shell: bash
         run: cmake --build build --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
 
       - name: Test
+        shell: bash
         run: ctest --test-dir build --output-on-failure --timeout 180
