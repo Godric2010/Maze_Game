@@ -100,7 +100,7 @@ jobs:
           VCPKG_COMMIT: ${{ env.VCPKG_COMMIT }}
         run: |
           set -euo pipefail
-          git clone https://github.com/microsoft/vckpkg.git
+          git clone https://github.com/microsoft/vcpkg.git
           cd vcpkg
           git checkout "${VCPKG_COMMIT}"
 
