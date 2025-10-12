@@ -48,7 +48,6 @@ jobs:
           ls -la "${VCPKG_ROOT}/scripts/buildsystems" || true
 
       - name: Configure (CMake)
-        if: runner.os == 'macOS'
         shell: bash
         run: |
           cmake -S . -B build -G Ninja \
