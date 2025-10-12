@@ -90,17 +90,33 @@ jobs:
           cmakeVersion: 3.31.x
           ninjaVersion: latest
 
-      - name: Install LLVM (clang/llvm-cov/llvm-profdata)
+      - name: Install base tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y llvm clang
+          sudo apt-get install -y git ninja-build llvm clang zip cmake pkg-config
 
       - name: Setup vcpkg (manifest + cache)
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
-          vcpkgJsonGlob: 'vcpkg.json'
-          runVcpkgInstall: true
+        env:
+          VCPKG_COMMIT: ${{ env.VCPKG_COMMIT }}
+        run: |
+          set -euo pipefail
+          git clone https://github/microsoft/vckpkg.git
+          cd vcpkg
+          git checkout "${VCPKG_COMMIT}"
+
+      - name: Bootstrap vcpkg
+        run: |
+          set -euo pipefail
+          ./vcpkg/bootstrap-vcpkg.sh
+          echo "VCPKG_ROOT=${GITHUB_WORKSPACE}/vcpkg" >> "$GITHUB_ENV"
+
+      - name: vcpkg install
+        env:
+          VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+          VCPKG_BINARY_SOURCES: "clear; default, readwrite"
+        run: |
+          set -euo pipefail
+          "${VCPKG_ROOT}/vcpkg" install --triplet x64-linux --clean-after-build --debug
 
       - name: Dump vcpkg failure logs
         if: failure()
