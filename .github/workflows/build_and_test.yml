@@ -114,7 +114,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           VCPKG_ROOT: ${{ github.workspace }}/vcpkg
-          VCPKG_BINARY_SOURCES: "clear; default, readwrite"
+          VCPKG_BINARY_SOURCES: "clear;default,readwrite"
           VCPKG_DEFAULT_TRIPLET: x64
         run: |
           set -euo pipefail
