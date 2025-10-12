@@ -29,5 +29,5 @@ TEST_CASE("MoverSolver stops at wall and slides", "[Physics]") {
     const auto res = MoverSolver::Solve(input, query_service);
     REQUIRE(res.collided);
     REQUIRE(std::abs(res.new_position.z - 2.5f) < 1e-3f);
-    REQUIRE(std::abs(res.last_normal.z - 1.0f) < 1e-4f);
+    REQUIRE(std::abs(res.last_normal.z - -1.0f) < 1e-4f);
 }

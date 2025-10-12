@@ -42,10 +42,11 @@ TEST_CASE_METHOD(ComponentManagerFixture,
 
     component_manager.AddComponent(entity_c, TestClassC{.test_val = 3.3f});
     REQUIRE(component_manager.HasComponent<TestClassC>(entity_c));
-    REQUIRE(component_manager.GetComponent<TestClassC>(entity_c).test_val == 3.3f);
+    REQUIRE(component_manager.GetComponent<TestClassC>(entity_c)->test_val == 3.3f);
 }
 
-TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::AddComponent - Add multiple components to one entity", "[ecs][fast]") {
+TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::AddComponent - Add multiple components to one entity",
+                 "[ecs][fast]") {
     EntityId entity_a = 1u;
 
     component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
@@ -56,9 +57,9 @@ TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::AddComponent - Add m
     REQUIRE(component_manager.HasComponent<TestClassB>(entity_a));
     REQUIRE(component_manager.HasComponent<TestClassC>(entity_a));
 
-    REQUIRE(component_manager.GetComponent<TestClassA>(entity_a).test_val == 1);
-    REQUIRE(component_manager.GetComponent<TestClassB>(entity_a).test_val == -2);
-    REQUIRE(component_manager.GetComponent<TestClassC>(entity_a).test_val == 3.3f);
+    REQUIRE(component_manager.GetComponent<TestClassA>(entity_a)->test_val == 1);
+    REQUIRE(component_manager.GetComponent<TestClassB>(entity_a)->test_val == -2);
+    REQUIRE(component_manager.GetComponent<TestClassC>(entity_a)->test_val == 3.3f);
 }
 
 TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::RemoveComponent - Remove Component", "[ecs][fast]") {
@@ -70,7 +71,7 @@ TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::RemoveComponent - Re
 
     component_manager.RemoveComponent<TestClassA>(entity_a);
     REQUIRE_FALSE(component_manager.HasComponent<TestClassA>(entity_a));
-    REQUIRE(component_manager.GetComponent<TestClassA>(entity_b).test_val == 2);
+    REQUIRE(component_manager.GetComponent<TestClassA>(entity_b)->test_val == 2);
 }
 
 TEST_CASE_METHOD(ComponentManagerFixture,
@@ -90,7 +91,8 @@ TEST_CASE_METHOD(ComponentManagerFixture,
     REQUIRE(entities[1] == entity_b);
 }
 
-TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::OnEntityDestroy - All components that have the entity are removed", "[ecs][fast]") {
+TEST_CASE_METHOD(ComponentManagerFixture,
+                 "ComponentManger::OnEntityDestroy - All components that have the entity are removed", "[ecs][fast]") {
     EntityId entity_a = 1u;
     EntityId entity_b = 2u;
 

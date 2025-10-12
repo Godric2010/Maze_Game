@@ -24,8 +24,8 @@ TEST_CASE("ComponentPool::Add - Add new entity and component", "[ecs][fast]") {
     pool.Add(entityB, TestClass{.testValue = 2});
 
     REQUIRE(pool.Count() == 2);
-    REQUIRE(pool.Get(entityA).testValue == 1);
-    REQUIRE(pool.Get(entityB).testValue == 2);
+    REQUIRE(pool.Get(entityA)->testValue == 1);
+    REQUIRE(pool.Get(entityB)->testValue == 2);
 }
 
 TEST_CASE("ComponentPool::Add - Add entity, that already exists", "[ecs][fast]") {
@@ -35,7 +35,7 @@ TEST_CASE("ComponentPool::Add - Add entity, that already exists", "[ecs][fast]")
 
     pool.Add(entityA, TestClass{.testValue = 2});
     REQUIRE(pool.Count() == 1);
-    REQUIRE(pool.Get(entityA).testValue == 1);
+    REQUIRE(pool.Get(entityA)->testValue == 1);
 }
 
 TEST_CASE("ComponentPool::Add - Add invalid Entity", "[ecs][fast]") {
@@ -74,8 +74,8 @@ TEST_CASE("ComponentPool::Remove - Remove entity in the middle", "[ecs][fast]") 
     REQUIRE(pool.Contains(entityC));
     REQUIRE(pool.Contains(entityA));
 
-    REQUIRE(pool.Get(entityC).testValue == 3);
-    REQUIRE(pool.Get(entityA).testValue == 1);
+    REQUIRE(pool.Get(entityC)->testValue == 3);
+    REQUIRE(pool.Get(entityA)->testValue == 1);
     REQUIRE_THROWS(pool.Get(entityB));
 }
 
@@ -93,7 +93,7 @@ TEST_CASE("ComponentPool::ForEach - Iterate over each component and increase it 
         component.testValue++;
     });
 
-    REQUIRE(pool.Get(entityA).testValue == 2);
-    REQUIRE(pool.Get(entityB).testValue == 3);
-    REQUIRE(pool.Get(entityC).testValue == 4);
+    REQUIRE(pool.Get(entityA)->testValue == 2);
+    REQUIRE(pool.Get(entityB)->testValue == 3);
+    REQUIRE(pool.Get(entityC)->testValue == 4);
 }
