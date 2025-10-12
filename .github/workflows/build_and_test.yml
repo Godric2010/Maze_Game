@@ -95,7 +95,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y git ninja-build llvm clang zip cmake pkg-config
 
-      - name: Setup vcpkg (manifest + cache)
+      - name: Clone vcpkg
         env:
           VCPKG_COMMIT: ${{ env.VCPKG_COMMIT }}
         run: |
@@ -111,12 +111,22 @@ jobs:
           echo "VCPKG_ROOT=${GITHUB_WORKSPACE}/vcpkg" >> "$GITHUB_ENV"
 
       - name: vcpkg install
+        working-directory: ${{ github.workspace }}
         env:
           VCPKG_ROOT: ${{ github.workspace }}/vcpkg
           VCPKG_BINARY_SOURCES: "clear; default, readwrite"
+          VCPKG_DEFAULT_TRIPLET: x64
         run: |
           set -euo pipefail
           "${VCPKG_ROOT}/vcpkg" install --triplet x64-linux --clean-after-build --debug
+
+      - name: Sanity - show manifest & toolchain
+        shell: bash
+        run: |
+          echo "PWD=$PWD"
+          ls -la "${GITHUB_WORKSPACE}/vcpkg.json" || true
+          echo "VCPKG_ROOT=${GITHUB_WORKSPACE}/vcpkg"
+          ls -ls "${GITHUB_WORKSPACE}/vcpkg/scripts/buildsystems/vcpkg.cmake" || true
 
       - name: Dump vcpkg failure logs
         if: failure()
