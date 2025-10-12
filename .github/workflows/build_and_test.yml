@@ -61,3 +61,86 @@ jobs:
       - name: Test
         shell: bash
         run: ctest --test-dir build --output-on-failure --timeout 180
+
+  coverage:
+    name: Coverage (ubuntu + clang/llvm-cov)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get CMake & Ninja
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: 3.31.x
+          ninjaVersion: latest
+
+      - name: Install LLVM (clang/llvm-cov/llvm-profdata)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y llvm clang
+
+      - name: Setup vcpkg (manifest + cache)
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+          vcpkgJsonGlob: 'vcpkg.json'
+          runVcpkgInstall: true
+
+      - name: Configure (CMake, coverage flags)
+        shell: bash
+        run: |
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
+            -DCMAKE_C_FLAGS="--coverage -fprofile-instr-generate -fcoverage-mapping" \
+            -DCMAKE_CXX_FLAGS="--coverage -fprofile-instr-generate -fcoverage-mapping"
+
+      - name: Build (instrumented)
+        shell: bash
+        run: cmake --build build --parallel
+
+      - name: Run tests (produce .profraw files)
+        shell: bash
+        run: |
+          export LLVM_PROFILE_FILE="coverage_%p.profraw"
+          ctest --test-dir build --output-on-failure
+
+      - name: Merge profiles
+        shell: bash
+        run: |
+          llvm-profdata merge -sparse *.profraw -o coverage.profdata
+
+      - name: Generate coverage summary + HTML
+        shell: bash
+        run: |
+          mapfile -t BINARIES < <(find build -type f -executable -name "*test*" -o -name "*tests*" -o -name "Maze_Game" 2>/dev/null)
+          if [ ${#BINARIES[@]} -eq 0 ]; then
+            echo "No executables found for coverage analysis!"
+            exit 1
+          fi
+          
+          llvm-cov report \
+            --ignore-filename-regex='(external|third[_-]party|_deps|vcpkg|tests?)' \
+            --instr-profile=coverage.profdata \
+            "${BINARIES[@]}" | tee coverage-summary.txt
+          
+          rm -rf coverage-html
+          llvm-cov show \
+            --format=html \
+            --output-dir=coverage-html \
+            --show-branches --show-branch-summary \
+            --ignore-filename-regex='(external|third[_-]party|_deps|vcpkg|tests?)' \
+            --instr-profile=coverage.profdata \
+            "${BINARIES[@]}"
+
+      - name: Attach summary to job
+        shell: bash
+        run: |
+          echo "## LLVM Coverage Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          head -n 50 coverage-summary.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMAMRY"
+          
