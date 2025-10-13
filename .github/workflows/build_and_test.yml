@@ -75,10 +75,16 @@ jobs:
           if-no-files-found: ignore
 
   coverage:
-    name: Coverage (ubuntu + clang/llvm-cov)
-    runs-on: ubuntu-latest
-    needs: [ build-and-test ]
-    if: ${{ needs.build-and-test.result == 'success' }}
+    name: Coverage (macOS, clan/llvm-cov)
+    needs: build-and-test
+    if: ${{ success() }}
+    runs-on: macos-latest
+    env:
+      CC: clang
+      CXX: clang++
+      CMAKE_BUILD_TYPE: Debug
+      VCPKG_COMMIT: ${{ env.VCPKG_COMMIT }}
+      LLVM_PROFILE_FILE: build/profiles/%p-%m.profraw
 
     steps:
       - name: Checkout
@@ -90,125 +96,65 @@ jobs:
           cmakeVersion: 3.31.x
           ninjaVersion: latest
 
-      - name: Install base tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            git ninja-build llvm clang zip cmake pkg-config \
-            libltdl-dev autoconf automake libtool pkg-config m4
-
-      - name: Clone vcpkg
-        env:
-          VCPKG_COMMIT: ${{ env.VCPKG_COMMIT }}
-        run: |
-          set -euo pipefail
-          git clone https://github.com/microsoft/vcpkg.git
-          cd vcpkg
-          git checkout "${VCPKG_COMMIT}"
-
-      - name: Bootstrap vcpkg
-        run: |
-          set -euo pipefail
-          ./vcpkg/bootstrap-vcpkg.sh
-          echo "VCPKG_ROOT=${GITHUB_WORKSPACE}/vcpkg" >> "$GITHUB_ENV"
-
-      - name: vcpkg install
-        working-directory: ${{ github.workspace }}
-        env:
-          VCPKG_ROOT: ${{ github.workspace }}/vcpkg
-          VCPKG_BINARY_SOURCES: "clear;default,readwrite"
-          VCPKG_DEFAULT_TRIPLET: x64
-        run: |
-          set -euo pipefail
-          "${VCPKG_ROOT}/vcpkg" install --triplet x64-linux --clean-after-build --debug
-
-      - name: Sanity - show manifest & toolchain
-        shell: bash
-        run: |
-          echo "PWD=$PWD"
-          ls -la "${GITHUB_WORKSPACE}/vcpkg.json" || true
-          echo "VCPKG_ROOT=${GITHUB_WORKSPACE}/vcpkg"
-          ls -ls "${GITHUB_WORKSPACE}/vcpkg/scripts/buildsystems/vcpkg.cmake" || true
-
-      - name: Dump vcpkg failure logs
-        if: failure()
-        shell: bash
-        run: |
-          set -x
-          echo "VCPKG_ROOT=${VCPKG_ROOT}"
-          find "${VCPKG_ROOT}/buildtrees" -type f -name '*.log' -printf '%T@ %p\n' \
-            | sort -nr | head -n 20 | awk '{print $2}' | while read -r f; do
-              echo "================= $f ================="
-              tail -n 200 "$f" || true
-            done
+      - name: Setup vcpkg (manifest + cache)
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+          vcpkgJsonGlob: 'vcpkg.json'
+          runVcpkgInstall: true
 
       - name: Configure (CMake, coverage flags)
         shell: bash
         run: |
-          cmake -S . -B build -G Ninja \
-            -DCMAKE_BUILD_TYPE=Debug \
-            -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
-            -DCMAKE_C_FLAGS="--coverage -fprofile-instr-generate -fcoverage-mapping" \
+          cmake -D. -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
+            -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+            -DCMAKE_C_FLAGS="--coverage -fprofile-instr-generate -fcoverage-mapping"\
             -DCMAKE_CXX_FLAGS="--coverage -fprofile-instr-generate -fcoverage-mapping"
 
-      - name: Build (instrumented)
+      - name: Build
         shell: bash
-        run: cmake --build build --parallel
+        run: cmake --build build --config ${CMAKE_BUILD_TYPE} --parallel
 
-      - name: Run tests (produce .profraw files)
+      - name: Test (with profiling)
         shell: bash
         run: |
-          export LLVM_PROFILE_FILE="coverage_%p.profraw"
-          ctest --test-dir build --output-on-failure
+          mkdir -p build/profiles
+          ctest --test-dir build --output-on-failure --timeout 180
 
       - name: Merge profiles
         shell: bash
         run: |
-          llvm-profdata merge -sparse *.profraw -o coverage.profdata
+          llvm-profdata merge -sparse build/profiles/*.profraw -o build/coverage.profdata
 
-      - name: Generate coverage summary + HTML
+      - name: Generate coverage (text + lcov + html)
         shell: bash
         run: |
-          mapfile -t BINARIES < <(find build -type f -executable -name "*test*" -o -name "*tests*" -o -name "Maze_Game" 2>/dev/null)
-          if [ ${#BINARIES[@]} -eq 0 ]; then
-            echo "No executables found for coverage analysis!"
-            exit 1
-          fi
+          BIN_DIR="build"
+          llvm-cov report $BIN_DIR/* \
+            -instr-profile build/coverage.profdata \
+            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
+            > build/coverage-summary.txt
           
-          llvm-cov report \
-            --ignore-filename-regex='(external|third[_-]party|_deps|vcpkg|tests?)' \
-            --instr-profile=coverage.profdata \
-            "${BINARIES[@]}" | tee coverage-summary.txt
+          llvm-cov export $BIN_DIR/* \
+            -format=lcov \
+            -instr-profile build/coverage.profdata \
+            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
+            > build/coverage.info
           
-          rm -rf coverage-html
-          llvm-cov show \
-            --format=html \
-            --output-dir=coverage-html \
-            --show-branches --show-branch-summary \
-            --ignore-filename-regex='(external|third[_-]party|_deps|vcpkg|tests?)' \
-            --instr-profile=coverage.profdata \
-            "${BINARIES[@]}"
+          mkdir -p build/coverage-html
+          llvm-cov show $BIN_DIR/* \
+            -instr-profile build/coverage.profdata \
+            -format=html -output-dir build/coverage-html \
+            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)'
 
-      - name: Attach summary to job
-        shell: bash
-        run: |
-          echo "## LLVM Coverage Summary" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMMARY"
-          head -n 50 coverage-summary.txt >> "$GITHUB_STEP_SUMMARY"
-          echo '```' >> "$GITHUB_STEP_SUMAMRY"
-
-      - name: Zip HTML report
-        shell: bash
-        run: |
-          cd coverage-html
-          zip -r ../coverage.html.zip .
-          cd ..
-
-      - name: Upload coverage bundle
-        if: always()
+      - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-bundle
-          path: coverage-html.zip
-          
+          name: coverage-macos
+          path: |
+            build/coverage-summary.txt
+            build/coverage.info
+            build/coverage-html
+            
+            
