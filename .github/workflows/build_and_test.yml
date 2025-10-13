@@ -75,7 +75,7 @@ jobs:
           if-no-files-found: ignore
 
   coverage:
-    name: Coverage (macOS, clan/llvm-cov)
+    name: Coverage (macOS, clang/llvm-cov)
     needs: build-and-test
     if: ${{ success() }}
     runs-on: macos-latest
@@ -106,10 +106,10 @@ jobs:
       - name: Configure (CMake, coverage flags)
         shell: bash
         run: |
-          cmake -D. -B build -G Ninja \
+          cmake -S . -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
-            -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-            -DCMAKE_C_FLAGS="--coverage -fprofile-instr-generate -fcoverage-mapping"\
+            -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
+            -DCMAKE_C_FLAGS="--coverage -fprofile-instr-generate -fcoverage-mapping" \
             -DCMAKE_CXX_FLAGS="--coverage -fprofile-instr-generate -fcoverage-mapping"
 
       - name: Build
