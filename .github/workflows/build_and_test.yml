@@ -83,7 +83,7 @@ jobs:
       CC: clang
       CXX: clang++
       CMAKE_BUILD_TYPE: Debug
-      VCPKG_COMMIT: ${{ env.VCPKG_COMMIT }}
+#      VCPKG_COMMIT: ${{ env.VCPKG_COMMIT }}
       LLVM_PROFILE_FILE: build/profiles/%p-%m.profraw
 
     steps:
