@@ -137,7 +137,7 @@ jobs:
         run: |
           mkdir -p build/profiles
           export LLVM_PROFILE_FILE="$PWD/build/profiles/%p-%m.profraw"
-          ctest --test-dir build --output-on-failure --timeout 180 -v
+          ctest --test-dir build --output-on-failure --timeout 180 -V
 
       - name: Merge profiles
         shell: bash
