@@ -143,16 +143,16 @@ jobs:
         shell: bash
         run: |
           echo "Collecting .profraw files..."
-          PROFS="$(find build -name '*.profraw' -print)"
-          if [ "$PROFS" -eq 0 ]; then
+          find build -name '*.profraw' -type f -print0 > prof.list
+          COUNT=$(tr -cd '\0' < prof.list | wc -c)
+          if [ "$COUNT" -eq 0 ]; then
             echo "No .profraw files found! Tree for debugging:"
             find build -maxdepth 3 -type d -print
             exit 1
           fi
           
-          find build -name '*.profraw' -print0 > prof.list
-          echo "Merging $(wc -1 < prof.list) profile files..."
-          llvm-profdata merge -sparse "$PROFS" -o build/coverage.profdata
+          echo "Merging $COUNT profile files..."
+          xargs -0 llvm-profdata merge -sparse -o build/coverage.profdata < prof.list
 
       - name: Generate coverage (text + lcov + html)
         shell: bash
