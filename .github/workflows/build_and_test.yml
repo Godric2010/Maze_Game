@@ -184,14 +184,14 @@ jobs:
           # text summary
           xargs -0 llvm-cov report \
             -instr-profile build/coverage.profdata \
-            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
+#            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
             < objects.list > build/coverage-summary.txt
           
           # LCOV export
           xargs -0 llvm-cov export \
             -format=lcov \
             -instr-profile build/coverage.profdata \
-            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
+#            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
             < objects.list > build/coverage.info
           
           # HTML
@@ -199,7 +199,7 @@ jobs:
           xargs -0 llvm-cov show \
             -instr-profile build/coverage.profdata \
             -format=html -output-dir build/coverage-html \
-            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
+#            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
             < objects.list > /dev/null
 
       - name: Upload coverage artifacts
