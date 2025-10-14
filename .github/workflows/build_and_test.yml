@@ -137,17 +137,18 @@ jobs:
         run: |
           mkdir -p build/profiles
           export LLVM_PROFILE_FILE="$PWD/build/profiles/%p-%m.profraw"
-          ctest --test-dir build --output-on-failure --timeout 180
+          ctest --test-dir build --output-on-failure --timeout 180 -v
 
       - name: Merge profiles
         shell: bash
         run: |
-          mapfile -t PROFS < <(find build -name '*.profraw')
-          if [ "${#PRODS[@]}" -eq 0 ]; then
-            echo "No .profraw files found. Tree for debugging:"; find build -maxdepth 3 -type d -print
+          PROFS="$(find build -name '*.profraw' -print)"
+          if [ "$PROFS" -eq 0 ]; then
+            echo "No .profraw files found. Tree for debugging:"
+            find build -maxdepth 3 -type d -print
             exit 1
           fi
-          llvm-profdata merge -sparse "${PROFS[@]}" -o build/coverage.profdata
+          llvm-profdata merge -sparse "$PROFS" -o build/coverage.profdata
 
       - name: Generate coverage (text + lcov + html)
         shell: bash
