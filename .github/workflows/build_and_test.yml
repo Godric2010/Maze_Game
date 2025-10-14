@@ -80,8 +80,6 @@ jobs:
     if: ${{ success() }}
     runs-on: macos-latest
     env:
-      CC: ""
-      CXX: ""
       CMAKE_BUILD_TYPE: Debug
 #      VCPKG_COMMIT: ${{ env.VCPKG_COMMIT }}
       LLVM_PROFILE_FILE: build/profiles/%p-%m.profraw
@@ -126,7 +124,9 @@ jobs:
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
             -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
             -DCMAKE_C_FLAGS="-fprofile-instr-generate -fcoverage-mapping" \
-            -DCMAKE_CXX_FLAGS="-fprofile-instr-generate -fcoverage-mapping"
+            -DCMAKE_CXX_FLAGS="-fprofile-instr-generate -fcoverage-mapping" \
+            -DCMAKE_EXE_LINKER_FLAGS="-fprofile-instr-generate" \
+            -DCMAKE_SHARED_LINKER_FLAGS="-fprofile-instr-generate"
 
       - name: Build
         shell: bash
@@ -154,12 +154,24 @@ jobs:
           echo "Merging $COUNT profile files..."
           xargs -0 llvm-profdata merge -sparse -o build/coverage.profdata < prof.list
 
+      - name: Sanity check for coverage mapping
+        shell: bash
+        run: |
+          EXE=$(find build -type f \( -perm -u+x -o -perm -g+x -o -perm -o+x \) ! -path "*/vcpkg_installed/*" | head -n 1)
+          if [ -z "$EXE" ]; then echo "No executable to probe"; exit 1; fi
+          echo "Probing: $EXE"
+          if ! llvm-cov report -instr-profile build/coverage.profdata "$EXE" >/dev/null 2>&1; then
+            echo "Selected binary lacks coverage mapping. Check compile+link flags above."
+            exit 1
+          fi
+          echo "Coverage mapping present"
+
       - name: Generate coverage (text + lcov + html)
         shell: bash
         run: |
           echo "Collecting objects for coverage..."
           
-          find build -type f \( -perm -111 -o -name '*.o' -o -name '*.a' -o -name '*.dylib' \) -print0 > objects.list
+          find build -type f \( -perm -u+x -o -perm -g+x -o -perm -o+x -o -name '*.o' -o -name '*.a' -o -name '*.dylib' \) -print0 > objects.list
           
           OBJCOUNT=$(tr -cd '\0' < objects.list | wc -c)
           if [ "$OBJCOUNT" -eq 0 ]; then
