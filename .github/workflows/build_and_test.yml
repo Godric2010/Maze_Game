@@ -157,23 +157,38 @@ jobs:
       - name: Generate coverage (text + lcov + html)
         shell: bash
         run: |
-          BIN_DIR="build"
-          llvm-cov report $BIN_DIR/* \
+          echo "Collecting objects for coverage..."
+          
+          find build -type f \( -perm -111 -o -name '*.o' -o -name '*.a' -o -name '*.dylib' \) -print0 > objects.list
+          
+          OBJCOUNT=$(tr -cd '\0' < objects.list | wc -c)
+          if [ "$OBJCOUNT" -eq 0 ]; then
+            echo "No object files or executables found for coverage!"
+            find build -maxdepth 3 -type f | sed -n '1,100p'
+            exit 1
+          fi
+          echo "Found $OBJCOUNT object(s) for coverage."
+          
+          # text summary
+          xargs -0 llvm-cov report \
             -instr-profile build/coverage.profdata \
             -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
-            > build/coverage-summary.txt
+            < objects.list > build/coverage-summary.txt
           
-          llvm-cov export $BIN_DIR/* \
+          # LCOV export
+          xargs -0 llvm-cov export \
             -format=lcov \
             -instr-profile build/coverage.profdata \
             -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
-            > build/coverage.info
+            < objects.list > build/coverage.info
           
+          # HTML
           mkdir -p build/coverage-html
-          llvm-cov show $BIN_DIR/* \
+          xargs -0 llvm-cov show \
             -instr-profile build/coverage.profdata \
             -format=html -output-dir build/coverage-html \
-            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)'
+            -ignore-filename-regex='(tests?/|/vcpkg|/usr/|/Library/)' \
+            < objects.list > /dev/null
 
       - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
