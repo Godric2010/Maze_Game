@@ -103,14 +103,28 @@ jobs:
           vcpkgJsonGlob: 'vcpkg.json'
           runVcpkgInstall: true
 
+      - name: Install LLVM tools
+        shell: bash
+        run: |
+          brew update
+          brew install llvm
+          echo "/opt/homebrew/opt/llvm/bin" >> "$GITHUB_PATH"
+
+      - name: Check llvm tools
+        run: |
+          which llvm-profdata
+          which llvm-cov
+          llvm-profdata --version
+          llvm-cov --version
+
       - name: Configure (CMake, coverage flags)
         shell: bash
         run: |
           cmake -S . -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
             -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
-            -DCMAKE_C_FLAGS="--coverage -fprofile-instr-generate -fcoverage-mapping" \
-            -DCMAKE_CXX_FLAGS="--coverage -fprofile-instr-generate -fcoverage-mapping"
+            -DCMAKE_C_FLAGS="-fprofile-instr-generate -fcoverage-mapping" \
+            -DCMAKE_CXX_FLAGS="-fprofile-instr-generate -fcoverage-mapping"
 
       - name: Build
         shell: bash
