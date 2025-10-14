@@ -142,12 +142,16 @@ jobs:
       - name: Merge profiles
         shell: bash
         run: |
+          echo "Collecting .profraw files..."
           PROFS="$(find build -name '*.profraw' -print)"
           if [ "$PROFS" -eq 0 ]; then
-            echo "No .profraw files found. Tree for debugging:"
+            echo "No .profraw files found! Tree for debugging:"
             find build -maxdepth 3 -type d -print
             exit 1
           fi
+          
+          find build -name '*.profraw' -print0 > prof.list
+          echo "Merging $(wc -1 < prof.list) profile files..."
           llvm-profdata merge -sparse "$PROFS" -o build/coverage.profdata
 
       - name: Generate coverage (text + lcov + html)
