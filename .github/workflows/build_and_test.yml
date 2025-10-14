@@ -80,8 +80,8 @@ jobs:
     if: ${{ success() }}
     runs-on: macos-latest
     env:
-      CC: clang
-      CXX: clang++
+      CC: ""
+      CXX: ""
       CMAKE_BUILD_TYPE: Debug
 #      VCPKG_COMMIT: ${{ env.VCPKG_COMMIT }}
       LLVM_PROFILE_FILE: build/profiles/%p-%m.profraw
@@ -96,6 +96,13 @@ jobs:
           cmakeVersion: 3.31.x
           ninjaVersion: latest
 
+      - name: Ensure Apple Toolchain
+        shell: bash
+        run: |
+          echo "$(xcrun --find clang | xargs dirname)" >> "$GITHUB_PATH"
+          clang --version
+          ninja --version
+
       - name: Setup vcpkg (manifest + cache)
         uses: lukka/run-vcpkg@v11
         with:
@@ -109,11 +116,6 @@ jobs:
           brew update
           brew install llvm
           echo "/opt/homebrew/opt/llvm/bin" >> "$GITHUB_PATH"
-
-      - name: Check llvm tools
-        run: |
-          which llvm-profdata
-          which llvm-cov
           llvm-profdata --version
           llvm-cov --version
 
