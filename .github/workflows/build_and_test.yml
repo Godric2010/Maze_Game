@@ -20,6 +20,9 @@ jobs:
       fail-fast: false
       matrix:
         os: [ macos-latest, windows-latest ]
+    env:
+      CC: clang
+      CXX: clang++
 
     steps:
       - name: Checkout
@@ -73,8 +76,7 @@ jobs:
         run: |
           brew update
           brew install llvm
-          echo "/opt/homebrew/opt/llvm/bin" >> "$GITHUB_PATH" || true
-          echo "/usr/local/opt/llvm/bin" >> "$GITHUB_PATH" || true
+          echo "/opt/homebrew/opt/llvm/bin" >> "$GITHUB_PATH" 
           llvm-profdata --version
           llvm-cov --version
 
