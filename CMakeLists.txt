@@ -14,15 +14,31 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-#if (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|MSVC")
-#    message(FATAL_ERROR "This project requires Clang or MSVC as C++ compiler.")
-#endif ()
 
 include(CTest)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-if(BUILD_TESTING)
+if (BUILD_TESTING)
     find_package(Catch2 CONFIG REQUIRED)
 endif ()
+
+option(ENABLE_COVERAGE "Enable Coverage Flags" OFF)
+function(enable_coverage TGT)
+    if (NOT TARGET ${TGT})
+        message(WARNING "enable_coverage: target '${TGT}' not found")
+        return()
+    endif ()
+    if (NOT ENABLE_COVERAGE OR NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        return()
+    endif ()
+
+    get_target_property(_type ${TGT} TYPE)
+    message("Enable coverage for ${TGT}")
+    target_compile_options(${TGT} PRIVATE -O0 -g -fprofile-instr-generate -fcoverage-mapping)
+
+    if (_type STREQUAL "EXECUTABLE" OR _type STREQUAL "SHARED_LIBRARY" OR _type STREQUAL "MODULE_LIBRARY")
+        target_link_options(${TGT} PRIVATE -fprofile-instr-generate -fcoverage-mapping)
+    endif ()
+endfunction()
 
 include(ecs_system_codegen)
 
@@ -59,3 +75,26 @@ if (BUILD_TESTING)
             USES_TERMINAL
             COMMENT "Running all tests via CTest")
 endif ()
+
+
+enable_coverage(Maze_Game)
+# --- Coverage Target ---
+find_program(LLVM_PROFDATA llvm-profdata)
+find_program(LLVM_COV llvm-cov)
+
+if (NOT LLVM_PROFDATA OR NOT LLVM_COV)
+    message(WARNING "llvm-profdata/llvm-cov not found in PATH; coverage target may fail locally")
+endif ()
+
+set(COVERAGE_EXECUTABLES)
+
+add_custom_target(coverage
+        COMMAND ${CMAKE_COMMAND} -E env
+        ENABLE_COVERAGE=${ENABLE_COVERAGE}
+        ${CMAKE_SOURCE_DIR}/scripts/coverage.sh
+        ${CMAKE_BINARY_DIR}
+        ${COVERAGE_EXECUTABLES}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        USES_TERMINAL
+        COMMENT "Running coverage via scripts/coverage.sh"
+)

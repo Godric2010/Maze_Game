@@ -20,9 +20,6 @@ jobs:
       fail-fast: false
       matrix:
         os: [ macos-latest, windows-latest ]
-    env:
-      CC: clang
-      CXX: clang++
 
     steps:
       - name: Checkout
@@ -41,28 +38,52 @@ jobs:
           vcpkgJsonGlob: 'vcpkg.json'
           runVcpkgInstall: true
 
-      - name: Debug vcpkg
-        shell: bash
-        run: |
-          echo "VCPKG_ROOT=${VCPKG_ROOT}"
-          ls -la "${VCPKG_ROOT}/scripts/buildsystems" || true
-
       - name: Configure (CMake)
         shell: bash
         run: |
-          cmake -S . -B build -G Ninja \
-           -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
-           -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+           export CC=clang
+           export CXX=clang++
+           cmake -S . -B build -G Ninja \
+              -DCMAKE_BUILD_TYPE=Debug \
+              -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
+              -DENABLE_COVERAGE=ON
+          else
+            cmake -S . -B build -G Ninja \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+          fi
 
       - name: Build
         shell: bash
-        run: cmake --build build --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
+        run: cmake --build build  --parallel
 
       - name: Test
         shell: bash
         run: |
-          ctest --test-dir build --output-on-failure --timeout 180 \
-                --output-junit test-results.xml
+          if [ "${{ startsWith(matrix.os, 'macos') }}" == "true" ]; then 
+            mkdir -p build/coverage/raw
+            export LLVM_PROFILE_FILE="$PWD/build/coverage/raw/%p-%m.profraw"
+          fi
+          ctest --test-dir build --output-on-failure --timeout 180  --output-junit build/test-results.xml
+
+      - name: Install LLVM Tools (macOS only)
+        if: startsWith(matrix.os, 'macos')
+        shell: bash
+        run: |
+          brew update
+          brew install llvm
+          echo "/opt/homebrew/opt/llvm/bin" >> "$GITHUB_PATH" || true
+          echo "/usr/local/opt/llvm/bin" >> "$GITHUB_PATH" || true
+          llvm-profdata --version
+          llvm-cov --version
+
+      - name: Generate Coverage (macOS only)
+        if: startsWith(matrix.os, 'macos')
+        shell: bash
+        run: |
+          chmod +x scripts/coverage.sh
+          ./scripts/coverage.sh build
 
       - name: Upload test results
         if: always()
@@ -74,138 +95,12 @@ jobs:
             build/Testing/Temporary/LastTest.log
           if-no-files-found: ignore
 
-  coverage:
-    name: Coverage (macOS, clang/llvm-cov)
-    needs: build-and-test
-    if: ${{ success() }}
-    runs-on: macos-latest
-    env:
-      CMAKE_BUILD_TYPE: Debug
-#      VCPKG_COMMIT: ${{ env.VCPKG_COMMIT }}
-      LLVM_PROFILE_FILE: build/profiles/%p-%m.profraw
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Get CMake & Ninja
-        uses: lukka/get-cmake@latest
-        with:
-          cmakeVersion: 3.31.x
-          ninjaVersion: latest
-
-      - name: Ensure Apple Toolchain
-        shell: bash
-        run: |
-          echo "$(xcrun --find clang | xargs dirname)" >> "$GITHUB_PATH"
-          clang --version
-          ninja --version
-
-      - name: Setup vcpkg (manifest + cache)
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
-          vcpkgJsonGlob: 'vcpkg.json'
-          runVcpkgInstall: true
-
-      - name: Install LLVM tools
-        shell: bash
-        run: |
-          brew update
-          brew install llvm
-          echo "/opt/homebrew/opt/llvm/bin" >> "$GITHUB_PATH"
-          llvm-profdata --version
-          llvm-cov --version
-
-      - name: Configure (CMake, coverage flags)
-        shell: bash
-        run: |
-          cmake -S . -B build -G Ninja \
-            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
-            -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
-            -DCMAKE_C_FLAGS="-fprofile-instr-generate -fcoverage-mapping" \
-            -DCMAKE_CXX_FLAGS="-fprofile-instr-generate -fcoverage-mapping" \
-            -DCMAKE_EXE_LINKER_FLAGS="-fprofile-instr-generate" \
-            -DCMAKE_SHARED_LINKER_FLAGS="-fprofile-instr-generate"
-
-      - name: Build
-        shell: bash
-        run: cmake --build build --config ${CMAKE_BUILD_TYPE} --parallel
-
-      - name: Test (with profiling)
-        shell: bash
-        run: |
-          mkdir -p build/profiles
-          export LLVM_PROFILE_FILE="$PWD/build/profiles/%p-%m.profraw"
-          ctest --test-dir build --output-on-failure --timeout 180 -V
-
-      - name: Merge profiles
-        shell: bash
-        run: |
-          echo "Collecting .profraw files..."
-          find build -name '*.profraw' -type f -print0 > prof.list
-          COUNT=$(tr -cd '\0' < prof.list | wc -c)
-          if [ "$COUNT" -eq 0 ]; then
-            echo "No .profraw files found! Tree for debugging:"
-            find build -maxdepth 3 -type d -print
-            exit 1
-          fi
-          
-          echo "Merging $COUNT profile files..."
-          xargs -0 llvm-profdata merge -sparse -o build/coverage.profdata < prof.list
-
-      - name: Sanity check for coverage mapping
-        shell: bash
-        run: |
-          EXE=$(find build -type f \( -perm -u+x -o -perm -g+x -o -perm -o+x \) ! -path "*/vcpkg_installed/*" | head -n 1)
-          if [ -z "$EXE" ]; then echo "No executable to probe"; exit 1; fi
-          echo "Probing: $EXE"
-          if ! llvm-cov report -instr-profile build/coverage.profdata "$EXE" >/dev/null 2>&1; then
-            echo "Selected binary lacks coverage mapping. Check compile+link flags above."
-            exit 1
-          fi
-          echo "Coverage mapping present"
-
-      - name: Generate coverage (text + lcov + html)
-        shell: bash
-        run: |
-          echo "Collecting objects for coverage..."
-          
-          find build -type f \( -perm -u+x -o -perm -g+x -o -perm -o+x -o -name '*.o' -o -name '*.a' -o -name '*.dylib' \) -print0 > objects.list
-          
-          OBJCOUNT=$(tr -cd '\0' < objects.list | wc -c)
-          if [ "$OBJCOUNT" -eq 0 ]; then
-            echo "No object files or executables found for coverage!"
-            find build -maxdepth 3 -type f | sed -n '1,100p'
-            exit 1
-          fi
-          echo "Found $OBJCOUNT object(s) for coverage."
-          
-          # text summary
-          xargs -0 llvm-cov report \
-            -instr-profile build/coverage.profdata \
-            < objects.list > build/coverage-summary.txt
-          
-          # LCOV export
-          xargs -0 llvm-cov export \
-            -format=lcov \
-            -instr-profile build/coverage.profdata \
-            < objects.list > build/coverage.info
-          
-          # HTML
-          mkdir -p build/coverage-html
-          xargs -0 llvm-cov show \
-            -instr-profile build/coverage.profdata \
-            -format=html -output-dir build/coverage-html \
-            < objects.list > /dev/null
-
-      - name: Upload coverage artifacts
+      - name: Upload coverage artifacts (macOS only)
+        if: startsWith(matrix.os, 'macos')
         uses: actions/upload-artifact@v4
         with:
           name: coverage-macos
           path: |
-            build/coverage-summary.txt
-            build/coverage.info
-            build/coverage-html
-            
-            
+            build/coverage/summary.txt
+            build/coverage/html
+          if-no-files-found: error

@@ -41,6 +41,12 @@ function(add_catch2_tests)
             --reporter;compact
     )
 
+    if(COMMAND enable_coverage)
+        if(TARGET ${APP_TARGET})
+            enable_coverage(${APP_TARGET})
+        endif ()
+    endif ()
+
     if (NOT APP_DISABLE_REPORTS)
         if (NOT DEFINED APP_TEST_REPORT_DIR)
             set(APP_TEST_REPORT_DIR "${CMAKE_BINARY_DIR}/test-reports")

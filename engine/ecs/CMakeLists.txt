@@ -19,6 +19,11 @@ add_library(ECS STATIC
         include/ComponentEventBus.hpp
 )
 
+if(COMMAND enable_coverage)
+    message("ECS- Enable coverage")
+    enable_coverage(ECS)
+endif ()
+
 target_include_directories(ECS
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>

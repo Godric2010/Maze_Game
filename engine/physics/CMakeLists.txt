@@ -20,6 +20,11 @@ add_library(Physics STATIC
         tests/FakeCollisionQueryService.hpp
 )
 
+if(COMMAND enable_coverage)
+    message("Physics- Enable coverage")
+    enable_coverage(Physics)
+endif ()
+
 target_include_directories(Physics
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
