@@ -74,11 +74,26 @@ jobs:
         if: startsWith(matrix.os, 'macos')
         shell: bash
         run: |
-          brew update
-          brew install llvm
-          echo "/opt/homebrew/opt/llvm/bin" >> "$GITHUB_PATH" 
-          llvm-profdata --version
+          set -euo pipefail
+          if xcrun -f llvm-cov >/dev/null 2>&1 && xcrun -f llvm-profdata >/dev/null 2>&1; then
+            LLVM_BIN="$(dirname "$(xcrun -f llvm-cov)")"
+            echo "Using Xcode's LLVM tools at: $LLVM_BIN"
+            export PATH="$LLVM_BIN:$PATH"
+            echo "$LLVM_BIN" >> "$GITHUB_PATH"
+          else
+            echo "Xcode LLVM tools not found, install via Homebrew..."
+            brew update
+            brew install llvm
+            LLVM_BIN="$(brew --prefix llvm)/bin"
+            echo "Using Homebrew LLVM tools at: $LLVM_BIN"
+            export PATH="$LLVM_BIN:$PATH"
+            echo "$LLVM_BIN" >>"$GITHUB_PATH"
+          fi
+          
+          which llvm-cov
+          which llvm-profdata
           llvm-cov --version
+          llvm-profdata --version
 
       - name: Generate Coverage (macOS only)
         if: startsWith(matrix.os, 'macos')
