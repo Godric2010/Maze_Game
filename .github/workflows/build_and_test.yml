@@ -70,7 +70,7 @@ jobs:
             export LLVM_PROFILE_FILE="$PWD/build/coverage/raw/%p-%m.profraw"
           fi
           ctest --test-dir build -N
-          ctest --test-dir build --output-on-failure  --output-junit build/test-results.xml --timeout 180
+          ctest --test-dir build --output-on-failure  --output-junit build/Testing/test-results.xml --timeout 180
 
       - name: Install LLVM Tools (macOS only)
         if: startsWith(matrix.os, 'macos')
@@ -110,7 +110,7 @@ jobs:
         with:
           name: tests-${{ matrix.os }}
           path: |
-            build/test-results.xml
+            build/Testing/test-results.xml
             build/Testing/Temporary/LastTest.log
           if-no-files-found: ignore
 
@@ -147,7 +147,7 @@ jobs:
           set -euo pipefail
           
           echo "Computing artifacts ... macOS test results"
-          MACOS_XML="artifacts/tests-macos-latest/build/test-results.xml"
+          MACOS_XML="artifacts/tests-macos-latest/build/Testing/test-results.xml"
           if [[ -f "$MACOS_XML" ]]; then
             MACOS_FAILS=$(grep -o 'failures="[0-9]\+"' "$MACOS_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
             MACOS_ERRORS=$(grep -o 'errors="[0-9]\+"' "$MACOS_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
@@ -161,7 +161,7 @@ jobs:
           fi
           
           echo "Computing artifacts ... windows test results"
-          WIN_XML="artifacts/tests-windows-latest/build/test-results.xml"
+          WIN_XML="artifacts/tests-windows-latest/build/Testing/test-results.xml"
           if [[ -f "$WIN_XML" ]]; then
             WIN_FAILS=$(grep -o 'failures="[0-9]\+"' "$WIN_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
             WIN_ERRORS=$(grep -o 'errors="[0-9]\+"' "$WIN_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
@@ -180,7 +180,8 @@ jobs:
           if [[ -f "$COV_SUM" ]]; then
             LINE=$(grep -E '^TOTAL' "$COV_SUM" || true)
             if [[ -n "$LINE" ]]; then
-              COV_PCT=$(echo "$LINE" | awk '{print $(NF-1)}')
+              COV_PCT="$(echo "$LINE" | grep -Eo '[0-9]+(\.[0-9]+)?%' | tail -n1 || true)"
+              [[ -z "$COV_PCT" ]] && COV_PCT="n/a"
             fi
           fi
           
@@ -196,7 +197,7 @@ jobs:
             echo "coverage_pct<<EOF"
             echo "${COV_PCT}"
             echo "EOF"
-          } >> "$GIHTUB_OUTPUT"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Post to Discord
         env:
@@ -212,7 +213,7 @@ jobs:
           CONTENT="**CI Results** (${REF_NAME})
                   macOS: ${MACOS}
                   Windows: ${WINDOWS}
-                  Coverage (macOS): ${COV}%
+                  Coverage (macOS): ${COV}
                   RUN: ${RUN_URL}"
           
           curl -sS -X POST \
