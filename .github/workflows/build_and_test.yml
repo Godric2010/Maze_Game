@@ -64,11 +64,13 @@ jobs:
       - name: Test
         shell: bash
         run: |
-          if [ "${{ startsWith(matrix.os, 'macos') }}" == "true" ]; then 
+          set -euo pipefail
+          if [[ "$RUNNER_OS" == "macOS" ]]; then 
             mkdir -p build/coverage/raw
             export LLVM_PROFILE_FILE="$PWD/build/coverage/raw/%p-%m.profraw"
           fi
-          ctest --test-dir build --output-on-failure --timeout 180  --output-junit build/test-results.xml
+          ctest --test-dir build -N
+          ctest --test-dir build --output-on-failure  --output-junit build/test-results.xml --timeout 180
 
       - name: Install LLVM Tools (macOS only)
         if: startsWith(matrix.os, 'macos')
@@ -121,3 +123,86 @@ jobs:
             build/coverage/summary.txt
             build/coverage/html
           if-no-files-found: error
+
+  notify-discord:
+    name: Notify-Discord
+    needs: [ build-and-test ]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Download artifacts (tests + coverage)
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Ensure jq (for JSON)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq
+
+      - name: Compute per-OS test status + coverage
+        id: compute
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          MACOS_XML="artifacts/tests-macos-latest/build/test-results.xml"
+          if [[ -f "$MACOS_XML" ]]; then
+            MACOS_FAILS=$(grep -o 'failures="[0-9]\+"' "$MACOS_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
+            MACOS_ERRORS=$(grep -o 'errors="[0-9]\+"' "$MACOS_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
+            if [[ "${MACOS_FAILS:-0}" = "0" && "${MACOS_ERRORS:-0}" = "0" ]]; then
+              MACOS_STATUS="✅"
+            else
+              MACOS_STATUS="❌"
+            fi
+          else 
+            MACOS_STATUS="❓"
+          fi
+          
+          WIN_XML="artifacts/tests-windows-latest/build/test-results.xml"
+          if [[ -f "$WIN_XML" ]]; then
+            WIN_FAILS=$(grep -o 'failures="[0-9]\+"' "$WIN_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
+            WIN_ERRORS=$(grep -o 'errors="[0-9]\+"' "$WIN_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
+            if [[ "${WIN_FAILS:-0}" = "0" && "${WIN_ERRORS:-0}" = "0" ]]; then
+              WIN_STATUS="✅"
+            else
+              WIN_STATUS="❌"
+            fi
+          else 
+            WIN_STATUS="❓"
+          fi
+          
+          COV_SUM="artifacts/coverage-macos/summary.txt"
+          COV_PCT="n/a"
+          if [[ -f "$COV_SUM" ]]; then
+            LINE=$(grep -E '^TOTAL' "$COV_SUM" || true)
+            if [[ -n "$LINE" ]]; then
+              COV_PCT=$(echo "$LINE" | awk '{print $(NF-1)}')
+            fi
+          fi
+          
+          echo "macos_status=$MACOS_STATUS" >> "$GITHUB_OUTPUT"
+          echo "windows_status=$WIN_STATUS" >> "$GITHUB_OUTPUT"
+          echo "coverage_pct=$COV_PCT" >> "$GITHUB_OUTPUT"
+
+      - name: Post to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_BOT }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REF_NAME: ${{ github.ref_name }}
+          MACOS: ${{ steps.compute.outputs.macos_status }}
+          WINDOWS: ${{ steps.compute.outputs.windows_status }}
+          COV: ${{ steps.compute.outputs.coverage_pct }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          CONTENT="**CI Results** (${REF_NAME})
+                  macOS: ${MACOS}
+                  Windows: ${WINDOWS}
+                  Coverage (macOS): ${COV}
+                  RUN: ${RUN_URL}"
+          
+          curl -sS -X POST \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n --arg c "$CONTENT" '{content:$c}')" \
+              "${DISCORD_WEBHOOK_URL}"
