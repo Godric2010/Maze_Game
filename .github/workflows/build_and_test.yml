@@ -181,9 +181,10 @@ jobs:
             fi
           fi
           
+          COV_PCT_NUM=$(echo "$COV_PCT" | tr -d '%')
           echo "macos_status=$MACOS_STATUS" >> "$GITHUB_OUTPUT"
           echo "windows_status=$WIN_STATUS" >> "$GITHUB_OUTPUT"
-          echo "coverage_pct=$COV_PCT" >> "$GITHUB_OUTPUT"
+          echo "coverage_pct=$COV_PCT_NUM" >> "$GITHUB_OUTPUT"
 
       - name: Post to Discord
         env:
@@ -199,7 +200,7 @@ jobs:
           CONTENT="**CI Results** (${REF_NAME})
                   macOS: ${MACOS}
                   Windows: ${WINDOWS}
-                  Coverage (macOS): ${COV}
+                  Coverage (macOS): ${COV}%
                   RUN: ${RUN_URL}"
           
           curl -sS -X POST \
