@@ -146,6 +146,7 @@ jobs:
         run: |
           set -euo pipefail
           
+          echo "Computing artifacts ... macOS test results"
           MACOS_XML="artifacts/tests-macos-latest/build/test-results.xml"
           if [[ -f "$MACOS_XML" ]]; then
             MACOS_FAILS=$(grep -o 'failures="[0-9]\+"' "$MACOS_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
@@ -159,6 +160,7 @@ jobs:
             MACOS_STATUS="❓"
           fi
           
+          echo "Computing artifacts ... windows test results"
           WIN_XML="artifacts/tests-windows-latest/build/test-results.xml"
           if [[ -f "$WIN_XML" ]]; then
             WIN_FAILS=$(grep -o 'failures="[0-9]\+"' "$WIN_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
@@ -172,6 +174,7 @@ jobs:
             WIN_STATUS="❓"
           fi
           
+          echo "Computing artifacts ... coverage percentage"
           COV_SUM="artifacts/coverage-macos/summary.txt"
           COV_PCT="n/a"
           if [[ -f "$COV_SUM" ]]; then
@@ -181,10 +184,19 @@ jobs:
             fi
           fi
           
-          COV_PCT_NUM=$(echo "$COV_PCT" | tr -d '%')
-          echo "macos_status=$MACOS_STATUS" >> "$GITHUB_OUTPUT"
-          echo "windows_status=$WIN_STATUS" >> "$GITHUB_OUTPUT"
-          echo "coverage_pct=$COV_PCT_NUM" >> "$GITHUB_OUTPUT"
+          echo "DGB macOS=$MACOS_STATUS Win=$WIN_STATUS Cov=$COV_PCT"
+          
+          {
+            echo "macos_status<<EOF"
+            echo "${MACOS_STATUS}"
+            echo "EOF"
+            echo "windows_status<<EOF"
+            echo "${WIN_STATUS}"
+            echo "EOF"
+            echo "coverage_pct<<EOF"
+            echo "${COV_PCT}"
+            echo "EOF"
+          } >> "$GIHTUB_OUTPUT"
 
       - name: Post to Discord
         env:
