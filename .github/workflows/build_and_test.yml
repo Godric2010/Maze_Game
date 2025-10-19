@@ -69,8 +69,18 @@ jobs:
             mkdir -p build/coverage/raw
             export LLVM_PROFILE_FILE="$PWD/build/coverage/raw/%p-%m.profraw"
           fi
+          
+          echo "== Tool version =="
+          cmake --version
+          ctest --version
+          
+          echo "== What CTest will run =="
           ctest --test-dir build -N
-          ctest --test-dir build --output-on-failure  --output-junit build/Testing/test-results.xml --timeout 180
+          
+          echo "== Running tests (JUnit to build/test-results.xml) =="
+          
+          ctest --test-dir build --output-on-failure --timeout 180
+          
 
       - name: Install LLVM Tools (macOS only)
         if: startsWith(matrix.os, 'macos')
@@ -110,7 +120,7 @@ jobs:
         with:
           name: tests-${{ matrix.os }}
           path: |
-            build/Testing/test-results.xml
+            build/junit/*.xml
             build/Testing/Temporary/LastTest.log
           if-no-files-found: ignore
 
@@ -147,31 +157,29 @@ jobs:
           set -euo pipefail
           
           echo "Computing artifacts ... macOS test results"
-          MACOS_XML="artifacts/tests-macos-latest/build/Testing/test-results.xml"
-          if [[ -f "$MACOS_XML" ]]; then
-            MACOS_FAILS=$(grep -o 'failures="[0-9]\+"' "$MACOS_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
-            MACOS_ERRORS=$(grep -o 'errors="[0-9]\+"' "$MACOS_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
+          MACOS_DIR="artifacts/tests-macos-latest/build/junit"
+          MACOS_STATUS="❓"
+          if [[ -d "$MACOS_DIR" ]]; then
+            MACOS_FAILS=$(grep -ho 'failures="[0-9]\+"' "$MACOS_DIR"/*.xml 2>/dev/null | sed 's/[^0-9]//g' | awk '{s+=$1} END{print s+0}') 
+            MACOS_ERRORS=$(grep -ho 'errors="[0-9]\+"' "$MACOS_DIR"/*.xml 2>/dev/null | sed 's/[^0-9]//g' | awk '{s+=$1} END{print s+0}') 
             if [[ "${MACOS_FAILS:-0}" = "0" && "${MACOS_ERRORS:-0}" = "0" ]]; then
               MACOS_STATUS="✅"
             else
               MACOS_STATUS="❌"
             fi
-          else 
-            MACOS_STATUS="❓"
           fi
           
           echo "Computing artifacts ... windows test results"
-          WIN_XML="artifacts/tests-windows-latest/build/Testing/test-results.xml"
-          if [[ -f "$WIN_XML" ]]; then
-            WIN_FAILS=$(grep -o 'failures="[0-9]\+"' "$WIN_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
-            WIN_ERRORS=$(grep -o 'errors="[0-9]\+"' "$WIN_XML" | head -n1 | sed 's/[^0-9]//g' || true) 
+          WIN_DIR="artifacts/tests-windows-latest/build/junit"
+          WIN_STATUS="❓"
+          if [[ -d "$WIN_DIR" ]]; then
+            WIN_FAILS=$(grep -ho 'failures="[0-9]\+"' "$WIN_DIR"/*.xml 2>/dev/null | sed 's/[^0-9]//g' | awk '{s+=$1} END{print s+0}') 
+            WIN_ERRORS=$(grep -ho 'errors="[0-9]\+"' "$WIN_DIR"/*.xml 2>/dev/null | sed 's/[^0-9]//g' | awk '{s+=$1} END{print s+0}') 
             if [[ "${WIN_FAILS:-0}" = "0" && "${WIN_ERRORS:-0}" = "0" ]]; then
               WIN_STATUS="✅"
             else
               WIN_STATUS="❌"
             fi
-          else 
-            WIN_STATUS="❓"
           fi
           
           echo "Computing artifacts ... coverage percentage"
