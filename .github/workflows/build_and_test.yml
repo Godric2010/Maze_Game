@@ -169,7 +169,7 @@ jobs:
           DIRS=()
           while IFS= read -r line; do
             DIRS+=("$line")
-          done < <(find artifacts -type d -path '*tests-macos*/build/junit' -print || true)
+          done < <(find artifacts -type d -path '*tests-macos*/junit' -print || true)
           if [[ ${#DIRS[@]} -eq 0 ]]; then
             bash scripts/parse_junit.sh artifacts/does-not-exist || true
           else
@@ -185,7 +185,7 @@ jobs:
           DIRS=()
           while IFS= read -r line; do
             DIRS+=("$line")
-          done < <(find artifacts -type d -path '*tests-windows*/build/junit' -print || true)
+          done < <(find artifacts -type d -path '*tests-windows*/junit' -print || true)
           if [[ ${#DIRS[@]} -eq 0 ]]; then
             bash scripts/parse_junit.sh artifacts/does-not-exist || true
           else
