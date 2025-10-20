@@ -43,11 +43,13 @@ namespace Engine::Physics::Collision {
                 glm::vec3 best_normal(0);
 
                 for (auto entity: candidates) {
-                    const Math::AABB *box = query_service.GetAabb(entity);
-                    if (!box) {
-                        continue;
+                    Math::Sphere sphere(position, input.radius);
+
+                    Math::CollisionHit hit;
+                    if (!TryGetCollisionHit(entity, sphere, rest, query_service, hit)) {
+                        throw std::runtime_error("No valid collider found");
                     }
-                    const auto hit = Sweep(Math::Sphere{position, input.radius}, rest, *box);
+
                     if (hit.hit && hit.time_of_impact < best_time_of_impact) {
                         best_time_of_impact = hit.time_of_impact;
                         best_normal = hit.normal;
@@ -67,10 +69,23 @@ namespace Engine::Physics::Collision {
                 }
             }
             out.new_position = position;
-            if (out.collided) {
-                std::cout << "Collision detected!" << std::endl;
-            }
             return out;
+        }
+
+        static inline bool TryGetCollisionHit(const Ecs::EntityId entity, const Math::Sphere sphere, const glm::vec3 &rest,
+                                              const ICollisionQueryService &query_service,
+                                              Math::CollisionHit &hit) {
+            if (const auto *obb = query_service.GetObb(entity)) {
+                hit = Sweep(sphere, rest, *obb);
+                return true;
+            }
+
+            if (const auto *aabb = query_service.GetAabb(entity)) {
+                hit = Sweep(sphere, rest, *aabb);
+                return true;
+            }
+
+            return false;
         }
     };
 }

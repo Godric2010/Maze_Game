@@ -121,7 +121,7 @@ namespace Engine::Physics::Collision {
         vec.erase(std::ranges::unique(vec).begin(), vec.end());
     }
 
-    void SpatialHashBroadphase::QueryAABB(const Math::AABB &area, std::vector<Ecs::EntityId> &out,
+    void SpatialHashBroadphase::QueryAabb(const Math::AABB &area, std::vector<Ecs::EntityId> &out,
                                           const QueryFilter *filter) {
         out.clear();
         std::vector<CellKey> cells;

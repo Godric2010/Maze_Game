@@ -24,7 +24,7 @@ add_library(Core STATIC
         systems/physics/PhysicsSystem.cpp
         systems/physics/PhysicsSystem.hpp
         components/Collider.hpp
-        systems/physics/ColliderCache.hpp
+        ../physics/include/collision/ColliderCache.hpp
         ../physics/include/collision/CollisionQueryService.hpp
 )
 

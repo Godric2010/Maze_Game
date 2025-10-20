@@ -1,7 +1,6 @@
 #pragma once
-#include "Camera.hpp"
 #include "Collider.hpp"
-#include "ColliderCache.hpp"
+#include "../../../physics/include/collision/ColliderCache.hpp"
 #include "ISystem.hpp"
 #include "MotionIntent.hpp"
 #include "collision/CollisionQueryService.hpp"
@@ -23,11 +22,12 @@ namespace Engine::Core::Systems::Physics {
     private:
         const float m_epsilon = 1e-6f;
 
-        std::unique_ptr<ColliderCache> m_collider_cache;
+        std::unique_ptr<Engine::Physics::Collision::ColliderCache> m_collider_cache;
         std::unique_ptr<Engine::Physics::Collision::IBroadphase> m_broadphase;
         std::unique_ptr<Engine::Physics::Collision::ICollisionQueryService> m_collision_query_service;
 
-        void BuildBoxCollider(Ecs::EntityId entity, Components::BoxCollider box_collider, glm::vec3 position) const;
+        void BuildBoxCollider(Ecs::EntityId entity, Components::BoxCollider box_collider, const glm::vec3& position, const glm::vec3& rotation, const
+                              glm::vec3& scale) const;
 
         void BuildSphereCollider(Ecs::EntityId entity, Components::SphereCollider sphere_collider,
                                  glm::vec3 position) const;

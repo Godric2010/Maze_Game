@@ -2,21 +2,23 @@
 
 #include <ostream>
 #define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/norm.hpp>
 
 #include "Collider.hpp"
 #include "Transform.hpp"
 #include "../../../physics/src/collision/SpatialHashBroadphase.hpp"
 #include "collision/MoverSolver.hpp"
+#include "math/TypeUtils.hpp"
 
 namespace Engine::Core::Systems::Physics {
     using namespace Engine::Physics;
 
     PhysicsSystem::PhysicsSystem() {
-        m_collider_cache = std::make_unique<ColliderCache>();
+        m_collider_cache = std::make_unique<Collision::ColliderCache>();
         m_broadphase = std::make_unique<Collision::SpatialHashBroadphase>(2);
         m_collision_query_service = std::make_unique<Collision::CollisionQueryService>(
-            *m_broadphase, m_collider_cache->box_colliders);
+            *m_broadphase, *m_collider_cache);
     }
 
     void PhysicsSystem::Initialize(Ecs::World *world,
@@ -24,7 +26,8 @@ namespace Engine::Core::Systems::Physics {
         world->GetEventBus()->Subscribe<Components::BoxCollider>(
             [this, world](const Ecs::EntityId entity, const Components::BoxCollider &box_collider) {
                 const Components::Transform *transform = world->GetComponent<Components::Transform>(entity);
-                this->BuildBoxCollider(entity, box_collider, transform->GetPosition());
+                this->BuildBoxCollider(entity, box_collider, transform->GetPosition(), transform->GetRotation(),
+                                       transform->GetScale());
             });
 
         world->GetEventBus()->Subscribe<Components::SphereCollider>(
@@ -34,7 +37,7 @@ namespace Engine::Core::Systems::Physics {
             });
     }
 
-    void PhysicsSystem::Run(Ecs::World &world, float delta_time) {
+    void PhysicsSystem::Run(Ecs::World &world, const float delta_time) {
         const auto movable_objects = world.GetComponentsOfType<Components::MotionIntent>();
         for (const auto [motion_intent, entity]: movable_objects) {
             const auto transform = world.GetComponent<Components::Transform>(entity);
@@ -42,12 +45,11 @@ namespace Engine::Core::Systems::Physics {
                 continue;
             }
 
-            glm::vec3 move_delta = IntentToDelta(motion_intent, transform->GetPosition(), transform->GetRotation(),
-                                                 delta_time);
-            const float length = glm::length2(move_delta);
+            glm::vec3 move_delta = IntentToDelta(motion_intent, transform->GetPosition(),
+                                                 transform->GetRotation(), delta_time);
+            const float length = length2(move_delta);
 
             if (length < m_epsilon) {
-                std::cout<< length << std::endl;
                 transform->Set(transform->GetPosition(), motion_intent->rotation, motion_intent->scale);
                 continue;
             }
@@ -69,13 +71,13 @@ namespace Engine::Core::Systems::Physics {
     }
 
     void PhysicsSystem::BuildBoxCollider(Ecs::EntityId entity, const Components::BoxCollider box_collider,
-                                         const glm::vec3 position) const {
-        Math::AABB aabb{};
-        aabb.min = glm::vec3(position.x - box_collider.width / 2, position.y - box_collider.height / 2,
-                             position.z - box_collider.depth / 2);
-        aabb.max = glm::vec3(position.x + box_collider.width / 2, position.y + box_collider.height / 2,
-                             position.z + box_collider.depth / 2);
+                                         const glm::vec3 &position, const glm::vec3 &rotation,
+                                         const glm::vec3 &scale) const {
+        const auto obb = Math::Util::BuildWorldOBB(position, rotation, scale, box_collider.width,
+                                                   box_collider.height, box_collider.depth);
+        const auto aabb = Math::Util::ToTightAabb(obb);
 
+        m_collider_cache->box_obbs.emplace(entity, obb);
         m_collider_cache->box_colliders.emplace(entity, aabb);
         if (box_collider.is_static) {
             m_collider_cache->static_colliders.emplace(entity);
@@ -92,7 +94,7 @@ namespace Engine::Core::Systems::Physics {
         m_collider_cache->sphere_colliders.emplace(entity, sphere);
         if (sphere_collider.is_static) {
             m_collider_cache->static_colliders.emplace(entity);
-            const auto proxy_sphere = Collision::IBroadphase::FromSphere(sphere);
+            const auto proxy_sphere = Math::Util::FromSphere(sphere);
             m_broadphase->Insert({entity, proxy_sphere, sphere_collider.is_static});
         }
     }

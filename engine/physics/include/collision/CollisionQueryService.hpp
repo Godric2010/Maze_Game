@@ -9,6 +9,7 @@
 
 #include "../../../ecs/src/Entity.hpp"
 #include "collision/IBroadphase.hpp"
+#include "collision/ColliderCache.hpp"
 #include "math/Types.hpp"
 
 namespace Engine::Physics::Collision {
@@ -20,30 +21,37 @@ namespace Engine::Physics::Collision {
                                       const QueryFilter *f) const = 0;
 
         [[nodiscard]] virtual const Math::AABB *GetAabb(Ecs::EntityId) const = 0;
+
+        [[nodiscard]] virtual const Math::OBB *GetObb(Ecs::EntityId) const = 0;
     };
 
     class CollisionQueryService final : public ICollisionQueryService {
     public:
         CollisionQueryService(IBroadphase &broadphase,
-                              const std::unordered_map<Ecs::EntityId, Math::AABB> &aabbs)
-            : m_broadphase(broadphase), m_aabbs(aabbs) {
+                              ColliderCache &collider_cache)
+            : m_broadphase(broadphase), m_collider_cache(collider_cache) {
         }
 
         void QuerySphereSweep(const glm::vec3 &pos, const glm::vec3 &rest, const float radius,
                               std::vector<Ecs::EntityId> &out, const QueryFilter *filter) const override {
             const Math::AABB swept = BuildSweptAabb(pos, rest, radius);
             out.clear();
-            m_broadphase.QueryAABB(swept, out, filter);
+            m_broadphase.QueryAabb(swept, out, filter);
         }
 
         [[nodiscard]] const Math::AABB *GetAabb(const Ecs::EntityId entity) const override {
-            const auto it = m_aabbs.find(entity);
-            return it == m_aabbs.end() ? nullptr : &it->second;
+            const auto it = m_collider_cache.box_colliders.find(entity);
+            return it == m_collider_cache.box_colliders.end() ? nullptr : &it->second;
+        }
+
+        [[nodiscard]] const Math::OBB *GetObb(const Ecs::EntityId entity) const override {
+            const auto it = m_collider_cache.box_obbs.find(entity);
+            return it == m_collider_cache.box_obbs.end() ? nullptr : &it->second;
         }
 
     private:
         IBroadphase &m_broadphase;
-        const std::unordered_map<Ecs::EntityId, Math::AABB> &m_aabbs;
+        ColliderCache &m_collider_cache;
 
         static Math::AABB BuildSweptAabb(const glm::vec3 &pos, const glm::vec3 &rest, const float radius) noexcept {
             const glm::vec3 p0 = pos;

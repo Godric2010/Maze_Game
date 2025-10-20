@@ -29,7 +29,7 @@ namespace Engine::Physics::Collision {
         void Remove(Ecs::EntityId entity) override;
         void Update(Ecs::EntityId entity, const Math::AABB &new_aabb) override;
 
-        void QueryAABB(const Math::AABB &area, std::vector<Ecs::EntityId> &out, const QueryFilter *filter) override;
+        void QueryAabb(const Math::AABB &area, std::vector<Ecs::EntityId> &out, const QueryFilter *filter) override;
 
     private:
         float m_cell_size;

@@ -18,6 +18,7 @@ add_library(Physics STATIC
         include/collision/MoverSolver.hpp
         tests/MoverSolverTests.cpp
         tests/FakeCollisionQueryService.hpp
+        include/math/TypeUtils.hpp
 )
 
 if(COMMAND enable_coverage)
