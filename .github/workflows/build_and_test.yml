@@ -144,17 +144,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+          pattern: "*"
 
       - name: Checkout repo (for scripts)
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: List artifacts (debug)
+      - name: List repo & artifacts (debug)
         shell: bash
         run: |
-          find artifacts -maxdepth 5 -type d -path '*build/junit' -print | sort || true
-          find artifacts -maxdepth 5 -type f -name 'summary.txt' -print | sort || true
+          pwd
+          ls -la
+          [ -d artifacts ] && find artifacts -maxdepth 5 -type d -print | sort || echo "No artifacts directory found!"
 
       - name: Ensure jq (for JSON)
         run: |
@@ -166,14 +168,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          DIRS=()
+          MAC_DIRS=()
           while IFS= read -r line; do
-            DIRS+=("$line")
-          done < <(find artifacts -type d -path '*tests-macos*/junit' -print || true)
-          if [[ ${#DIRS[@]} -eq 0 ]]; then
-            bash scripts/parse_junit.sh artifacts/does-not-exist || true
+            MAC_DIRS+=("$line")
+          done < <(find artifacts -type d -path '*tests-macos*/build/junit' -print 2>/dev/null || true)
+          if [[ ${#MAC_DIRS[@]} -eq 0 ]]; then
+            echo "No macOS junit dirs found..."
+            { echo "overall_status<<EOF"; echo "❓"; echo "EOF"; } >> "$GITHUB_OUTPUT"
           else
-            bash scripts/parse_junit.sh "${DIRS[@]}" || true
+            bash scripts/parse_junit.sh "${MAC_DIRS[@]}" || true
           fi
           
 
@@ -182,14 +185,15 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          DIRS=()
+          WIN_DIRS=()
           while IFS= read -r line; do
-            DIRS+=("$line")
-          done < <(find artifacts -type d -path '*tests-windows*/junit' -print || true)
-          if [[ ${#DIRS[@]} -eq 0 ]]; then
-            bash scripts/parse_junit.sh artifacts/does-not-exist || true
+            WIN_DIRS+=("$line")
+          done < <(find artifacts -type d -path '*tests-windows*/build/junit' -print 2>/dev/null || true)
+          if [[ ${#WIN_DIRS[@]} -eq 0 ]]; then
+            echo "No Windows junit dirs found..."
+            { echo "overall_status<<EOF"; echo "❓"; echo "EOF"; } >> "$GITHUB_OUTPUT"
           else
-            bash scripts/parse_junit.sh "${DIRS[@]}" || true
+            bash scripts/parse_junit.sh "${WIN_DIRS[@]}" || true
           fi
 
       - name: Compute coverage percent (macOS)
@@ -198,9 +202,9 @@ jobs:
         run: |
           set -euo pipefail
           COV_PCT="n/a"
-          COV_SUM="$(find artifacts -type f -path '*coverage-macos/summary.txt' | head -n1 || true)"
+          COV_SUM="$(find artifacts -type f -path '*coverage-macos/summary.txt' 2>/dev/null | head -n1 || true)"
           if [[ -n "${COV_SUM:-}" && -f "$COV_SUM" ]]; then
-            LINE=$(grep -E '^TOTAL' "$COV_SUM" || true)
+            LINE="$(grep -E '^TOTAL' "$COV_SUM" || true)"
             if [[ -n "$LINE" ]]; then
               COV_PCT="$(echo "$LINE" | grep -Eo '[0-9]+(\.[0-9]+)?%' | tail -n1 || true)"
               [[ -z "$COV_PCT" ]] && COV_PCT="n/a"
