@@ -171,7 +171,7 @@ jobs:
           MAC_DIRS=()
           while IFS= read -r line; do
             MAC_DIRS+=("$line")
-          done < <(find artifacts -type d -path '*tests-macos*/build/junit' -print 2>/dev/null || true)
+          done < <(find artifacts -type d \( -path '*tests-macos*/junit' -o -path '*tests-macos*/build/junit' \) -print 2>/dev/null || true)
           if [[ ${#MAC_DIRS[@]} -eq 0 ]]; then
             echo "No macOS junit dirs found..."
             { echo "overall_status<<EOF"; echo "❓"; echo "EOF"; } >> "$GITHUB_OUTPUT"
@@ -188,7 +188,7 @@ jobs:
           WIN_DIRS=()
           while IFS= read -r line; do
             WIN_DIRS+=("$line")
-          done < <(find artifacts -type d -path '*tests-windows*/build/junit' -print 2>/dev/null || true)
+          done < <(find artifacts -type d \( -path '*tests-windows*/junit' -o -path '*tests-windows*/build/junit' \) -print 2>/dev/null || true)
           if [[ ${#WIN_DIRS[@]} -eq 0 ]]; then
             echo "No Windows junit dirs found..."
             { echo "overall_status<<EOF"; echo "❓"; echo "EOF"; } >> "$GITHUB_OUTPUT"
