@@ -140,16 +140,16 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps:
+      - name: Checkout repo (for scripts)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
       - name: Download artifacts (tests + coverage)
         uses: actions/download-artifact@v4
         with:
           path: artifacts
           pattern: "*"
-
-      - name: Checkout repo (for scripts)
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
       - name: List repo & artifacts (debug)
         shell: bash
@@ -178,7 +178,7 @@ jobs:
           else
             bash scripts/parse_junit.sh "${MAC_DIRS[@]}" || true
           fi
-          
+
 
       - name: Parse JUnit (Windows)
         id: junit_windows
