@@ -145,6 +145,11 @@ jobs:
         with:
           path: artifacts
 
+      - name: Checkout repo (for scripts)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
       - name: List artifacts (debug)
         shell: bash
         run: |
@@ -161,15 +166,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          chmod +x scripts/parse_junit.sh
           DIRS=()
           while IFS= read -r line; do
             DIRS+=("$line")
           done < <(find artifacts -type d -path '*tests-macos*/build/junit' -print || true)
           if [[ ${#DIRS[@]} -eq 0 ]]; then
-            scripts/parse_junit.sh artifacts/does-not-exist || true
+            bash scripts/parse_junit.sh artifacts/does-not-exist || true
           else
-            scripts/parse_junit.sh "${DIRS[@]}" || true
+            bash scripts/parse_junit.sh "${DIRS[@]}" || true
           fi
           
 
@@ -178,15 +182,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          chmod +x scripts/parse_junit.sh
           DIRS=()
           while IFS= read -r line; do
             DIRS+=("$line")
           done < <(find artifacts -type d -path '*tests-windows*/build/junit' -print || true)
           if [[ ${#DIRS[@]} -eq 0 ]]; then
-            scripts/parse_junit.sh artifacts/does-not-exist || true
+            bash scripts/parse_junit.sh artifacts/does-not-exist || true
           else
-            scripts/parse_junit.sh "${DIRS[@]}" || true
+            bash scripts/parse_junit.sh "${DIRS[@]}" || true
           fi
 
       - name: Compute coverage percent (macOS)
