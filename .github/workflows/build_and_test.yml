@@ -156,31 +156,45 @@ jobs:
         run: |
           set -euo pipefail
           
+          sum_attr () {
+            local dir="$1" attr="$2"
+            local txt
+            txt="$(grep -ho "${attr}=\"[0-9]\+\"" "$dir"/*.xml 2>/dev/null || true)"
+            printf '%s\n' "$txt" | sed 's/[^0-9]/ /g' | awk '{s+=$1} END{print s+0}'
+          }
+          
           echo "Computing artifacts ... macOS test results"
-          MACOS_DIR="artifacts/tests-macos-latest/build/junit"
           MACOS_STATUS="❓"
-          if [[ -d "$MACOS_DIR" ]]; then
-            MACOS_FAILS=$(grep -ho 'failures="[0-9]\+"' "$MACOS_DIR"/*.xml 2>/dev/null | sed 's/[^0-9]//g' | awk '{s+=$1} END{print s+0}') 
-            MACOS_ERRORS=$(grep -ho 'errors="[0-9]\+"' "$MACOS_DIR"/*.xml 2>/dev/null | sed 's/[^0-9]//g' | awk '{s+=$1} END{print s+0}') 
-            if [[ "${MACOS_FAILS:-0}" = "0" && "${MACOS_ERRORS:-0}" = "0" ]]; then
-              MACOS_STATUS="✅"
-            else
-              MACOS_STATUS="❌"
+          MACOS_DIR="$(find artifacts -type d -path '*tests-macos*/build/junit' | head -n1 || true)"
+          if [[ -n "${MACOS_DIR:-}" && -d "$MACOS_DIR" ]]; then
+            MACOS_XMLS=( "$MACOS_DIR"/*.xml )
+            if [[ -e "${MACOS_XMLS[0]}" ]]; then
+              MACOS_FAILS=$(sum_attr "$MACOS_DIR" failures) 
+              MACOS_ERRORS=$(sum_attr "$MACOS_DIR" errors) 
+              if [[ "${MACOS_FAILS:-0}" = "0" && "${MACOS_ERRORS:-0}" = "0" ]]; then
+                MACOS_STATUS="✅"
+              else
+                MACOS_STATUS="❌"
+              fi
             fi
-          fi
+          fi 
+      
           
           echo "Computing artifacts ... windows test results"
-          WIN_DIR="artifacts/tests-windows-latest/build/junit"
           WIN_STATUS="❓"
-          if [[ -d "$WIN_DIR" ]]; then
-            WIN_FAILS=$(grep -ho 'failures="[0-9]\+"' "$WIN_DIR"/*.xml 2>/dev/null | sed 's/[^0-9]//g' | awk '{s+=$1} END{print s+0}') 
-            WIN_ERRORS=$(grep -ho 'errors="[0-9]\+"' "$WIN_DIR"/*.xml 2>/dev/null | sed 's/[^0-9]//g' | awk '{s+=$1} END{print s+0}') 
-            if [[ "${WIN_FAILS:-0}" = "0" && "${WIN_ERRORS:-0}" = "0" ]]; then
-              WIN_STATUS="✅"
-            else
-              WIN_STATUS="❌"
+          WIN_DIR="$(find artifacts -type d -path '*tests-windows*/build/junit' | head -n1 || true)"
+          if [[ -n "${WIN_DIR:-}" && -d "$WIN_DIR" ]]; then
+            WIN_XMLS=( "$WIN_DIR"/*.xml )
+            if [[ -e "${WIN_XMLS[0]}" ]]; then
+              WIN_FAILS=$(sum_attr "$WIN_DIR" failures) 
+              WIN_ERRORS=$(sum_attr "$WIN_DIR" errors) 
+              if [[ "${WIN_FAILS:-0}" = "0" && "${WIN_ERRORS:-0}" = "0" ]]; then
+                WIN_STATUS="✅"
+              else
+                WIN_STATUS="❌"
+              fi
             fi
-          fi
+          fi 
           
           echo "Computing artifacts ... coverage percentage"
           COV_SUM="artifacts/coverage-macos/summary.txt"
