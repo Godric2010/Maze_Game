@@ -39,7 +39,7 @@ namespace Engine::Core::Systems::Physics {
 
     void PhysicsSystem::Run(Ecs::World &world, const float delta_time) {
         const auto movable_objects = world.GetComponentsOfType<Components::MotionIntent>();
-        for (const auto [motion_intent, entity]: movable_objects) {
+       for (const auto [motion_intent, entity]: movable_objects) {
             const auto transform = world.GetComponent<Components::Transform>(entity);
             if (!transform) {
                 continue;
@@ -73,8 +73,8 @@ namespace Engine::Core::Systems::Physics {
     void PhysicsSystem::BuildBoxCollider(Ecs::EntityId entity, const Components::BoxCollider box_collider,
                                          const glm::vec3 &position, const glm::vec3 &rotation,
                                          const glm::vec3 &scale) const {
-        const auto obb = Math::Util::BuildWorldOBB(position, rotation, scale, box_collider.width,
-                                                   box_collider.height, box_collider.depth);
+        const auto obb = Math::Util::BuildWorldObb(position, rotation, box_collider.width, box_collider.height,
+                                                   box_collider.depth);
         const auto aabb = Math::Util::ToTightAabb(obb);
 
         m_collider_cache->box_obbs.emplace(entity, obb);

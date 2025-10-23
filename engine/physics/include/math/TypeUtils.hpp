@@ -3,20 +3,21 @@
 //
 
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
 
 #include "Types.hpp"
 
 namespace Engine::Physics::Math::Util {
-    inline OBB BuildWorldOBB(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &scale, float width,
-                             float height, float depth) {
+    inline OBB BuildWorldObb(const glm::vec3 & position, const glm::vec3 & rotation, const float width,
+                             const float height, const float depth) {
         OBB obb{};
         obb.center = position;
 
         const auto half_extents = glm::vec3(0.5f * width, 0.5f * height, 0.5f * depth);
         obb.half_extents = half_extents;
 
-        const glm::mat4 rot_mat = glm::yawPitchRoll(glm::radians(rotation.x), glm::radians(rotation.y),
+        const glm::mat4 rot_mat = glm::yawPitchRoll(glm::radians(rotation.y), glm::radians(rotation.x),
                                                     glm::radians(rotation.z));
         obb.orientation = glm::mat3(rot_mat);
         return obb;
@@ -34,6 +35,10 @@ namespace Engine::Physics::Math::Util {
     }
 
     inline AABB FromSphere(const Sphere &sphere) {
+        if (sphere.radius <= 0.0f) {
+            throw std::invalid_argument("Sphere radius must be greater than 0.0");
+        }
+
         const glm::vec3 r(sphere.radius);
         return {sphere.center - r, sphere.center + r};
     }

@@ -1,9 +1,8 @@
 #pragma once
 #include <EngineController.hpp>
 
-#include "Camera.hpp"
-#include "Camera.hpp"
 #include "Mesh.hpp"
+#include "MeshHandler.hpp"
 #include "mazegenerator/MazeAlgorithm.hpp"
 
 namespace Gameplay {
@@ -23,6 +22,7 @@ namespace Gameplay {
         Engine::Ecs::EntityId m_camera_entity;
         std::vector<Engine::Ecs::EntityId> m_objects;
         std::unique_ptr<Mazegenerator::MazeAlgorithm> m_maze_algorithm;
+        std::unique_ptr<MeshHandler> m_mesh_handler;
 
         void CreateCamera(const Mazegenerator::CellIndex &start_pos);
 
@@ -36,12 +36,6 @@ namespace Gameplay {
                                                     const Mazegenerator::CellIndex &cell_idx);
 
         void CreateObjects(const Mazegenerator::Maze &maze) const;
-
-        [[nodiscard]] Engine::Renderer::MeshHandle CreateFloorMesh() const;
-
-        [[nodiscard]] Engine::Renderer::MeshHandle CreateWallMesh() const;
-
-        [[nodiscard]] Engine::Renderer::MeshHandle CreateKeyMesh() const;
 
         void CreateKeyObject(const Mazegenerator::CellIndex &cell_index,
                              const Engine::Renderer::MeshHandle &key_mesh_handle) const;

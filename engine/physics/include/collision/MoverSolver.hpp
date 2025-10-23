@@ -63,6 +63,7 @@ namespace Engine::Physics::Collision {
                     out.collided = true;
                     out.first_time_of_impact = std::min(out.first_time_of_impact, best_time_of_impact);
                     out.last_normal = best_normal;
+                    std::cout << out.collided << "Direction: " << direction.x << ", " << direction.y << ", " << direction.z << std::endl;
                 } else {
                     position += rest;
                     rest = {};

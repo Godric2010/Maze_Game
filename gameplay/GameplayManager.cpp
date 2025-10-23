@@ -15,6 +15,8 @@ namespace Gameplay {
         m_objects.clear();
         m_camera_entity = Engine::Ecs::INVALID_ENTITY_ID;
         m_maze_algorithm = std::make_unique<Mazegenerator::MazeAlgorithm>(5, 5, 1337);
+        // m_maze_algorithm = std::make_unique<Mazegenerator::MazeAlgorithm>(1, 1, 1337);
+        m_mesh_handler = std::make_unique<MeshHandler>(engine);
     }
 
     GameplayManager::~GameplayManager() = default;
@@ -127,14 +129,14 @@ namespace Gameplay {
         m_engine.GetWorld().AddComponent(entity, transform_component);
 
         constexpr auto collider = Engine::Core::Components::BoxCollider{
-            .is_static = true, .width = 0.5f, .height = 1.0f, .depth = 1e-6f
+            .is_static = true, .width = 1.0f, .height = 1.0f, .depth = 1e-6f
         };
         m_engine.GetWorld().AddComponent(entity, collider);
     }
 
     void GameplayManager::CreateObjects(const Mazegenerator::Maze &maze) const {
-        const auto floor_mesh_handle = CreateFloorMesh();
-        const auto wall_mesh_handle = CreateWallMesh();
+        const auto floor_mesh_handle = m_mesh_handler->GetFloorMesh();
+        const auto wall_mesh_handle = m_mesh_handler->GetWallMesh();
 
         const auto maze_cells = maze.cells;
         const size_t cells = maze_cells.size();
@@ -144,125 +146,8 @@ namespace Gameplay {
             ++count;
         }
 
-        const auto key_mesh_handle = CreateKeyMesh();
+        const auto key_mesh_handle = m_mesh_handler->GetKeyMesh();
         CreateKeyObject(maze.key_cell, key_mesh_handle);
-    }
-
-    Engine::Renderer::MeshHandle GameplayManager::CreateFloorMesh() const {
-        auto quad_mesh = Engine::Renderer::MeshAsset{};
-        quad_mesh.vertices = std::vector<glm::vec3>();
-        quad_mesh.vertices.emplace_back(-0.5, 0.0, -0.5);
-        quad_mesh.vertices.emplace_back(0.5, 0.0, -0.5);
-        quad_mesh.vertices.emplace_back(0.5, 0.0, 0.5);
-        quad_mesh.vertices.emplace_back(-0.5, 0.0, 0.5);
-        quad_mesh.indices = std::vector<unsigned int>();
-        quad_mesh.indices.push_back(0);
-        quad_mesh.indices.push_back(1);
-        quad_mesh.indices.push_back(2);
-        quad_mesh.indices.push_back(2);
-        quad_mesh.indices.push_back(3);
-        quad_mesh.indices.push_back(0);
-        const Engine::Renderer::MeshHandle mesh_handle = m_engine.RegisterMesh(quad_mesh);
-        return mesh_handle;
-    }
-
-    Engine::Renderer::MeshHandle GameplayManager::CreateWallMesh() const {
-        auto quad_mesh = Engine::Renderer::MeshAsset{};
-        quad_mesh.vertices = std::vector<glm::vec3>();
-        quad_mesh.vertices.emplace_back(-0.5, -0.5, 0.0);
-        quad_mesh.vertices.emplace_back(0.5, -0.5, 0.0);
-        quad_mesh.vertices.emplace_back(0.5, 0.5, 0.0);
-        quad_mesh.vertices.emplace_back(-0.5, 0.5, 0.0);
-        quad_mesh.indices = std::vector<unsigned int>();
-        quad_mesh.indices.push_back(0);
-        quad_mesh.indices.push_back(1);
-        quad_mesh.indices.push_back(2);
-        quad_mesh.indices.push_back(2);
-        quad_mesh.indices.push_back(3);
-        quad_mesh.indices.push_back(0);
-        const Engine::Renderer::MeshHandle mesh_handle = m_engine.RegisterMesh(quad_mesh);
-        return mesh_handle;
-    }
-
-    Engine::Renderer::MeshHandle GameplayManager::CreateKeyMesh() const {
-        auto cube_mesh = Engine::Renderer::MeshAsset{};
-        cube_mesh.vertices = std::vector<glm::vec3>();
-        cube_mesh.indices = std::vector<unsigned int>();
-
-        // front face
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, -0.5);
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
-        cube_mesh.indices.push_back(0);
-        cube_mesh.indices.push_back(1);
-        cube_mesh.indices.push_back(2);
-        cube_mesh.indices.push_back(2);
-        cube_mesh.indices.push_back(3);
-        cube_mesh.indices.push_back(0);
-
-        // back face
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, 0.5);
-        cube_mesh.vertices.emplace_back(0.5, -0.5, 0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, 0.5);
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, 0.5);
-        cube_mesh.indices.push_back(4);
-        cube_mesh.indices.push_back(5);
-        cube_mesh.indices.push_back(6);
-        cube_mesh.indices.push_back(6);
-        cube_mesh.indices.push_back(7);
-        cube_mesh.indices.push_back(4);
-
-        // top face
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, 0.5);
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
-        cube_mesh.indices.push_back(8);
-        cube_mesh.indices.push_back(9);
-        cube_mesh.indices.push_back(10);
-        cube_mesh.indices.push_back(10);
-        cube_mesh.indices.push_back(11);
-        cube_mesh.indices.push_back(8);
-
-        // bottom face
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, -0.5, 0.5);
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, 0.5);
-        cube_mesh.indices.push_back(12);
-        cube_mesh.indices.push_back(13);
-        cube_mesh.indices.push_back(14);
-        cube_mesh.indices.push_back(14);
-        cube_mesh.indices.push_back(15);
-        cube_mesh.indices.push_back(12);
-
-        // left face
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, 0.5);
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, 0.5);
-        cube_mesh.indices.push_back(16);
-        cube_mesh.indices.push_back(17);
-        cube_mesh.indices.push_back(18);
-        cube_mesh.indices.push_back(18);
-        cube_mesh.indices.push_back(19);
-        cube_mesh.indices.push_back(16);
-
-        // right face
-        cube_mesh.vertices.emplace_back(0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, -0.5, 0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, 0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, -0.5);
-        cube_mesh.indices.push_back(20);
-        cube_mesh.indices.push_back(21);
-        cube_mesh.indices.push_back(22);
-        cube_mesh.indices.push_back(22);
-        cube_mesh.indices.push_back(23);
-        cube_mesh.indices.push_back(20);
-
-        const auto mesh_handle = m_engine.RegisterMesh(cube_mesh);
-        return mesh_handle;
     }
 
     void GameplayManager::CreateKeyObject(const Mazegenerator::CellIndex &cell_index,
