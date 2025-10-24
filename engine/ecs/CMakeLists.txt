@@ -17,6 +17,7 @@ add_library(ECS STATIC
         src/CommandBuffer.cpp
         src/CommandBuffer.hpp
         include/ComponentEventBus.hpp
+        include/PhysicsEventBus.hpp
 )
 
 if(COMMAND enable_coverage)
