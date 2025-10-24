@@ -11,6 +11,8 @@ add_library(Gameplay STATIC
         DebugGridDrawer.cpp
         DebugGridDrawer.hpp
         MeshHandler.cpp
-        MeshHandler.hpp)
+        MeshHandler.hpp
+        ItemSystem.cpp
+        ItemSystem.hpp)
 
 target_link_libraries(Gameplay PUBLIC Engine)

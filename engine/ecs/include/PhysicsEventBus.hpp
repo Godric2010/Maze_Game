@@ -8,8 +8,8 @@
 #include "../src/Entity.hpp"
 
 namespace Engine::Ecs {
+
     class PhysicsEventBus {
-    private:
         using CollisionEventFunc = std::function<void(EntityId, EntityId)>;
 
     public:
@@ -20,7 +20,7 @@ namespace Engine::Ecs {
             m_on_trigger_exit_funcs = std::vector<CollisionEventFunc>();
         }
 
-        ~PhysicsEventBus();
+        ~PhysicsEventBus() = default;
 
         void SubscribeToOnCollisionEnter(std::function<void(EntityId, EntityId)> collision_enter_func) {
             m_on_collision_enter_funcs.emplace_back(std::move(collision_enter_func));

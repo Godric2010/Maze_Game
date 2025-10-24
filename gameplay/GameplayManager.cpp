@@ -163,6 +163,12 @@ namespace Gameplay {
         constexpr auto scale = glm::vec3(0.2f, 0.2f, 0.2f);
         const auto transform_component = Engine::Core::Components::Transform(position, rotation, scale);
         m_engine.GetWorld().AddComponent(entity, transform_component);
+
+        constexpr auto collider = Engine::Core::Components::BoxCollider{
+           .is_static = true, .width = 0.2f, .height = 1.0f, .depth = 0.2f
+        };
+        std::cout << "Key entity id: " << entity << std::endl;
+        m_engine.GetWorld().AddComponent(entity, collider);
     }
 
     void GameplayManager::CreateMazeCell(const Mazegenerator::Maze &maze, const Mazegenerator::Cell &cell,

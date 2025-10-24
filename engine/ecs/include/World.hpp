@@ -5,48 +5,59 @@
 #pragma once
 #include <memory>
 
-#include "../src/CommandBuffer.hpp"
-#include "../src/EntityManager.hpp"
+#include "PhysicsEventBus.hpp"
+#include "../src/buffer/EcsEvent.hpp"
+#include "../src/buffer/PhysicsEvent.hpp"
+#include "../src/buffer/EventBuffer.hpp"
 
 namespace Engine::Ecs {
-
     class World {
-        public:
-            explicit World();
+    public:
+        explicit World();
 
-            ~World();
+        ~World();
 
-            [[nodiscard]] EntityId CreateEntity() const;
+        [[nodiscard]] EntityId CreateEntity() const;
 
-            void DestroyEntity(EntityId entity) const;
+        void DestroyEntity(EntityId entity) const;
 
-            template<typename T>
-            void AddComponent(EntityId entity, T component);
+        template<typename T>
+        void AddComponent(EntityId entity, T component);
 
-            template<typename T>
-            void RemoveComponent(EntityId entity) const;
+        template<typename T>
+        void RemoveComponent(EntityId entity) const;
 
-            void ApplyCommands() const;
+        void ApplyCommands() const;
 
-            template<typename T>
-            T* GetComponent(EntityId entity);
+        template<typename T>
+        T *GetComponent(EntityId entity);
 
-            template<typename T>
-            std::vector<std::pair<T *, EntityId>> GetComponentsOfType();
+        template<typename T>
+        std::vector<std::pair<T *, EntityId> > GetComponentsOfType();
 
-            ComponentEventBus *GetEventBus() const {
-                return m_component_event_bus.get();
-            }
+        [[nodiscard]] ComponentEventBus *GetEventBus() const {
+            return m_component_event_bus.get();
+        }
 
-            const ComponentEventBus *GetEventBusConst() const {
-                return m_component_event_bus.get();
-            }
+        [[nodiscard]] const ComponentEventBus *GetEventBusConst() const {
+            return m_component_event_bus.get();
+        }
 
-        private:
-            struct WorldImpl;
-            std::unique_ptr<WorldImpl> m_impl;
-            std::unique_ptr<CommandBuffer> m_command_buffer;
-            std::unique_ptr<ComponentEventBus> m_component_event_bus;
+        [[nodiscard]] PhysicsEventBus *GetPhysicsEventBus() const {
+            return m_physics_event_bus.get();
+        }
+
+        Buffer::EventBuffer<PhysicsEvent> *GetPhysicsEventBuffer() const {
+            return m_physics_event_buffer.get();
+        }
+
+    private:
+        struct WorldImpl;
+        std::unique_ptr<WorldImpl> m_impl;
+        std::unique_ptr<Buffer::EventBuffer<EcsEvent> > m_ecs_event_buffer;
+        std::unique_ptr<Buffer::EventBuffer<PhysicsEvent> > m_physics_event_buffer;
+        std::unique_ptr<ComponentEventBus> m_component_event_bus;
+        std::unique_ptr<PhysicsEventBus> m_physics_event_bus;
     };
 }
 

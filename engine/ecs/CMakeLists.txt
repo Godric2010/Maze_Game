@@ -14,10 +14,12 @@ add_library(ECS STATIC
         src/SystemManager.cpp
         include/SystemManager.hpp
         include/IServiceToEcsProvider.hpp
-        src/CommandBuffer.cpp
-        src/CommandBuffer.hpp
+        src/buffer/EcsEvent.hpp
         include/ComponentEventBus.hpp
         include/PhysicsEventBus.hpp
+        src/buffer/EventBuffer.inl
+        src/buffer/EventBuffer.hpp
+        src/buffer/PhysicsEvent.hpp
 )
 
 if(COMMAND enable_coverage)

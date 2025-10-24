@@ -39,7 +39,7 @@ namespace Engine::Core::Systems::Physics {
 
     void PhysicsSystem::Run(Ecs::World &world, const float delta_time) {
         const auto movable_objects = world.GetComponentsOfType<Components::MotionIntent>();
-       for (const auto [motion_intent, entity]: movable_objects) {
+        for (const auto [motion_intent, entity]: movable_objects) {
             const auto transform = world.GetComponent<Components::Transform>(entity);
             if (!transform) {
                 continue;
@@ -67,6 +67,12 @@ namespace Engine::Core::Systems::Physics {
 
             const auto result = Collision::MoverSolver::Solve(input, *m_collision_query_service);
             transform->Set(result.new_position, motion_intent->rotation, transform->GetScale());
+            if (result.hit_entity.has_value() && result.collided) {
+                world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
+                    .type = Ecs::PhysicsEventType::OnCollisionEnter, .target_entity = entity,
+                    .other_collider_entity = result.hit_entity.value()
+                });
+            }
         }
     }
 

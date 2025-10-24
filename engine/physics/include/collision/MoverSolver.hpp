@@ -21,6 +21,7 @@ namespace Engine::Physics::Collision {
     };
 
     struct MoverResult {
+        std::optional<Ecs::EntityId> hit_entity;
         glm::vec3 new_position;
         bool collided{};
         float first_time_of_impact{std::numeric_limits<float>::infinity()};
@@ -32,8 +33,9 @@ namespace Engine::Physics::Collision {
         static MoverResult Solve(const MoverInput &input, const ICollisionQueryService &query_service) {
             glm::vec3 position = input.position;
             glm::vec3 rest = input.delta;
+            std::optional<Ecs::EntityId> hit_entity;
 
-            MoverResult out{position, false, std::numeric_limits<float>::infinity(), {}};
+            MoverResult out{std::nullopt, position, false, std::numeric_limits<float>::infinity(), {}};
 
             for (int it = 0; it < input.max_iterations && length2(rest) > 1e-12f; ++it) {
                 std::vector<Ecs::EntityId> candidates;
@@ -53,6 +55,7 @@ namespace Engine::Physics::Collision {
                     if (hit.hit && hit.time_of_impact < best_time_of_impact) {
                         best_time_of_impact = hit.time_of_impact;
                         best_normal = hit.normal;
+                        hit_entity = entity;
                     }
                 }
                 if (best_time_of_impact <= length(rest)) {
@@ -63,6 +66,7 @@ namespace Engine::Physics::Collision {
                     out.collided = true;
                     out.first_time_of_impact = std::min(out.first_time_of_impact, best_time_of_impact);
                     out.last_normal = best_normal;
+                    out.hit_entity = hit_entity;
                 } else {
                     position += rest;
                     rest = {};
@@ -72,7 +76,8 @@ namespace Engine::Physics::Collision {
             return out;
         }
 
-        static inline bool TryGetCollisionHit(const Ecs::EntityId entity, const Math::Sphere sphere, const glm::vec3 &rest,
+        static inline bool TryGetCollisionHit(const Ecs::EntityId entity, const Math::Sphere sphere,
+                                              const glm::vec3 &rest,
                                               const ICollisionQueryService &query_service,
                                               Math::CollisionHit &hit) {
             if (const auto *obb = query_service.GetObb(entity)) {

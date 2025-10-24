@@ -10,22 +10,24 @@ namespace Engine::Ecs {
     inline World::World() : m_impl(std::make_unique<WorldImpl>()) {
         m_impl->entity_manager = std::make_unique<EntityManager>();
         m_impl->component_manager = std::make_unique<ComponentManager>();
-        m_command_buffer = std::make_unique<CommandBuffer>();
+        m_ecs_event_buffer = std::make_unique<Buffer::EventBuffer<EcsEvent> >();
+        m_physics_event_buffer = std::make_unique<Buffer::EventBuffer<PhysicsEvent> >();
         m_component_event_bus = std::make_unique<ComponentEventBus>();
+        m_physics_event_bus = std::make_unique<PhysicsEventBus>();
     }
 
     inline World::~World() = default;
 
     inline EntityId World::CreateEntity() const {
         const auto entity = m_impl->entity_manager->ReserveEntity();
-        const Command cmd{CommandType::CreateEntity, entity};
-        m_command_buffer->Enqueue(cmd);
+        const EcsEvent cmd{EcsEventType::CreateEntity, entity};
+        m_ecs_event_buffer->EnqueueEvent(cmd);
         return entity;
     }
 
     inline void World::DestroyEntity(const EntityId entity) const {
-        const Command cmd{CommandType::DestroyEntity, entity};
-        m_command_buffer->Enqueue(cmd);
+        const EcsEvent cmd{EcsEventType::DestroyEntity, entity};
+        m_ecs_event_buffer->EnqueueEvent(cmd);
     }
 
 
@@ -38,10 +40,10 @@ namespace Engine::Ecs {
 
         const auto id = m_impl->component_manager->RegisterType<T>();
 
-        Command cmd{CommandType::AddComponent, entity, id};
+        EcsEvent cmd{EcsEventType::AddComponent, entity, id};
         cmd.payload.resize(sizeof(T));
         std::memcpy(cmd.payload.data(), &component, sizeof(T));
-        m_command_buffer->Enqueue(std::move(cmd));
+        m_ecs_event_buffer->EnqueueEvent(std::move(cmd));
     }
 
     template<typename T>
@@ -52,23 +54,41 @@ namespace Engine::Ecs {
         }
 
         const auto id = m_impl->component_manager->GetComponentTypeId<T>();
-        Command cmd{CommandType::RemoveComponent, entity, id};
-        m_command_buffer->Enqueue(std::move(cmd));
+        EcsEvent cmd{EcsEventType::RemoveComponent, entity, id};
+        m_ecs_event_buffer->EnqueueEvent(std::move(cmd));
     }
 
     inline void World::ApplyCommands() const {
-        for (const auto &[type, entity, component_type_id, payload]: m_command_buffer->GetCommands()) {
+        for (const auto [type, target_entity, other_collider_entity]: m_physics_event_buffer->Get()) {
             switch (type) {
-                case CommandType::CreateEntity: {
+                case PhysicsEventType::OnCollisionEnter:
+                    m_physics_event_bus->RaiseOnCollisionEnter(target_entity, other_collider_entity);
+                    break;
+                case PhysicsEventType::OnCollisionExit:
+                    m_physics_event_bus->RaiseOnCollisionExit(target_entity, other_collider_entity);
+                    break;
+                case PhysicsEventType::OnTriggerEnter:
+                    m_physics_event_bus->RaiseOnTriggerEnter(target_entity, other_collider_entity);
+                    break;
+                case PhysicsEventType::OnTriggerExit:
+                    m_physics_event_bus->RaiseOnTriggerExit(target_entity, other_collider_entity);
+                    break;
+            }
+        }
+        m_physics_event_buffer->ClearEvents();
+
+        for (const auto &[type, entity, component_type_id, payload]: m_ecs_event_buffer->Get()) {
+            switch (type) {
+                case EcsEventType::CreateEntity: {
                     m_impl->entity_manager->CommitEntity(entity);
                     break;
                 }
-                case CommandType::DestroyEntity: {
+                case EcsEventType::DestroyEntity: {
                     m_impl->component_manager->OnDestroyEntity(entity);
                     m_impl->entity_manager->DestroyEntity(entity);
                     break;
                 }
-                case CommandType::AddComponent: {
+                case EcsEventType::AddComponent: {
                     const ComponentMeta component_meta = m_impl->component_manager->GetComponentMeta(component_type_id);
                     m_impl->component_manager->AddById(entity, component_type_id, payload.data());
                     if (component_meta.on_add_event) {
@@ -77,7 +97,7 @@ namespace Engine::Ecs {
 
                     break;
                 }
-                case CommandType::RemoveComponent: {
+                case EcsEventType::RemoveComponent: {
                     const ComponentMeta component_meta = m_impl->component_manager->GetComponentMeta(component_type_id);
                     m_impl->component_manager->RemoveById(entity, component_type_id);
                     if (component_meta.on_remove_event) {
@@ -85,7 +105,7 @@ namespace Engine::Ecs {
                     }
                     break;
                 }
-                case CommandType::UpdateComponent: {
+                case EcsEventType::UpdateComponent: {
                     m_impl->component_manager->SetById(entity, component_type_id, payload.data());
                 }
                 default:

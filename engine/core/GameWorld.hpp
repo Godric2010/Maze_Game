@@ -35,6 +35,26 @@ namespace Engine::Core {
         template<typename T>
         std::vector<std::pair<T *, Ecs::EntityId> > GetComponentsOfType() { return m_world->GetComponentsOfType<T>(); }
 
+
+        void SubscribeToPhysicsEvent(const Ecs::PhysicsEventType event_type,
+                                     const std::function<void(Ecs::EntityId, Ecs::EntityId)> &event_func) const {
+            const auto physics_event_bus = m_world->GetPhysicsEventBus();
+            switch (event_type) {
+                case Ecs::PhysicsEventType::OnCollisionEnter:
+                    physics_event_bus->SubscribeToOnCollisionEnter(event_func);
+                    return;
+                case Ecs::PhysicsEventType::OnCollisionExit:
+                    physics_event_bus->SubscribeToOnCollisionExit(event_func);
+                    return;
+                case Ecs::PhysicsEventType::OnTriggerEnter:
+                    physics_event_bus->SubscribeToOnTriggerEnter(event_func);
+                    return;
+                case Ecs::PhysicsEventType::OnTriggerExit:
+                    physics_event_bus->SubscribeToOnTriggerExit(event_func);
+                    return;
+            }
+        }
+
     private:
         Ecs::World *m_world;
     };
