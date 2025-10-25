@@ -2,10 +2,10 @@
 
 #include <iostream>
 
-#include "Inventory.hpp"
-#include "KeyItem.hpp"
+#include "../components/Inventory.hpp"
+#include "../components/KeyItem.hpp"
 
-namespace Gameplay {
+namespace Gameplay::Systems {
     ItemSystem::ItemSystem() = default;
 
     void ItemSystem::Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) {
@@ -20,8 +20,8 @@ namespace Gameplay {
 
     void ItemSystem::CheckIfItemGotPickedUp(Engine::Ecs::World *world, const Engine::Ecs::EntityId target_entity,
                                             const Engine::Ecs::EntityId potential_item_entity) {
-        const auto player_inventory = world->GetComponent<Inventory>(target_entity);
-        const auto is_key_item = world->GetComponent<KeyItem>(potential_item_entity) != nullptr;
+        const auto player_inventory = world->GetComponent<Components::Inventory>(target_entity);
+        const auto is_key_item = world->GetComponent<Components::KeyItem>(potential_item_entity) != nullptr;
 
         if (player_inventory != nullptr && is_key_item) {
             player_inventory->key_collected = true;

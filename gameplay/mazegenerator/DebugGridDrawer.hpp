@@ -1,5 +1,5 @@
 #pragma once
-#include "mazegenerator/MazeAlgorithm.hpp"
+#include "MazeAlgorithm.hpp"
 
 namespace Gameplay {
     class DebugGridDrawer {

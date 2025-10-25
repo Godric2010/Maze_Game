@@ -9,7 +9,7 @@
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
 
-namespace Gameplay {
+namespace Gameplay::Systems {
     CameraControllerSystem::CameraControllerSystem() = default;
 
     CameraControllerSystem::~CameraControllerSystem() = default;

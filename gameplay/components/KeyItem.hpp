@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Gameplay {
+namespace Gameplay::Components {
     struct KeyItem {
     };
 }

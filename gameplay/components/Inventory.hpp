@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Gameplay {
+namespace Gameplay::Components {
     struct Inventory {
         bool key_collected = false;
     };

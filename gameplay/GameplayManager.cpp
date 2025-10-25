@@ -3,13 +3,13 @@
 #include <iostream>
 
 #include "Collider.hpp"
-#include "DebugGridDrawer.hpp"
+#include "mazegenerator/DebugGridDrawer.hpp"
 #include "InputReceiver.hpp"
-#include "Inventory.hpp"
-#include "KeyItem.hpp"
 #include "Mesh.hpp"
 #include "MotionIntent.hpp"
 #include "components/Camera.hpp"
+#include "components/Inventory.hpp"
+#include "components/KeyItem.hpp"
 #include "components/Transform.hpp"
 
 namespace Gameplay {
@@ -64,7 +64,7 @@ namespace Gameplay {
         };
         m_engine.GetWorld().AddComponent(m_camera_entity, input_receiver);
 
-        constexpr auto inventory = Inventory();
+        constexpr auto inventory = Components::Inventory();
         m_engine.GetWorld().AddComponent(m_camera_entity, inventory);
     }
 
@@ -175,7 +175,7 @@ namespace Gameplay {
         std::cout << "Key entity id: " << entity << std::endl;
         m_engine.GetWorld().AddComponent(entity, collider);
 
-        m_engine.GetWorld().AddComponent(entity, KeyItem{});
+        m_engine.GetWorld().AddComponent(entity, Components::KeyItem{});
     }
 
     void GameplayManager::CreateMazeCell(const Mazegenerator::Maze &maze, const Mazegenerator::Cell &cell,

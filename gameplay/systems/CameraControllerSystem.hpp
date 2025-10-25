@@ -6,7 +6,7 @@
 
 ECS_SYSTEM(CameraControllerSystem, Input, [])
 
-namespace Gameplay {
+namespace Gameplay::Systems {
     class CameraControllerSystem : public Engine::Ecs::ISystem {
     public:
         CameraControllerSystem();
