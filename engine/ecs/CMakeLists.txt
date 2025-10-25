@@ -20,6 +20,7 @@ add_library(ECS STATIC
         src/buffer/EventBuffer.inl
         src/buffer/EventBuffer.hpp
         src/buffer/PhysicsEvent.hpp
+        src/ComponentMeta.hpp
 )
 
 if(COMMAND enable_coverage)

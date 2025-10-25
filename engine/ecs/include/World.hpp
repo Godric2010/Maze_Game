@@ -35,7 +35,7 @@ namespace Engine::Ecs {
         template<typename T>
         std::vector<std::pair<T *, EntityId> > GetComponentsOfType();
 
-        [[nodiscard]] ComponentEventBus *GetEventBus() const {
+        [[nodiscard]] ComponentEventBus *GetComponentEventBus() const {
             return m_component_event_bus.get();
         }
 

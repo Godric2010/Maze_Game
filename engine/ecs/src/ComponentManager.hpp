@@ -84,7 +84,12 @@ namespace Engine::Ecs {
 
         ComponentMeta GetComponentMeta(ComponentTypeId component_type_id) const;
 
+        std::vector<ComponentMeta> GetAllComponentsOfEntity(EntityId entity) const;
+
     private:
+        template<typename T>
+        void CreatePool(ComponentTypeId component_type_id);
+
         template<typename T>
         TypedComponentPool<T> &GetPool();
 
@@ -92,9 +97,9 @@ namespace Engine::Ecs {
         const TypedComponentPool<T> *GetPoolConst() const;
 
 
-        mutable std::unordered_map<std::type_index, std::unique_ptr<IComponentPool> > m_pool;
+        mutable std::unordered_map<ComponentTypeId, std::unique_ptr<IComponentPool> > m_pool;
         std::unordered_map<ComponentTypeId, ComponentMeta> m_component_meta;
-        std::unordered_map<ComponentTypeId, std::type_index> m_id_to_index;
+        std::unordered_map<std::type_index, ComponentTypeId> m_type_index_to_id;
     };
 } // ECS
 

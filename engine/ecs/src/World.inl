@@ -84,6 +84,12 @@ namespace Engine::Ecs {
                     break;
                 }
                 case EcsEventType::DestroyEntity: {
+                    auto components_of_entity = m_impl->component_manager->GetAllComponentsOfEntity(entity);
+                    for (const auto &component: components_of_entity) {
+                        if (component.on_remove_event) {
+                            component.on_remove_event(*m_component_event_bus, entity);
+                        }
+                    }
                     m_impl->component_manager->OnDestroyEntity(entity);
                     m_impl->entity_manager->DestroyEntity(entity);
                     break;

@@ -13,25 +13,35 @@
 namespace Engine::Ecs {
     class ComponentEventBus {
     private:
-        using ErasedFn = std::function<void(EntityId, const void *)>;
+        using ErasedAddFn = std::function<void(EntityId, const void *)>;
+        using ErasedRemoveFn = std::function<void(EntityId)>;
+
     public:
         ComponentEventBus() {
-            m_buckets = std::unordered_map<std::type_index, std::vector<ErasedFn>>();
+            m_on_component_add_events = std::unordered_map<std::type_index, std::vector<ErasedAddFn> >();
+            m_on_component_remove_events = std::unordered_map<std::type_index, std::vector<ErasedRemoveFn> >();
         }
 
         ~ComponentEventBus() = default;
 
         template<typename T>
-        void Subscribe(std::function<void(EntityId, const T &)> fn) {
+        void SubscribeOnComponentAddEvent(std::function<void(EntityId, const T &)> fn) {
             const auto type_index = std::type_index(typeid(T));
-            auto &vec = m_buckets[type_index];
+            auto &vec = m_on_component_add_events[type_index];
             vec.emplace_back(Wrap<T>(std::move(fn)));
         }
 
         template<typename T>
+        void SubscribeOnComponentRemoveEvent(std::function<void(EntityId)> fn) {
+            const auto type_index = std::type_index(typeid(T));
+            auto &vec = m_on_component_remove_events[type_index];
+            vec.emplace_back(std::move(fn));
+        }
+
+        template<typename T>
         void RaiseAddComponentEvent(const EntityId entity, const T &value) const {
-            const auto it = m_buckets.find(std::type_index(typeid(T)));
-            if (it == m_buckets.end()) {
+            const auto it = m_on_component_add_events.find(std::type_index(typeid(T)));
+            if (it == m_on_component_add_events.end()) {
                 return;
             }
             for (auto &func: it->second) {
@@ -41,25 +51,25 @@ namespace Engine::Ecs {
             }
         }
 
-        // TODO: This uses the same event as the add... consider using another func for this in order to keep things clean and avoid errors in the future
         template<typename T>
-        void RaiseRemoveComponentEvent(const EntityId entity, const void *bytes) const {
-            const auto it = m_buckets.find(std::type_index(typeid(T)));
-            if (it == m_buckets.end()) {
+        void RaiseRemoveComponentEvent(const EntityId entity) const {
+            const auto it = m_on_component_remove_events.find(std::type_index(typeid(T)));
+            if (it == m_on_component_remove_events.end()) {
                 return;
             }
             for (auto &func: it->second) {
                 if (func) {
-                    func(entity, &bytes);
+                    func(entity);
                 }
             }
         }
 
     private:
-        std::unordered_map<std::type_index, std::vector<ErasedFn> > m_buckets;
+        std::unordered_map<std::type_index, std::vector<ErasedAddFn> > m_on_component_add_events;
+        std::unordered_map<std::type_index, std::vector<ErasedRemoveFn> > m_on_component_remove_events;
 
         template<typename T>
-        static ErasedFn Wrap(std::function<void(EntityId, const T &)> fn) {
+        static ErasedAddFn Wrap(std::function<void(EntityId, const T &)> fn) {
             return [fn = std::move(fn)](EntityId entity, const void *data) {
                 fn(entity, *static_cast<const T *>(data));
             };

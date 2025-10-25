@@ -4,7 +4,10 @@
 
 namespace Engine::Ecs {
     template<class T>
-    ComponentPool<T>::ComponentPool() : m_none(std::numeric_limits<uint64_t>::max()), m_sparseToDense(1, m_none) {
+    ComponentPool<
+        T>::ComponentPool(const std::size_t component_type_id) : m_none(std::numeric_limits<uint64_t>::max()),
+                                                                     m_sparseToDense(1, m_none) {
+        m_component_type_id = component_type_id;
     }
 
     template<class T>

@@ -23,14 +23,25 @@ namespace Engine::Core::Systems::Physics {
 
     void PhysicsSystem::Initialize(Ecs::World *world,
                                    Ecs::IServiceToEcsProvider *service_locator) {
-        world->GetEventBus()->Subscribe<Components::BoxCollider>(
+        world->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::BoxCollider>(
             [this, world](const Ecs::EntityId entity, const Components::BoxCollider &box_collider) {
                 const Components::Transform *transform = world->GetComponent<Components::Transform>(entity);
                 this->BuildBoxCollider(entity, box_collider, transform->GetPosition(), transform->GetRotation(),
                                        transform->GetScale());
             });
 
-        world->GetEventBus()->Subscribe<Components::SphereCollider>(
+        world->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::BoxCollider>(
+            [this](const Ecs::EntityId entity) {
+                if (this->m_collider_cache->static_colliders.contains(entity)) {
+                    this->m_broadphase->Remove(entity);
+                }
+
+                this->m_collider_cache->box_colliders.erase(entity);
+                this->m_collider_cache->box_obbs.erase(entity);
+            }
+        );
+
+        world->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::SphereCollider>(
             [this, world](const Ecs::EntityId entity, const Components::SphereCollider &sphere_collider) {
                 const Components::Transform *transform = world->GetComponent<Components::Transform>(entity);
                 this->BuildSphereCollider(entity, sphere_collider, transform->GetPosition());

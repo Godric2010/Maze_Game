@@ -41,6 +41,7 @@ namespace Engine::Ecs {
         return pool->Contains(entity);
     }
 
+
     template<typename T>
     std::vector<EntityId> ComponentManager::GetEntitiesWithComponent() {
         auto &pool = GetPool<T>();
@@ -58,6 +59,8 @@ namespace Engine::Ecs {
         if (m_component_meta.contains(id)) {
             return id;
         }
+        m_type_index_to_id.emplace(typeid(T), id);
+        CreatePool<T>(id);
 
         m_component_meta.emplace(id, ComponentMeta{
                                      sizeof(T),
@@ -84,10 +87,9 @@ namespace Engine::Ecs {
                                          event_bus.RaiseAddComponentEvent<T>(entity, *static_cast<const T *>(data));
                                      },
                                      [](ComponentEventBus &event_bus, EntityId entity) {
-                                         event_bus.RaiseRemoveComponentEvent<T>(entity, {});
+                                         event_bus.RaiseRemoveComponentEvent<T>(entity);
                                      }
                                  });
-        m_id_to_index.emplace(id, std::type_index(typeid(T)));
         return id;
     }
 
@@ -138,9 +140,10 @@ namespace Engine::Ecs {
 
     inline void ComponentManager::OnDestroyEntity(const EntityId entity) const {
         for (const auto &component_pool: m_pool | std::views::values) {
-            if (component_pool->Contains(entity)) {
-                component_pool->Remove(entity);
+            if (!component_pool->Contains(entity)) {
+                continue;
             }
+            component_pool->Remove(entity);
         }
     }
 
@@ -148,13 +151,21 @@ namespace Engine::Ecs {
         return m_component_meta.at(component_type_id);
     }
 
+    template<typename T>
+    void ComponentManager::CreatePool(ComponentTypeId component_type_id) {
+        const auto it = m_pool.find(component_type_id);
+        if (it == m_pool.end()) {
+            m_pool.emplace(component_type_id, std::make_unique<TypedComponentPool<T> >(component_type_id));
+        }
+    }
 
     template<typename T>
     TypedComponentPool<T> &ComponentManager::GetPool() {
-        auto key = std::type_index(typeid(T));
-        auto it = m_pool.find(key);
+        const auto key = std::type_index(typeid(T));
+        const auto component_id = m_type_index_to_id.at(key);
+        const auto it = m_pool.find(component_id);
         if (it == m_pool.end()) {
-            it = m_pool.emplace(key, std::make_unique<TypedComponentPool<T> >()).first;
+            throw std::invalid_argument("ComponentManager::GetPool: Component Pool does not exist");
         }
         return *static_cast<TypedComponentPool<T> *>(it->second.get());
     }
@@ -162,11 +173,24 @@ namespace Engine::Ecs {
     template<typename T>
     const TypedComponentPool<T> *ComponentManager::GetPoolConst() const {
         const auto key = std::type_index(typeid(T));
-        const auto it = m_pool.find(key);
+        const auto component_id = m_type_index_to_id.at(key);
+        const auto it = m_pool.find(component_id);
         if (it == m_pool.end()) {
             return nullptr;
         }
 
         return static_cast<const TypedComponentPool<T> *>(it->second.get());
+    }
+
+    inline std::vector<ComponentMeta> ComponentManager::GetAllComponentsOfEntity(EntityId entity) const {
+        std::vector<ComponentMeta> components;
+        for (const auto &pool: m_pool | std::views::values) {
+            if (!pool->Contains(entity)) {
+                continue;
+            }
+            auto component_id = pool->GetComponentTypeId();
+            components.push_back(m_component_meta.at(component_id));
+        }
+        return components;
     }
 } // ECS
