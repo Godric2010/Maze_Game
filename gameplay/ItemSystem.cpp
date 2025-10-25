@@ -2,22 +2,30 @@
 
 #include <iostream>
 
+#include "Inventory.hpp"
+#include "KeyItem.hpp"
+
 namespace Gameplay {
     ItemSystem::ItemSystem() = default;
 
     void ItemSystem::Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) {
         world->GetPhysicsEventBus()->SubscribeToOnCollisionEnter(
-            [this](const Engine::Ecs::EntityId target, const Engine::Ecs::EntityId other) {
-                CheckIfItemGotPickedUp(target, other);
+            [this, world](const Engine::Ecs::EntityId target, const Engine::Ecs::EntityId other) {
+                CheckIfItemGotPickedUp(world, target, other);
             });
     }
 
     void ItemSystem::Run(Engine::Ecs::World &world, float delta_time) {
     }
 
-    void ItemSystem::CheckIfItemGotPickedUp(const Engine::Ecs::EntityId target_entity,
+    void ItemSystem::CheckIfItemGotPickedUp(Engine::Ecs::World *world, const Engine::Ecs::EntityId target_entity,
                                             const Engine::Ecs::EntityId potential_item_entity) {
-        std::cout << "Collision Enter with target " << target_entity << " with collider " << potential_item_entity <<
-                "." << std::endl;
+        const auto player_inventory = world->GetComponent<Inventory>(target_entity);
+        const auto is_key_item = world->GetComponent<KeyItem>(potential_item_entity) != nullptr;
+
+        if (player_inventory != nullptr && is_key_item) {
+            player_inventory->key_collected = true;
+            world->DestroyEntity(potential_item_entity);
+        }
     }
 } // namespace

@@ -15,6 +15,7 @@ namespace Gameplay {
         void Run(Engine::Ecs::World &world, float delta_time) override;
 
     private:
-        void CheckIfItemGotPickedUp(Engine::Ecs::EntityId target_entity, Engine::Ecs::EntityId potential_item_entity);
+        void CheckIfItemGotPickedUp(Engine::Ecs::World *world, Engine::Ecs::EntityId target_entity,
+                                    Engine::Ecs::EntityId potential_item_entity);
     };
 } // namespace

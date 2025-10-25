@@ -5,6 +5,8 @@
 #include "Collider.hpp"
 #include "DebugGridDrawer.hpp"
 #include "InputReceiver.hpp"
+#include "Inventory.hpp"
+#include "KeyItem.hpp"
 #include "Mesh.hpp"
 #include "MotionIntent.hpp"
 #include "components/Camera.hpp"
@@ -61,6 +63,9 @@ namespace Gameplay {
             .Input = nullptr,
         };
         m_engine.GetWorld().AddComponent(m_camera_entity, input_receiver);
+
+        constexpr auto inventory = Inventory();
+        m_engine.GetWorld().AddComponent(m_camera_entity, inventory);
     }
 
     glm::vec4 GameplayManager::DetermineFloorColorForCell(const Mazegenerator::Maze &maze,
@@ -165,10 +170,12 @@ namespace Gameplay {
         m_engine.GetWorld().AddComponent(entity, transform_component);
 
         constexpr auto collider = Engine::Core::Components::BoxCollider{
-           .is_static = true, .width = 0.2f, .height = 1.0f, .depth = 0.2f
+            .is_static = true, .width = 0.2f, .height = 1.0f, .depth = 0.2f
         };
         std::cout << "Key entity id: " << entity << std::endl;
         m_engine.GetWorld().AddComponent(entity, collider);
+
+        m_engine.GetWorld().AddComponent(entity, KeyItem{});
     }
 
     void GameplayManager::CreateMazeCell(const Mazegenerator::Maze &maze, const Mazegenerator::Cell &cell,

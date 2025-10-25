@@ -112,6 +112,7 @@ namespace Engine::Ecs {
                     throw std::runtime_error("Unhandled command type");
             }
         }
+        m_ecs_event_buffer->ClearEvents();
     }
 
     template<typename T>

@@ -13,6 +13,8 @@ add_library(Gameplay STATIC
         MeshHandler.cpp
         MeshHandler.hpp
         ItemSystem.cpp
-        ItemSystem.hpp)
+        ItemSystem.hpp
+        Inventory.hpp
+        KeyItem.hpp)
 
 target_link_libraries(Gameplay PUBLIC Engine)
