@@ -18,6 +18,8 @@ add_library(Gameplay STATIC
         components/KeyItem.hpp
         components/Exit.hpp
         mazegenerator/MazeBuilder.cpp
-        mazegenerator/MazeBuilder.hpp)
+        mazegenerator/MazeBuilder.hpp
+        systems/ExitSystem.cpp
+        systems/ExitSystem.hpp)
 
 target_link_libraries(Gameplay PUBLIC Engine)
