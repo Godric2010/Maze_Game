@@ -16,6 +16,8 @@ add_library(Gameplay STATIC
         systems/ItemSystem.hpp
         components/Inventory.hpp
         components/KeyItem.hpp
-        components/Exit.hpp)
+        components/Exit.hpp
+        mazegenerator/MazeBuilder.cpp
+        mazegenerator/MazeBuilder.hpp)
 
 target_link_libraries(Gameplay PUBLIC Engine)

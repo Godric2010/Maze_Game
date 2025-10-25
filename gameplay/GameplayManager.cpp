@@ -1,40 +1,35 @@
 #include "GameplayManager.hpp"
 
-#include <iostream>
-
 #include "Collider.hpp"
-#include "mazegenerator/DebugGridDrawer.hpp"
 #include "InputReceiver.hpp"
 #include "Mesh.hpp"
 #include "MotionIntent.hpp"
 #include "components/Camera.hpp"
 #include "components/Inventory.hpp"
-#include "components/KeyItem.hpp"
 #include "components/Transform.hpp"
 
 namespace Gameplay {
     GameplayManager::GameplayManager(Engine::Core::IEngine &engine) : m_engine(engine) {
-        m_objects.clear();
         m_camera_entity = Engine::Ecs::INVALID_ENTITY_ID;
-        m_maze_algorithm = std::make_unique<Mazegenerator::MazeAlgorithm>(5, 5, 1337);
-        // m_maze_algorithm = std::make_unique<Mazegenerator::MazeAlgorithm>(1, 1, 1337);
         m_mesh_handler = std::make_unique<MeshHandler>(engine);
+        m_maze_builder = std::make_unique<Mazegenerator::MazeBuilder>(&engine.GetWorld(),
+                                                                      m_mesh_handler->GetFloorMesh(),
+                                                                      m_mesh_handler->GetWallMesh(),
+                                                                      m_mesh_handler->GetKeyMesh(),
+                                                                      true);
     }
 
     GameplayManager::~GameplayManager() = default;
 
     void GameplayManager::Initialize() {
-        auto maze = m_maze_algorithm->GenerateMaze();
-        const auto debug_grid_drawer = std::make_unique<DebugGridDrawer>();
-        debug_grid_drawer->DrawGrid(maze);
-        CreateCamera(maze.entrance_cell);
-        CreateObjects(maze);
+        m_maze_builder->BuildMaze(5, 5, 1337);
+        CreateCamera(m_maze_builder->GetMazeStartPosition());
     }
 
     void GameplayManager::Shutdown() {
     }
 
-    void GameplayManager::CreateCamera(const Mazegenerator::CellIndex &start_pos) {
+    void GameplayManager::CreateCamera(glm::vec3 start_pos) {
         m_camera_entity = m_engine.GetWorld().CreateEntity();
         constexpr auto camera_component = Engine::Core::Components::Camera{
             .Width = 1920, // TODO: Use direct data from config later
@@ -47,7 +42,7 @@ namespace Gameplay {
         };
         m_engine.GetWorld().AddComponent<Engine::Core::Components::Camera>(m_camera_entity, camera_component);
 
-        const auto camera_transform = Engine::Core::Components::Transform(glm::vec3(start_pos.x, 1.0f, start_pos.y),
+        const auto camera_transform = Engine::Core::Components::Transform(start_pos,
                                                                           glm::vec3(-10.f, 180.0f, 0.0f));
         m_engine.GetWorld().AddComponent(m_camera_entity, camera_transform);
         const auto camera_motion_intent = Engine::Core::Components::MotionIntent();
@@ -66,138 +61,6 @@ namespace Gameplay {
 
         constexpr auto inventory = Components::Inventory();
         m_engine.GetWorld().AddComponent(m_camera_entity, inventory);
-    }
-
-    glm::vec4 GameplayManager::DetermineFloorColorForCell(const Mazegenerator::Maze &maze,
-                                                          const Mazegenerator::CellIndex &cell_idx) {
-        auto floor_color = glm::vec4{1.0f, 1.0f, 1.0f, 1.0f};
-        if (cell_idx == maze.entrance_cell) {
-            floor_color = glm::vec4{0.0f, 0.0f, 1.0f, 1.0f};
-        }
-        if (cell_idx == maze.exit_cell) {
-            floor_color = glm::vec4{0.0f, 1.0f, 0.0f, 1.0f};
-        }
-        if (cell_idx == maze.key_cell) {
-            floor_color = glm::vec4{1.0f, 1.0f, 0.0f, 1.0f};
-        }
-        return floor_color;
-    }
-
-    void GameplayManager::CreateCellFloorTile(const Engine::Renderer::MeshHandle mesh_handle,
-                                              const Mazegenerator::CellIndex &cell_idx,
-                                              const glm::vec4 &tile_color) const {
-        const auto entity = m_engine.GetWorld().CreateEntity();
-        const auto mesh_component = Engine::Core::Components::Mesh{
-            .mesh = mesh_handle,
-            .color = tile_color,
-        };
-        m_engine.GetWorld().AddComponent(entity, mesh_component);
-        const auto position = glm::vec3(cell_idx.x, 0.0f, cell_idx.y);
-        constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        const auto transform_component = Engine::Core::Components::Transform(position, rotation);
-        m_engine.GetWorld().AddComponent(entity, transform_component);
-    }
-
-    void GameplayManager::CreateWallFloorTile(const Engine::Renderer::MeshHandle mesh_handle,
-                                              const Mazegenerator::CellIndex &cell_idx,
-                                              const glm::vec4 &tile_color,
-                                              const Mazegenerator::Direction &direction) const {
-        const auto entity = m_engine.GetWorld().CreateEntity();
-        const auto mesh_component = Engine::Core::Components::Mesh{
-            .mesh = mesh_handle,
-            .color = tile_color,
-        };
-        m_engine.GetWorld().AddComponent(entity, mesh_component);
-
-        auto shift_vector = glm::vec3(0.0f);
-        auto rotation_shift = glm::vec3(0.0f);
-        switch (direction) {
-            case Mazegenerator::Direction::back:
-                shift_vector = glm::vec3(0.0f, 0.0f, -0.5f);
-                break;
-            case Mazegenerator::Direction::front:
-                shift_vector = glm::vec3(0.0f, 0.0f, 0.5f);
-                break;
-            case Mazegenerator::Direction::left:
-                shift_vector = glm::vec3(-0.5f, 0.0f, 0.0f);
-                rotation_shift = glm::vec3(0.0f, 90.0f, 0.0f);
-                break;
-            case Mazegenerator::Direction::right:
-                shift_vector = glm::vec3(0.5f, 0.0f, 0.0f);
-                rotation_shift = glm::vec3(0.0f, 90.0f, 0.0f);
-                break;
-        }
-
-        const auto position = glm::vec3(cell_idx.x, 0.5f, cell_idx.y) + shift_vector;
-        const auto rotation = glm::vec3(0.0f, 0.0f, 0.0f) + rotation_shift;
-        const auto transform_component = Engine::Core::Components::Transform(position, rotation);
-        m_engine.GetWorld().AddComponent(entity, transform_component);
-
-        constexpr auto collider = Engine::Core::Components::BoxCollider{
-            .is_static = true, .width = 1.0f, .height = 1.0f, .depth = 1e-6f
-        };
-        m_engine.GetWorld().AddComponent(entity, collider);
-    }
-
-    void GameplayManager::CreateObjects(const Mazegenerator::Maze &maze) const {
-        const auto floor_mesh_handle = m_mesh_handler->GetFloorMesh();
-        const auto wall_mesh_handle = m_mesh_handler->GetWallMesh();
-
-        const auto maze_cells = maze.cells;
-        const size_t cells = maze_cells.size();
-        int count = 1;
-        for (const auto &cell: maze_cells) {
-            CreateMazeCell(maze, cell, floor_mesh_handle, wall_mesh_handle);
-            ++count;
-        }
-
-        const auto key_mesh_handle = m_mesh_handler->GetKeyMesh();
-        CreateKeyObject(maze.key_cell, key_mesh_handle);
-    }
-
-    void GameplayManager::CreateKeyObject(const Mazegenerator::CellIndex &cell_index,
-                                          const Engine::Renderer::MeshHandle &key_mesh_handle) const {
-        const auto entity = m_engine.GetWorld().CreateEntity();
-        const auto mesh_component = Engine::Core::Components::Mesh{
-            .mesh = key_mesh_handle,
-            .color = {0.3, 1.0, 1.0, 1.0},
-        };
-        m_engine.GetWorld().AddComponent(entity, mesh_component);
-        const auto position = glm::vec3(cell_index.x, 0.5f, cell_index.y);
-        constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        constexpr auto scale = glm::vec3(0.2f, 0.2f, 0.2f);
-        const auto transform_component = Engine::Core::Components::Transform(position, rotation, scale);
-        m_engine.GetWorld().AddComponent(entity, transform_component);
-
-        constexpr auto collider = Engine::Core::Components::BoxCollider{
-            .is_static = true, .width = 0.2f, .height = 1.0f, .depth = 0.2f
-        };
-        std::cout << "Key entity id: " << entity << std::endl;
-        m_engine.GetWorld().AddComponent(entity, collider);
-
-        m_engine.GetWorld().AddComponent(entity, Components::KeyItem{});
-    }
-
-    void GameplayManager::CreateMazeCell(const Mazegenerator::Maze &maze, const Mazegenerator::Cell &cell,
-                                         const Engine::Renderer::MeshHandle &floor_mesh_handle,
-                                         const Engine::Renderer::MeshHandle &wall_mesh_handle) const {
-        const auto floor_tile_color = DetermineFloorColorForCell(maze, cell.cell_index);
-        CreateCellFloorTile(floor_mesh_handle, cell.cell_index, floor_tile_color);
-
-        constexpr auto wall_tile_color = glm::vec4{0.8f, 0.8f, 0.8f, 1.0f};
-
-        if (cell.HasWall(Mazegenerator::front)) {
-            CreateWallFloorTile(wall_mesh_handle, cell.cell_index, wall_tile_color, Mazegenerator::Direction::front);
-        }
-        if (cell.HasWall(Mazegenerator::back)) {
-            CreateWallFloorTile(wall_mesh_handle, cell.cell_index, wall_tile_color, Mazegenerator::Direction::back);
-        }
-        if (cell.HasWall(Mazegenerator::left)) {
-            CreateWallFloorTile(wall_mesh_handle, cell.cell_index, wall_tile_color, Mazegenerator::Direction::left);
-        }
-        if (cell.HasWall(Mazegenerator::right)) {
-            CreateWallFloorTile(wall_mesh_handle, cell.cell_index, wall_tile_color, Mazegenerator::Direction::right);
-        }
     }
 
     glm::vec3 GameplayManager::ConvertDirection(const Mazegenerator::Direction &direction) {
