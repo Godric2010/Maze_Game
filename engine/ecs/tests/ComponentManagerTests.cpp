@@ -1,6 +1,5 @@
 #if __APPLE__
 #include <catch2/catch_test_macros.hpp>
-#include <utility>
 #else
 #include <catch2/catch_all.hpp>
 #endif
@@ -31,6 +30,9 @@ TEST_CASE_METHOD(ComponentManagerFixture,
     EntityId entity_b = 2u;
     EntityId entity_c = 3u;
 
+    component_manager.RegisterType<TestClassA>();
+    component_manager.RegisterType<TestClassB>();
+    component_manager.RegisterType<TestClassC>();
 
     component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
     REQUIRE(component_manager.HasComponent<TestClassA>(entity_a));
@@ -49,6 +51,10 @@ TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::AddComponent - Add m
                  "[ecs][fast]") {
     EntityId entity_a = 1u;
 
+    component_manager.RegisterType<TestClassA>();
+    component_manager.RegisterType<TestClassB>();
+    component_manager.RegisterType<TestClassC>();
+
     component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
     component_manager.AddComponent(entity_a, TestClassB{.test_val = -2});
     component_manager.AddComponent(entity_a, TestClassC{.test_val = 3.3f});
@@ -66,6 +72,10 @@ TEST_CASE_METHOD(ComponentManagerFixture, "ComponentManger::RemoveComponent - Re
     constexpr EntityId entity_a = 1u;
     constexpr EntityId entity_b = 2u;
 
+    component_manager.RegisterType<TestClassA>();
+    component_manager.RegisterType<TestClassB>();
+    component_manager.RegisterType<TestClassC>();
+
     component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
     component_manager.AddComponent(entity_b, TestClassA{.test_val = 2});
 
@@ -81,6 +91,11 @@ TEST_CASE_METHOD(ComponentManagerFixture,
     constexpr EntityId entity_b = 2u;
     constexpr EntityId entity_c = 3u;
 
+
+    component_manager.RegisterType<TestClassA>();
+    component_manager.RegisterType<TestClassB>();
+    component_manager.RegisterType<TestClassC>();
+
     component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
     component_manager.AddComponent(entity_b, TestClassA{.test_val = 42});
     component_manager.AddComponent(entity_c, TestClassC{.test_val = 43.33f});
@@ -95,6 +110,10 @@ TEST_CASE_METHOD(ComponentManagerFixture,
                  "ComponentManger::OnEntityDestroy - All components that have the entity are removed", "[ecs][fast]") {
     EntityId entity_a = 1u;
     EntityId entity_b = 2u;
+
+    component_manager.RegisterType<TestClassA>();
+    component_manager.RegisterType<TestClassB>();
+    component_manager.RegisterType<TestClassC>();
 
     component_manager.AddComponent(entity_a, TestClassA{.test_val = 1});
     component_manager.AddComponent(entity_a, TestClassB{.test_val = -2});
@@ -120,4 +139,21 @@ TEST_CASE_METHOD(ComponentManagerFixture,
 
     REQUIRE(result_c.size() == 1);
     REQUIRE(result_c[0] == entity_b);
+}
+
+TEST_CASE_METHOD(ComponentManagerFixture,
+                 "ComponentManager::RegisterType - Components can be only added when they are registered.",
+                 "[ecs][fast]") {
+    component_manager.RegisterType<TestClassA>();
+    const auto component_type_id = component_manager.GetComponentTypeId<TestClassA>();
+    REQUIRE(component_type_id != 0);
+    const auto component_meta = component_manager.GetComponentMeta(component_type_id);
+    REQUIRE(component_meta.size == sizeof(TestClassA));
+
+    constexpr EntityId entity_a = 1u;
+    constexpr auto test_class_a = TestClassA{.test_val = 1};
+    REQUIRE_NOTHROW(component_manager.AddById(entity_a, component_type_id, &test_class_a));
+
+    REQUIRE_THROWS(component_manager.GetComponentTypeId<TestClassB>());
+
 }

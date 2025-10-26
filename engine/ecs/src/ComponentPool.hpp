@@ -1,19 +1,16 @@
 #pragma once
 #include <vector>
-#include <limits>
-#include <stdexcept>
-
-#include "ComponentManager.hpp"
 #include "EntityManager.hpp"
 
 namespace Engine::Ecs {
     template<class T>
     class ComponentPool;
 
-    template<class T>
-    concept Component = std::is_trivially_destructible_v<T>;
+    // template<class T>
+    // concept Component = std::is_trivially_destructible_v<T>;
 
-    struct IComponentPool {
+    class IComponentPool {
+    public:
         virtual ~IComponentPool() = default;
 
         virtual void Remove(EntityId entity) = 0;
@@ -23,7 +20,7 @@ namespace Engine::Ecs {
         [[nodiscard]] virtual std::size_t GetComponentTypeId() const = 0;
     };
 
-    template<Component T>
+    template<class T>
     class TypedComponentPool final : public IComponentPool {
     public:
         explicit TypedComponentPool(std::size_t component_type_id) {
@@ -54,7 +51,7 @@ namespace Engine::Ecs {
     template<class T>
     class ComponentPool {
     public:
-        ComponentPool(std::size_t component_type_id);
+        explicit ComponentPool(std::size_t component_type_id);
 
         ~ComponentPool();
 

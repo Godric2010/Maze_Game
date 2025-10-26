@@ -22,7 +22,7 @@ struct SystemManagerFixture {
     }
 };
 
-class TestSysA : public ISystem {
+class TestSysA final : public ISystem {
 public:
     void Initialize(World *world, IServiceToEcsProvider *service_locator) override {
     }
@@ -32,7 +32,7 @@ public:
     }
 };
 
-class TestSysB : public ISystem {
+class TestSysB final : public ISystem {
 public:
     void Initialize(World *world, IServiceToEcsProvider *service_locator) override {
     }
@@ -42,7 +42,7 @@ public:
     }
 };
 
-class TestSysC : public ISystem {
+class TestSysC final : public ISystem {
 public:
     void Initialize(World *world, IServiceToEcsProvider *service_locator) override {
     }
@@ -52,7 +52,7 @@ public:
     }
 };
 
-class TestSysD : public ISystem {
+class TestSysD final : public ISystem {
 public:
     void Initialize(World *world, IServiceToEcsProvider *service_locator) override {
     }
@@ -62,7 +62,7 @@ public:
     }
 };
 
-class TestSysE : public ISystem {
+class TestSysE final : public ISystem {
 public:
     void Initialize(World *world, IServiceToEcsProvider *service_locator) override {
     }
