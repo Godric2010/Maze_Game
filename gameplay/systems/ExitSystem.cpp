@@ -9,8 +9,14 @@ namespace Gameplay::Systems {
     void ExitSystem::Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) {
         world->GetPhysicsEventBus()->SubscribeToOnTriggerEnter(
             [world](const Engine::Ecs::EntityId target, const Engine::Ecs::EntityId other) {
+                std::cout << "Entered trigger " << other << std::endl;
                 CheckIfPlayerHasKeyToExit(world, target, other);
             });
+        world->GetPhysicsEventBus()->SubscribeToOnTriggerExit(
+            [](Engine::Ecs::EntityId target, const Engine::Ecs::EntityId other) {
+                std::cout << "Exited trigger " << other << std::endl;
+            }
+        );
     }
 
     void ExitSystem::Run(Engine::Ecs::World &world, float delta_time) {

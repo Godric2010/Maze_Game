@@ -2,10 +2,12 @@
 
 #include <ostream>
 #define GLM_ENABLE_EXPERIMENTAL
+#include <iostream>
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/norm.hpp>
 
 #include "Collider.hpp"
+#include "GameWorld.hpp"
 #include "Transform.hpp"
 #include "../../../physics/src/collision/SpatialHashBroadphase.hpp"
 #include "collision/CollisionUtils.hpp"
@@ -52,101 +54,28 @@ namespace Engine::Core::Systems::Physics {
                 continue;
             }
 
-            glm::vec3 move_delta = IntentToDelta(motion_intent, transform->GetPosition(),
-                                                 transform->GetRotation(), delta_time);
-            const float length = length2(move_delta);
-
-            if (length < m_epsilon) {
+            auto position = transform->GetPosition();
+            glm::vec3 move_delta;
+            if (!TryGetMoveDelta(position, transform->GetRotation(), motion_intent, delta_time,
+                                 &move_delta)) {
                 transform->Set(transform->GetPosition(), motion_intent->rotation, motion_intent->scale);
-                continue;
+                return;
             }
-
+            std::vector<Ecs::EntityId> blocking_candidates;
+            std::vector<Ecs::EntityId> trigger_candidates;
             const auto it_sphere = m_collider_cache->sphere_colliders.find(entity);
             if (it_sphere == m_collider_cache->sphere_colliders.end()) {
                 continue;
             }
-            float radius = it_sphere->second.world_sphere.radius;
+            const float radius = it_sphere->second.world_sphere.radius;
 
-            glm::vec3 position = transform->GetPosition();
-            Math::AABB swept_aabb = BuildSweptAabb(position, move_delta, radius);
-            std::vector<Ecs::EntityId> candidates;
-            m_broadphase->QueryAabb(swept_aabb, candidates, nullptr);
+            RunBroadphase(entity, radius, position, move_delta, blocking_candidates, trigger_candidates);
 
-            std::vector<Ecs::EntityId> blocking_candidates;
-            std::vector<Ecs::EntityId> trigger_candidates;
-            blocking_candidates.reserve(candidates.size());
-            trigger_candidates.reserve(candidates.size());
+            glm::vec3 final_position;
+            PerformCollisionSweep(world, entity, position, move_delta, radius, blocking_candidates, &final_position);
+            DetectTriggerInteractions(world, final_position, radius, entity, trigger_candidates);
 
-            for (auto id: candidates) {
-                if (id == entity) continue;
-
-                if (auto it_box = m_collider_cache->box_colliders.find(id);
-                    it_box != m_collider_cache->box_colliders.end()) {
-                    if (it_box->second.is_trigger) {
-                        trigger_candidates.push_back(id);
-                    } else {
-                        blocking_candidates.push_back(id);
-                    }
-                    continue;
-                }
-
-                if (auto it_sphere = m_collider_cache->sphere_colliders.find(id);
-                    it_sphere != m_collider_cache->sphere_colliders.end()) {
-                    if (it_sphere->second.is_trigger) {
-                        trigger_candidates.push_back(id);
-                    } else {
-                        blocking_candidates.push_back(id);
-                    }
-                    continue;
-                }
-            }
-
-            Collision::MoverInput input;
-            input.position = position;
-            input.radius = radius;
-            input.delta = move_delta;
-            input.max_iterations = 3;
-
-            const auto result = Collision::MoverSolver::Solve(input, *m_collision_query_service, blocking_candidates);
-            glm::vec3 final_position = result.new_position;
-
-            if (result.collided) {
-                world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
-                    .type = Ecs::PhysicsEventType::OnCollisionEnter,
-                    .target_entity = entity,
-                    .other_collider_entity = result.hit_entity.value()
-                });
-            }
-
-            std::unordered_set<Ecs::EntityId> current_inside;
-            current_inside.reserve(trigger_candidates.size());
-
-            for (auto id: trigger_candidates) {
-                if (auto it_box = m_collider_cache->box_colliders.find(id);
-                    it_box != m_collider_cache->box_colliders.end()) {
-                    if (CheckOverlapSphereWithBox(it_box->second, final_position, radius)) {
-                        // current_inside.insert(id);
-                        world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
-                            .type = Ecs::PhysicsEventType::OnTriggerEnter, .target_entity = entity,
-                            .other_collider_entity = id,
-                        });
-                    }
-                    continue;
-                }
-                if (auto it_sphere = m_collider_cache->sphere_colliders.find(id);
-                    it_sphere != m_collider_cache->sphere_colliders.end()) {
-                    if (CheckOverlapSphereWithSphere(it_sphere->second, final_position, radius)) {
-                        // current_inside.insert(id);
-                        world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
-                            .type = Ecs::PhysicsEventType::OnTriggerEnter, .target_entity = entity,
-                            .other_collider_entity = id,
-                        });
-                    }
-                    continue;
-                }
-            }
-
-            transform->Set(result.new_position, motion_intent->rotation, transform->GetScale());
+            transform->Set(final_position, motion_intent->rotation, transform->GetScale());
         }
     }
 
@@ -186,6 +115,172 @@ namespace Engine::Core::Systems::Physics {
             m_broadphase->Insert({entity, proxy_sphere, sphere_collider.is_static});
         }
     }
+
+    bool PhysicsSystem::TryGetMoveDelta(const glm::vec3 &position, const glm::vec3 &rotation,
+                                        const Components::MotionIntent *intent, const float dt,
+                                        glm::vec3 *move_delta) const {
+        const auto delta = IntentToDelta(intent, position, rotation, dt);
+        const float length = length2(delta);
+
+        if (length < m_epsilon) {
+            return false;
+        }
+
+        *move_delta = delta;
+        return true;
+    }
+
+    void PhysicsSystem::RunBroadphase(const Ecs::EntityId target_entity, const float radius, const glm::vec3 &position,
+                                      const glm::vec3 move_delta,
+                                      std::vector<Ecs::EntityId> &blocking_candidates,
+                                      std::vector<Ecs::EntityId> &trigger_candidates) const {
+        std::vector<Ecs::EntityId> candidates;
+        m_collision_query_service->QuerySphereSweep(position, move_delta, radius, candidates, nullptr);
+
+
+        blocking_candidates.reserve(candidates.size());
+        trigger_candidates.reserve(candidates.size());
+
+        for (auto id: candidates) {
+            if (id == target_entity) continue;
+
+            if (auto it_box = m_collider_cache->box_colliders.find(id);
+                it_box != m_collider_cache->box_colliders.end()) {
+                if (it_box->second.is_trigger) {
+                    trigger_candidates.push_back(id);
+                } else {
+                    blocking_candidates.push_back(id);
+                }
+                continue;
+            }
+
+            if (auto it_sphere = m_collider_cache->sphere_colliders.find(id);
+                it_sphere != m_collider_cache->sphere_colliders.end()) {
+                if (it_sphere->second.is_trigger) {
+                    trigger_candidates.push_back(id);
+                } else {
+                    blocking_candidates.push_back(id);
+                }
+                continue;
+            }
+        }
+    }
+
+    void PhysicsSystem::PerformCollisionSweep(const Ecs::World &world, const Ecs::EntityId target_entity,
+                                              const glm::vec3 position, const glm::vec3 move_delta, const float radius,
+                                              const std::vector<Ecs::EntityId> &blocking_candidates,
+                                              glm::vec3 *final_position) {
+        Collision::MoverInput input;
+        input.position = position;
+        input.radius = radius;
+        input.delta = move_delta;
+        input.max_iterations = 3;
+
+        const auto result = Collision::MoverSolver::Solve(input, *m_collision_query_service, blocking_candidates);
+        *final_position = result.new_position;
+
+        RaiseCollisionEvents(world, target_entity, result);
+    }
+
+    void PhysicsSystem::RaiseCollisionEvents(const Ecs::World &world, const Ecs::EntityId target_entity,
+                                             const Collision::MoverResult &mover_result) {
+        Ecs::PhysicsEvent event{};
+        event.target_entity = target_entity;
+
+        if (!mover_result.collided && m_collided_entities[target_entity] != Ecs::INVALID_ENTITY_ID) {
+            event.other_collider_entity = m_collided_entities[target_entity];
+            event.type = Ecs::PhysicsEventType::OnCollisionExit;
+            world.GetPhysicsEventBuffer()->EnqueueEvent(event);
+            m_collided_entities[target_entity] = Ecs::INVALID_ENTITY_ID;
+            return;
+        }
+
+        if (mover_result.collided) {
+            const auto other_collider = mover_result.hit_entity.value();
+            if (m_collided_entities[target_entity] == other_collider) {
+                return;
+            }
+            if (m_collided_entities[target_entity] != Ecs::INVALID_ENTITY_ID) {
+                event.other_collider_entity = m_collided_entities[target_entity];
+                event.type = Ecs::PhysicsEventType::OnCollisionExit;
+                world.GetPhysicsEventBuffer()->EnqueueEvent(event);
+            }
+
+            event.other_collider_entity = other_collider;
+            event.type = Ecs::PhysicsEventType::OnCollisionEnter;
+            world.GetPhysicsEventBuffer()->EnqueueEvent(event);
+            m_collided_entities[target_entity] = event.other_collider_entity;
+        }
+    }
+
+    void PhysicsSystem::DetectTriggerInteractions(const Ecs::World &world, const glm::vec3 final_position,
+                                                  const float radius, const Ecs::EntityId target_entity,
+                                                  const std::vector<Ecs::EntityId> &trigger_candidates) {
+        std::unordered_set<Ecs::EntityId> current_inside;
+        current_inside.reserve(trigger_candidates.size());
+
+        for (auto id: trigger_candidates) {
+            if (auto it_box = m_collider_cache->box_colliders.find(id);
+                it_box != m_collider_cache->box_colliders.end()) {
+                if (CheckOverlapSphereWithBox(it_box->second, final_position, radius)) {
+                    current_inside.insert(id);
+                }
+                continue;
+            }
+            if (auto it_sphere = m_collider_cache->sphere_colliders.find(id);
+                it_sphere != m_collider_cache->sphere_colliders.end()) {
+                if (CheckOverlapSphereWithSphere(it_sphere->second, final_position, radius)) {
+                    current_inside.insert(id);
+                }
+                continue;
+            }
+        }
+
+        RaiseTriggerEvents(world, target_entity, current_inside);
+    }
+
+    void PhysicsSystem::RaiseTriggerEvents(const Ecs::World &world, Ecs::EntityId target_entity,
+                                           std::unordered_set<Ecs::EntityId> &trigger_entities) {
+        if (!m_triggered_entities.contains(target_entity)) {
+            Ecs::PhysicsEvent event{};
+            event.type = Ecs::PhysicsEventType::OnTriggerEnter;
+            event.target_entity = target_entity;
+
+            for (const auto id: trigger_entities) {
+                event.other_collider_entity = id;
+                world.GetPhysicsEventBuffer()->EnqueueEvent(event);
+            }
+            m_triggered_entities.emplace(target_entity, trigger_entities);
+            return;
+        }
+        std::unordered_set<Ecs::EntityId> exited_triggers;
+        for (const auto id: m_triggered_entities[target_entity]) {
+            if (!trigger_entities.contains(id)) {
+                exited_triggers.insert(id);
+                world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
+                    Ecs::PhysicsEventType::OnTriggerExit, target_entity, id
+                });
+            }
+        }
+
+        std::unordered_set<Ecs::EntityId> entered_triggers;
+        for (const auto id: trigger_entities) {
+            if (!m_triggered_entities[target_entity].contains(id)) {
+                entered_triggers.insert(id);
+                world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
+                    Ecs::PhysicsEventType::OnTriggerEnter, target_entity, id
+                });
+            }
+        }
+
+        for (const auto id: exited_triggers) {
+            m_triggered_entities[target_entity].erase(id);
+        }
+        for (const auto id: entered_triggers) {
+            m_triggered_entities[target_entity].emplace(id);
+        }
+    }
+
 
     glm::vec3 PhysicsSystem::IntentToDelta(const Components::MotionIntent *intent, const glm::vec3 &world_pos,
                                            const glm::vec3 &world_rot, const float delta_time) const {
