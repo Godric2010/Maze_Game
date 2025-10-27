@@ -21,6 +21,23 @@ namespace Engine::Physics::Math {
      */
     bool Overlap(const Sphere &sphere, const AABB &bounding_box) noexcept;
 
+
+    /**
+     * @brief Checks for overlap between two spheres.
+     *
+     * This function determines whether two spheres intersect based on their
+     * centers and radii. The calculation involves finding the squared distance
+     * between the centers of the two spheres and comparing it with the square of
+     * the sum of their radii. If the squared distance is less than or equal to
+     * the squared sum of their radii, the spheres are considered to overlap.
+     *
+     * @param sphere The first sphere to check for overlap.
+     * @param other_sphere The second sphere to check for overlap.
+     * @return True if the two spheres overlap, otherwise false.
+     * @note This function is marked as `noexcept` and operates in constant time.
+     */
+    bool Overlap(const Sphere& sphere, const Sphere& other_sphere) noexcept;
+
     /**
      * @brief Checks for overlap between a sphere and an oriented bounding box (OBB).
      *

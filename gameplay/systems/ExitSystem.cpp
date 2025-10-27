@@ -7,7 +7,7 @@
 
 namespace Gameplay::Systems {
     void ExitSystem::Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) {
-        world->GetPhysicsEventBus()->SubscribeToOnCollisionEnter(
+        world->GetPhysicsEventBus()->SubscribeToOnTriggerEnter(
             [world](const Engine::Ecs::EntityId target, const Engine::Ecs::EntityId other) {
                 CheckIfPlayerHasKeyToExit(world, target, other);
             });

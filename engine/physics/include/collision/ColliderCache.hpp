@@ -10,11 +10,22 @@
 #include "../../../ecs/src/Entity.hpp"
 
 namespace Engine::Physics::Collision {
-    struct ColliderCache {
-        std::unordered_map<Ecs::EntityId, Math::AABB> box_colliders;
-        std::unordered_map<Ecs::EntityId, Math::OBB> box_obbs;
-        std::unordered_map<Ecs::EntityId, Math::Sphere> sphere_colliders;
 
-        std::unordered_set<Ecs::EntityId> static_colliders;
+    struct BoxColliderInfo {
+        Math::AABB world_box;
+        Math::OBB world_obb;
+        bool is_static;
+        bool is_trigger;
+    };
+
+    struct SphereColliderInfo {
+        Math::Sphere world_sphere;
+        bool is_static;
+        bool is_trigger;
+    };
+
+    struct ColliderCache {
+        std::unordered_map<Ecs::EntityId, BoxColliderInfo> box_colliders;
+        std::unordered_map<Ecs::EntityId, SphereColliderInfo> sphere_colliders;
     };
 }

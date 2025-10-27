@@ -4,7 +4,6 @@
 
 #pragma once
 #define GLM_ENABLE_EXPERIMENTAL
-#include <iostream>
 #include <optional>
 #include<glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
@@ -31,7 +30,8 @@ namespace Engine::Physics::Collision {
 
     class MoverSolver {
     public:
-        static MoverResult Solve(const MoverInput &input, const ICollisionQueryService &query_service) {
+        static MoverResult Solve(const MoverInput &input, const ICollisionQueryService &query_service,
+                                 const std::vector<Ecs::EntityId> &candidates) {
             glm::vec3 position = input.position;
             glm::vec3 rest = input.delta;
             std::optional<Ecs::EntityId> hit_entity;
@@ -39,9 +39,6 @@ namespace Engine::Physics::Collision {
             MoverResult out{std::nullopt, position, false, std::numeric_limits<float>::infinity(), {}};
 
             for (int it = 0; it < input.max_iterations && length2(rest) > 1e-12f; ++it) {
-                std::vector<Ecs::EntityId> candidates;
-                query_service.QuerySphereSweep(position, rest, input.radius, candidates, nullptr);
-
                 float best_time_of_impact = length(rest) + 1.0f;
                 glm::vec3 best_normal(0);
 

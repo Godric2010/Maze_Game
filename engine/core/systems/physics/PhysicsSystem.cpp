@@ -8,6 +8,7 @@
 #include "Collider.hpp"
 #include "Transform.hpp"
 #include "../../../physics/src/collision/SpatialHashBroadphase.hpp"
+#include "collision/CollisionUtils.hpp"
 #include "collision/MoverSolver.hpp"
 #include "math/TypeUtils.hpp"
 
@@ -32,12 +33,7 @@ namespace Engine::Core::Systems::Physics {
 
         world->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::BoxCollider>(
             [this](const Ecs::EntityId entity) {
-                if (this->m_collider_cache->static_colliders.contains(entity)) {
-                    this->m_broadphase->Remove(entity);
-                }
-
                 this->m_collider_cache->box_colliders.erase(entity);
-                this->m_collider_cache->box_obbs.erase(entity);
             }
         );
 
@@ -69,21 +65,88 @@ namespace Engine::Core::Systems::Physics {
             if (it_sphere == m_collider_cache->sphere_colliders.end()) {
                 continue;
             }
+            float radius = it_sphere->second.world_sphere.radius;
+
+            glm::vec3 position = transform->GetPosition();
+            Math::AABB swept_aabb = BuildSweptAabb(position, move_delta, radius);
+            std::vector<Ecs::EntityId> candidates;
+            m_broadphase->QueryAabb(swept_aabb, candidates, nullptr);
+
+            std::vector<Ecs::EntityId> blocking_candidates;
+            std::vector<Ecs::EntityId> trigger_candidates;
+            blocking_candidates.reserve(candidates.size());
+            trigger_candidates.reserve(candidates.size());
+
+            for (auto id: candidates) {
+                if (id == entity) continue;
+
+                if (auto it_box = m_collider_cache->box_colliders.find(id);
+                    it_box != m_collider_cache->box_colliders.end()) {
+                    if (it_box->second.is_trigger) {
+                        trigger_candidates.push_back(id);
+                    } else {
+                        blocking_candidates.push_back(id);
+                    }
+                    continue;
+                }
+
+                if (auto it_sphere = m_collider_cache->sphere_colliders.find(id);
+                    it_sphere != m_collider_cache->sphere_colliders.end()) {
+                    if (it_sphere->second.is_trigger) {
+                        trigger_candidates.push_back(id);
+                    } else {
+                        blocking_candidates.push_back(id);
+                    }
+                    continue;
+                }
+            }
 
             Collision::MoverInput input;
-            input.position = transform->GetPosition();
-            input.radius = it_sphere->second.radius;
+            input.position = position;
+            input.radius = radius;
             input.delta = move_delta;
             input.max_iterations = 3;
 
-            const auto result = Collision::MoverSolver::Solve(input, *m_collision_query_service);
-            transform->Set(result.new_position, motion_intent->rotation, transform->GetScale());
-            if (result.hit_entity.has_value() && result.collided) {
+            const auto result = Collision::MoverSolver::Solve(input, *m_collision_query_service, blocking_candidates);
+            glm::vec3 final_position = result.new_position;
+
+            if (result.collided) {
                 world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
-                    .type = Ecs::PhysicsEventType::OnCollisionEnter, .target_entity = entity,
+                    .type = Ecs::PhysicsEventType::OnCollisionEnter,
+                    .target_entity = entity,
                     .other_collider_entity = result.hit_entity.value()
                 });
             }
+
+            std::unordered_set<Ecs::EntityId> current_inside;
+            current_inside.reserve(trigger_candidates.size());
+
+            for (auto id: trigger_candidates) {
+                if (auto it_box = m_collider_cache->box_colliders.find(id);
+                    it_box != m_collider_cache->box_colliders.end()) {
+                    if (CheckOverlapSphereWithBox(it_box->second, final_position, radius)) {
+                        // current_inside.insert(id);
+                        world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
+                            .type = Ecs::PhysicsEventType::OnTriggerEnter, .target_entity = entity,
+                            .other_collider_entity = id,
+                        });
+                    }
+                    continue;
+                }
+                if (auto it_sphere = m_collider_cache->sphere_colliders.find(id);
+                    it_sphere != m_collider_cache->sphere_colliders.end()) {
+                    if (CheckOverlapSphereWithSphere(it_sphere->second, final_position, radius)) {
+                        // current_inside.insert(id);
+                        world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
+                            .type = Ecs::PhysicsEventType::OnTriggerEnter, .target_entity = entity,
+                            .other_collider_entity = id,
+                        });
+                    }
+                    continue;
+                }
+            }
+
+            transform->Set(result.new_position, motion_intent->rotation, transform->GetScale());
         }
     }
 
@@ -94,10 +157,14 @@ namespace Engine::Core::Systems::Physics {
                                                    box_collider.depth);
         const auto aabb = Math::Util::ToTightAabb(obb);
 
-        m_collider_cache->box_obbs.emplace(entity, obb);
-        m_collider_cache->box_colliders.emplace(entity, aabb);
+        Collision::BoxColliderInfo info{};
+        info.world_box = aabb;
+        info.world_obb = obb;
+        info.is_static = box_collider.is_static;
+        info.is_trigger = box_collider.is_trigger;
+
+        m_collider_cache->box_colliders.emplace(entity, info);
         if (box_collider.is_static) {
-            m_collider_cache->static_colliders.emplace(entity);
             m_broadphase->Insert({entity, aabb, box_collider.is_static});
         }
     }
@@ -108,9 +175,13 @@ namespace Engine::Core::Systems::Physics {
         sphere.radius = sphere_collider.radius;
         sphere.center = position;
 
-        m_collider_cache->sphere_colliders.emplace(entity, sphere);
+        Collision::SphereColliderInfo info{};
+        info.world_sphere = sphere;
+        info.is_static = sphere_collider.is_static;
+        info.is_trigger = sphere_collider.is_trigger;
+
+        m_collider_cache->sphere_colliders.emplace(entity, info);
         if (sphere_collider.is_static) {
-            m_collider_cache->static_colliders.emplace(entity);
             const auto proxy_sphere = Math::Util::FromSphere(sphere);
             m_broadphase->Insert({entity, proxy_sphere, sphere_collider.is_static});
         }
@@ -133,5 +204,14 @@ namespace Engine::Core::Systems::Physics {
 
         const float speed = 1.0f * (intent->speed_multiplier > 0.0f ? intent->speed_multiplier : 1.0f);
         return local_direction * speed * delta_time;
+    }
+
+    Math::AABB PhysicsSystem::BuildSweptAabb(const glm::vec3 &pos, const glm::vec3 &rest, const float radius) noexcept {
+        const glm::vec3 p0 = pos;
+        const glm::vec3 p1 = pos + rest;
+
+        const glm::vec3 min = glm::min(p0, p1) - glm::vec3(radius);
+        const glm::vec3 max = glm::max(p0, p1) + glm::vec3(radius);
+        return {min, max};
     }
 } // namespace

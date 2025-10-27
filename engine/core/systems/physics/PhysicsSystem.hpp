@@ -26,13 +26,16 @@ namespace Engine::Core::Systems::Physics {
         std::unique_ptr<Engine::Physics::Collision::IBroadphase> m_broadphase;
         std::unique_ptr<Engine::Physics::Collision::ICollisionQueryService> m_collision_query_service;
 
-        void BuildBoxCollider(Ecs::EntityId entity, Components::BoxCollider box_collider, const glm::vec3& position, const glm::vec3& rotation, const
-                              glm::vec3& scale) const;
+        void BuildBoxCollider(Ecs::EntityId entity, Components::BoxCollider box_collider, const glm::vec3 &position,
+                              const glm::vec3 &rotation, const
+                              glm::vec3 &scale) const;
 
         void BuildSphereCollider(Ecs::EntityId entity, Components::SphereCollider sphere_collider,
                                  glm::vec3 position) const;
 
         glm::vec3 IntentToDelta(const Components::MotionIntent *intent, const glm::vec3 &world_pos,
                                 const glm::vec3 &world_rot, float delta_time) const;
+
+        static Engine::Physics::Math::AABB BuildSweptAabb(const glm::vec3 &pos, const glm::vec3 &rest, float radius) noexcept;
     };
 } // namespace

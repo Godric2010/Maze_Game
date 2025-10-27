@@ -9,6 +9,12 @@ namespace Engine::Physics::Math {
         return true;
     }
 
+    bool Overlap(const Sphere &sphere, const Sphere &other_sphere) noexcept {
+        const auto distance = glm::length2(other_sphere.center - sphere.center);
+        return distance <= std::pow((sphere.radius + other_sphere.radius), 2);
+    }
+
+
     bool Overlap(const Sphere &sphere, const AABB &bounding_box) noexcept {
         const glm::vec3 closest = ClosestPoint(sphere.center, bounding_box);
         const float delta_dist = length2(closest - sphere.center);

@@ -36,17 +36,14 @@ namespace Gameplay::Mazegenerator {
     }
 
     glm::vec3 MazeBuilder::GetMazeStartPosition() const {
-        return glm::vec3(m_maze.entrance_cell.x, 1.0f, m_maze.entrance_cell.y);
+        return {m_maze.entrance_cell.x, 1.0f, m_maze.entrance_cell.y};
     }
 
 
     void MazeBuilder::CreateCellObjects() const {
         const auto maze_cells = m_maze.cells;
-        const size_t cells = maze_cells.size();
-        int count = 1;
         for (const auto &cell: maze_cells) {
             CreateMazeCell(cell);
-            ++count;
         }
     }
 
@@ -82,7 +79,7 @@ namespace Gameplay::Mazegenerator {
         m_game_world->AddComponent(entity, transform_component);
 
         constexpr auto collider = Engine::Core::Components::BoxCollider{
-            .is_static = true, .width = 0.2f, .height = 1.0f, .depth = 0.2f
+            .is_static = true, .is_trigger = true, .width = 0.2f, .height = 1.0f, .depth = 0.2f
         };
         m_game_world->AddComponent(entity, collider);
 

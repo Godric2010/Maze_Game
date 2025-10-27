@@ -20,6 +20,7 @@ add_library(Physics STATIC
         tests/FakeCollisionQueryService.hpp
         tests/TypeUtiliesTests.cpp
         include/math/TypeUtils.hpp
+        include/collision/CollisionUtils.hpp
 )
 
 if(COMMAND enable_coverage)

@@ -41,12 +41,22 @@ namespace Engine::Physics::Collision {
 
         [[nodiscard]] const Math::AABB *GetAabb(const Ecs::EntityId entity) const override {
             const auto it = m_collider_cache.box_colliders.find(entity);
-            return it == m_collider_cache.box_colliders.end() ? nullptr : &it->second;
+            if (m_collider_cache.box_colliders.end() == it) return nullptr;
+
+            if (it->second.is_trigger)
+                return nullptr;
+
+            return &it->second.world_box;
         }
 
         [[nodiscard]] const Math::OBB *GetObb(const Ecs::EntityId entity) const override {
-            const auto it = m_collider_cache.box_obbs.find(entity);
-            return it == m_collider_cache.box_obbs.end() ? nullptr : &it->second;
+            const auto it = m_collider_cache.box_colliders.find(entity);
+            if (m_collider_cache.box_colliders.end() == it) return nullptr;
+
+            if (it->second.is_trigger)
+                return nullptr;
+
+            return &it->second.world_obb;
         }
 
     private:
