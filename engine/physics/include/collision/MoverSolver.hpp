@@ -5,6 +5,7 @@
 #pragma once
 #define GLM_ENABLE_EXPERIMENTAL
 #include <optional>
+#include <stdexcept>
 #include<glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
