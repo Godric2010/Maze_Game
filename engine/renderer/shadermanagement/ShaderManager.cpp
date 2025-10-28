@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <ranges>
 #include <vector>
 
 namespace Engine::Renderer::ShaderManagement {
@@ -18,47 +19,55 @@ namespace Engine::Renderer::ShaderManagement {
         m_shaders.clear();
     }
 
-    void ShaderManager::LoadShader(const std::string &shaderName) {
-        if (m_shaders.contains(shaderName)) {
+    void ShaderManager::LoadShader(const std::string &shader_name) {
+        if (m_shaders.contains(shader_name)) {
             return;
         }
 
-        std::filesystem::path resourcePath = std::filesystem::current_path() / "resources/shaders";
-        std::string vertexPath = (resourcePath / (shaderName + ".vert")).string();
-        std::string fragmentPath = (resourcePath / (shaderName + ".frag")).string();
+        std::filesystem::path resource_path = std::filesystem::current_path() / "resources/shaders";
+        std::string vertex_path = (resource_path / (shader_name + ".vert")).string();
+        std::string fragment_path = (resource_path / (shader_name + ".frag")).string();
 
-        std::cout << "Loading shader " << shaderName << "..." << std::endl;
-        std::cout << vertexPath << std::endl;
-        std::cout << fragmentPath << std::endl;
+        std::cout << "Loading shader " << shader_name << "..." << std::endl;
+        std::cout << vertex_path << std::endl;
+        std::cout << fragment_path << std::endl;
 
-        const auto vertexShader = readShaderFile(vertexPath);
-        const auto fragmentShader = readShaderFile(fragmentPath);
+        const auto vertex_shader = ReadShaderFile(vertex_path);
+        const auto fragment_shader = ReadShaderFile(fragment_path);
 
         const auto shader = Shader{
-            .name = shaderName,
-            .vertexShader = vertexShader,
-            .fragmentShader = fragmentShader
+            .name = shader_name,
+            .vertex_shader = vertex_shader,
+            .fragment_shader = fragment_shader
         };
-        m_shaders[shaderName] = shader;
+        m_shaders[shader_name] = shader;
     }
 
-    std::optional<Shader> ShaderManager::GetShader(const std::string &shaderName) {
-        if (const auto it = m_shaders.find(shaderName); it != m_shaders.end()) {
+    std::optional<Shader> ShaderManager::GetShader(const std::string &shader_name) {
+        if (const auto it = m_shaders.find(shader_name); it != m_shaders.end()) {
             return std::make_optional(it->second);
         }
         return std::nullopt;
     }
 
-    std::string ShaderManager::readShaderFile(const std::filesystem::path filepath) {
+    std::vector<std::string> ShaderManager::GetAllShaderNames() {
+        std::vector<std::string> names;
+        for (const auto &shader_name: m_shaders | std::views::keys) {
+            names.push_back(shader_name);
+        }
+        return names;
+    }
+
+    std::string ShaderManager::ReadShaderFile(const std::filesystem::path &filepath) {
         std::ifstream file(filepath, std::ios::ate | std::ios::binary);
         if (!file.is_open()) {
             throw std::runtime_error("Could not open file " + filepath.string());
         }
-        size_t fileSize = (size_t) file.tellg();
-        std::vector<char> buffer(fileSize);
+        size_t file_size = (size_t) file.tellg();
+        std::vector<char> buffer(file_size);
         file.seekg(0);
-        file.read(buffer.data(), fileSize);
+        file.read(buffer.data(), file_size);
         file.close();
-        return {buffer.data(), fileSize};
+        return {buffer.data(), file_size};
     }
 }

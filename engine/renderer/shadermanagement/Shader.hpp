@@ -4,7 +4,7 @@
 namespace Engine::Renderer::ShaderManagement {
     struct Shader {
         std::string name;
-        std::string vertexShader;
-        std::string fragmentShader;
+        std::string vertex_shader;
+        std::string fragment_shader;
     };
 } // namespace

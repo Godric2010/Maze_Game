@@ -18,7 +18,7 @@ namespace Engine::Renderer::RenderFramework {
         /**
          * Prepare the frame of the renderer
          */
-        virtual void PrepareFrame(const CameraAsset& cameraAsset) = 0;
+        virtual void PrepareFrame(const CameraAsset& camera_asset) = 0;
 
         /**
          * Call to render to the screen
@@ -33,7 +33,7 @@ namespace Engine::Renderer::RenderFramework {
        /**
         * Remove a mesh from the renderer to free its resources.
         */
-        virtual void RemoveMesh(const MeshHandle &meshHandle) = 0;
+        virtual void RemoveMesh(const MeshHandle &mesh_handle) = 0;
 
         /**
          * Disable the renderer and free its resources.

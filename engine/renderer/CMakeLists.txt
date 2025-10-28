@@ -10,7 +10,9 @@ add_library(Renderer STATIC
         Datatypes.hpp
         renderframework/OpenGL/OpenGLMesh.hpp
         renderframework/OpenGL/OpenGLMeshManager.cpp
-        renderframework/OpenGL/OpenGLMeshManager.hpp)
+        renderframework/OpenGL/OpenGLMeshManager.hpp
+        renderframework/OpenGL/OpenGLShaderManager.cpp
+        renderframework/OpenGL/OpenGLShaderManager.hpp)
 
 target_include_directories(Renderer PUBLIC RenderController.hpp)
 target_link_libraries(Renderer PRIVATE Window glad::glad glm::glm spdlog::spdlog)
