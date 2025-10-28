@@ -8,13 +8,13 @@
 
 
 namespace Engine::Renderer {
-    RenderController::RenderController(const Environment::WindowContext &windowContext) {
-        m_windowContext = windowContext;
+    RenderController::RenderController(const Environment::WindowContext &window_context) {
+        m_windowContext = window_context;
 
         m_shaderManager = std::make_unique<ShaderManagement::ShaderManager>();
         m_shaderManager->LoadShader("test");
 
-        switch (windowContext.renderApi) {
+        switch (window_context.renderApi) {
             case Environment::API::OpenGL:
                 m_renderer = std::make_unique<RenderFramework::OpenGL::OpenGLRenderer>(
                     m_windowContext, m_shaderManager.get());
@@ -43,11 +43,11 @@ namespace Engine::Renderer {
         m_renderer->RemoveMesh(handle);
     }
 
-    void RenderController::BeginFrame(const CameraAsset &cameraAsset) const {
-        m_renderer->PrepareFrame(cameraAsset);
+    void RenderController::BeginFrame(const CameraAsset &camera_asset) const {
+        m_renderer->PrepareFrame(camera_asset);
     }
 
-    void RenderController::SubmitFrame(const std::vector<DrawAsset>& drawAssets) const {
-        m_renderer->DrawFrame(drawAssets);
+    void RenderController::SubmitFrame(DrawAssets &draw_assets) const {
+        m_renderer->DrawFrame(draw_assets);
     }
 }

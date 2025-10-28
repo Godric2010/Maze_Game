@@ -24,7 +24,7 @@ namespace Engine::Core::Systems {
         static Renderer::CameraAsset CreateCameraAsset(const Components::Camera *camera_component,
                                                        const Components::Transform *camera_transform);
 
-        static std::vector<Renderer::DrawAsset> CreateDrawAssets(
+        static std::vector<Renderer::MeshDrawAsset> CreateDrawAssets(
             const std::vector<std::pair<Components::Mesh *, Components::Transform *> > &draw_data);
     };
 } // namespace

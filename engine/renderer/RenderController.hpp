@@ -13,7 +13,7 @@
 namespace Engine::Renderer {
     class RenderController {
     public:
-        explicit RenderController(const Environment::WindowContext &windowContext);
+        explicit RenderController(const Environment::WindowContext &window_context);
 
         ~RenderController();
 
@@ -21,9 +21,9 @@ namespace Engine::Renderer {
 
         void UnregisterMesh(const MeshHandle &handle) const;
 
-        void BeginFrame(const CameraAsset &cameraAsset) const;
+        void BeginFrame(const CameraAsset &camera_asset) const;
 
-        void SubmitFrame(const std::vector<DrawAsset> &drawAssets) const;
+        void SubmitFrame(DrawAssets &draw_assets) const;
 
     private:
         Environment::WindowContext m_windowContext;

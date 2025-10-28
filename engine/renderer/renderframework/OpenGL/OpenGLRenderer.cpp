@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "../../../core/components/Mesh.hpp"
+
 namespace Engine::Renderer::RenderFramework::OpenGL {
     OpenGLRenderer::OpenGLRenderer(const Environment::WindowContext &windowContext,
                                    ShaderManagement::ShaderManager *shaderManager) {
@@ -48,14 +50,14 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
     }
 
 
-    void OpenGLRenderer::DrawFrame(const std::vector<DrawAsset> &drawAssets) {
-        std::vector<std::vector<const DrawAsset *> > buckets(m_meshManager->Size());
-        for (const auto &drawAsset: drawAssets) {
-            buckets[drawAsset.mesh].push_back(&drawAsset);
+    void OpenGLRenderer::DrawFrame(DrawAssets &draw_assets) {
+        std::vector<std::vector<const MeshDrawAsset *> > buckets(m_meshManager->Size());
+        for (const auto &draw_asset: draw_assets.mesh_draw_assets) {
+            buckets[draw_asset.mesh].push_back(&draw_asset);
         }
 
-        GLint uModel = glGetUniformLocation(m_shaderProgram, "u_Model");
-        GLint uColor = glGetUniformLocation(m_shaderProgram, "u_Color");
+        const GLint u_model = glGetUniformLocation(m_shaderProgram, "u_Model");
+        const GLint u_color = glGetUniformLocation(m_shaderProgram, "u_Color");
         glUseProgram(m_shaderProgram);
 
         for (MeshHandle h = 0; h < buckets.size(); ++h) {
@@ -67,9 +69,9 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
             const auto &mesh = m_meshManager->GetMesh(h);
             glBindVertexArray(mesh.VAO);
 
-            for (const DrawAsset *drawAsset: list) {
-                glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(drawAsset->model));
-                glUniform4fv(uColor, 1, glm::value_ptr(drawAsset->color));
+            for (const MeshDrawAsset *draw_asset: list) {
+                glUniformMatrix4fv(u_model, 1, GL_FALSE, glm::value_ptr(draw_asset->model));
+                glUniform4fv(u_color, 1, glm::value_ptr(draw_asset->color));
 
                 glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
             }

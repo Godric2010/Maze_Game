@@ -23,7 +23,7 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
 
         void PrepareFrame(const CameraAsset& cameraAsset) override;
 
-        void DrawFrame(const std::vector<DrawAsset> &drawAssets) override;
+        void DrawFrame(DrawAssets &draw_assets) override;
 
         MeshHandle AddMesh(const MeshAsset &mesh) override;
 

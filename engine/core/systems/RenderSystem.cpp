@@ -11,7 +11,8 @@ namespace Engine::Core::Systems {
     RenderSystem::~RenderSystem() = default;
 
     void RenderSystem::Initialize() {
-        const Renderer::RenderController *render_controller = ServiceLocator()->GetService<Renderer::RenderController>();
+        const Renderer::RenderController *render_controller = ServiceLocator()->GetService<
+            Renderer::RenderController>();
         m_renderController = render_controller;
     }
 
@@ -28,7 +29,12 @@ namespace Engine::Core::Systems {
             const auto mesh_data = std::make_pair(mesh, mesh_transform);
             draw_data[i] = mesh_data;
         }
-        const std::vector<Renderer::DrawAsset> draw_assets = CreateDrawAssets(draw_data);
+        const std::vector<Renderer::MeshDrawAsset> mesh_draw_assets = CreateDrawAssets(draw_data);
+
+        Renderer::DrawAssets draw_assets{};
+        draw_assets.mesh_draw_assets = mesh_draw_assets;
+        draw_assets.ui_draw_assets = std::vector<Renderer::UiDrawAsset>();
+
 
         m_renderController->BeginFrame(camera_asset);
         m_renderController->SubmitFrame(draw_assets);
@@ -45,11 +51,11 @@ namespace Engine::Core::Systems {
         return camera_asset;
     }
 
-    std::vector<Renderer::DrawAsset> RenderSystem::CreateDrawAssets(
+    std::vector<Renderer::MeshDrawAsset> RenderSystem::CreateDrawAssets(
         const std::vector<std::pair<Components::Mesh *, Components::Transform *> > &draw_data) {
-        auto draw_assets = std::vector<Renderer::DrawAsset>(draw_data.size());
+        auto draw_assets = std::vector<Renderer::MeshDrawAsset>(draw_data.size());
         for (size_t i = 0; i < draw_data.size(); ++i) {
-            draw_assets[i] = Renderer::DrawAsset{
+            draw_assets[i] = Renderer::MeshDrawAsset{
                 .mesh = draw_data[i].first->mesh,
                 .model = draw_data[i].second->GetMatrix(),
                 .color = draw_data[i].first->color,
