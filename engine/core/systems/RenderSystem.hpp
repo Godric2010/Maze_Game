@@ -19,12 +19,13 @@ namespace Engine::Core::Systems {
         void Run(float delta_time) override;
 
     private:
-        const Renderer::RenderController *m_renderController;
+        const Renderer::RenderController *m_render_controller;
 
         static Renderer::CameraAsset CreateCameraAsset(const Components::Camera *camera_component,
                                                        const Components::Transform *camera_transform);
 
-        static std::vector<Renderer::MeshDrawAsset> CreateDrawAssets(
-            const std::vector<std::pair<Components::Mesh *, Components::Transform *> > &draw_data);
+        [[nodiscard]] std::vector<Renderer::MeshDrawAsset> CreateDrawAssets() const;
+
+        [[nodiscard]] std::vector<Renderer::UiDrawAsset> CreateUiDrawAssets() const;
     };
 } // namespace

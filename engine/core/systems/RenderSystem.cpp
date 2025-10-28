@@ -4,6 +4,8 @@
 #include "Mesh.hpp"
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
+#include "ui/Image.hpp"
+#include "ui/RectTransform.hpp"
 
 namespace Engine::Core::Systems {
     RenderSystem::RenderSystem() = default;
@@ -13,7 +15,7 @@ namespace Engine::Core::Systems {
     void RenderSystem::Initialize() {
         const Renderer::RenderController *render_controller = ServiceLocator()->GetService<
             Renderer::RenderController>();
-        m_renderController = render_controller;
+        m_render_controller = render_controller;
     }
 
     void RenderSystem::Run(float delta_time) {
@@ -21,23 +23,15 @@ namespace Engine::Core::Systems {
         const auto camera_transform = GameWorld()->GetComponent<Components::Transform>(cameraEntity);
         const auto camera_asset = CreateCameraAsset(camera, camera_transform);
 
-        const auto mesh_components = GameWorld()->GetComponentsOfType<Components::Mesh>();
-        auto draw_data = std::vector<std::pair<Components::Mesh *, Components::Transform *> >(mesh_components.size());
-        for (size_t i = 0; i < mesh_components.size(); ++i) {
-            const auto [mesh, meshEntity] = mesh_components[i];
-            auto mesh_transform = GameWorld()->GetComponent<Components::Transform>(meshEntity);
-            const auto mesh_data = std::make_pair(mesh, mesh_transform);
-            draw_data[i] = mesh_data;
-        }
-        const std::vector<Renderer::MeshDrawAsset> mesh_draw_assets = CreateDrawAssets(draw_data);
+        const std::vector<Renderer::MeshDrawAsset> mesh_draw_assets = CreateDrawAssets();
+        const std::vector<Renderer::UiDrawAsset> ui_draw_assets = CreateUiDrawAssets();
 
         Renderer::DrawAssets draw_assets{};
         draw_assets.mesh_draw_assets = mesh_draw_assets;
-        draw_assets.ui_draw_assets = std::vector<Renderer::UiDrawAsset>();
+        draw_assets.ui_draw_assets = ui_draw_assets;
 
-
-        m_renderController->BeginFrame(camera_asset);
-        m_renderController->SubmitFrame(draw_assets);
+        m_render_controller->BeginFrame(camera_asset);
+        m_render_controller->SubmitFrame(draw_assets);
     }
 
     Renderer::CameraAsset RenderSystem::CreateCameraAsset(const Components::Camera *camera_component,
@@ -51,16 +45,40 @@ namespace Engine::Core::Systems {
         return camera_asset;
     }
 
-    std::vector<Renderer::MeshDrawAsset> RenderSystem::CreateDrawAssets(
-        const std::vector<std::pair<Components::Mesh *, Components::Transform *> > &draw_data) {
-        auto draw_assets = std::vector<Renderer::MeshDrawAsset>(draw_data.size());
-        for (size_t i = 0; i < draw_data.size(); ++i) {
-            draw_assets[i] = Renderer::MeshDrawAsset{
-                .mesh = draw_data[i].first->mesh,
-                .model = draw_data[i].second->GetMatrix(),
-                .color = draw_data[i].first->color,
-            };
+    std::vector<Renderer::MeshDrawAsset> RenderSystem::CreateDrawAssets() const {
+        const auto mesh_components = GameWorld()->GetComponentsOfType<Components::Mesh>();
+        auto draw_assets = std::vector<Renderer::MeshDrawAsset>(mesh_components.size());
+
+        for (size_t i = 0; i < mesh_components.size(); ++i) {
+            const auto [mesh_component, meshEntity] = mesh_components[i];
+            const auto mesh_transform = GameWorld()->GetComponent<Components::Transform>(meshEntity);
+
+            Renderer::MeshDrawAsset mesh_draw_assets{};
+            mesh_draw_assets.mesh = mesh_component->mesh;
+            mesh_draw_assets.model = mesh_transform->GetMatrix();
+            mesh_draw_assets.color = mesh_component->color;
+
+            draw_assets[i] = mesh_draw_assets;
         }
         return draw_assets;
+    }
+
+    std::vector<Renderer::UiDrawAsset> RenderSystem::CreateUiDrawAssets() const {
+        const auto rect_transforms = GameWorld()->GetComponentsOfType<Components::UI::RectTransform>();
+        auto ui_draw_assets = std::vector<Renderer::UiDrawAsset>(rect_transforms.size());
+
+        for (size_t i = 0; i < rect_transforms.size(); ++i) {
+            const auto [rect_transform, entity] = rect_transforms[i];
+            auto image_component = GameWorld()->GetComponent<Components::UI::Image>(entity);
+
+            Renderer::UiDrawAsset ui_draw_asset{};
+            ui_draw_asset.position = rect_transform->position;
+            ui_draw_asset.size = rect_transform->size;
+            ui_draw_asset.color = image_component->color;
+
+            ui_draw_assets[i] = ui_draw_asset;
+        }
+
+        return ui_draw_assets;
     }
 } // namespace
