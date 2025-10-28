@@ -7,6 +7,8 @@
 #include "components/Camera.hpp"
 #include "components/Inventory.hpp"
 #include "components/Transform.hpp"
+#include "ui/Image.hpp"
+#include "ui/RectTransform.hpp"
 
 namespace Gameplay {
     GameplayManager::GameplayManager(Engine::Core::IEngine &engine) : m_engine(engine) {
@@ -24,6 +26,7 @@ namespace Gameplay {
     void GameplayManager::Initialize() {
         m_maze_builder->BuildMaze(5, 5, 1337);
         CreateCamera(m_maze_builder->GetMazeStartPosition());
+        CreateUI();
     }
 
     void GameplayManager::Shutdown() {
@@ -61,6 +64,16 @@ namespace Gameplay {
 
         constexpr auto inventory = Components::Inventory();
         m_engine.GetWorld().AddComponent(m_camera_entity, inventory);
+    }
+
+    void GameplayManager::CreateUI() {
+        const auto key_indicator = m_engine.GetWorld().CreateEntity();
+
+        constexpr auto transform = Engine::Core::Components::UI::RectTransform{.position = {15, 15}, .size = {30, 30}};
+        m_engine.GetWorld().AddComponent(key_indicator, transform);
+
+        constexpr auto image = Engine::Core::Components::UI::Image{.color = {255, 0, 0, 255}};
+        m_engine.GetWorld().AddComponent(key_indicator, image);
     }
 
     glm::vec3 GameplayManager::ConvertDirection(const Mazegenerator::Direction &direction) {

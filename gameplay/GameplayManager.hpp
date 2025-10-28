@@ -27,6 +27,7 @@ namespace Gameplay {
         std::unique_ptr<MeshHandler> m_mesh_handler;
 
         void CreateCamera(glm::vec3 start_pos);
+        void CreateUI();
 
         static glm::vec3 ConvertDirection(const Mazegenerator::Direction &direction);
     };

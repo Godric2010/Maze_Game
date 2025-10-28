@@ -26,6 +26,8 @@ add_library(Core STATIC
         components/Collider.hpp
         ../physics/include/collision/ColliderCache.hpp
         ../physics/include/collision/CollisionQueryService.hpp
+        components/ui/Image.hpp
+        components/ui/RectTransform.hpp
 )
 
 target_include_directories(Core PUBLIC
