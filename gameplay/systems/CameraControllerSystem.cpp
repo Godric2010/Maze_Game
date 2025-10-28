@@ -4,6 +4,7 @@
 #include <ostream>
 
 
+#include "GameWorld.hpp"
 #include "InputReceiver.hpp"
 #include "MotionIntent.hpp"
 #include "components/Camera.hpp"
@@ -14,15 +15,15 @@ namespace Gameplay::Systems {
 
     CameraControllerSystem::~CameraControllerSystem() = default;
 
-    void CameraControllerSystem::Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) {
+    void CameraControllerSystem::Initialize() {
     }
 
-    void CameraControllerSystem::Run(Engine::Ecs::World &world, const float delta_time) {
-        for (const auto cameras = world.GetComponentsOfType<Engine::Core::Components::Camera>(); auto camera: cameras) {
+    void CameraControllerSystem::Run(const float delta_time) {
+        for (const auto cameras = GameWorld()->GetComponentsOfType<Engine::Core::Components::Camera>(); auto camera: cameras) {
             const auto entity = camera.second;
-            const auto camera_transform = world.GetComponent<Engine::Core::Components::Transform>(entity);
-            const auto camera_input = world.GetComponent<Engine::Core::Components::InputReceiver>(entity);
-            const auto camera_motion_intent = world.GetComponent<Engine::Core::Components::MotionIntent>(entity);
+            const auto camera_transform = GameWorld()->GetComponent<Engine::Core::Components::Transform>(entity);
+            const auto camera_input = GameWorld()->GetComponent<Engine::Core::Components::InputReceiver>(entity);
+            const auto camera_motion_intent = GameWorld()->GetComponent<Engine::Core::Components::MotionIntent>(entity);
             CalculateNewTransform(*camera_transform, *camera_motion_intent, camera_input->Input, delta_time);
         }
     }

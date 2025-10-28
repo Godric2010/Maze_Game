@@ -24,50 +24,50 @@ struct SystemManagerFixture {
 
 class TestSysA final : public ISystem {
 public:
-    void Initialize(World *world, IServiceToEcsProvider *service_locator) override {
+    void Initialize() override {
     }
 
-    void Run(World &world, float delta_time) override {
+    void Run(float delta_time) override {
         trace.emplace_back("A");
     }
 };
 
 class TestSysB final : public ISystem {
 public:
-    void Initialize(World *world, IServiceToEcsProvider *service_locator) override {
+    void Initialize() override {
     }
 
-    void Run(World &world, float delta_time) override {
+    void Run(float delta_time) override {
         trace.emplace_back("B");
     }
 };
 
 class TestSysC final : public ISystem {
 public:
-    void Initialize(World *world, IServiceToEcsProvider *service_locator) override {
+    void Initialize() override {
     }
 
-    void Run(World &world, float delta_time) override {
+    void Run(float delta_time) override {
         trace.emplace_back("C");
     }
 };
 
 class TestSysD final : public ISystem {
 public:
-    void Initialize(World *world, IServiceToEcsProvider *service_locator) override {
+    void Initialize() override {
     }
 
-    void Run(World &world, float delta_time) override {
+    void Run(float delta_time) override {
         trace.emplace_back("D");
     }
 };
 
 class TestSysE final : public ISystem {
 public:
-    void Initialize(World *world, IServiceToEcsProvider *service_locator) override {
+    void Initialize() override {
     }
 
-    void Run(World &world, float delta_time) override {
+    void Run(float delta_time) override {
         trace.emplace_back("E");
     }
 };
@@ -115,7 +115,7 @@ TEST_CASE_METHOD(SystemManagerFixture,
 
     // Messing up the order on purpose here
     std::vector<SystemMeta> systems{system_d, system_e, system_c, system_a, system_b};
-    system_manager.RegisterSystems(systems, nullptr, nullptr);
+    system_manager.RegisterSystems(systems, nullptr, nullptr, nullptr);
 
     system_manager.RunSystems(world, 0.0f);
 

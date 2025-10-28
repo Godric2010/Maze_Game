@@ -4,7 +4,7 @@
 
 #include "ISystem.hpp"
 
-ECS_SYSTEM(CommandSystem, Commands, [])
+ECS_SYSTEM(CommandSystem, Commands, [ENGINE])
 
 namespace Engine::Core::Systems {
     struct TransformCommand {
@@ -13,14 +13,14 @@ namespace Engine::Core::Systems {
         glm::vec3 scale;
     };
 
-    class CommandSystem final : public Ecs::ISystem {
+    class CommandSystem final : public Ecs::IEngineSystem {
     public:
         CommandSystem() = default;
 
         ~CommandSystem() override = default;
 
-        void Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) override;
+        void Initialize() override;
 
-        void Run(Ecs::World &world, float delta_time) override;
+        void Run(float delta_time) override;
     };
 } // namespace

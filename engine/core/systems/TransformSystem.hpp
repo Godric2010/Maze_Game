@@ -4,17 +4,18 @@
 
 #include "ISystem.hpp"
 
-ECS_SYSTEM(TransformSystem, LateUpdate, [])
+ECS_SYSTEM(TransformSystem, LateUpdate, [ENGINE])
+
 namespace Engine::Core::Systems {
-    class TransformSystem : public Ecs::ISystem {
+    class TransformSystem : public Ecs::IEngineSystem {
     public:
         TransformSystem();
 
         ~TransformSystem() override;
 
-        void Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) override;
+        void Initialize() override;
 
-        void Run(Ecs::World &world, float delta_time) override;
+        void Run(float delta_time) override;
 
     private:
         static glm::mat4 CalculateMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);

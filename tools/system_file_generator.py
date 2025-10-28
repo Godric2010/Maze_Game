@@ -53,13 +53,24 @@ def build_system_ctors(metas):
     return system_ctors
 
 
+def build_tags(tags):
+    tags_str = "\t\t\t.tags = std::vector<std::string>{"
+    for tag in tags:
+        tag_str = tag.replace("[", "").replace("]", "")
+        tags_str += "\"" + tag_str + "\", "
+
+    tags_str = tags_str[:-2]
+    tags_str += "},\n"
+    return tags_str
+
+
 def build_meta_list_entry(meta):
     if meta['isSystem'] is False:
         return ""
     meta_string = "\t\tEngine::Ecs::SystemMeta{\n"
     meta_string += "\t\t\t.name = \"" + meta['name'] + "\",\n"
     meta_string += "\t\t\t.phase = Engine::Ecs::Phase::" + meta['phase'] + ",\n"
-    meta_string += "\t\t\t.tags = std::vector<std::string>{},\n"
+    meta_string += build_tags(meta['tags'])
     meta_string += "\t\t\t.factory = &Create_" + meta['name'] + "\n"
     meta_string += "\t\t},\n"
     return meta_string

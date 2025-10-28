@@ -1,5 +1,9 @@
 #pragma once
 #include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
 #include "Collider.hpp"
 #include "collision/ColliderCache.hpp"
 #include "ISystem.hpp"
@@ -9,17 +13,17 @@
 #include "collision/MoverSolver.hpp"
 
 namespace Engine::Core::Systems::Physics {
-    ECS_SYSTEM(PhysicsSystem, Physics, [])
+    ECS_SYSTEM(PhysicsSystem, Physics, [ENGINE])
 
-    class PhysicsSystem final : public Ecs::ISystem {
+    class PhysicsSystem final : public Ecs::IEngineSystem {
     public:
         PhysicsSystem();
 
         ~PhysicsSystem() override = default;
 
-        void Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) override;
+        void Initialize() override;
 
-        void Run(Ecs::World &world, float delta_time) override;
+        void Run(float delta_time) override;
 
     private:
         const float m_epsilon = 1e-6f;
@@ -45,19 +49,19 @@ namespace Engine::Core::Systems::Physics {
                            std::vector<Ecs::EntityId> &blocking_candidates,
                            std::vector<Ecs::EntityId> &trigger_candidates) const;
 
-        void PerformCollisionSweep(const Ecs::World &world, Ecs::EntityId target_entity, glm::vec3 position,
+        void PerformCollisionSweep(Ecs::EntityId target_entity, glm::vec3 position,
                                    glm::vec3 move_delta, float radius,
                                    const std::vector<Ecs::EntityId> &blocking_candidates,
                                    glm::vec3 *final_position);
 
-        void DetectTriggerInteractions(const Ecs::World &world, glm::vec3 final_position, float radius,
+        void DetectTriggerInteractions(glm::vec3 final_position, float radius,
                                        Ecs::EntityId target_entity,
                                        const std::vector<Ecs::EntityId> &trigger_candidates);
 
-        void RaiseCollisionEvents(const Ecs::World &world, Ecs::EntityId target_entity,
+        void RaiseCollisionEvents(Ecs::EntityId target_entity,
                                   const Engine::Physics::Collision::MoverResult &mover_result);
 
-        void RaiseTriggerEvents(const Ecs::World &world, Ecs::EntityId target_entity,
+        void RaiseTriggerEvents(Ecs::EntityId target_entity,
                                 std::unordered_set<Ecs::EntityId> &trigger_entities);
 
         glm::vec3 IntentToDelta(const Components::MotionIntent *intent, const glm::vec3 &world_pos,

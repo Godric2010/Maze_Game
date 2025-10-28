@@ -10,12 +10,12 @@ namespace Gameplay::Systems {
 
         ~ItemSystem() override = default;
 
-        void Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) override;
+        void Initialize() override;
 
-        void Run(Engine::Ecs::World &world, float delta_time) override;
+        void Run(float delta_time) override;
 
     private:
-        void CheckIfItemGotPickedUp(Engine::Ecs::World *world, Engine::Ecs::EntityId target_entity,
-                                    Engine::Ecs::EntityId potential_item_entity);
+        void CheckIfItemGotPickedUp(Engine::Ecs::EntityId target_entity,
+                                    Engine::Ecs::EntityId potential_item_entity) const;
     };
 } // namespace

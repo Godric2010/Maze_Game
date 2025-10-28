@@ -5,24 +5,24 @@ namespace Engine::Core::Systems {
 
     CameraSystem::~CameraSystem() = default;
 
-    void CameraSystem::Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider* service_locator) {
+    void CameraSystem::Initialize() {
     }
 
-    void CameraSystem::Run(Ecs::World&world, float delta_time) {
-        for (const auto cameras = world.GetComponentsOfType<Components::Camera>(); auto camera: cameras) {
+    void CameraSystem::Run(float delta_time) {
+        for (const auto cameras = GameWorld()->GetComponentsOfType<Components::Camera>(); auto camera: cameras) {
             const auto entity = camera.second;
             const auto camera_component = camera.first;
-            const auto camera_transform = world.GetComponent<Components::Transform>(entity);
+            const auto camera_transform = GameWorld()->GetComponent<Components::Transform>(entity);
             CalculateOrientation(camera_component, camera_transform);
         }
     }
 
-    void CameraSystem::CalculateOrientation(Components::Camera* camera_component,
-                                            const Components::Transform* transform) {
+    void CameraSystem::CalculateOrientation(Components::Camera *camera_component,
+                                            const Components::Transform *transform) {
         camera_component->projection = glm::perspective(glm::radians(camera_component->FieldOfView),
-                                                       camera_component->AspectRatio,
-                                                       camera_component->NearClip,
-                                                       camera_component->FarClip);
+                                                        camera_component->AspectRatio,
+                                                        camera_component->NearClip,
+                                                        camera_component->FarClip);
 
         const auto cam_rotation = transform->GetRotation();
         const float pitch_rad = glm::radians(cam_rotation.x);

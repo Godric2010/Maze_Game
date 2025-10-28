@@ -4,6 +4,7 @@
 #include <ostream>
 #include <glm/ext/matrix_transform.hpp>
 
+#include "GameWorld.hpp"
 #include "components/Transform.hpp"
 
 namespace Engine::Core::Systems {
@@ -11,11 +12,11 @@ namespace Engine::Core::Systems {
 
     TransformSystem::~TransformSystem() = default;
 
-    void TransformSystem::Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) {
+    void TransformSystem::Initialize() {
     }
 
-    void TransformSystem::Run(Ecs::World &world, float delta_time) {
-        auto transform_components = world.GetComponentsOfType<Components::Transform>();
+    void TransformSystem::Run(float delta_time) {
+        auto transform_components = GameWorld()->GetComponentsOfType<Components::Transform>();
         for (const auto transform: transform_components | std::views::keys) {
             if (!transform->IsDirty()) {
                 continue;

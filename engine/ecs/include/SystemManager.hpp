@@ -4,6 +4,10 @@
 
 #include "ISystem.hpp"
 
+namespace Engine::Core {
+    class GameWorld;
+}
+
 namespace Engine::Ecs {
     enum class Phase {
         Input,
@@ -28,7 +32,7 @@ namespace Engine::Ecs {
 
         ~SystemManager();
 
-        void RegisterSystems(const std::vector<SystemMeta>& system_metas, World *world, IServiceToEcsProvider *service_provider);
+        void RegisterSystems(const std::vector<SystemMeta>& system_metas, World *world, IServiceToEcsProvider *service_provider, Core::GameWorld* game_world);
 
         void RunSystems(World& world, float delta_time);
 

@@ -9,19 +9,20 @@
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
 #include "ISystem.hpp"
+#include "GameWorld.hpp"
 
-ECS_SYSTEM(CameraSystem, LateUpdate, [])
+ECS_SYSTEM(CameraSystem, LateUpdate, [ENGINE])
 
 namespace Engine::Core::Systems {
-    class CameraSystem final : public Ecs::ISystem {
+    class CameraSystem final : public Ecs::IEngineSystem {
     public:
         CameraSystem();
 
         ~CameraSystem() override;
 
-        void Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) override;
+        void Initialize() override;
 
-        void Run(Ecs::World &world, float delta_time) override;
+        void Run(float delta_time) override;
 
     private:
         static void CalculateOrientation(Components::Camera *camera_component, const Components::Transform *transform);

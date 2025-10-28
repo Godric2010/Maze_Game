@@ -2,30 +2,32 @@
 
 #include <iostream>
 
+#include "GameWorld.hpp"
 #include "../components/Inventory.hpp"
 #include "../components/KeyItem.hpp"
 
 namespace Gameplay::Systems {
     ItemSystem::ItemSystem() = default;
 
-    void ItemSystem::Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) {
-        world->GetPhysicsEventBus()->SubscribeToOnCollisionEnter(
-            [this, world](const Engine::Ecs::EntityId target, const Engine::Ecs::EntityId other) {
-                CheckIfItemGotPickedUp(world, target, other);
-            });
+    void ItemSystem::Initialize() {
+        GameWorld()->SubscribeToPhysicsEvent(Engine::Ecs::PhysicsEventType::OnCollisionEnter,
+                                             [this](const Engine::Ecs::EntityId target,
+                                                    const Engine::Ecs::EntityId other) {
+                                                 CheckIfItemGotPickedUp(target, other);
+                                             });
     }
 
-    void ItemSystem::Run(Engine::Ecs::World &world, float delta_time) {
+    void ItemSystem::Run(float delta_time) {
     }
 
-    void ItemSystem::CheckIfItemGotPickedUp(Engine::Ecs::World *world, const Engine::Ecs::EntityId target_entity,
-                                            const Engine::Ecs::EntityId potential_item_entity) {
-        const auto player_inventory = world->GetComponent<Components::Inventory>(target_entity);
-        const auto is_key_item = world->GetComponent<Components::KeyItem>(potential_item_entity) != nullptr;
+    void ItemSystem::CheckIfItemGotPickedUp(const Engine::Ecs::EntityId target_entity,
+                                            const Engine::Ecs::EntityId potential_item_entity) const {
+        const auto player_inventory = GameWorld()->GetComponent<Components::Inventory>(target_entity);
+        const auto is_key_item = GameWorld()->GetComponent<Components::KeyItem>(potential_item_entity) != nullptr;
 
         if (player_inventory != nullptr && is_key_item) {
             player_inventory->key_collected = true;
-            world->DestroyEntity(potential_item_entity);
+            GameWorld()->DestroyEntity(potential_item_entity);
         }
     }
 } // namespace

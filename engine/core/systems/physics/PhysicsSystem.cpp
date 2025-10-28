@@ -24,32 +24,32 @@ namespace Engine::Core::Systems::Physics {
             *m_broadphase, *m_collider_cache);
     }
 
-    void PhysicsSystem::Initialize(Ecs::World *world,
-                                   Ecs::IServiceToEcsProvider *service_locator) {
-        world->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::BoxCollider>(
-            [this, world](const Ecs::EntityId entity, const Components::BoxCollider &box_collider) {
-                const Components::Transform *transform = world->GetComponent<Components::Transform>(entity);
+    void PhysicsSystem::Initialize(
+    ) {
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::BoxCollider>(
+            [this](const Ecs::EntityId entity, const Components::BoxCollider &box_collider) {
+                const Components::Transform *transform = EcsWorld()->GetComponent<Components::Transform>(entity);
                 this->BuildBoxCollider(entity, box_collider, transform->GetPosition(), transform->GetRotation(),
                                        transform->GetScale());
             });
 
-        world->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::BoxCollider>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::BoxCollider>(
             [this](const Ecs::EntityId entity) {
                 this->m_collider_cache->box_colliders.erase(entity);
             }
         );
 
-        world->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::SphereCollider>(
-            [this, world](const Ecs::EntityId entity, const Components::SphereCollider &sphere_collider) {
-                const Components::Transform *transform = world->GetComponent<Components::Transform>(entity);
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::SphereCollider>(
+            [this](const Ecs::EntityId entity, const Components::SphereCollider &sphere_collider) {
+                const Components::Transform *transform = EcsWorld()->GetComponent<Components::Transform>(entity);
                 this->BuildSphereCollider(entity, sphere_collider, transform->GetPosition());
             });
     }
 
-    void PhysicsSystem::Run(Ecs::World &world, const float delta_time) {
-        const auto movable_objects = world.GetComponentsOfType<Components::MotionIntent>();
+    void PhysicsSystem::Run(const float delta_time) {
+        const auto movable_objects = EcsWorld()->GetComponentsOfType<Components::MotionIntent>();
         for (const auto [motion_intent, entity]: movable_objects) {
-            const auto transform = world.GetComponent<Components::Transform>(entity);
+            const auto transform = EcsWorld()->GetComponent<Components::Transform>(entity);
             if (!transform) {
                 continue;
             }
@@ -72,8 +72,8 @@ namespace Engine::Core::Systems::Physics {
             RunBroadphase(entity, radius, position, move_delta, blocking_candidates, trigger_candidates);
 
             glm::vec3 final_position;
-            PerformCollisionSweep(world, entity, position, move_delta, radius, blocking_candidates, &final_position);
-            DetectTriggerInteractions(world, final_position, radius, entity, trigger_candidates);
+            PerformCollisionSweep(entity, position, move_delta, radius, blocking_candidates, &final_position);
+            DetectTriggerInteractions(final_position, radius, entity, trigger_candidates);
 
             transform->Set(final_position, motion_intent->rotation, transform->GetScale());
         }
@@ -166,7 +166,7 @@ namespace Engine::Core::Systems::Physics {
         }
     }
 
-    void PhysicsSystem::PerformCollisionSweep(const Ecs::World &world, const Ecs::EntityId target_entity,
+    void PhysicsSystem::PerformCollisionSweep(const Ecs::EntityId target_entity,
                                               const glm::vec3 position, const glm::vec3 move_delta, const float radius,
                                               const std::vector<Ecs::EntityId> &blocking_candidates,
                                               glm::vec3 *final_position) {
@@ -179,10 +179,10 @@ namespace Engine::Core::Systems::Physics {
         const auto result = Collision::MoverSolver::Solve(input, *m_collision_query_service, blocking_candidates);
         *final_position = result.new_position;
 
-        RaiseCollisionEvents(world, target_entity, result);
+        RaiseCollisionEvents(target_entity, result);
     }
 
-    void PhysicsSystem::RaiseCollisionEvents(const Ecs::World &world, const Ecs::EntityId target_entity,
+    void PhysicsSystem::RaiseCollisionEvents(const Ecs::EntityId target_entity,
                                              const Collision::MoverResult &mover_result) {
         Ecs::PhysicsEvent event{};
         event.target_entity = target_entity;
@@ -190,7 +190,7 @@ namespace Engine::Core::Systems::Physics {
         if (!mover_result.collided && m_collided_entities[target_entity] != Ecs::INVALID_ENTITY_ID) {
             event.other_collider_entity = m_collided_entities[target_entity];
             event.type = Ecs::PhysicsEventType::OnCollisionExit;
-            world.GetPhysicsEventBuffer()->EnqueueEvent(event);
+            EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
             m_collided_entities[target_entity] = Ecs::INVALID_ENTITY_ID;
             return;
         }
@@ -203,17 +203,17 @@ namespace Engine::Core::Systems::Physics {
             if (m_collided_entities[target_entity] != Ecs::INVALID_ENTITY_ID) {
                 event.other_collider_entity = m_collided_entities[target_entity];
                 event.type = Ecs::PhysicsEventType::OnCollisionExit;
-                world.GetPhysicsEventBuffer()->EnqueueEvent(event);
+                EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
             }
 
             event.other_collider_entity = other_collider;
             event.type = Ecs::PhysicsEventType::OnCollisionEnter;
-            world.GetPhysicsEventBuffer()->EnqueueEvent(event);
+            EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
             m_collided_entities[target_entity] = event.other_collider_entity;
         }
     }
 
-    void PhysicsSystem::DetectTriggerInteractions(const Ecs::World &world, const glm::vec3 final_position,
+    void PhysicsSystem::DetectTriggerInteractions(const glm::vec3 final_position,
                                                   const float radius, const Ecs::EntityId target_entity,
                                                   const std::vector<Ecs::EntityId> &trigger_candidates) {
         std::unordered_set<Ecs::EntityId> current_inside;
@@ -236,10 +236,10 @@ namespace Engine::Core::Systems::Physics {
             }
         }
 
-        RaiseTriggerEvents(world, target_entity, current_inside);
+        RaiseTriggerEvents(target_entity, current_inside);
     }
 
-    void PhysicsSystem::RaiseTriggerEvents(const Ecs::World &world, Ecs::EntityId target_entity,
+    void PhysicsSystem::RaiseTriggerEvents(Ecs::EntityId target_entity,
                                            std::unordered_set<Ecs::EntityId> &trigger_entities) {
         if (!m_triggered_entities.contains(target_entity)) {
             Ecs::PhysicsEvent event{};
@@ -248,7 +248,7 @@ namespace Engine::Core::Systems::Physics {
 
             for (const auto id: trigger_entities) {
                 event.other_collider_entity = id;
-                world.GetPhysicsEventBuffer()->EnqueueEvent(event);
+                EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
             }
             m_triggered_entities.emplace(target_entity, trigger_entities);
             return;
@@ -257,7 +257,7 @@ namespace Engine::Core::Systems::Physics {
         for (const auto id: m_triggered_entities[target_entity]) {
             if (!trigger_entities.contains(id)) {
                 exited_triggers.insert(id);
-                world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
+                EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
                     Ecs::PhysicsEventType::OnTriggerExit, target_entity, id
                 });
             }
@@ -267,7 +267,7 @@ namespace Engine::Core::Systems::Physics {
         for (const auto id: trigger_entities) {
             if (!m_triggered_entities[target_entity].contains(id)) {
                 entered_triggers.insert(id);
-                world.GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
+                EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
                     Ecs::PhysicsEventType::OnTriggerEnter, target_entity, id
                 });
             }

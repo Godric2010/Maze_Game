@@ -5,18 +5,18 @@
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
 
-ECS_SYSTEM(RenderSystem, Render, [])
+ECS_SYSTEM(RenderSystem, Render, [ENGINE])
 
 namespace Engine::Core::Systems {
-    class RenderSystem : public Ecs::ISystem {
+    class RenderSystem : public Ecs::IEngineSystem {
     public:
         RenderSystem();
 
         ~RenderSystem() override;
 
-        void Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) override;
+        void Initialize() override;
 
-        void Run(Ecs::World &world, float delta_time) override;
+        void Run(float delta_time) override;
 
     private:
         const Renderer::RenderController *m_renderController;
@@ -25,6 +25,6 @@ namespace Engine::Core::Systems {
                                                        const Components::Transform *camera_transform);
 
         static std::vector<Renderer::DrawAsset> CreateDrawAssets(
-            const std::vector<std::pair<Components::Mesh *, Components::Transform *>> &draw_data);
+            const std::vector<std::pair<Components::Mesh *, Components::Transform *> > &draw_data);
     };
 } // namespace

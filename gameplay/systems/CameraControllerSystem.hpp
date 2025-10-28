@@ -13,9 +13,9 @@ namespace Gameplay::Systems {
 
         ~CameraControllerSystem() override;
 
-        void Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) override;
+        void Initialize() override;
 
-        void Run(Engine::Ecs::World &world, float delta_time) override;
+        void Run(float delta_time) override;
 
     private:
         const float m_movement_speed = 0.6f;

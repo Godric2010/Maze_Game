@@ -1,5 +1,6 @@
 #include "RenderSystem.hpp"
 
+#include "GameWorld.hpp"
 #include "Mesh.hpp"
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
@@ -9,21 +10,21 @@ namespace Engine::Core::Systems {
 
     RenderSystem::~RenderSystem() = default;
 
-    void RenderSystem::Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) {
-        const Renderer::RenderController *render_controller = service_locator->GetService<Renderer::RenderController>();
+    void RenderSystem::Initialize() {
+        const Renderer::RenderController *render_controller = ServiceLocator()->GetService<Renderer::RenderController>();
         m_renderController = render_controller;
     }
 
-    void RenderSystem::Run(Ecs::World &world, float delta_time) {
-        const auto [camera, cameraEntity] = world.GetComponentsOfType<Components::Camera>()[0];
-        const auto camera_transform = world.GetComponent<Components::Transform>(cameraEntity);
+    void RenderSystem::Run(float delta_time) {
+        const auto [camera, cameraEntity] = GameWorld()->GetComponentsOfType<Components::Camera>()[0];
+        const auto camera_transform = GameWorld()->GetComponent<Components::Transform>(cameraEntity);
         const auto camera_asset = CreateCameraAsset(camera, camera_transform);
 
-        const auto mesh_components = world.GetComponentsOfType<Components::Mesh>();
+        const auto mesh_components = GameWorld()->GetComponentsOfType<Components::Mesh>();
         auto draw_data = std::vector<std::pair<Components::Mesh *, Components::Transform *> >(mesh_components.size());
         for (size_t i = 0; i < mesh_components.size(); ++i) {
             const auto [mesh, meshEntity] = mesh_components[i];
-            auto mesh_transform = world.GetComponent<Components::Transform>(meshEntity);
+            auto mesh_transform = GameWorld()->GetComponent<Components::Transform>(meshEntity);
             const auto mesh_data = std::make_pair(mesh, mesh_transform);
             draw_data[i] = mesh_data;
         }

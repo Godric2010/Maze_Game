@@ -2,30 +2,32 @@
 
 #include <iostream>
 
+#include "GameWorld.hpp"
 #include "../components/Exit.hpp"
 #include "../components/Inventory.hpp"
 
 namespace Gameplay::Systems {
-    void ExitSystem::Initialize(Engine::Ecs::World *world, Engine::Ecs::IServiceToEcsProvider *service_locator) {
-        world->GetPhysicsEventBus()->SubscribeToOnTriggerEnter(
-            [world](const Engine::Ecs::EntityId target, const Engine::Ecs::EntityId other) {
-                std::cout << "Entered trigger " << other << std::endl;
-                CheckIfPlayerHasKeyToExit(world, target, other);
-            });
-        world->GetPhysicsEventBus()->SubscribeToOnTriggerExit(
-            [](Engine::Ecs::EntityId target, const Engine::Ecs::EntityId other) {
-                std::cout << "Exited trigger " << other << std::endl;
-            }
+    void ExitSystem::Initialize() {
+        GameWorld()->SubscribeToPhysicsEvent(Engine::Ecs::PhysicsEventType::OnTriggerEnter,
+                                             [this](const Engine::Ecs::EntityId target,
+                                                    const Engine::Ecs::EntityId other) {
+                                                 std::cout << "Entered trigger " << other << std::endl;
+                                                 CheckIfPlayerHasKeyToExit(target, other);
+                                             });
+        GameWorld()->SubscribeToPhysicsEvent(Engine::Ecs::PhysicsEventType::OnTriggerExit,
+                                             [](Engine::Ecs::EntityId target, const Engine::Ecs::EntityId other) {
+                                                 std::cout << "Exited trigger " << other << std::endl;
+                                             }
         );
     }
 
-    void ExitSystem::Run(Engine::Ecs::World &world, float delta_time) {
+    void ExitSystem::Run(float delta_time) {
     }
 
-    void ExitSystem::CheckIfPlayerHasKeyToExit(Engine::Ecs::World *world, const Engine::Ecs::EntityId target_entity,
-                                               const Engine::Ecs::EntityId potential_exit_entity) {
-        const auto inventory = world->GetComponent<Components::Inventory>(target_entity);
-        if (!inventory || !world->GetComponent<Components::Exit>(potential_exit_entity))
+    void ExitSystem::CheckIfPlayerHasKeyToExit(const Engine::Ecs::EntityId target_entity,
+                                               const Engine::Ecs::EntityId potential_exit_entity) const {
+        const auto inventory = GameWorld()->GetComponent<Components::Inventory>(target_entity);
+        if (!inventory || !GameWorld()->GetComponent<Components::Exit>(potential_exit_entity))
             return;
 
         if (inventory->key_collected) {

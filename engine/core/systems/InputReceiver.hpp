@@ -2,17 +2,17 @@
 #include "Input.hpp"
 #include "ISystem.hpp"
 
-ECS_SYSTEM(InputReceiver, Input, [])
+ECS_SYSTEM(InputReceiver, Input, [ENGINE])
 namespace Engine::Core::Systems {
-    class InputReceiver : public Ecs::ISystem {
+    class InputReceiver : public Ecs::IEngineSystem {
     public:
         InputReceiver();
 
         ~InputReceiver() override;
 
-        void Initialize(Ecs::World *world, Ecs::IServiceToEcsProvider *service_locator) override;
+        void Initialize() override;
 
-        void Run(Ecs::World &world, float delta_time) override;
+        void Run(float delta_time) override;
 
     private:
        Environment::IInput* m_input = nullptr;
