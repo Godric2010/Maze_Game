@@ -16,7 +16,7 @@ namespace Engine::Renderer {
 
         switch (window_context.renderApi) {
             case Environment::API::OpenGL:
-                m_renderer = std::make_unique<RenderFramework::OpenGL::OpenGLRenderer>(
+                m_renderer = std::make_unique<RenderFramework::OpenGl::OpenGlRenderer>(
                     m_windowContext, m_shaderManager.get());
                 break;
             case Environment::API::Vulkan:

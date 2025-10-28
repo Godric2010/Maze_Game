@@ -10,42 +10,42 @@
 #include "OpenGLMeshManager.hpp"
 #include "../../shadermanagement/ShaderManager.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGL {
+namespace Engine::Renderer::RenderFramework::OpenGl {
 
 
-    class OpenGLRenderer final : public IRenderer {
+    class OpenGlRenderer final : public IRenderer {
     public:
-        explicit OpenGLRenderer(const Environment::WindowContext &windowContext, ShaderManagement::ShaderManager *shaderManager);
+        explicit OpenGlRenderer(const Environment::WindowContext &window_context, ShaderManagement::ShaderManager *shader_manager);
 
-        ~OpenGLRenderer() override;
+        ~OpenGlRenderer() override;
 
         void Initialize() override;
 
-        void PrepareFrame(const CameraAsset& cameraAsset) override;
+        void PrepareFrame(const CameraAsset& camera_asset) override;
 
         void DrawFrame(DrawAssets &draw_assets) override;
 
         MeshHandle AddMesh(const MeshAsset &mesh) override;
 
-        void RemoveMesh(const MeshHandle &meshHandle) override;
+        void RemoveMesh(const MeshHandle &mesh_handle) override;
 
         void Shutdown() override;
 
     private:
-        CameraAsset m_cameraAsset{};
+        CameraAsset m_camera_asset{};
 
-        GLuint m_shaderProgram;
-        GLuint m_cameraUBO;
-        static constexpr GLuint CAMERA_BINDING_POINT = 0;
+        GLuint m_shader_program;
+        GLuint m_camera_ubo;
+        static constexpr GLuint camera_binding_point = 0;
 
 
-        ShaderManagement::ShaderManager *m_shaderManager;
-        std::unique_ptr<OpenGLMeshManager> m_meshManager;
+        ShaderManagement::ShaderManager *m_shader_manager;
+        std::unique_ptr<OpenGLMeshManager> m_mesh_manager;
 
-        static void logSourceWithLineNumbers(std::string_view source);
+        static void LogSourceWithLineNumbers(std::string_view source);
 
         [[nodiscard]] GLuint LoadShaders() const;
-        static GLuint CompileShader(GLenum type, std::string_view source, std::string_view debugName);
-        static GLuint LinkShaderProgram(GLuint vertexShader, GLuint fragmentShader, std::string_view debugName);
+        static GLuint CompileShader(GLenum type, std::string_view source, std::string_view debug_name);
+        static GLuint LinkShaderProgram(GLuint vertex_shader, GLuint fragment_shader, std::string_view debug_name);
     };
 } // namespace

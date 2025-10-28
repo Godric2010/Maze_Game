@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Engine::Renderer::RenderFramework::OpenGL {
+namespace Engine::Renderer::RenderFramework::OpenGl {
     struct OpenGLMesh {
         unsigned int VAO;
         unsigned int VBO;

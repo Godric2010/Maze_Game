@@ -6,7 +6,7 @@
 #include "OpenGLMesh.hpp"
 #include "../../Datatypes.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGL {
+namespace Engine::Renderer::RenderFramework::OpenGl {
     class OpenGLMeshManager {
     public:
         OpenGLMeshManager();

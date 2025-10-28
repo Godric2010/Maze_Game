@@ -2,7 +2,7 @@
 
 #include <ranges>
 
-namespace Engine::Renderer::RenderFramework::OpenGL {
+namespace Engine::Renderer::RenderFramework::OpenGl {
 
     OpenGLMeshManager::OpenGLMeshManager() {
         m_meshHandle = 0;
