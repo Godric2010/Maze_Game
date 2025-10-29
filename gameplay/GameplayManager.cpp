@@ -69,7 +69,9 @@ namespace Gameplay {
     void GameplayManager::CreateUI() {
         const auto key_indicator = m_engine.GetWorld().CreateEntity();
 
-        constexpr auto transform = Engine::Core::Components::UI::RectTransform{.position = {15, 15}, .size = {30, 30}};
+        constexpr glm::vec2 position = {15, 15};
+        constexpr glm::vec2 size = {30, 30};
+        const auto transform = Engine::Core::Components::UI::RectTransform(position, size);
         m_engine.GetWorld().AddComponent(key_indicator, transform);
 
         constexpr auto image = Engine::Core::Components::UI::Image{.color = {255, 0, 0, 255}};

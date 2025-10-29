@@ -7,24 +7,24 @@
 #include "../../Datatypes.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
-    class OpenGLMeshManager {
+    class OpenGlMeshManager {
     public:
-        OpenGLMeshManager();
+        OpenGlMeshManager();
 
-        ~OpenGLMeshManager();
+        ~OpenGlMeshManager();
 
         MeshHandle AddMesh(const MeshAsset &mesh);
 
         OpenGLMesh &GetMesh(const MeshHandle &handle);
 
-        uint32_t Size() const;
+        [[nodiscard]] uint32_t Size() const;
 
         void RemoveMesh(const MeshHandle &handle);
 
         void Clear();
 
     private:
-        MeshHandle m_meshHandle;
+        MeshHandle m_mesh_handle;
         std::unordered_map<MeshHandle, OpenGLMesh> m_meshes;
     };
 } // namespace

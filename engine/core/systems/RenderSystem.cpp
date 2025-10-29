@@ -13,8 +13,8 @@ namespace Engine::Core::Systems {
     RenderSystem::~RenderSystem() = default;
 
     void RenderSystem::Initialize() {
-        const Renderer::RenderController *render_controller = ServiceLocator()->GetService<
-            Renderer::RenderController>();
+        const Renderer::RenderController *render_controller = ServiceLocator()->
+                GetService<Renderer::RenderController>();
         m_render_controller = render_controller;
     }
 
@@ -69,11 +69,10 @@ namespace Engine::Core::Systems {
 
         for (size_t i = 0; i < rect_transforms.size(); ++i) {
             const auto [rect_transform, entity] = rect_transforms[i];
-            auto image_component = GameWorld()->GetComponent<Components::UI::Image>(entity);
+            const auto image_component = GameWorld()->GetComponent<Components::UI::Image>(entity);
 
             Renderer::UiDrawAsset ui_draw_asset{};
-            ui_draw_asset.position = rect_transform->position;
-            ui_draw_asset.size = rect_transform->size;
+            ui_draw_asset.model = rect_transform->GetMatrix();
             ui_draw_asset.color = image_component->color;
 
             ui_draw_assets[i] = ui_draw_asset;

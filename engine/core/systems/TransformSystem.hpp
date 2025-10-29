@@ -3,6 +3,7 @@
 #include <glm/fwd.hpp>
 
 #include "ISystem.hpp"
+#include "ui/RectTransform.hpp"
 
 ECS_SYSTEM(TransformSystem, LateUpdate, [ENGINE])
 
@@ -18,6 +19,10 @@ namespace Engine::Core::Systems {
         void Run(float delta_time) override;
 
     private:
-        static glm::mat4 CalculateMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+        static glm::mat4 CalculateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+
+        static glm::mat4 CalculateUiModelMatrix(const Components::UI::RectTransform *rect_transform);
+
+
     };
 } // namespace

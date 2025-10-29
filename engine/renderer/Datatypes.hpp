@@ -30,8 +30,7 @@ namespace Engine::Renderer {
     };
 
     struct UiDrawAsset {
-        glm::vec2 position;
-        glm::vec2 size;
+        glm::mat4 model;
         glm::vec4 color;
     };
 

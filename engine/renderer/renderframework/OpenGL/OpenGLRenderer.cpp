@@ -11,9 +11,10 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
             throw std::runtime_error("Failed to initialize OpenGL context");
         }
 
-        glViewport(0, 0, window_context.drawableWidth, window_context.drawableHeight);
+        m_window_size = {window_context.drawableWidth, window_context.drawableHeight};
+        glViewport(0, 0, m_window_size.x, m_window_size.y);
         m_shader_manager = std::make_unique<OpenGlShaderManager>(shader_manager);
-        m_mesh_manager = std::make_unique<OpenGLMeshManager>();
+        m_mesh_manager = std::make_unique<OpenGlMeshManager>();
 
         m_camera_asset = {};
         m_camera_ubo = 0;
@@ -30,10 +31,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
         glBindBufferBase(GL_UNIFORM_BUFFER, camera_binding_point, m_camera_ubo);
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
 
-        const auto shader_program = m_shader_manager->GetShaderProgram("test");
+        const auto shader_program = m_shader_manager->GetShaderProgram("mesh_opaque");
         if (!shader_program.has_value()) {
             throw std::runtime_error("Shader program not found");
         }
@@ -55,12 +54,15 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
 
     void OpenGlRenderer::DrawFrame(DrawAssets &draw_assets) {
+        // Draw meshes in first pass
         std::vector<std::vector<const MeshDrawAsset *> > buckets(m_mesh_manager->Size());
         for (const auto &draw_asset: draw_assets.mesh_draw_assets) {
             buckets[draw_asset.mesh].push_back(&draw_asset);
         }
-
-        const auto shader_program = m_shader_manager->GetShaderProgram("test");
+        glDisable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        const auto shader_program = m_shader_manager->GetShaderProgram("mesh_opaque");
         if (!shader_program.has_value()) {
             throw std::runtime_error("Shader program not found");
         }
@@ -83,6 +85,35 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
                 glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
             }
+        }
+        glBindVertexArray(0);
+        glUseProgram(0);
+
+        // Render UI Elements
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        const auto ui_shader_program = m_shader_manager->GetShaderProgram("ui");
+        if (!shader_program.has_value()) {
+            throw std::runtime_error("Shader program not found");
+        }
+        const GLint u_proj = glGetUniformLocation(ui_shader_program.value(), "u_Proj");
+        const GLint u_ui_color = glGetUniformLocation(shader_program.value(), "u_Color");
+        glUseProgram(ui_shader_program.value());
+
+        const auto &mesh = m_mesh_manager->GetMesh(0);
+        glBindVertexArray(mesh.VAO);
+        const glm::mat4 ortho = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.f, 1.f);
+        for (const auto &ui_asset: draw_assets.ui_draw_assets) {
+            glm::mat4 model = ui_asset.model;
+            glm::mat4 proj = ortho * model;
+
+            glUniformMatrix4fv(u_proj, 1, GL_FALSE, glm::value_ptr(proj));
+            glUniform4fv(u_ui_color, 1, glm::value_ptr(ui_asset.color));
+
+            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
         }
         glBindVertexArray(0);
         glUseProgram(0);

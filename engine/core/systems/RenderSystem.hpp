@@ -19,7 +19,7 @@ namespace Engine::Core::Systems {
         void Run(float delta_time) override;
 
     private:
-        const Renderer::RenderController *m_render_controller;
+        const Renderer::RenderController *m_render_controller{};
 
         static Renderer::CameraAsset CreateCameraAsset(const Components::Camera *camera_component,
                                                        const Components::Transform *camera_transform);

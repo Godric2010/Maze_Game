@@ -37,8 +37,9 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         GLuint m_camera_ubo;
         static constexpr GLuint camera_binding_point = 0;
 
-
         std::unique_ptr<OpenGlShaderManager> m_shader_manager;
-        std::unique_ptr<OpenGLMeshManager> m_mesh_manager;
+        std::unique_ptr<OpenGlMeshManager> m_mesh_manager;
+
+        glm::vec2 m_window_size;
     };
 } // namespace

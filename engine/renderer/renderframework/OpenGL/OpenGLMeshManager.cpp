@@ -4,17 +4,17 @@
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
 
-    OpenGLMeshManager::OpenGLMeshManager() {
-        m_meshHandle = 0;
+    OpenGlMeshManager::OpenGlMeshManager() {
+        m_mesh_handle = 0;
         m_meshes.clear();
     }
 
-    OpenGLMeshManager::~OpenGLMeshManager() = default;
+    OpenGlMeshManager::~OpenGlMeshManager() = default;
 
-    MeshHandle OpenGLMeshManager::AddMesh(const MeshAsset &mesh) {
+    MeshHandle OpenGlMeshManager::AddMesh(const MeshAsset &mesh) {
 
-        MeshHandle handle = m_meshHandle;
-        m_meshHandle++;
+        const MeshHandle handle = m_mesh_handle;
+        m_mesh_handle++;
 
         OpenGLMesh m = {};
         m.numVertices = mesh.vertices.size();
@@ -45,20 +45,20 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         return handle;
     }
 
-    OpenGLMesh &OpenGLMeshManager::GetMesh(const MeshHandle &handle) {
+    OpenGLMesh &OpenGlMeshManager::GetMesh(const MeshHandle &handle) {
         return m_meshes[handle];
     }
 
-    uint32_t OpenGLMeshManager::Size() const {
+    uint32_t OpenGlMeshManager::Size() const {
         return m_meshes.size();
     }
 
 
-    void OpenGLMeshManager::RemoveMesh(const MeshHandle &handle) {
+    void OpenGlMeshManager::RemoveMesh(const MeshHandle &handle) {
         m_meshes.erase(handle);
     }
 
-    void OpenGLMeshManager::Clear() {
+    void OpenGlMeshManager::Clear() {
         for (auto &val: m_meshes | std::views::values) {
             glDeleteBuffers(1, &val.VBO);
             glDeleteBuffers(1, &val.EBO);

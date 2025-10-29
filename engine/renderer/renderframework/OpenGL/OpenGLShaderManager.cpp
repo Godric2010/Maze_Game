@@ -67,8 +67,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         return shader;
     }
 
-    GLuint OpenGlShaderManager::LinkShaderProgram(GLuint vertex_shader, GLuint fragment_shader,
-                                                  std::string_view debug_name) {
+    GLuint OpenGlShaderManager::LinkShaderProgram(const GLuint vertex_shader, const GLuint fragment_shader,
+                                                  const std::string_view debug_name) {
         const GLuint program = glCreateProgram();
         glAttachShader(program, vertex_shader);
         glAttachShader(program, fragment_shader);

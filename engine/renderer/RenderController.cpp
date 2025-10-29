@@ -9,15 +9,16 @@
 
 namespace Engine::Renderer {
     RenderController::RenderController(const Environment::WindowContext &window_context) {
-        m_windowContext = window_context;
+        m_window_context = window_context;
 
-        m_shaderManager = std::make_unique<ShaderManagement::ShaderManager>();
-        m_shaderManager->LoadShader("test");
+        m_shader_manager = std::make_unique<ShaderManagement::ShaderManager>();
+        m_shader_manager->LoadShader("mesh_opaque");
+        m_shader_manager->LoadShader("ui");
 
         switch (window_context.renderApi) {
             case Environment::API::OpenGL:
                 m_renderer = std::make_unique<RenderFramework::OpenGl::OpenGlRenderer>(
-                    m_windowContext, m_shaderManager.get());
+                    m_window_context, m_shader_manager.get());
                 break;
             case Environment::API::Vulkan:
                 throw std::runtime_error("Vulkan renderer not supported (yet)");
@@ -27,12 +28,13 @@ namespace Engine::Renderer {
                 break;
         }
         m_renderer->Initialize();
+        m_renderer->AddMesh(CreateUiPrimitive());
     }
 
     RenderController::~RenderController() {
         m_renderer->Shutdown();
         m_renderer.reset();
-        m_shaderManager.reset();
+        m_shader_manager.reset();
     }
 
     MeshHandle RenderController::RegisterMesh(const MeshAsset &mesh) const {

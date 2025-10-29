@@ -9,6 +9,7 @@
 #include "renderframework/Renderer.hpp"
 #include "shadermanagement/ShaderManager.hpp"
 #include "Datatypes.hpp"
+#include "PrimitiveMeshes.hpp"
 
 namespace Engine::Renderer {
     class RenderController {
@@ -17,7 +18,7 @@ namespace Engine::Renderer {
 
         ~RenderController();
 
-        MeshHandle RegisterMesh(const MeshAsset &mesh) const;
+        [[nodiscard]] MeshHandle RegisterMesh(const MeshAsset &mesh) const;
 
         void UnregisterMesh(const MeshHandle &handle) const;
 
@@ -26,8 +27,8 @@ namespace Engine::Renderer {
         void SubmitFrame(DrawAssets &draw_assets) const;
 
     private:
-        Environment::WindowContext m_windowContext;
+        Environment::WindowContext m_window_context;
         std::unique_ptr<RenderFramework::IRenderer> m_renderer;
-        std::unique_ptr<ShaderManagement::ShaderManager> m_shaderManager;
+        std::unique_ptr<ShaderManagement::ShaderManager> m_shader_manager;
     };
 }
