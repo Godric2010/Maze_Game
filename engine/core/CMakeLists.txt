@@ -18,8 +18,8 @@ add_library(Core STATIC
         systems/RenderSystem.hpp
         IEngine.hpp
         GameWorld.hpp
-        systems/CommandSystem.cpp
-        systems/CommandSystem.hpp
+        systems/EngineEventSystem.cpp
+        systems/EngineEventSystem.hpp
         components/MotionIntent.hpp
         systems/physics/PhysicsSystem.cpp
         systems/physics/PhysicsSystem.hpp

@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.31)
 add_library(Gameplay STATIC
         GameplayManager.cpp
         GameplayManager.hpp
-        systems/CameraControllerSystem.cpp
-        systems/CameraControllerSystem.hpp
+        systems/PlayerControllerSystem.cpp
+        systems/PlayerControllerSystem.hpp
         mazegenerator/MazeAlgorithm.cpp
         mazegenerator/MazeAlgorithm.hpp
         mazegenerator/Cell.hpp
@@ -20,6 +20,7 @@ add_library(Gameplay STATIC
         mazegenerator/MazeBuilder.cpp
         mazegenerator/MazeBuilder.hpp
         systems/ExitSystem.cpp
-        systems/ExitSystem.hpp)
+        systems/ExitSystem.hpp
+        commands/PauseCommand.hpp)
 
 target_link_libraries(Gameplay PUBLIC Engine)

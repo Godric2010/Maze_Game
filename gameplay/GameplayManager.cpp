@@ -1,9 +1,12 @@
 #include "GameplayManager.hpp"
 
+#include <iostream>
+
 #include "Collider.hpp"
 #include "InputReceiver.hpp"
 #include "Mesh.hpp"
 #include "MotionIntent.hpp"
+#include "commands/PauseCommand.hpp"
 #include "components/Camera.hpp"
 #include "components/Inventory.hpp"
 #include "components/Transform.hpp"
@@ -19,6 +22,9 @@ namespace Gameplay {
                                                                       m_mesh_handler->GetWallMesh(),
                                                                       m_mesh_handler->GetKeyMesh(),
                                                                       true);
+        m_engine.RegisterForSystemCommands([this](const std::vector<std::any> &commands) {
+            this->EvaluateCommandsFromSystems(commands);
+        });
     }
 
     GameplayManager::~GameplayManager() = default;
@@ -90,6 +96,15 @@ namespace Gameplay {
                 return {1.0f, 0.0f, 0.0f};
             default:
                 return {0.0f, 0.0f, 0.0f};
+        }
+    }
+
+    void GameplayManager::EvaluateCommandsFromSystems(const std::vector<std::any> &commands) {
+        for (const auto &command : commands) {
+            if (command.type() == typeid(Commands::PauseCommand)) {
+                auto pause_command = std::any_cast<Commands::PauseCommand>(command);
+                std::cout<< "Enable Pause: " << pause_command.IsPaused() << std::endl;
+            }
         }
     }
 } // namespace

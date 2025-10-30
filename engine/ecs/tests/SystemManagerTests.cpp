@@ -112,12 +112,13 @@ TEST_CASE_METHOD(SystemManagerFixture,
         .tags = std::vector<std::string>(),
         .factory = &MakeE
     };
+    auto world = new World();
 
     // Messing up the order on purpose here
     std::vector<SystemMeta> systems{system_d, system_e, system_c, system_a, system_b};
-    system_manager.RegisterSystems(systems, nullptr, nullptr, nullptr);
+    system_manager.RegisterSystems(systems, world, nullptr, nullptr);
 
-    system_manager.RunSystems(world, 0.0f);
+    system_manager.RunSystems(*world, 0.0f);
 
     const std::vector<std::string> expected = {"A", "B", "C", "D", "E"};
     REQUIRE(trace == expected);

@@ -14,6 +14,7 @@ namespace Engine::Ecs {
         m_physics_event_buffer = std::make_unique<Buffer::EventBuffer<PhysicsEvent> >();
         m_component_event_bus = std::make_unique<ComponentEventBus>();
         m_physics_event_bus = std::make_unique<PhysicsEventBus>();
+        m_command_queue = std::make_unique<Buffer::SystemCommandQueue>();
     }
 
     inline World::~World() = default;
@@ -62,7 +63,7 @@ namespace Engine::Ecs {
         m_ecs_event_buffer->EnqueueEvent(std::move(cmd));
     }
 
-    inline void World::ApplyCommands() const {
+    inline void World::ApplyEngineEvents() const {
         for (const auto [type, target_entity, other_collider_entity]: m_physics_event_buffer->Get()) {
             switch (type) {
                 case PhysicsEventType::OnCollisionEnter:

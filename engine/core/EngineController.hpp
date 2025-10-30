@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
-
+#include <functional>
+#include <vector>
+#include <any>
 #include "Camera.hpp"
 #include "GameWorld.hpp"
 #include "IEngine.hpp"
@@ -26,7 +28,7 @@ namespace Engine::Core {
         /**
          * Initialize the engine backend
          */
-        void Initialize(const std::vector<Ecs::SystemMeta>& systems);
+        void Initialize(const std::vector<Ecs::SystemMeta> &systems);
 
         /**
          * Update the engines systems, like drawing, the objects in the world, etc.
@@ -41,6 +43,8 @@ namespace Engine::Core {
         [[nodiscard]] GameWorld &GetWorld() const override;
 
         Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) override;
+
+        void RegisterForSystemCommands(std::function<void(std::vector<std::any>)> command_callback) override;
 
     private:
         std::unique_ptr<ServiceLocator> m_services;

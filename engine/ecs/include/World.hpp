@@ -9,6 +9,7 @@
 #include "../src/buffer/EcsEvent.hpp"
 #include "../src/buffer/PhysicsEvent.hpp"
 #include "../src/buffer/EventBuffer.hpp"
+#include "../src/buffer/SystemCommandQueue.hpp"
 
 namespace Engine::Ecs {
     class World {
@@ -29,7 +30,7 @@ namespace Engine::Ecs {
         template<typename T>
         void RemoveComponent(EntityId entity) const;
 
-        void ApplyCommands() const;
+        void ApplyEngineEvents() const;
 
         template<typename T>
         T *GetComponent(EntityId entity);
@@ -53,6 +54,15 @@ namespace Engine::Ecs {
             return m_physics_event_buffer.get();
         }
 
+        template<typename T>
+        void PushCommand(T cmd) {
+            m_command_queue->PushCommand(cmd);
+        }
+
+        [[nodiscard]] std::vector<std::any> GetAllCommands() const {
+            return m_command_queue->ConsumeAll();
+        }
+
     private:
         struct WorldImpl;
         std::unique_ptr<WorldImpl> m_impl;
@@ -60,6 +70,7 @@ namespace Engine::Ecs {
         std::unique_ptr<Buffer::EventBuffer<PhysicsEvent> > m_physics_event_buffer;
         std::unique_ptr<ComponentEventBus> m_component_event_bus;
         std::unique_ptr<PhysicsEventBus> m_physics_event_bus;
+        std::unique_ptr<Buffer::SystemCommandQueue> m_command_queue;
     };
 }
 

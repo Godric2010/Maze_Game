@@ -61,4 +61,8 @@ namespace Engine::Core {
         const auto mesh_handle = m_services->TryGetService<Renderer::RenderController>()->RegisterMesh(mesh_asset);
         return mesh_handle;
     }
+
+    void EngineController::RegisterForSystemCommands(const std::function<void(std::vector<std::any>)> command_callback) {
+        m_system_manager->RegisterForSystemCommands(command_callback);
+    }
 } // namespace

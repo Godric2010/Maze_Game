@@ -19,7 +19,9 @@ namespace Engine::Core {
 
         void DestroyEntity(const Ecs::EntityId &entity) const { return m_world->DestroyEntity(entity); }
 
-        [[nodiscard]] Ecs::EntityId GetEntityByName(const std::string &name) const { return m_world->GetEntityByName(name); }
+        [[nodiscard]] Ecs::EntityId GetEntityByName(const std::string &name) const {
+            return m_world->GetEntityByName(name);
+        }
 
         template<typename T>
         void AddComponent(const Ecs::EntityId entity, T component) {
@@ -55,6 +57,11 @@ namespace Engine::Core {
                     physics_event_bus->SubscribeToOnTriggerExit(event_func);
                     return;
             }
+        }
+
+        template<typename T>
+        void PushCommand(T cmd) {
+            m_world->PushCommand(cmd);
         }
 
     private:

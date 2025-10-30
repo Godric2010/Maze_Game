@@ -3,7 +3,10 @@
 //
 
 #pragma once
-#include "World.hpp"
+#include <functional>
+#include <vector>
+#include <any>
+#include "GameWorld.hpp"
 #include "../renderer/Datatypes.hpp"
 
 namespace Engine::Core {
@@ -14,5 +17,7 @@ namespace Engine::Core {
         virtual Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) = 0;
 
         [[nodiscard]] virtual GameWorld &GetWorld() const = 0;
+
+        virtual void RegisterForSystemCommands(std::function<void(std::vector<std::any>)> command_callback) = 0;
     };
 }

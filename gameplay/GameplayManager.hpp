@@ -30,5 +30,7 @@ namespace Gameplay {
         void CreateUi() const;
 
         static glm::vec3 ConvertDirection(const Mazegenerator::Direction &direction);
+
+        void EvaluateCommandsFromSystems(const std::vector<std::any> &commands);
     };
 } // namespace
