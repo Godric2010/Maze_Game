@@ -34,7 +34,7 @@ namespace Gameplay::Systems {
                 return;
             }
             const auto image_ui = GameWorld()->GetComponent<Engine::Core::Components::UI::Image>(ui_entity);
-            image_ui->color = {0, 255, 0, 255};
+            image_ui->color = {0, 1, 0, 0.8f};
         }
     }
 } // namespace

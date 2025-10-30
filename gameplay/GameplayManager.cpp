@@ -74,7 +74,7 @@ namespace Gameplay {
         const auto transform = Engine::Core::Components::UI::RectTransform(position, size);
         m_engine.GetWorld().AddComponent(key_indicator, transform);
 
-        constexpr auto image = Engine::Core::Components::UI::Image{.color = {255, 0, 0, 100}};
+        constexpr auto image = Engine::Core::Components::UI::Image{.color = {1, 0, 0, 0.5}};
         m_engine.GetWorld().AddComponent(key_indicator, image);
     }
 
