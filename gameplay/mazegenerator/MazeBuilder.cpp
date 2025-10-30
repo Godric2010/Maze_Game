@@ -49,7 +49,7 @@ namespace Gameplay::Mazegenerator {
 
 
     void MazeBuilder::CreateKeyObject(const CellIndex &cell_index) const {
-        const auto entity = m_game_world->CreateEntity();
+        const auto entity = m_game_world->CreateEntity("KeyItem");
         const auto mesh_component = Engine::Core::Components::Mesh{
             .mesh = m_key_mesh,
             .color = {0.3, 1.0, 1.0, 1.0},
@@ -70,7 +70,7 @@ namespace Gameplay::Mazegenerator {
     }
 
     void MazeBuilder::CreateExitTrigger(const CellIndex &cell_index) const {
-        const auto entity = m_game_world->CreateEntity();
+        const auto entity = m_game_world->CreateEntity("ExitTrigger");
 
         const auto position = glm::vec3(cell_index.x, 0.5f, cell_index.y);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -93,24 +93,24 @@ namespace Gameplay::Mazegenerator {
 
         constexpr auto wall_tile_color = glm::vec4{0.8f, 0.8f, 0.8f, 1.0f};
 
-        if (cell.HasWall(front)) {
-            CreateWallFloorTile(cell.cell_index, wall_tile_color, front);
+        if (cell.HasWall(Front)) {
+            CreateWallFloorTile(cell.cell_index, wall_tile_color, Front);
         }
-        if (cell.HasWall(back)) {
-            CreateWallFloorTile(cell.cell_index, wall_tile_color, back);
+        if (cell.HasWall(Back)) {
+            CreateWallFloorTile(cell.cell_index, wall_tile_color, Back);
         }
-        if (cell.HasWall(left)) {
-            CreateWallFloorTile(cell.cell_index, wall_tile_color, left);
+        if (cell.HasWall(Left)) {
+            CreateWallFloorTile(cell.cell_index, wall_tile_color, Left);
         }
-        if (cell.HasWall(right)) {
-            CreateWallFloorTile(cell.cell_index, wall_tile_color, right);
+        if (cell.HasWall(Right)) {
+            CreateWallFloorTile(cell.cell_index, wall_tile_color, Right);
         }
     }
 
     void MazeBuilder::CreateCellFloorTile(
         const CellIndex &cell_idx,
         const glm::vec4 &tile_color) const {
-        const auto entity = m_game_world->CreateEntity();
+        const auto entity = m_game_world->CreateEntity(std::format("FloorTile [{}|{}]", cell_idx.x, cell_idx.y));
         const auto mesh_component = Engine::Core::Components::Mesh{
             .mesh = m_floor_mesh,
             .color = tile_color,
@@ -124,7 +124,8 @@ namespace Gameplay::Mazegenerator {
 
     void MazeBuilder::CreateWallFloorTile(const CellIndex &cell_idx, const glm::vec4 &tile_color,
                                           const Direction &direction) const {
-        const auto entity = m_game_world->CreateEntity();
+        const auto entity = m_game_world->CreateEntity(
+            std::format("WallTile [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction)));
         const auto mesh_component = Engine::Core::Components::Mesh{
             .mesh = m_wall_mesh,
             .color = tile_color,
@@ -134,17 +135,17 @@ namespace Gameplay::Mazegenerator {
         auto shift_vector = glm::vec3(0.0f);
         auto rotation_shift = glm::vec3(0.0f);
         switch (direction) {
-            case back:
+            case Back:
                 shift_vector = glm::vec3(0.0f, 0.0f, -0.5f);
                 break;
-            case front:
+            case Front:
                 shift_vector = glm::vec3(0.0f, 0.0f, 0.5f);
                 break;
-            case left:
+            case Left:
                 shift_vector = glm::vec3(-0.5f, 0.0f, 0.0f);
                 rotation_shift = glm::vec3(0.0f, 90.0f, 0.0f);
                 break;
-            case right:
+            case Right:
                 shift_vector = glm::vec3(0.5f, 0.0f, 0.0f);
                 rotation_shift = glm::vec3(0.0f, 90.0f, 0.0f);
                 break;

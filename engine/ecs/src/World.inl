@@ -18,8 +18,8 @@ namespace Engine::Ecs {
 
     inline World::~World() = default;
 
-    inline EntityId World::CreateEntity() const {
-        const auto entity = m_impl->entity_manager->ReserveEntity();
+    inline EntityId World::CreateEntity(const std::string &name) const {
+        const auto entity = m_impl->entity_manager->ReserveEntity(name);
         const EcsEvent cmd{EcsEventType::CreateEntity, entity};
         m_ecs_event_buffer->EnqueueEvent(cmd);
         return entity;
@@ -28,6 +28,10 @@ namespace Engine::Ecs {
     inline void World::DestroyEntity(const EntityId entity) const {
         const EcsEvent cmd{EcsEventType::DestroyEntity, entity};
         m_ecs_event_buffer->EnqueueEvent(cmd);
+    }
+
+    inline EntityId World::GetEntityByName(const std::string &name) const {
+        return m_impl->entity_manager->GetEntityByName(name);
     }
 
 

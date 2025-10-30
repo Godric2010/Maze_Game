@@ -31,10 +31,10 @@ namespace Gameplay::Mazegenerator {
      * - right: Represents movement or orientation towards the right side of the grid (x + 1).
      */
     enum Direction {
-        back = 0,
-        left = 1,
-        front = 2,
-        right = 3,
+        Back = 0,
+        Left = 1,
+        Front = 2,
+        Right = 3,
     };
 
 
@@ -65,10 +65,10 @@ namespace Gameplay::Mazegenerator {
 
         [[nodiscard]] bool IsDeadEnd() const noexcept {
             int open_wall_count = 0;
-            if (!HasWall(left)) open_wall_count += 1;
-            if (!HasWall(right)) open_wall_count += 1;
-            if (!HasWall(front)) open_wall_count += 1;
-            if (!HasWall(back)) open_wall_count += 1;
+            if (!HasWall(Left)) open_wall_count += 1;
+            if (!HasWall(Right)) open_wall_count += 1;
+            if (!HasWall(Front)) open_wall_count += 1;
+            if (!HasWall(Back)) open_wall_count += 1;
             return open_wall_count == 1;
         }
 

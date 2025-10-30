@@ -26,14 +26,14 @@ namespace Gameplay {
     void GameplayManager::Initialize() {
         m_maze_builder->BuildMaze(5, 5, 1337);
         CreateCamera(m_maze_builder->GetMazeStartPosition());
-        CreateUI();
+        CreateUi();
     }
 
     void GameplayManager::Shutdown() {
     }
 
     void GameplayManager::CreateCamera(glm::vec3 start_pos) {
-        m_camera_entity = m_engine.GetWorld().CreateEntity();
+        m_camera_entity = m_engine.GetWorld().CreateEntity("Player");
         constexpr auto camera_component = Engine::Core::Components::Camera{
             .Width = 1920, // TODO: Use direct data from config later
             .Height = 1080,
@@ -66,27 +66,27 @@ namespace Gameplay {
         m_engine.GetWorld().AddComponent(m_camera_entity, inventory);
     }
 
-    void GameplayManager::CreateUI() {
-        const auto key_indicator = m_engine.GetWorld().CreateEntity();
+    void GameplayManager::CreateUi() const {
+        const auto key_indicator = m_engine.GetWorld().CreateEntity("KeyIndicator");
 
-        constexpr glm::vec2 position = {15, 15};
-        constexpr glm::vec2 size = {30, 30};
+        constexpr glm::vec2 size = {100, 100};
+        constexpr glm::vec2 position = {1920 - size.x - 50, 1080 - size.y - 50};
         const auto transform = Engine::Core::Components::UI::RectTransform(position, size);
         m_engine.GetWorld().AddComponent(key_indicator, transform);
 
-        constexpr auto image = Engine::Core::Components::UI::Image{.color = {255, 0, 0, 255}};
+        constexpr auto image = Engine::Core::Components::UI::Image{.color = {255, 0, 0, 100}};
         m_engine.GetWorld().AddComponent(key_indicator, image);
     }
 
     glm::vec3 GameplayManager::ConvertDirection(const Mazegenerator::Direction &direction) {
         switch (direction) {
-            case Mazegenerator::Direction::back:
+            case Mazegenerator::Direction::Back:
                 return {0.0f, 0.0f, -1.0f};
-            case Mazegenerator::Direction::front:
+            case Mazegenerator::Direction::Front:
                 return {0.0f, 0.0f, 1.0f};
-            case Mazegenerator::Direction::left:
+            case Mazegenerator::Direction::Left:
                 return {-1.0f, 0.0f, 0.0f};
-            case Mazegenerator::Direction::right:
+            case Mazegenerator::Direction::Right:
                 return {1.0f, 0.0f, 0.0f};
             default:
                 return {0.0f, 0.0f, 0.0f};

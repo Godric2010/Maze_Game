@@ -15,9 +15,11 @@ namespace Engine::Core {
 
         ~GameWorld() = default;
 
-        [[nodiscard]] Ecs::EntityId CreateEntity() const { return m_world->CreateEntity(); }
+        [[nodiscard]] Ecs::EntityId CreateEntity(const std::string &name) const { return m_world->CreateEntity(name); }
 
         void DestroyEntity(const Ecs::EntityId &entity) const { return m_world->DestroyEntity(entity); }
+
+        [[nodiscard]] Ecs::EntityId GetEntityByName(const std::string &name) const { return m_world->GetEntityByName(name); }
 
         template<typename T>
         void AddComponent(const Ecs::EntityId entity, T component) {

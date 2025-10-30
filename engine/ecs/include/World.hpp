@@ -17,9 +17,11 @@ namespace Engine::Ecs {
 
         ~World();
 
-        [[nodiscard]] EntityId CreateEntity() const;
+        [[nodiscard]] EntityId CreateEntity(const std::string &name) const;
 
         void DestroyEntity(EntityId entity) const;
+
+        [[nodiscard]] EntityId GetEntityByName(const std::string &name) const;
 
         template<typename T>
         void AddComponent(EntityId entity, T component);

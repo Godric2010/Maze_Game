@@ -11,8 +11,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
             throw std::runtime_error("Failed to initialize OpenGL context");
         }
 
-        m_window_size = {window_context.drawableWidth, window_context.drawableHeight};
-        glViewport(0, 0, m_window_size.x, m_window_size.y);
+        m_window_size = {window_context.width, window_context.height};
+        glViewport(0, 0, window_context.drawableWidth, window_context.drawableHeight);
         m_shader_manager = std::make_unique<OpenGlShaderManager>(shader_manager);
         m_mesh_manager = std::make_unique<OpenGlMeshManager>();
 

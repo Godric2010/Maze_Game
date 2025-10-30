@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <unordered_map>
+#include <string>
 #include "Entity.hpp"
 
 
@@ -22,7 +24,7 @@ namespace Engine::Ecs {
          * Reserve an entity and make it available for use. At this point, it is inactive and cannot be queried.
          * @return The EntityID of the newly reserved entity.
          */
-        EntityId ReserveEntity();
+        EntityId ReserveEntity(const std::string &name);
 
         /**
          * Commit the entity to the world and enable it. It is now available for queries in world.
@@ -56,8 +58,14 @@ namespace Engine::Ecs {
          */
         [[nodiscard]] bool IsEntityPending(EntityId entity) const;
 
-    private:
+        /**
+         * Fetch and entity by its name.
+         * @param name The name of the entity
+         * @return The requested entity; InvalidEntityID if the name was invalid or the entity not found
+         */
+        [[nodiscard]] EntityId GetEntityByName(const std::string &name) const;
 
+    private:
         /**
          * Contains the generation of each entity index, independent of their 'alive' and 'pending' status.
          */
@@ -78,6 +86,9 @@ namespace Engine::Ecs {
         std::vector<uint8_t> m_pending_entities;
         uint64_t m_alive_count;
         uint64_t m_next_idx;
+
+        std::unordered_map<std::string, EntityId> m_entities_lookup;
+        std::unordered_map<EntityId, std::string> m_reverse_lookup;
 
         void EnsureCapacity(uint64_t idx);
     };

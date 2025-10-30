@@ -1,4 +1,7 @@
 #pragma once
+#include<format>
+#include<string>
+#include<cstdint>
 #include "Camera.hpp"
 #include "DebugGridDrawer.hpp"
 #include "MazeAlgorithm.hpp"

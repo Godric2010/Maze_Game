@@ -18,7 +18,7 @@ namespace Engine::Ecs {
     }
 
 
-    EntityId EntityManager::ReserveEntity() {
+    EntityId EntityManager::ReserveEntity(const std::string &name) {
         uint64_t idx;
         if (!m_free_entity_indices.empty()) {
             idx = m_free_entity_indices.back();
@@ -32,6 +32,13 @@ namespace Engine::Ecs {
 
         const uint64_t generation = m_generations[idx] & GENRATION_MASK;
         const auto entity = (generation << INDEX_BITS) | (idx & INDEX_MASK);
+
+        if (m_entities_lookup.contains(name)) {
+            throw std::runtime_error("Entity with the name " + name + " already exists");
+        }
+        m_entities_lookup.emplace(name, entity);
+        m_reverse_lookup.emplace(entity, name);
+
         return entity;
     }
 
@@ -81,6 +88,10 @@ namespace Engine::Ecs {
         m_generations[idx] = gen;
         m_generations[idx] = static_cast<uint32_t>(gen);
         m_free_entity_indices.push_back(entity);
+
+        const auto name = m_reverse_lookup.find(entity)->second;
+        m_entities_lookup.erase(name);
+        m_reverse_lookup.erase(entity);
     }
 
     bool EntityManager::IsEntityAlive(const EntityId entity) const {
@@ -111,6 +122,13 @@ namespace Engine::Ecs {
             return false;
         }
         return m_pending_entities[idx] != 0;
+    }
+
+    EntityId EntityManager::GetEntityByName(const std::string &name) const {
+        if (m_entities_lookup.contains(name)) {
+            return m_entities_lookup.at(name);
+        }
+        return INVALID_ENTITY_ID;
     }
 
     std::vector<EntityId> EntityManager::GetAllActiveEntities() const {

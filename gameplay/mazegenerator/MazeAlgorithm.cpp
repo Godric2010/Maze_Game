@@ -188,19 +188,19 @@ namespace Gameplay::Mazegenerator {
 
     void MazeAlgorithm::OpenCellBorder(Cell &cell, const int dx, const int dy) {
         if (dx == 0 && dy == -1) {
-            cell.RemoveWall(back);
+            cell.RemoveWall(Back);
             return;
         }
         if (dx == 0 && dy == 1) {
-            cell.RemoveWall(front);
+            cell.RemoveWall(Front);
             return;
         }
         if (dx == -1 && dy == 0) {
-            cell.RemoveWall(left);
+            cell.RemoveWall(Left);
             return;
         }
         if (dx == 1 && dy == 0) {
-            cell.RemoveWall(right);
+            cell.RemoveWall(Right);
             return;
         }
 
@@ -229,16 +229,16 @@ namespace Gameplay::Mazegenerator {
                 path.push(next);
             };
 
-            if (!current_cell.HasWall(back)) {
+            if (!current_cell.HasWall(Back)) {
                 try_push(CellIndex{idx.x, idx.y - 1});
             }
-            if (!current_cell.HasWall(front)) {
+            if (!current_cell.HasWall(Front)) {
                 try_push(CellIndex{idx.x, idx.y + 1});
             }
-            if (!current_cell.HasWall(right)) {
+            if (!current_cell.HasWall(Right)) {
                 try_push(CellIndex{idx.x + 1, idx.y});
             }
-            if (!current_cell.HasWall(left)) {
+            if (!current_cell.HasWall(Left)) {
                 try_push(CellIndex{idx.x - 1, idx.y});
             }
         }

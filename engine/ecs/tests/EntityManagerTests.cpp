@@ -14,10 +14,11 @@ struct EntitymanagerFixture {
 };
 
 TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::GenerateEntity: returns non-null & is alive", "[ecs][fast]") {
-    const auto entity = entity_manager.ReserveEntity();
+    const auto entity = entity_manager.ReserveEntity("T1");
     INFO("Entity: " << entity);
     REQUIRE(entity_manager.IsEntityPending(entity));
     REQUIRE_FALSE(entity_manager.IsEntityAlive(entity));
+    REQUIRE(entity_manager.GetEntityByName("T1") == entity);
 
     entity_manager.CommitEntity(entity);
     REQUIRE_FALSE(entity_manager.IsEntityPending(entity));
@@ -27,18 +28,21 @@ TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::GenerateEntity: returns n
     INFO("Entity: " << entity);
     REQUIRE_FALSE(entity_manager.IsEntityAlive(entity));
     REQUIRE_FALSE(entity_manager.IsEntityPending(entity));
+    REQUIRE(entity_manager.GetEntityByName("T1") == INVALID_ENTITY_ID);
 }
 
 TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::GenerateEntity: no two entities are equal", "[ecs][fast]") {
-    const auto entity1 = entity_manager.ReserveEntity();
-    const auto entity2 = entity_manager.ReserveEntity();
+    const auto entity1 = entity_manager.ReserveEntity("E1");
+    const auto entity2 = entity_manager.ReserveEntity("E2");
     INFO("Entity1: " << entity1);
     INFO("Entity_2: " << entity2);
     REQUIRE(entity1 != entity2);
+    REQUIRE(entity_manager.GetEntityByName("E1") == entity1);
+    REQUIRE(entity_manager.GetEntityByName("E2") == entity2);
 }
 
 TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::DestroyEntity: invalidates old handle", "[ecs][fast]") {
-    const auto entity = entity_manager.ReserveEntity();
+    const auto entity = entity_manager.ReserveEntity("E1");
     entity_manager.CommitEntity(entity);
     REQUIRE(entity_manager.IsEntityAlive(entity));
 
@@ -46,10 +50,12 @@ TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::DestroyEntity: invalidate
     INFO("Entity: " << entity);
     REQUIRE_FALSE(entity_manager.IsEntityAlive(entity));
     REQUIRE_FALSE(entity_manager.IsEntityPending(entity));
+    REQUIRE(entity_manager.GetEntityByName("E1") == INVALID_ENTITY_ID);
 }
 
-TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::DestroyEntity: recycles index but bumps generation", "[ecs][fast]") {
-    const auto entity_a = entity_manager.ReserveEntity();
+TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::DestroyEntity: recycles index but bumps generation",
+                 "[ecs][fast]") {
+    const auto entity_a = entity_manager.ReserveEntity("E1");
     entity_manager.CommitEntity(entity_a);
     const auto index_a = GetEntityIndex(entity_a);
     const auto gen_a = GetEntityGenration(entity_a);
@@ -57,7 +63,7 @@ TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::DestroyEntity: recycles i
     entity_manager.DestroyEntity(entity_a);
     REQUIRE_FALSE(entity_manager.IsEntityAlive(entity_a));
 
-    const auto entity_b = entity_manager.ReserveEntity();
+    const auto entity_b = entity_manager.ReserveEntity("E2");
     entity_manager.CommitEntity(entity_b);
     REQUIRE(GetEntityIndex(entity_b) == index_a);
     REQUIRE(GetEntityGenration(entity_b) != gen_a);
@@ -68,6 +74,7 @@ TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::IsEntityAlive: returns fa
     REQUIRE_FALSE(entity_manager.IsEntityAlive(0));
 }
 
-TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::IsEntityPending: returns false for invalid/null", "[ecs][fast]") {
+TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::IsEntityPending: returns false for invalid/null",
+                 "[ecs][fast]") {
     REQUIRE_FALSE(entity_manager.IsEntityPending(0));
 }
