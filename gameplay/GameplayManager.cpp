@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include "Collider.hpp"
-#include "InputReceiver.hpp"
 #include "Mesh.hpp"
 #include "MotionIntent.hpp"
 #include "commands/PauseCommand.hpp"
@@ -61,12 +60,6 @@ namespace Gameplay {
             .is_static = false, .radius = 0.1f
         };
         m_engine.GetWorld().AddComponent(m_camera_entity, camera_collider);
-
-
-        constexpr auto input_receiver = Engine::Core::Components::InputReceiver{
-            .Input = nullptr,
-        };
-        m_engine.GetWorld().AddComponent(m_camera_entity, input_receiver);
 
         constexpr auto inventory = Components::Inventory();
         m_engine.GetWorld().AddComponent(m_camera_entity, inventory);

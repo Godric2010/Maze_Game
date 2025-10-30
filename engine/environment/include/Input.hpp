@@ -34,8 +34,8 @@ namespace Engine::Environment {
     };
 
     struct AppEventsSnapshot {
-        bool IsClosed;
-        bool HasFocus;
+        bool is_closed;
+        bool has_focus;
     };
 
     class InputSnapshot {

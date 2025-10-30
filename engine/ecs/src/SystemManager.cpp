@@ -50,9 +50,9 @@ namespace Engine::Ecs {
         }
     }
 
-    void SystemManager::RunSystems(World &world, const float delta_time) {
+    void SystemManager::RunSystems(const float delta_time) {
         for (const auto phase: m_phase_order) {
-            RunPhase(phase, world, delta_time);
+            RunPhase(phase, delta_time);
         }
     }
 
@@ -61,7 +61,7 @@ namespace Engine::Ecs {
     }
 
 
-    void SystemManager::RunPhase(const Phase phase, World &world, const float delta_time) {
+    void SystemManager::RunPhase(const Phase phase, const float delta_time) {
         for (const auto &system: m_phase_map[phase]) {
             system->Run(delta_time);
         }

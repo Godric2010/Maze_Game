@@ -5,13 +5,10 @@ add_library(Core STATIC
         components/Transform.hpp
         components/Mesh.hpp
         components/Camera.hpp
-        components/InputReceiver.hpp
         systems/TransformSystem.cpp
         systems/TransformSystem.hpp
         systems/CameraSystem.cpp
         systems/CameraSystem.hpp
-        systems/InputReceiver.cpp
-        systems/InputReceiver.hpp
         ServiceLocator.inl
         ServiceLocator.hpp
         systems/RenderSystem.cpp
@@ -28,6 +25,8 @@ add_library(Core STATIC
         ../physics/include/collision/CollisionQueryService.hpp
         components/ui/Image.hpp
         components/ui/RectTransform.hpp
+        InputManager.cpp
+        InputManager.hpp
 )
 
 target_include_directories(Core PUBLIC

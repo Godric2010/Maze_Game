@@ -40,7 +40,7 @@ namespace Engine::Ecs {
         void RegisterSystems(const std::vector<SystemMeta> &system_metas, World *world,
                              IServiceToEcsProvider *service_provider, Core::GameWorld *game_world);
 
-        void RunSystems(World &world, float delta_time);
+        void RunSystems(float delta_time);
 
         void RegisterForSystemCommands(std::function<void(std::vector<std::any>)> command_callback);
 
@@ -49,7 +49,7 @@ namespace Engine::Ecs {
         std::unordered_map<Phase, std::vector<std::unique_ptr<ISystem> > > m_phase_map;
         std::vector<std::function<void(std::vector<std::any>)> > m_system_commands_subscriber;
 
-        void RunPhase(Phase phase, World &world, float delta_time);
+        void RunPhase(Phase phase, float delta_time);
 
         void RaiseCommandsEvent(const std::vector<std::any> &commands) const;
     };

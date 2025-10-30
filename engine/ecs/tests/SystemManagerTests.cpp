@@ -118,7 +118,7 @@ TEST_CASE_METHOD(SystemManagerFixture,
     std::vector<SystemMeta> systems{system_d, system_e, system_c, system_a, system_b};
     system_manager.RegisterSystems(systems, world, nullptr, nullptr);
 
-    system_manager.RunSystems(*world, 0.0f);
+    system_manager.RunSystems(0.0f);
 
     const std::vector<std::string> expected = {"A", "B", "C", "D", "E"};
     REQUIRE(trace == expected);

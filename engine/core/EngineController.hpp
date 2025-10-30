@@ -6,6 +6,7 @@
 #include "Camera.hpp"
 #include "GameWorld.hpp"
 #include "IEngine.hpp"
+#include "InputManager.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
 #include "../ecs/include/World.hpp"
@@ -52,5 +53,6 @@ namespace Engine::Core {
         std::unique_ptr<Ecs::World> m_world;
         std::unique_ptr<GameWorld> m_game_world;
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
+        std::unique_ptr<InputManager> m_input_manager;
     };
 } // namespace

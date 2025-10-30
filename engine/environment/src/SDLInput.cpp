@@ -3,8 +3,8 @@
 namespace Engine::Environment {
     SDLInput::SDLInput(SDLWindow &window) {
         m_inputSnapshot = {};
-        m_appEvents.HasFocus = true;
-        m_appEvents.IsClosed = false;
+        m_appEvents.has_focus = true;
+        m_appEvents.is_closed = false;
 
         const auto windowContext = window.GetWindowContext();
         const auto windowCenter = glm::vec2(windowContext.width / 2, windowContext.height / 2);
@@ -83,15 +83,15 @@ namespace Engine::Environment {
     void SDLInput::ProcessInput(const SDL_Event &event) {
         switch (event.type) {
             case SDL_QUIT:
-                m_appEvents.IsClosed = true;
+                m_appEvents.is_closed = true;
                 break;
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
-                    m_appEvents.HasFocus = true;
+                    m_appEvents.has_focus = true;
                 } else if (event.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-                    m_appEvents.HasFocus = false;
+                    m_appEvents.has_focus = false;
                 } else if (event.window.event == SDL_WINDOWEVENT_CLOSE) {
-                    m_appEvents.IsClosed = true;
+                    m_appEvents.is_closed = true;
                 }
                 break;
             case SDL_KEYDOWN: {

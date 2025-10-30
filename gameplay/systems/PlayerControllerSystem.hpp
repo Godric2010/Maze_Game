@@ -1,5 +1,5 @@
 #pragma once
-#include "InputReceiver.hpp"
+#include "Input.hpp"
 #include "ISystem.hpp"
 #include "MotionIntent.hpp"
 #include "components/Transform.hpp"

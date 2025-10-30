@@ -23,13 +23,13 @@ namespace Engine::Core {
         m_window->Setup(config);
 
         auto input = CreateInput(*m_window);
-        m_services->RegisterService(std::move(input));
+        m_input_manager = std::make_unique<InputManager>(std::move(input));
 
         auto render_controller = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
         m_services->RegisterService(std::move(render_controller));
 
         m_world = std::make_unique<Ecs::World>();
-        m_game_world = std::make_unique<GameWorld>(m_world.get());
+        m_game_world = std::make_unique<GameWorld>(m_world.get(), m_input_manager.get());
         m_system_manager = std::make_unique<Ecs::SystemManager>();
         m_system_manager->RegisterSystems(systems, m_world.get(), m_services.get(), m_game_world.get());
     }
@@ -37,14 +37,17 @@ namespace Engine::Core {
     void EngineController::Update() const {
         auto last_time = std::chrono::high_resolution_clock::now();
 
-        const auto app_events = m_services->TryGetService<Environment::IInput>()->GetAppEventSnapshot();
 
-        while (!app_events->IsClosed) {
+        const auto app_events = m_input_manager->GetAppEventSnapshot();
+        //m_services->TryGetService<Environment::IInput>()->GetAppEventSnapshot();
+
+        while (!app_events->is_closed) {
             auto now = std::chrono::high_resolution_clock::now();
             const float delta_time = std::chrono::duration_cast<std::chrono::duration<float> >(now - last_time).count();
             last_time = now;
 
-            m_system_manager->RunSystems(*m_world, delta_time);
+            m_input_manager->UpdateInput();
+            m_system_manager->RunSystems(delta_time);
             m_window->SwapBuffers();
         }
     }
@@ -62,7 +65,8 @@ namespace Engine::Core {
         return mesh_handle;
     }
 
-    void EngineController::RegisterForSystemCommands(const std::function<void(std::vector<std::any>)> command_callback) {
+    void EngineController::RegisterForSystemCommands(
+        const std::function<void(std::vector<std::any>)> command_callback) {
         m_system_manager->RegisterForSystemCommands(command_callback);
     }
 } // namespace

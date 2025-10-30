@@ -5,7 +5,6 @@
 
 
 #include "GameWorld.hpp"
-#include "InputReceiver.hpp"
 #include "MotionIntent.hpp"
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
@@ -20,25 +19,29 @@ namespace Gameplay::Systems {
 
     void PlayerControllerSystem::Run(const float delta_time) {
         const auto player_entity = GameWorld()->GetEntityByName("Player");
-        const auto input_receiver = GameWorld()->GetComponent<Engine::Core::Components::InputReceiver>(player_entity);
-        if (input_receiver == nullptr) {
-            return;
-        }
+        const auto input = GameWorld()->GetInputSnapshot();
+        // const auto input_receiver = GameWorld()->GetComponent<Engine::Core::Components::InputReceiver>(player_entity);
+        // if (input_receiver == nullptr) {
+        //     return;
+        // }
 
-        if (input_receiver->Input->IsKeyDown(Engine::Environment::Key::Esc)) {
+        if (input->IsKeyDown(Engine::Environment::Key::Esc)) {
             std::cout << "ESC" << std::endl;
             const auto pause_command = Commands::PauseCommand(true);
             GameWorld()->PushCommand(pause_command);
         }
 
 
-        CalculateNewTransform(player_entity, input_receiver->Input);
+        CalculateNewTransform(player_entity, input);
     }
 
     void PlayerControllerSystem::CalculateNewTransform(const Engine::Ecs::EntityId player_entity,
                                                        const Engine::Environment::InputSnapshot *input) const {
         const auto transform = GameWorld()->GetComponent<Engine::Core::Components::Transform>(player_entity);
         const auto motion_intent = GameWorld()->GetComponent<Engine::Core::Components::MotionIntent>(player_entity);
+        if (transform == nullptr || motion_intent == nullptr) {
+            return;
+        }
 
         // Calculate camera rotation
         const auto mouse_delta = input->GetMouseDelta();
