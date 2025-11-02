@@ -27,10 +27,15 @@ namespace Gameplay {
         std::unique_ptr<MeshHandler> m_mesh_handler;
 
         void CreateCamera(glm::vec3 start_pos);
+
         void CreateUi() const;
 
         static glm::vec3 ConvertDirection(const Mazegenerator::Direction &direction);
 
         void EvaluateCommandsFromSystems(const std::vector<std::any> &commands);
+
+        void PauseGame() const;
+
+        void ResumeGame() const;
     };
 } // namespace

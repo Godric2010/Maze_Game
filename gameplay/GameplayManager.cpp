@@ -145,13 +145,46 @@ namespace Gameplay {
         for (const auto &command: commands) {
             if (command.type() == typeid(Commands::PauseCommand)) {
                 auto pause_command = std::any_cast<Commands::PauseCommand>(command);
-                std::cout << "Enable Pause: " << pause_command.IsPaused() << std::endl;
-                if (pause_command.IsPaused()) {
-                    m_engine.EnableInputMap("PauseInputMap");
-                } else {
-                    m_engine.EnableInputMap("PlayerInputMap");
-                }
+                std::cout << "Enable Pause: " << (pause_command.IsPaused() ? "true" : "false") << std::endl;
+                pause_command.IsPaused() ? PauseGame() : ResumeGame();
             }
         }
+    }
+
+    void GameplayManager::PauseGame() const {
+        const auto pause_entity = m_engine.GetWorld().CreateEntity("PauseBackground");
+        m_engine.GetWorld().AddComponent(pause_entity,
+                                         Engine::Core::Components::UI::RectTransform(
+                                             glm::vec2((1920 - 1920 * 0.8) / 2, (1080 - 1080 * 0.8) / 2),
+                                             glm::vec2(1920 * 0.8, 1080 * 0.8), 0));
+        m_engine.GetWorld().AddComponent(pause_entity,
+                                         Engine::Core::Components::UI::Image{.color = {0.3, 0.3, 0.3, 0.8}});
+
+        const auto resume_button = m_engine.GetWorld().CreateEntity("ResumeButton");
+        constexpr auto pos = glm::vec2((1920 - 1920 * 0.8) / 2 + 100, (1080 - 1080 * 0.8) / 2 + 100);
+        m_engine.GetWorld().AddComponent(resume_button,
+                                         Engine::Core::Components::UI::RectTransform(pos, glm::vec2(200, 100), 1));
+        m_engine.GetWorld().AddComponent(resume_button,
+                                         Engine::Core::Components::UI::Image{.color = {0.0, 0.7, 0.0, 1.}});
+
+        const auto quit_button = m_engine.GetWorld().CreateEntity("QuitButton");
+        constexpr auto quit_pos = pos + glm::vec2(0, 200);
+        m_engine.GetWorld().AddComponent(quit_button,
+                                         Engine::Core::Components::UI::RectTransform(quit_pos, glm::vec2(200, 100), 1));
+        m_engine.GetWorld().AddComponent(quit_button,
+                                         Engine::Core::Components::UI::Image{.color = {0.7, 0.0, 0.0, 1.}});
+        m_engine.EnableInputMap("PauseInputMap");
+    }
+
+    void GameplayManager::ResumeGame() const {
+        m_engine.EnableInputMap("PlayerInputMap");
+
+        const auto resume_button = m_engine.GetWorld().GetEntityByName("ResumeButton");
+        m_engine.GetWorld().DestroyEntity(resume_button);
+        const auto quit_button = m_engine.GetWorld().GetEntityByName("QuitButton");
+        m_engine.GetWorld().DestroyEntity(quit_button);
+
+        const auto pause_entity = m_engine.GetWorld().GetEntityByName("PauseBackground");
+        m_engine.GetWorld().DestroyEntity(pause_entity);
     }
 } // namespace

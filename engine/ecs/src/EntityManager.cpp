@@ -21,7 +21,7 @@ namespace Engine::Ecs {
     EntityId EntityManager::ReserveEntity(const std::string &name) {
         uint64_t idx;
         if (!m_free_entity_indices.empty()) {
-            idx = m_free_entity_indices.back();
+            idx = GetEntityIndex(m_free_entity_indices.back());
             m_free_entity_indices.pop_back();
         } else {
             idx = m_next_idx++;

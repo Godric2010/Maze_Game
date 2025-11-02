@@ -31,6 +31,14 @@ namespace Engine::Core::Components::UI {
             m_layer_z = 0.0f;
         }
 
+        RectTransform(const glm::vec2 position, const glm::vec2 size, const float layer) {
+            m_position = position;
+            m_size = size;
+            m_pivot = glm::vec2(0.0f);
+            m_rotation = 0.0f;
+            m_layer_z = layer;
+        }
+
         [[nodiscard]] glm::vec2 Position() const { return m_position; }
         [[nodiscard]] glm::vec2 Size() const { return m_size; }
         [[nodiscard]] glm::vec2 Pivot() const { return m_pivot; }
