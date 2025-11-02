@@ -26,6 +26,10 @@ namespace Gameplay::Systems {
 
         if (input.HasAction("pause")) {
             std::cout << "Enabled pause!" << std::endl;
+
+            const auto motion_intent = GameWorld()->GetComponent<Engine::Core::Components::MotionIntent>(player_entity);
+            motion_intent->translation = glm::vec3(0.0);
+
             const auto pause_command = Commands::PauseCommand(true);
             GameWorld()->PushCommand(pause_command);
             return;

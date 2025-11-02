@@ -21,6 +21,8 @@ add_library(Gameplay STATIC
         mazegenerator/MazeBuilder.hpp
         systems/ExitSystem.cpp
         systems/ExitSystem.hpp
-        commands/PauseCommand.hpp)
+        commands/PauseCommand.hpp
+        systems/PauseSystem.cpp
+        systems/PauseSystem.hpp)
 
 target_link_libraries(Gameplay PUBLIC Engine)

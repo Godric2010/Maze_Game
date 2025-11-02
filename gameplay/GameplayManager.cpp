@@ -25,37 +25,53 @@ namespace Gameplay {
             this->EvaluateCommandsFromSystems(commands);
         });
 
-        Engine::Core::InputMap player_input_map{};
-        player_input_map.name = "PlayerInputMap";
-        player_input_map.mouse_visible = false;
-        player_input_map.key_bindings = {
-            Engine::Core::KeyBinding{
-                .name = "forward",
-                .key = Engine::Environment::Key::W,
-                .press_state = Engine::Environment::PressState::Pressed
+        const Engine::Core::InputMap player_input_map{
+            .name = "PlayerInputMap",
+            .key_bindings = {
+                Engine::Core::KeyBinding{
+                    .name = "forward",
+                    .key = Engine::Environment::Key::W,
+                    .press_state = Engine::Environment::PressState::Pressed
+                },
+                Engine::Core::KeyBinding{
+                    .name = "backwards",
+                    .key = Engine::Environment::Key::S,
+                    .press_state = Engine::Environment::PressState::Pressed
+                },
+                Engine::Core::KeyBinding{
+                    .name = "left",
+                    .key = Engine::Environment::Key::A,
+                    .press_state = Engine::Environment::PressState::Pressed
+                },
+                Engine::Core::KeyBinding{
+                    .name = "right",
+                    .key = Engine::Environment::Key::D,
+                    .press_state = Engine::Environment::PressState::Pressed
+                },
+                Engine::Core::KeyBinding{
+                    .name = "pause",
+                    .key = Engine::Environment::Key::Esc,
+                    .press_state = Engine::Environment::PressState::Down
+                }
             },
-            Engine::Core::KeyBinding{
-                .name = "backwards",
-                .key = Engine::Environment::Key::S,
-                .press_state = Engine::Environment::PressState::Pressed
-            },
-            Engine::Core::KeyBinding{
-                .name = "left",
-                .key = Engine::Environment::Key::A,
-                .press_state = Engine::Environment::PressState::Pressed
-            },
-            Engine::Core::KeyBinding{
-                .name = "right",
-                .key = Engine::Environment::Key::D,
-                .press_state = Engine::Environment::PressState::Pressed
-            },
-            Engine::Core::KeyBinding{
-                .name = "pause",
-                .key = Engine::Environment::Key::Esc,
-                .press_state = Engine::Environment::PressState::Down
-            }
+            .mouse_bindings = {},
+            .mouse_visible = false,
         };
         m_engine.RegisterInputMap(player_input_map);
+
+        const Engine::Core::InputMap pause_input_map{
+            .name = "PauseInputMap",
+            .key_bindings = {
+                Engine::Core::KeyBinding{
+                    .name = "resume",
+                    .key = Engine::Environment::Key::Esc,
+                    .press_state = Engine::Environment::PressState::Down
+                },
+            },
+            .mouse_bindings = {},
+            .mouse_visible = true,
+        };
+        m_engine.RegisterInputMap(pause_input_map);
     }
 
     GameplayManager::~GameplayManager() = default;
@@ -130,6 +146,11 @@ namespace Gameplay {
             if (command.type() == typeid(Commands::PauseCommand)) {
                 auto pause_command = std::any_cast<Commands::PauseCommand>(command);
                 std::cout << "Enable Pause: " << pause_command.IsPaused() << std::endl;
+                if (pause_command.IsPaused()) {
+                    m_engine.EnableInputMap("PauseInputMap");
+                } else {
+                    m_engine.EnableInputMap("PlayerInputMap");
+                }
             }
         }
     }
