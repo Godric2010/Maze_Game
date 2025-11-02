@@ -24,6 +24,37 @@ namespace Gameplay {
         m_engine.RegisterForSystemCommands([this](const std::vector<std::any> &commands) {
             this->EvaluateCommandsFromSystems(commands);
         });
+
+        Engine::Core::InputMap player_input_map{};
+        player_input_map.name = "PlayerInputMap";
+        player_input_map.key_bindings = {
+            Engine::Core::KeyBinding{
+                .name = "forward",
+                .key = Engine::Environment::Key::W,
+                .press_state = Engine::Environment::PressState::Pressed
+            },
+            Engine::Core::KeyBinding{
+                .name = "backwards",
+                .key = Engine::Environment::Key::S,
+                .press_state = Engine::Environment::PressState::Pressed
+            },
+            Engine::Core::KeyBinding{
+                .name = "left",
+                .key = Engine::Environment::Key::A,
+                .press_state = Engine::Environment::PressState::Pressed
+            },
+            Engine::Core::KeyBinding{
+                .name = "right",
+                .key = Engine::Environment::Key::D,
+                .press_state = Engine::Environment::PressState::Pressed
+            },
+            Engine::Core::KeyBinding{
+                .name = "pause",
+                .key = Engine::Environment::Key::Esc,
+                .press_state = Engine::Environment::PressState::Down
+            }
+        };
+        m_engine.RegisterInputMap(player_input_map);
     }
 
     GameplayManager::~GameplayManager() = default;
@@ -32,6 +63,7 @@ namespace Gameplay {
         m_maze_builder->BuildMaze(5, 5, 1337);
         CreateCamera(m_maze_builder->GetMazeStartPosition());
         CreateUi();
+        m_engine.EnableInputMap("PlayerInputMap");
     }
 
     void GameplayManager::Shutdown() {
@@ -93,10 +125,10 @@ namespace Gameplay {
     }
 
     void GameplayManager::EvaluateCommandsFromSystems(const std::vector<std::any> &commands) {
-        for (const auto &command : commands) {
+        for (const auto &command: commands) {
             if (command.type() == typeid(Commands::PauseCommand)) {
                 auto pause_command = std::any_cast<Commands::PauseCommand>(command);
-                std::cout<< "Enable Pause: " << pause_command.IsPaused() << std::endl;
+                std::cout << "Enable Pause: " << pause_command.IsPaused() << std::endl;
             }
         }
     }

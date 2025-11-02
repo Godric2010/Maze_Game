@@ -46,34 +46,60 @@ namespace Engine::Environment {
 
         ~InputSnapshot() = default;
 
-        [[nodiscard]] bool IsKeyDown(const Key key) const { return m_keyPressedThisFrame.contains(key); };
-        [[nodiscard]] bool IsKeyUp(const Key key) const { return m_keyReleasedThisFrame.contains(key); };
-        [[nodiscard]] bool IsKeyHeld(const Key key) const { return m_keyHeldThisFrame.contains(key); };
+        [[nodiscard]] bool IsKeyDown(const Key key) const { return m_key_pressed_this_frame.contains(key); };
+        [[nodiscard]] bool IsKeyUp(const Key key) const { return m_key_released_this_frame.contains(key); };
+        [[nodiscard]] bool IsKeyHeld(const Key key) const { return m_key_held_this_frame.contains(key); };
+
+        [[nodiscard]] bool IsKeyInState(const Key key, const PressState state) const {
+            switch (state) {
+                case PressState::Down:
+                    return m_key_pressed_this_frame.contains(key);
+                case PressState::Up:
+                    return m_key_released_this_frame.contains(key);
+                case PressState::Pressed:
+                    return m_key_held_this_frame.contains(key);
+            }
+            return false;
+        }
+
+        [[nodiscard]] bool IsMouseButtonInState(const MouseButton button, PressState state) const {
+            switch (state) {
+                case PressState::Down:
+                    return m_mouse_pressed_this_frame.contains(button);
+                case PressState::Up:
+                    return m_mouse_released_this_frame.contains(button);
+                case PressState::Pressed:
+                    return m_mouse_held_this_frame.contains(button);
+            }
+            return false;
+        }
 
         [[nodiscard]] bool IsMouseDown(const MouseButton button) const {
-            return m_mousePressedThisFrame.contains(button);
+            return m_mouse_pressed_this_frame.contains(button);
         };
 
         [[nodiscard]] bool IsMouseUp(const MouseButton button) const {
-            return m_mouseReleasedThisFrame.contains(button);
+            return m_mouse_released_this_frame.contains(button);
         };
 
         [[nodiscard]] bool IsMouseHeld(const MouseButton button) const {
-            return m_mouseHeldThisFrame.contains(button);
+            return m_mouse_held_this_frame.contains(button);
         };
 
-        [[nodiscard]] glm::vec2 GetMouseDelta() const { return m_mouseDelta; };
+        [[nodiscard]] glm::vec2 GetMousePosition() const { return m_mouse_pos; }
+        [[nodiscard]] glm::vec2 GetMouseDelta() const { return m_mouse_delta; };
 
     private:
-        std::unordered_set<Key> m_keyPressedThisFrame;
-        std::unordered_set<Key> m_keyReleasedThisFrame;
-        std::unordered_set<Key> m_keyHeldThisFrame;
+        std::unordered_set<Key> m_key_pressed_this_frame;
+        std::unordered_set<Key> m_key_released_this_frame;
+        std::unordered_set<Key> m_key_held_this_frame;
 
-        std::unordered_set<MouseButton> m_mousePressedThisFrame;
-        std::unordered_set<MouseButton> m_mouseReleasedThisFrame;
-        std::unordered_set<MouseButton> m_mouseHeldThisFrame;
+        std::unordered_set<MouseButton> m_mouse_pressed_this_frame;
+        std::unordered_set<MouseButton> m_mouse_released_this_frame;
+        std::unordered_set<MouseButton> m_mouse_held_this_frame;
 
-        glm::vec2 m_mouseDelta{};
+        glm::vec2 m_mouse_delta{};
+        glm::vec2 m_mouse_pos{};
     };
 
     /**
@@ -89,6 +115,8 @@ namespace Engine::Environment {
         virtual void PrepareFrame() = 0;
 
         virtual void PumpInput() = 0;
+
+        virtual void ShowMouseCursor(bool visible) = 0;
 
         virtual AppEventsSnapshot *GetAppEventSnapshot() = 0;
 

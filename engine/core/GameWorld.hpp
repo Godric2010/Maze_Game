@@ -11,7 +11,7 @@
 namespace Engine::Core {
     class GameWorld {
     public:
-        explicit GameWorld(Ecs::World *ecs_world, InputManager* input_manager) {
+        explicit GameWorld(Ecs::World *ecs_world, InputManager *input_manager) {
             m_world = ecs_world;
             m_input_manager = input_manager;
         }
@@ -67,10 +67,10 @@ namespace Engine::Core {
             m_world->PushCommand(cmd);
         }
 
-        [[nodiscard]] Environment::InputSnapshot* GetInputSnapshot() const { return m_input_manager->GetInputSnapshot(); }
+        [[nodiscard]] InputBuffer GetInput() const { return m_input_manager->GetInput(); }
 
     private:
         Ecs::World *m_world;
-        InputManager* m_input_manager;
+        InputManager *m_input_manager;
     };
 }

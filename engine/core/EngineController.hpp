@@ -47,6 +47,10 @@ namespace Engine::Core {
 
         void RegisterForSystemCommands(std::function<void(std::vector<std::any>)> command_callback) override;
 
+        void RegisterInputMap(InputMap map) override;
+
+        void EnableInputMap(std::string input_map) override;
+
     private:
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;

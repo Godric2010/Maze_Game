@@ -69,4 +69,12 @@ namespace Engine::Core {
         const std::function<void(std::vector<std::any>)> command_callback) {
         m_system_manager->RegisterForSystemCommands(command_callback);
     }
+
+    void EngineController::RegisterInputMap(const InputMap map) {
+        m_input_manager->AddInputMapping(map);
+    }
+
+    void EngineController::EnableInputMap(const std::string input_map) {
+        m_input_manager->EnableInputMap(input_map);
+    }
 } // namespace

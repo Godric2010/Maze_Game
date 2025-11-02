@@ -6,14 +6,14 @@ namespace Engine::Environment {
         m_appEvents.has_focus = true;
         m_appEvents.is_closed = false;
 
-        const auto windowContext = window.GetWindowContext();
-        const auto windowCenter = glm::vec2(windowContext.width / 2, windowContext.height / 2);
-        SDL_WarpMouseInWindow(windowContext.openGLContext.windowHandle,
-                              static_cast<int>(windowCenter.x),
-                              static_cast<int>(windowCenter.y));
+        const auto window_context = window.GetWindowContext();
+        const auto window_center = glm::vec2(window_context.width / 2, window_context.height / 2);
+        SDL_WarpMouseInWindow(window_context.openGLContext.windowHandle,
+                              static_cast<int>(window_center.x),
+                              static_cast<int>(window_center.y));
         SDL_ShowCursor(SDL_DISABLE);
 
-        m_lastMousePos = windowCenter;
+        m_lastMousePos = window_center;
 
         Poll = [&window, this]() {
             window.PollEvents([this](const SDL_Event &event) { this->ProcessInput(event); });
@@ -23,12 +23,15 @@ namespace Engine::Environment {
     SDLInput::~SDLInput() = default;
 
     void SDLInput::PrepareFrame() {
+        m_inputSnapshot.m_key_pressed_this_frame.clear();
+        m_inputSnapshot.m_key_released_this_frame.clear();
+        m_inputSnapshot.m_mouse_pressed_this_frame.clear();
+        m_inputSnapshot.m_mouse_released_this_frame.clear();
+        m_inputSnapshot.m_mouse_delta = glm::vec2(0.0f);
+    }
 
-        m_inputSnapshot.m_keyPressedThisFrame.clear();
-        m_inputSnapshot.m_keyReleasedThisFrame.clear();
-        m_inputSnapshot.m_mousePressedThisFrame.clear();
-        m_inputSnapshot.m_mouseReleasedThisFrame.clear();
-        m_inputSnapshot.m_mouseDelta = glm::vec2(0.0f);
+    void SDLInput::ShowMouseCursor(const bool visible) {
+        SDL_ShowCursor(visible ? SDL_DISABLE : SDL_ENABLE);
     }
 
     void SDLInput::PumpInput() {
@@ -43,7 +46,7 @@ namespace Engine::Environment {
         return &m_inputSnapshot;
     }
 
-    inline Key mapScancode(SDL_Scancode scancode) {
+    inline Key MapScancode(const SDL_Scancode scancode) {
         switch (scancode) {
             case SDL_SCANCODE_ESCAPE:
                 return Key::Esc;
@@ -96,40 +99,41 @@ namespace Engine::Environment {
                 break;
             case SDL_KEYDOWN: {
                 if (event.key.repeat) { break; }
-                const Key keyDown = mapScancode(event.key.keysym.scancode);
-                if (keyDown == Key::Unknown) { break; }
-                m_inputSnapshot.m_keyPressedThisFrame.insert(keyDown);
-                m_inputSnapshot.m_keyHeldThisFrame.insert(keyDown);
+                const Key key_down = MapScancode(event.key.keysym.scancode);
+                if (key_down == Key::Unknown) { break; }
+                m_inputSnapshot.m_key_pressed_this_frame.insert(key_down);
+                m_inputSnapshot.m_key_held_this_frame.insert(key_down);
             }
             break;
             case SDL_KEYUP: {
                 if (event.key.repeat)break;
-                const Key keyUp = mapScancode(event.key.keysym.scancode);
-                if (keyUp == Key::Unknown) break;
-                m_inputSnapshot.m_keyReleasedThisFrame.insert(keyUp);
-                m_inputSnapshot.m_keyHeldThisFrame.erase(keyUp);
+                const Key key_up = MapScancode(event.key.keysym.scancode);
+                if (key_up == Key::Unknown) break;
+                m_inputSnapshot.m_key_released_this_frame.insert(key_up);
+                m_inputSnapshot.m_key_held_this_frame.erase(key_up);
                 break;
             }
             case SDL_MOUSEBUTTONDOWN: {
                 if (event.key.repeat)break;
-                const MouseButton mouseDown = mapButton(event.key.keysym.scancode);
-                if (mouseDown == MouseButton::Unknown) break;
-                m_inputSnapshot.m_mousePressedThisFrame.insert(mouseDown);
-                m_inputSnapshot.m_mouseHeldThisFrame.insert(mouseDown);
+                const MouseButton mouse_down = mapButton(event.key.keysym.scancode);
+                if (mouse_down == MouseButton::Unknown) break;
+                m_inputSnapshot.m_mouse_pressed_this_frame.insert(mouse_down);
+                m_inputSnapshot.m_mouse_held_this_frame.insert(mouse_down);
             }
             break;
             case SDL_MOUSEBUTTONUP: {
-                const MouseButton mouseUp = mapButton(event.key.keysym.scancode);
-                if (mouseUp == MouseButton::Unknown) break;
-                m_inputSnapshot.m_mouseReleasedThisFrame.insert(mouseUp);
-                m_inputSnapshot.m_mouseHeldThisFrame.insert(mouseUp);
+                const MouseButton mouse_up = mapButton(event.key.keysym.scancode);
+                if (mouse_up == MouseButton::Unknown) break;
+                m_inputSnapshot.m_mouse_released_this_frame.insert(mouse_up);
+                m_inputSnapshot.m_mouse_held_this_frame.insert(mouse_up);
             }
             break;
             case SDL_MOUSEMOTION: {
-                const auto mousePos = glm::vec2(event.motion.x, event.motion.y);
-                const glm::vec2 deltaMousePos = mousePos - m_lastMousePos;
-                m_inputSnapshot.m_mouseDelta = deltaMousePos;
-                m_lastMousePos = mousePos;
+                const auto mouse_pos = glm::vec2(event.motion.x, event.motion.y);
+                const glm::vec2 delta_mouse_pos = mouse_pos - m_lastMousePos;
+                m_inputSnapshot.m_mouse_pos = mouse_pos;
+                m_inputSnapshot.m_mouse_delta = delta_mouse_pos;
+                m_lastMousePos = mouse_pos;
             }
             break;
             default:

@@ -1,5 +1,6 @@
 #pragma once
 #include "Input.hpp"
+#include "InputManager.hpp"
 #include "ISystem.hpp"
 #include "MotionIntent.hpp"
 #include "components/Transform.hpp"
@@ -26,6 +27,6 @@ namespace Gameplay::Systems {
         const float m_max_pitch = 75.0f;
 
         void CalculateNewTransform(
-            Engine::Ecs::EntityId player_entity, const Engine::Environment::InputSnapshot *input) const;
+            Engine::Ecs::EntityId player_entity, const Engine::Core::InputBuffer& input) const;
     };
 } // namespace

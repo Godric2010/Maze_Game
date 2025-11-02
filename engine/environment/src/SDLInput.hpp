@@ -13,6 +13,8 @@ namespace Engine::Environment {
 
         void PrepareFrame() override;
 
+        void ShowMouseCursor(bool visible) override;
+
         AppEventsSnapshot *GetAppEventSnapshot() override;
 
         InputSnapshot *GetInputSnapshot() override;

@@ -18,25 +18,24 @@ namespace Gameplay::Systems {
     }
 
     void PlayerControllerSystem::Run(const float delta_time) {
-        const auto player_entity = GameWorld()->GetEntityByName("Player");
-        const auto input = GameWorld()->GetInputSnapshot();
-        // const auto input_receiver = GameWorld()->GetComponent<Engine::Core::Components::InputReceiver>(player_entity);
-        // if (input_receiver == nullptr) {
-        //     return;
-        // }
+        const auto input = GameWorld()->GetInput();
+        if (input.active_map_name != "PlayerInputMap")
+            return;
 
-        if (input->IsKeyDown(Engine::Environment::Key::Esc)) {
-            std::cout << "ESC" << std::endl;
+        const auto player_entity = GameWorld()->GetEntityByName("Player");
+
+        if (input.HasAction("pause")) {
+            std::cout << "Enabled pause!" << std::endl;
             const auto pause_command = Commands::PauseCommand(true);
             GameWorld()->PushCommand(pause_command);
+            return;
         }
-
 
         CalculateNewTransform(player_entity, input);
     }
 
     void PlayerControllerSystem::CalculateNewTransform(const Engine::Ecs::EntityId player_entity,
-                                                       const Engine::Environment::InputSnapshot *input) const {
+                                                       const Engine::Core::InputBuffer &input) const {
         const auto transform = GameWorld()->GetComponent<Engine::Core::Components::Transform>(player_entity);
         const auto motion_intent = GameWorld()->GetComponent<Engine::Core::Components::MotionIntent>(player_entity);
         if (transform == nullptr || motion_intent == nullptr) {
@@ -44,7 +43,7 @@ namespace Gameplay::Systems {
         }
 
         // Calculate camera rotation
-        const auto mouse_delta = input->GetMouseDelta();
+        const auto mouse_delta = input.mouse_delta;
         const float yaw_delta = -mouse_delta.x * m_sensitivity;
         const float pitch_delta = -mouse_delta.y * m_sensitivity;
 
@@ -59,16 +58,16 @@ namespace Gameplay::Systems {
         const auto right_vec = normalize(cross(forward_vec, glm::vec3(0, 1, 0)));
 
         auto camera_displacement = glm::vec3(0.0f);
-        if (input->IsKeyHeld(Engine::Environment::Key::W)) {
+        if (input.HasAction("forward")) {
             camera_displacement.z -= 1;
         }
-        if (input->IsKeyHeld(Engine::Environment::Key::S)) {
+        if (input.HasAction("backwards")) {
             camera_displacement.z += 1;
         }
-        if (input->IsKeyHeld(Engine::Environment::Key::A)) {
+        if (input.HasAction("left")) {
             camera_displacement.x += 1;
         }
-        if (input->IsKeyHeld(Engine::Environment::Key::D)) {
+        if (input.HasAction("right")) {
             camera_displacement.x -= 1;
         }
         const glm::vec3 pos_delta = right_vec * camera_displacement.x + forward_vec * camera_displacement.z;
