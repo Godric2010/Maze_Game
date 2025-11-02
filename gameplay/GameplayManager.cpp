@@ -27,6 +27,7 @@ namespace Gameplay {
 
         Engine::Core::InputMap player_input_map{};
         player_input_map.name = "PlayerInputMap";
+        player_input_map.mouse_visible = false;
         player_input_map.key_bindings = {
             Engine::Core::KeyBinding{
                 .name = "forward",

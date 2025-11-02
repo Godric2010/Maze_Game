@@ -21,6 +21,7 @@ namespace Engine::Core {
         std::string name;
         std::vector<KeyBinding> key_bindings;
         std::vector<MouseKeyBinding> mouse_bindings;
+        bool mouse_visible;
     };
 
     struct InputAction {

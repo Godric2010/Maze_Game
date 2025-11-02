@@ -31,7 +31,7 @@ namespace Engine::Environment {
     }
 
     void SDLInput::ShowMouseCursor(const bool visible) {
-        SDL_ShowCursor(visible ? SDL_DISABLE : SDL_ENABLE);
+        SDL_ShowCursor(visible ? SDL_ENABLE : SDL_DISABLE);
     }
 
     void SDLInput::PumpInput() {

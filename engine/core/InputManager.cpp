@@ -29,6 +29,7 @@ namespace Engine::Core {
         for (int i = 0; i < m_input_maps.size(); ++i) {
             if (m_input_maps.at(i).name == input_map_name) {
                 m_active_map_index = i;
+                m_input_env->ShowMouseCursor(m_input_maps.at(i).mouse_visible);
                 return;
             }
         }
@@ -41,7 +42,7 @@ namespace Engine::Core {
 
     void InputManager::PopulateInputActions() {
         m_input_buffer = InputBuffer();
-        const auto [map_name, key_bindings, mouse_bindings] = m_input_maps.at(m_active_map_index);
+        const auto [map_name, key_bindings, mouse_bindings, mouse_visible] = m_input_maps.at(m_active_map_index);
         m_input_buffer.active_map_name = map_name;
         const auto snapshot = m_input_env->GetInputSnapshot();
         if (snapshot == nullptr) {
