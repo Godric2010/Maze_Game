@@ -15,6 +15,7 @@ namespace Engine::Ecs {
     enum class Phase {
         Input,
         Physics,
+        Ui,
         Update,
         EngineEvents,
         LateUpdate,

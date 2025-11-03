@@ -53,6 +53,8 @@ namespace Engine::Core {
 
         void EnableInputMap(std::string input_map) override;
 
+        void DisableInputMap(std::string input_map) override;
+
     private:
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;

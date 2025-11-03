@@ -28,6 +28,9 @@ add_library(Core STATIC
         InputManager.cpp
         InputManager.hpp
         components/ui/Button.hpp
+        systems/UiSystem.cpp
+        systems/UiSystem.hpp
+        commands/ui/ButtonClickedCommand.hpp
 )
 
 target_include_directories(Core PUBLIC

@@ -14,6 +14,7 @@ namespace Engine::Ecs {
         m_phase_order = std::vector{
             Phase::Input,
             Phase::Physics,
+            Phase::Ui,
             Phase::Update,
             Phase::EngineEvents,
             Phase::LateUpdate,

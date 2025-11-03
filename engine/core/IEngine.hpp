@@ -25,5 +25,7 @@ namespace Engine::Core {
         virtual void RegisterInputMap(InputMap map) = 0;
 
         virtual void EnableInputMap(std::string input_map) = 0;
+
+        virtual void DisableInputMap(std::string input_map) = 0;
     };
 }

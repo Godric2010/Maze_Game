@@ -82,4 +82,8 @@ namespace Engine::Core {
     void EngineController::EnableInputMap(const std::string input_map) {
         m_input_manager->EnableInputMap(input_map);
     }
+
+    void EngineController::DisableInputMap(const std::string input_map) {
+        m_input_manager->DisableInputMap(input_map);
+    }
 } // namespace

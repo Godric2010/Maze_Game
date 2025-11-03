@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <set>
 #include <stdexcept>
 #include "Input.hpp"
 
@@ -29,7 +30,7 @@ namespace Engine::Core {
     };
 
     struct InputBuffer {
-        std::string active_map_name;
+        std::set<std::string> active_map_names;
         std::vector<InputAction> actions;
         glm::vec2 mouse_position;
         glm::vec2 mouse_delta;
@@ -43,6 +44,10 @@ namespace Engine::Core {
                 }
             }
             return false;
+        }
+
+        [[nodiscard]] bool IsMapActive(const std::string &map_name) const {
+            return active_map_names.contains(map_name);
         }
     };
 
@@ -63,6 +68,8 @@ namespace Engine::Core {
 
         void EnableInputMap(const std::string &input_map_name);
 
+        void DisableInputMap(const std::string &input_map_name);
+
         [[nodiscard]] InputBuffer GetInput() const;
 
     private:
@@ -70,7 +77,7 @@ namespace Engine::Core {
 
         std::unique_ptr<Environment::IInput> m_input_env;
         std::vector<InputMap> m_input_maps;
-        int m_active_map_index = -1;
+        std::set<int> m_active_map_indices;
 
         InputBuffer m_input_buffer;
     };

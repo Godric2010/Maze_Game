@@ -19,7 +19,7 @@ namespace Gameplay::Systems {
 
     void PlayerControllerSystem::Run(const float delta_time) {
         const auto input = GameWorld()->GetInput();
-        if (input.active_map_name != "PlayerInputMap")
+        if (!input.IsMapActive("PlayerInputMap"))
             return;
 
         const auto player_entity = GameWorld()->GetEntityByName("Player");

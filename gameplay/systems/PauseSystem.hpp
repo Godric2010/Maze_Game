@@ -22,7 +22,5 @@ namespace Gameplay::Systems {
 
         void Run(float delta_time) override;
 
-    private:
-        static bool IsInsideRect(const glm::vec2 &mouse_pos, const glm::vec2 &rect_pos, const glm::vec2 &rect_size);
     };
 } // namespace

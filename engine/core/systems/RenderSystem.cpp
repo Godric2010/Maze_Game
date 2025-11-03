@@ -80,7 +80,7 @@ namespace Engine::Core::Systems {
 
             const auto button_component = GameWorld()->GetComponent<Components::UI::Button>(entity);
             if (button_component != nullptr) {
-                ui_draw_asset.color = button_component->active_color;
+                ui_draw_asset.color = button_component->GetColor();
             }
 
 
