@@ -6,9 +6,11 @@
 #include "Mesh.hpp"
 #include "MotionIntent.hpp"
 #include "commands/PauseCommand.hpp"
+#include "commands/QuitCommand.hpp"
 #include "components/Camera.hpp"
 #include "components/Inventory.hpp"
 #include "components/Transform.hpp"
+#include "ui/Button.hpp"
 #include "ui/Image.hpp"
 #include "ui/RectTransform.hpp"
 
@@ -68,7 +70,13 @@ namespace Gameplay {
                     .press_state = Engine::Environment::PressState::Down
                 },
             },
-            .mouse_bindings = {},
+            .mouse_bindings = {
+                Engine::Core::MouseKeyBinding{
+                    .name = "confirm",
+                    .button = Engine::Environment::MouseButton::Left,
+                    .press_state = Engine::Environment::PressState::Up
+                }
+            },
             .mouse_visible = true,
         };
         m_engine.RegisterInputMap(pause_input_map);
@@ -147,6 +155,10 @@ namespace Gameplay {
                 auto pause_command = std::any_cast<Commands::PauseCommand>(command);
                 std::cout << "Enable Pause: " << (pause_command.IsPaused() ? "true" : "false") << std::endl;
                 pause_command.IsPaused() ? PauseGame() : ResumeGame();
+                continue;
+            }
+            if (command.type() == typeid(Commands::QuitCommand)) {
+                m_engine.StopExecution();
             }
         }
     }
@@ -164,15 +176,23 @@ namespace Gameplay {
         constexpr auto pos = glm::vec2((1920 - 1920 * 0.8) / 2 + 100, (1080 - 1080 * 0.8) / 2 + 100);
         m_engine.GetWorld().AddComponent(resume_button,
                                          Engine::Core::Components::UI::RectTransform(pos, glm::vec2(200, 100), 1));
-        m_engine.GetWorld().AddComponent(resume_button,
-                                         Engine::Core::Components::UI::Image{.color = {0.0, 0.7, 0.0, 1.}});
+        m_engine.GetWorld().AddComponent(resume_button, Engine::Core::Components::UI::Button{
+                                             .name = "Resume",
+                                             .default_color = {0.0, 0.7, 0.0, 1.},
+                                             .highlight_color = {0.0, 1.0, 0.0, 1.},
+                                             .click_color = {1.0, 1.0, 1.0, 1.},
+                                         });
 
         const auto quit_button = m_engine.GetWorld().CreateEntity("QuitButton");
         constexpr auto quit_pos = pos + glm::vec2(0, 200);
         m_engine.GetWorld().AddComponent(quit_button,
                                          Engine::Core::Components::UI::RectTransform(quit_pos, glm::vec2(200, 100), 1));
-        m_engine.GetWorld().AddComponent(quit_button,
-                                         Engine::Core::Components::UI::Image{.color = {0.7, 0.0, 0.0, 1.}});
+        m_engine.GetWorld().AddComponent(quit_button, Engine::Core::Components::UI::Button{
+                                             .name = "Quit",
+                                             .default_color = {0.7, 0.0, 0.0, 1.},
+                                             .highlight_color = {1.0, 0.0, 0.0, 1.},
+                                             .click_color = {1.0, 1.0, 1.0, 1.},
+                                         });
         m_engine.EnableInputMap("PauseInputMap");
     }
 

@@ -14,6 +14,8 @@ namespace Engine::Core {
     public:
         virtual ~IEngine() = default;
 
+        virtual void StopExecution() = 0;
+
         virtual Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) = 0;
 
         [[nodiscard]] virtual GameWorld &GetWorld() const = 0;

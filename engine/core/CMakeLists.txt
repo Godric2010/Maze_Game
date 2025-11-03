@@ -27,6 +27,7 @@ add_library(Core STATIC
         components/ui/RectTransform.hpp
         InputManager.cpp
         InputManager.hpp
+        components/ui/Button.hpp
 )
 
 target_include_directories(Core PUBLIC

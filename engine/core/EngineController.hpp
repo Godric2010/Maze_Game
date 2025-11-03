@@ -41,6 +41,8 @@ namespace Engine::Core {
          */
         void Shutdown() const;
 
+        void StopExecution() override;
+
         [[nodiscard]] GameWorld &GetWorld() const override;
 
         Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) override;
@@ -58,5 +60,7 @@ namespace Engine::Core {
         std::unique_ptr<GameWorld> m_game_world;
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
         std::unique_ptr<InputManager> m_input_manager;
+
+        bool m_is_running = true;
     };
 } // namespace

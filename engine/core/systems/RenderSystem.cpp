@@ -4,6 +4,7 @@
 #include "Mesh.hpp"
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
+#include "ui/Button.hpp"
 #include "ui/Image.hpp"
 #include "ui/RectTransform.hpp"
 
@@ -69,11 +70,19 @@ namespace Engine::Core::Systems {
 
         for (size_t i = 0; i < rect_transforms.size(); ++i) {
             const auto [rect_transform, entity] = rect_transforms[i];
-            const auto image_component = GameWorld()->GetComponent<Components::UI::Image>(entity);
-
             Renderer::UiDrawAsset ui_draw_asset{};
             ui_draw_asset.model = rect_transform->GetMatrix();
-            ui_draw_asset.color = image_component->color;
+
+            const auto image_component = GameWorld()->GetComponent<Components::UI::Image>(entity);
+            if (image_component != nullptr) {
+                ui_draw_asset.color = image_component->color;
+            }
+
+            const auto button_component = GameWorld()->GetComponent<Components::UI::Button>(entity);
+            if (button_component != nullptr) {
+                ui_draw_asset.color = button_component->active_color;
+            }
+
 
             ui_draw_assets[i] = ui_draw_asset;
         }

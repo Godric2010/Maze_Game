@@ -173,6 +173,9 @@ namespace Engine::Ecs {
     template<typename T>
     const TypedComponentPool<T> *ComponentManager::GetPoolConst() const {
         const auto key = std::type_index(typeid(T));
+        if (!m_type_index_to_id.contains(key)) {
+            return nullptr;
+        }
         const auto component_id = m_type_index_to_id.at(key);
         const auto it = m_pool.find(component_id);
         if (it == m_pool.end()) {

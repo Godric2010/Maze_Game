@@ -1,7 +1,12 @@
 #pragma once
 #include "ISystem.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "GameWorld.hpp"
 #include "../commands/PauseCommand.hpp"
+#include "../commands/QuitCommand.hpp"
+#include "ui/Button.hpp"
+#include "ui/RectTransform.hpp"
 #include <iostream>
 
 namespace Gameplay::Systems {
@@ -18,5 +23,6 @@ namespace Gameplay::Systems {
         void Run(float delta_time) override;
 
     private:
+        static bool IsInsideRect(const glm::vec2 &mouse_pos, const glm::vec2 &rect_pos, const glm::vec2 &rect_size);
     };
 } // namespace

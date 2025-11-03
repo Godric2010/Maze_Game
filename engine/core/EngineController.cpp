@@ -7,6 +7,7 @@
 namespace Engine::Core {
     EngineController::EngineController() {
         m_services = std::make_unique<ServiceLocator>();
+        m_is_running = true;
     };
 
     EngineController::~EngineController() = default;
@@ -41,7 +42,7 @@ namespace Engine::Core {
         const auto app_events = m_input_manager->GetAppEventSnapshot();
         //m_services->TryGetService<Environment::IInput>()->GetAppEventSnapshot();
 
-        while (!app_events->is_closed) {
+        while (!app_events->is_closed && m_is_running) {
             auto now = std::chrono::high_resolution_clock::now();
             const float delta_time = std::chrono::duration_cast<std::chrono::duration<float> >(now - last_time).count();
             last_time = now;
@@ -54,6 +55,10 @@ namespace Engine::Core {
 
     void EngineController::Shutdown() const {
         m_window->Shutdown();
+    }
+
+    void EngineController::StopExecution() {
+        m_is_running = false;
     }
 
     GameWorld &EngineController::GetWorld() const {
