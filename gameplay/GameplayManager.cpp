@@ -205,7 +205,7 @@ namespace Gameplay {
         quit_button.button_id = 2;
         quit_button.enabled = true;
         quit_button.default_color = {0.7f, 0.0f, 0.0f, 1.0f};
-        quit_button.highlight_color = {0.1f, 0.0f, 0.0f, 1.0f};
+        quit_button.highlight_color = {1.0f, 0.0f, 0.0f, 1.0f};
         quit_button.click_color = {1.0f, 1.0f, 1.0f, 1.0f};
         quit_button.disabled_color = {0.1f, 0.1f, 0.1f, 0.3f};
         m_engine.GetWorld().AddComponent(quit_button_entity, quit_button);
