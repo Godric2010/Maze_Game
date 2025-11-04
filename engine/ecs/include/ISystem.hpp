@@ -40,6 +40,7 @@ namespace Engine::Ecs {
         IServiceToEcsProvider *m_service_locator{};
         Ecs::World *m_world{};
 
+
     protected:
         [[nodiscard]] IServiceToEcsProvider *ServiceLocator() const { return m_service_locator; }
         [[nodiscard]] World* EcsWorld() const {return m_world;}

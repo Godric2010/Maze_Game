@@ -86,4 +86,15 @@ namespace Engine::Core {
     void EngineController::DisableInputMap(const std::string input_map) {
         m_input_manager->DisableInputMap(input_map);
     }
+
+    Screen EngineController::GetScreen() {
+        const auto window_context = m_window->GetWindowContext();
+        return Screen{
+            .width = static_cast<float>(window_context.width),
+            .height = static_cast<float>(window_context.height),
+            .scale_x = static_cast<float>(window_context.drawableWidth / window_context.width),
+            .scale_y = static_cast<float>(window_context.drawableHeight / window_context.height),
+            .aspect = static_cast<float>(window_context.width / window_context.height),
+        };
+    }
 } // namespace

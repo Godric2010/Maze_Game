@@ -38,10 +38,10 @@ namespace Engine::Core::Systems {
     }
 
     bool UiSystem::IsMouseOverElement(const glm::vec2 mouse_pos, const Components::UI::RectTransform *rect) {
-        if (mouse_pos.x > rect->Position().x &&
-            mouse_pos.y > rect->Position().y &&
-            mouse_pos.x < rect->Position().x + rect->Size().x &&
-            mouse_pos.y < rect->Position().y + rect->Size().y) {
+        if (mouse_pos.x > rect->Position().x - rect->Size().x * rect->Pivot().x &&
+            mouse_pos.y > rect->Position().y - rect->Size().y * rect->Pivot().y &&
+            mouse_pos.x < rect->Position().x + rect->Size().x * rect->Pivot().x &&
+            mouse_pos.y < rect->Position().y + rect->Size().y * rect->Pivot().y) {
             return true;
         }
         return false;

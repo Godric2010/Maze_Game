@@ -97,11 +97,12 @@ namespace Gameplay {
 
     void GameplayManager::CreateCamera(glm::vec3 start_pos) {
         m_camera_entity = m_engine.GetWorld().CreateEntity("Player");
-        constexpr auto camera_component = Engine::Core::Components::Camera{
-            .Width = 1920, // TODO: Use direct data from config later
-            .Height = 1080,
+        const auto screen = m_engine.GetScreen();
+        auto camera_component = Engine::Core::Components::Camera{
+            .Width = screen.width,
+            .Height = screen.height,
             .FieldOfView = 60,
-            .AspectRatio = 1920.0f / 1080.0f,
+            .AspectRatio = screen.aspect,
             .NearClip = 0.01f,
             .FarClip = 1000.0f,
 
@@ -126,9 +127,10 @@ namespace Gameplay {
     void GameplayManager::CreateUi() const {
         const auto key_indicator = m_engine.GetWorld().CreateEntity("KeyIndicator");
 
+        const auto screen = m_engine.GetScreen();
         constexpr glm::vec2 size = {100, 100};
-        constexpr glm::vec2 position = {1920 - size.x - 50, 1080 - size.y - 50};
-        const auto transform = Engine::Core::Components::UI::RectTransform(position, size);
+        const glm::vec2 position = {screen.width - size.x - 50, screen.height - size.y - 50};
+        const auto transform = Engine::Core::Components::UI::RectTransform(position, size, 0);
         m_engine.GetWorld().AddComponent(key_indicator, transform);
 
         constexpr auto image = Engine::Core::Components::UI::Image{.color = {1, 0, 0, 0.5}};
@@ -176,17 +178,24 @@ namespace Gameplay {
 
     void GameplayManager::PauseGame() const {
         const auto pause_entity = m_engine.GetWorld().CreateEntity("PauseBackground");
-        m_engine.GetWorld().AddComponent(pause_entity,
-                                         Engine::Core::Components::UI::RectTransform(
-                                             glm::vec2((1920 - 1920 * 0.8) / 2, (1080 - 1080 * 0.8) / 2),
-                                             glm::vec2(1920 * 0.8, 1080 * 0.8), 0));
-        m_engine.GetWorld().AddComponent(pause_entity,
-                                         Engine::Core::Components::UI::Image{.color = {0.3, 0.3, 0.3, 0.8}});
 
+        const auto screen = m_engine.GetScreen();
+        const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
+        const auto bg_size = glm::vec2(screen.width * 0.9f, screen.height * 0.9f);
+        constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
+        const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform(
+            bg_position, bg_size, bg_pivot, 0.0f, 1);
+        m_engine.GetWorld().AddComponent(pause_entity, bg_rect_transform);
+
+        constexpr auto bg_image = Engine::Core::Components::UI::Image{.color = {0.3, 0.3, 0.3, 0.9}};
+        m_engine.GetWorld().AddComponent(pause_entity, bg_image);
+
+        constexpr auto button_size = glm::vec2(200, 100);
         const auto resume_button_entity = m_engine.GetWorld().CreateEntity("ResumeButton");
-        constexpr auto pos = glm::vec2((1920 - 1920 * 0.8) / 2 + 100, (1080 - 1080 * 0.8) / 2 + 100);
-        m_engine.GetWorld().AddComponent(resume_button_entity,
-                                         Engine::Core::Components::UI::RectTransform(pos, glm::vec2(200, 100), 1));
+        const auto pos = glm::vec2(screen.width / 2, screen.height / 2 - 100);
+        constexpr auto pivot = glm::vec2(0.5f, 0.5f);
+        auto resume_rect = Engine::Core::Components::UI::RectTransform(pos, button_size, pivot, 0.0f, 1);
+        m_engine.GetWorld().AddComponent(resume_button_entity, resume_rect);
 
         auto resume_button = Engine::Core::Components::UI::Button();
         resume_button.button_id = 1;
@@ -198,9 +207,10 @@ namespace Gameplay {
         m_engine.GetWorld().AddComponent(resume_button_entity, resume_button);
 
         const auto quit_button_entity = m_engine.GetWorld().CreateEntity("QuitButton");
-        constexpr auto quit_pos = pos + glm::vec2(0, 200);
+        const auto quit_pos = pos + glm::vec2(0, 200);
         m_engine.GetWorld().AddComponent(quit_button_entity,
-                                         Engine::Core::Components::UI::RectTransform(quit_pos, glm::vec2(200, 100), 1));
+                                         Engine::Core::Components::UI::RectTransform(
+                                             quit_pos, button_size, pivot, 0.0f, 1));
         auto quit_button = Engine::Core::Components::UI::Button();
         quit_button.button_id = 2;
         quit_button.enabled = true;

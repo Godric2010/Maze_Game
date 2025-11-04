@@ -45,11 +45,11 @@ namespace Engine::Core::Systems {
 
     glm::mat4 TransformSystem::CalculateUiModelMatrix(const Components::UI::RectTransform *rect_transform) {
         glm::mat4 scale_mat(1.0f);
-        scale_mat[0][0] = rect_transform->m_size.x;
-        scale_mat[1][1] = rect_transform->m_size.y;
+        scale_mat[0][0] = rect_transform->Size().x;
+        scale_mat[1][1] = rect_transform->Size().y;
 
-        const auto pivot_offset = glm::vec2(rect_transform->m_pivot.x * rect_transform->m_size.x,
-                                            rect_transform->m_pivot.y * rect_transform->m_size.y);
+        const auto pivot_offset = glm::vec2(rect_transform->Pivot().x * rect_transform->Size().x,
+                                            rect_transform->Pivot().y * rect_transform->Size().y);
 
         glm::mat4 pivot_mat(1.0f);
         pivot_mat[3][0] = -pivot_offset.x;
@@ -65,10 +65,17 @@ namespace Engine::Core::Systems {
         rotation_mat[1][0] = -sin_rot;
         rotation_mat[1][1] = cos_rot;
 
-        constexpr auto screen_mat = glm::mat4(1.0f);
-        scale_mat[3][0] = rect_transform->m_position.x;
-        scale_mat[3][1] = rect_transform->m_position.y;
-        scale_mat[3][2] = rect_transform->m_layer_z;
+
+        const float max_layer = 100.0f;
+        const auto layer = rect_transform->LayerZ();
+        float final_layer = glm::clamp(layer / max_layer, 0.0f, 1.0f);
+        final_layer = glm::mix(0.0005f, 0.995f, final_layer);
+
+
+        auto screen_mat = glm::mat4(1.0f);
+        scale_mat[3][0] = rect_transform->Position().x;
+        scale_mat[3][1] = rect_transform->Position().y;
+        scale_mat[3][2] = final_layer;
 
         return screen_mat * rotation_mat * pivot_mat * scale_mat;
     }

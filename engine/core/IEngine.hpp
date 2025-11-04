@@ -10,6 +10,14 @@
 #include "../renderer/Datatypes.hpp"
 
 namespace Engine::Core {
+    struct Screen {
+        float width;
+        float height;
+        float scale_x;
+        float scale_y;
+        float aspect;
+    };
+
     class IEngine {
     public:
         virtual ~IEngine() = default;
@@ -27,5 +35,7 @@ namespace Engine::Core {
         virtual void EnableInputMap(std::string input_map) = 0;
 
         virtual void DisableInputMap(std::string input_map) = 0;
+
+        virtual Screen GetScreen() = 0;
     };
 }

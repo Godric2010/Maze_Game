@@ -72,6 +72,7 @@ namespace Engine::Core::Systems {
             const auto [rect_transform, entity] = rect_transforms[i];
             Renderer::UiDrawAsset ui_draw_asset{};
             ui_draw_asset.model = rect_transform->GetMatrix();
+            ui_draw_asset.layer = rect_transform->LayerZ();
 
             const auto image_component = GameWorld()->GetComponent<Components::UI::Image>(entity);
             if (image_component != nullptr) {
@@ -86,6 +87,10 @@ namespace Engine::Core::Systems {
 
             ui_draw_assets[i] = ui_draw_asset;
         }
+
+        std::ranges::sort(ui_draw_assets,[](auto& a, auto& b) {
+            return a.layer < b.layer;
+        });
 
         return ui_draw_assets;
     }

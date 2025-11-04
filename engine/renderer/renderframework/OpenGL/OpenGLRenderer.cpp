@@ -105,13 +105,12 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         const auto &mesh = m_mesh_manager->GetMesh(0);
         glBindVertexArray(mesh.VAO);
-        const glm::mat4 ortho = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.f, 1.f);
-        for (const auto &ui_asset: draw_assets.ui_draw_assets) {
-            glm::mat4 model = ui_asset.model;
+        const glm::mat4 ortho = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.0f, 0.0f);
+        for (const auto &[model, _, color]: draw_assets.ui_draw_assets) {
             glm::mat4 proj = ortho * model;
 
-            glUniformMatrix4fv(u_proj, 1, GL_FALSE, glm::value_ptr(proj));
-            glUniform4fv(u_ui_color, 1, glm::value_ptr(ui_asset.color));
+            glUniformMatrix4fv(u_proj, 1, GL_FALSE, value_ptr(proj));
+            glUniform4fv(u_ui_color, 1, value_ptr(color));
 
             glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
         }

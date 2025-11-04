@@ -4,6 +4,7 @@
 #include "../../renderer/RenderController.hpp"
 #include "components/Camera.hpp"
 #include "components/Transform.hpp"
+#include <ranges>
 
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])
 

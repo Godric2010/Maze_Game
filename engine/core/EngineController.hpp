@@ -55,6 +55,8 @@ namespace Engine::Core {
 
         void DisableInputMap(std::string input_map) override;
 
+        Screen GetScreen() override;
+
     private:
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;
