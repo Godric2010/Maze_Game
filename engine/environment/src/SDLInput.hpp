@@ -1,11 +1,11 @@
 #pragma once
 #include <SDL_events.h>
 
-#include "Input.hpp"
+#include "EnvInput.hpp"
 #include "SDLWindow.hpp"
 
 namespace Engine::Environment {
-    class SDLInput final : public IInput{
+    class SDLInput final : public IEnvInput{
     public:
         explicit SDLInput(SDLWindow& window);
 

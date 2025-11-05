@@ -31,6 +31,11 @@ add_library(Core STATIC
         systems/UiSystem.cpp
         systems/UiSystem.hpp
         commands/ui/ButtonClickedCommand.hpp
+        IScene.hpp
+        IInput.hpp
+        SceneContext.hpp
+        SceneManager.hpp
+        SceneManager.cpp
 )
 
 target_include_directories(Core PUBLIC

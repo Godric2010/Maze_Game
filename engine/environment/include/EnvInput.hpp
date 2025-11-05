@@ -103,14 +103,14 @@ namespace Engine::Environment {
     };
 
     /**
-     * @interface IInput
+     * @interface IEnvInput
      *
      * An interface for handling input states and snapshots in an application. It provides
      * functionality to prepare input for a new frame and retrieve the current state of inputs.
      */
-    class IInput {
+    class IEnvInput {
     public:
-        virtual ~IInput() = default;
+        virtual ~IEnvInput() = default;
 
         virtual void PrepareFrame() = 0;
 

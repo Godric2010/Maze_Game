@@ -1,7 +1,7 @@
 #include "InputManager.hpp"
 
 namespace Engine::Core {
-    InputManager::InputManager(std::unique_ptr<Environment::IInput> input_env) {
+    InputManager::InputManager(std::unique_ptr<Environment::IEnvInput> input_env) {
         m_input_env = std::move(input_env);
 
         const InputMap ui_input_map{

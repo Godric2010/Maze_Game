@@ -33,14 +33,19 @@ namespace Engine::Core {
         m_game_world = std::make_unique<GameWorld>(m_world.get(), m_input_manager.get());
         m_system_manager = std::make_unique<Ecs::SystemManager>();
         m_system_manager->RegisterSystems(systems, m_world.get(), m_services.get(), m_game_world.get());
+
+        SceneContext scene_context{
+            .world = *m_world,
+            .game_world = *m_game_world,
+            .system_manager = *m_system_manager,
+            .input = *m_input_manager,
+        };
+        m_scene_manager = std::make_unique<SceneManager>(scene_context);
     }
 
     void EngineController::Update() const {
         auto last_time = std::chrono::high_resolution_clock::now();
-
-
         const auto app_events = m_input_manager->GetAppEventSnapshot();
-        //m_services->TryGetService<Environment::IInput>()->GetAppEventSnapshot();
 
         while (!app_events->is_closed && m_is_running) {
             auto now = std::chrono::high_resolution_clock::now();
@@ -48,6 +53,7 @@ namespace Engine::Core {
             last_time = now;
 
             m_input_manager->UpdateInput();
+            // m_scene_manager->Update(delta_time);
             m_system_manager->RunSystems(delta_time);
             m_window->SwapBuffers();
         }

@@ -3,16 +3,15 @@
 #include <functional>
 #include <vector>
 #include <any>
-#include "Camera.hpp"
 #include "GameWorld.hpp"
 #include "IEngine.hpp"
 #include "InputManager.hpp"
+#include "SceneManager.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
 #include "../ecs/include/World.hpp"
 #include "../renderer/RenderController.hpp"
 #include "../environment/include/Window.hpp"
-#include "../environment/include/Input.hpp"
 
 namespace Engine::Core {
     /**
@@ -64,6 +63,8 @@ namespace Engine::Core {
         std::unique_ptr<GameWorld> m_game_world;
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
         std::unique_ptr<InputManager> m_input_manager;
+
+        std::unique_ptr<SceneManager> m_scene_manager;
 
         bool m_is_running = true;
     };

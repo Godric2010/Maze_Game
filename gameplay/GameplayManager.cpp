@@ -19,11 +19,7 @@ namespace Gameplay {
     GameplayManager::GameplayManager(Engine::Core::IEngine &engine) : m_engine(engine) {
         m_camera_entity = Engine::Ecs::INVALID_ENTITY_ID;
         m_mesh_handler = std::make_unique<MeshHandler>(engine);
-        m_maze_builder = std::make_unique<Mazegenerator::MazeBuilder>(&engine.GetWorld(),
-                                                                      m_mesh_handler->GetFloorMesh(),
-                                                                      m_mesh_handler->GetWallMesh(),
-                                                                      m_mesh_handler->GetKeyMesh(),
-                                                                      true);
+
         m_engine.RegisterForSystemCommands([this](const std::vector<std::any> &commands) {
             this->EvaluateCommandsFromSystems(commands);
         });
@@ -86,6 +82,11 @@ namespace Gameplay {
     GameplayManager::~GameplayManager() = default;
 
     void GameplayManager::Initialize() {
+        m_maze_builder = std::make_unique<Mazegenerator::MazeBuilder>(&m_engine.GetWorld(),
+                                                                      m_mesh_handler->GetFloorMesh(),
+                                                                      m_mesh_handler->GetWallMesh(),
+                                                                      m_mesh_handler->GetKeyMesh(),
+                                                                      true);
         m_maze_builder->BuildMaze(5, 5, 1337);
         CreateCamera(m_maze_builder->GetMazeStartPosition());
         CreateUi();

@@ -7,7 +7,7 @@ add_library(Window STATIC
         include/Window.hpp
         src/SDLWindow.cpp
         include/EnvironmentBuilder.hpp
-        include/Input.hpp
+        include/EnvInput.hpp
         src/SDLInput.cpp
         src/SDLInput.hpp
 )

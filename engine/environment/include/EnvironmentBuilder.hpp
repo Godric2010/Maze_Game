@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 
-#include "Input.hpp"
+#include "EnvInput.hpp"
 #include "Window.hpp"
 #include "../src/SDLInput.hpp"
 #include "../src/SDLWindow.hpp"
@@ -15,7 +15,7 @@ namespace Engine::Environment {
         return std::make_unique<SDLWindow>();
     }
 
-    static std::unique_ptr<IInput> CreateInput(IWindow &window) {
+    static std::unique_ptr<IEnvInput> CreateInput(IWindow &window) {
         return std::make_unique<SDLInput>(reinterpret_cast<SDLWindow &>(window));
     }
 } // namespace

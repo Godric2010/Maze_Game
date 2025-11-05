@@ -3,7 +3,9 @@
 #include <memory>
 #include <set>
 #include <stdexcept>
-#include "Input.hpp"
+
+#include "IInput.hpp"
+#include "EnvInput.hpp"
 
 namespace Engine::Core {
     struct KeyBinding {
@@ -52,11 +54,11 @@ namespace Engine::Core {
     };
 
 
-    class InputManager {
+    class InputManager : public IInput{
     public:
-        explicit InputManager(std::unique_ptr<Environment::IInput> input_env);
+        explicit InputManager(std::unique_ptr<Environment::IEnvInput> input_env);
 
-        ~InputManager();
+        ~InputManager() override;
 
         void UpdateInput();
 
@@ -66,16 +68,16 @@ namespace Engine::Core {
 
         void AddInputMapping(const InputMap &input_map);
 
-        void EnableInputMap(const std::string &input_map_name);
+        void EnableInputMap(const std::string &input_map_name) override;
 
-        void DisableInputMap(const std::string &input_map_name);
+        void DisableInputMap(const std::string &input_map_name) override;
 
         [[nodiscard]] InputBuffer GetInput() const;
 
     private:
         void PopulateInputActions();
 
-        std::unique_ptr<Environment::IInput> m_input_env;
+        std::unique_ptr<Environment::IEnvInput> m_input_env;
         std::vector<InputMap> m_input_maps;
         std::set<int> m_active_map_indices;
 
