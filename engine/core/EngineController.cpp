@@ -35,6 +35,7 @@ namespace Engine::Core {
         m_system_manager->RegisterSystems(systems, m_world.get(), m_services.get(), m_game_world.get());
 
         m_context.emplace(SceneContext{
+            .app = *this,
             .world = *m_world,
             .game_world = *m_game_world,
             .system_manager = *m_system_manager,
@@ -64,12 +65,8 @@ namespace Engine::Core {
         m_window->Shutdown();
     }
 
-    void EngineController::StopExecution() {
+    void EngineController::Quit() {
         m_is_running = false;
-    }
-
-    GameWorld &EngineController::GetWorld() const {
-        return *m_game_world;
     }
 
     Renderer::MeshHandle EngineController::RegisterMesh(const Renderer::MeshAsset &mesh_asset) {

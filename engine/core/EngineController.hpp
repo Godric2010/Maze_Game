@@ -5,6 +5,7 @@
 #include <vector>
 #include <any>
 #include "GameWorld.hpp"
+#include "IApplication.hpp"
 #include "IEngine.hpp"
 #include "InputManager.hpp"
 #include "SceneManager.hpp"
@@ -20,7 +21,7 @@ namespace Engine::Core {
      * The central engine controller that brings all elements of the engine together.
      * All systems and their events are managed through this instance.
      */
-    class EngineController final : public IEngine {
+    class EngineController final : public IEngine, public IApplication {
     public:
         EngineController();
 
@@ -41,9 +42,7 @@ namespace Engine::Core {
          */
         void Shutdown() const;
 
-        void StopExecution() override;
-
-        [[nodiscard]] GameWorld &GetWorld() const override;
+        void Quit() override;
 
         Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) override;
 

@@ -23,13 +23,9 @@ namespace Engine::Core {
     public:
         virtual ~IEngine() = default;
 
-        virtual void StopExecution() = 0;
-
         virtual void LoadScene(std::unique_ptr<IScene> scene) = 0;
 
         virtual Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) = 0;
-
-        [[nodiscard]] virtual GameWorld &GetWorld() const = 0;
 
         virtual void RegisterForSystemCommands(std::function<void(std::vector<std::any>)> command_callback) = 0;
 

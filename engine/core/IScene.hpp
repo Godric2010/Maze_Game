@@ -43,6 +43,7 @@ namespace Engine::Core {
     protected:
         [[nodiscard]] GameWorld &World() const { return m_context->game_world; }
         [[nodiscard]] IInput &Input() const { return m_context->input; }
+        [[nodiscard]] IApplication &Application() const { return m_context->app; }
 
         [[nodiscard]] ScreenInfo Screen() const {
             return ScreenInfo{

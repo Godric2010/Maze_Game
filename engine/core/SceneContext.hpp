@@ -4,12 +4,14 @@
 
 #pragma once
 #include "GameWorld.hpp"
+#include "IApplication.hpp"
 #include "SystemManager.hpp"
 #include "World.hpp"
 #include "InputManager.hpp"
 
 namespace Engine::Core {
     struct SceneContext {
+        IApplication &app;
         Ecs::World &world;
         GameWorld &game_world;
         Ecs::SystemManager &system_manager;

@@ -31,7 +31,7 @@ namespace Gameplay {
                 continue;
             }
             if (command.type() == typeid(Commands::QuitCommand)) {
-                // m_engine.StopExecution();
+                Application().Quit();
                 continue;
             }
             if (command.type() == typeid(Engine::Core::Commands::UI::ButtonClickedCommand)) {
@@ -40,7 +40,7 @@ namespace Gameplay {
                 if (button_id == 1) {
                     Resume();
                 } else if (button_id == 2) {
-                    // m_engine.StopExecution();
+                    Application().Quit();
                 }
             }
         }
