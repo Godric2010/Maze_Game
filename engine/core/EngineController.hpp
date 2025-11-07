@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <functional>
+#include <optional>
 #include <vector>
 #include <any>
 #include "GameWorld.hpp"
@@ -50,11 +51,7 @@ namespace Engine::Core {
 
         void RegisterInputMap(InputMap map) override;
 
-        void EnableInputMap(std::string input_map) override;
-
-        void DisableInputMap(std::string input_map) override;
-
-        Screen GetScreen() override;
+        void LoadScene(std::unique_ptr<IScene> scene) override;
 
     private:
         std::unique_ptr<ServiceLocator> m_services;
@@ -64,6 +61,7 @@ namespace Engine::Core {
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
         std::unique_ptr<InputManager> m_input_manager;
 
+        std::optional<SceneContext> m_context;
         std::unique_ptr<SceneManager> m_scene_manager;
 
         bool m_is_running = true;

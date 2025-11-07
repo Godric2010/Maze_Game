@@ -14,5 +14,7 @@ namespace Engine::Core {
         GameWorld &game_world;
         Ecs::SystemManager &system_manager;
         InputManager &input;
+        float screen_width;
+        float screen_height;
     };
 }

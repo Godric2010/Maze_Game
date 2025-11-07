@@ -34,13 +34,15 @@ namespace Engine::Core {
         m_system_manager = std::make_unique<Ecs::SystemManager>();
         m_system_manager->RegisterSystems(systems, m_world.get(), m_services.get(), m_game_world.get());
 
-        SceneContext scene_context{
+        m_context.emplace(SceneContext{
             .world = *m_world,
             .game_world = *m_game_world,
             .system_manager = *m_system_manager,
             .input = *m_input_manager,
-        };
-        m_scene_manager = std::make_unique<SceneManager>(scene_context);
+            .screen_width = static_cast<float>(m_window->GetWindowContext().width),
+            .screen_height = static_cast<float>(m_window->GetWindowContext().height),
+        });
+        m_scene_manager = std::make_unique<SceneManager>(*m_context);
     }
 
     void EngineController::Update() const {
@@ -53,8 +55,7 @@ namespace Engine::Core {
             last_time = now;
 
             m_input_manager->UpdateInput();
-            // m_scene_manager->Update(delta_time);
-            m_system_manager->RunSystems(delta_time);
+            m_scene_manager->Update(delta_time);
             m_window->SwapBuffers();
         }
     }
@@ -85,22 +86,7 @@ namespace Engine::Core {
         m_input_manager->AddInputMapping(map);
     }
 
-    void EngineController::EnableInputMap(const std::string input_map) {
-        m_input_manager->EnableInputMap(input_map);
-    }
-
-    void EngineController::DisableInputMap(const std::string input_map) {
-        m_input_manager->DisableInputMap(input_map);
-    }
-
-    Screen EngineController::GetScreen() {
-        const auto window_context = m_window->GetWindowContext();
-        return Screen{
-            .width = static_cast<float>(window_context.width),
-            .height = static_cast<float>(window_context.height),
-            .scale_x = static_cast<float>(window_context.drawableWidth / window_context.width),
-            .scale_y = static_cast<float>(window_context.drawableHeight / window_context.height),
-            .aspect = static_cast<float>(window_context.width / window_context.height),
-        };
+    void EngineController::LoadScene(std::unique_ptr<IScene> scene) {
+        m_scene_manager->LoadScene(std::move(scene));
     }
 } // namespace
