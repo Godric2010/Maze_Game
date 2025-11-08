@@ -14,13 +14,15 @@
 namespace Engine::Ecs {
     class World {
     public:
-        explicit World();
+         World();
 
         ~World();
 
         [[nodiscard]] EntityId CreateEntity(const std::string &name) const;
 
         void DestroyEntity(EntityId entity) const;
+
+        void ClearEntities() const;
 
         [[nodiscard]] EntityId GetEntityByName(const std::string &name) const;
 

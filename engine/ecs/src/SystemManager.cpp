@@ -10,7 +10,8 @@ namespace Engine::Core {
 }
 
 namespace Engine::Ecs {
-    SystemManager::SystemManager() {
+    SystemManager::SystemManager(const std::vector<SystemMeta> &system_metas,
+                                 IServiceToEcsProvider *service_provider) {
         m_phase_order = std::vector{
             Phase::Input,
             Phase::Physics,
@@ -21,28 +22,35 @@ namespace Engine::Ecs {
             Phase::Commands,
             Phase::Render
         };
+
+        m_system_metas = system_metas;
+        m_service_provider = service_provider;
     }
 
-    SystemManager::~SystemManager() = default;
+    SystemManager::~SystemManager() {
+        m_service_provider = nullptr;
+        m_phase_order.clear();
+        m_system_metas.clear();
+    }
 
-    void SystemManager::RegisterSystems(const std::vector<SystemMeta> &system_metas,
-                                        World *world,
-                                        IServiceToEcsProvider *service_provider, Core::GameWorld *game_world) {
+    void SystemManager::RegisterSystems(World *world, Core::GameWorld *game_world) {
+        m_phase_map.clear();
+
         auto command_system = std::make_unique<CommandSystem>([this](const std::vector<std::any> &commands) {
             this->RaiseCommandsEvent(commands);
         });
         command_system->m_world = world;
-        command_system->m_service_locator = service_provider;
+        command_system->m_service_locator = m_service_provider;
         command_system->Initialize();
         m_phase_map[Phase::Commands].push_back(std::move(command_system));
 
-        for (const auto &sys_meta: system_metas) {
+        for (const auto &sys_meta: m_system_metas) {
             auto system = sys_meta.factory();
             system->m_game_world = game_world;
 
             if (std::ranges::find(sys_meta.tags, "ENGINE") != sys_meta.tags.end()) {
                 if (const auto engine_sys = dynamic_cast<IEngineSystem *>(system.get())) {
-                    engine_sys->m_service_locator = service_provider;
+                    engine_sys->m_service_locator = m_service_provider;
                     engine_sys->m_world = world;
                 }
             }

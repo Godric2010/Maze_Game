@@ -31,8 +31,8 @@ namespace Gameplay {
                 pause_command.IsPaused() ? Pause() : Resume();
                 continue;
             }
-            if (command.type() == typeid(Commands::QuitCommand)) {
-                Application().Quit();
+            if (command.type() == typeid(Commands::LevelFinished)) {
+                SceneManager().LoadScene("MainMenu", Engine::Core::SceneArgs{.payload = m_mesh_handler});
                 continue;
             }
             if (command.type() == typeid(Engine::Core::Commands::UI::ButtonClickedCommand)) {
@@ -41,6 +41,8 @@ namespace Gameplay {
                 if (button_id == 1) {
                     Resume();
                 } else if (button_id == 2) {
+                    SceneManager().LoadScene("MainMenu", Engine::Core::SceneArgs{.payload = m_mesh_handler});
+                } else if (button_id == 3) {
                     Application().Quit();
                 }
             }
@@ -77,6 +79,8 @@ namespace Gameplay {
 
         const auto resume_button = World().GetEntityByName("ResumeButton");
         World().DestroyEntity(resume_button);
+        const auto main_menu_button = World().GetEntityByName("MainMenuButton");
+        World().DestroyEntity(main_menu_button);
         const auto quit_button = World().GetEntityByName("QuitButton");
         World().DestroyEntity(quit_button);
 
@@ -156,13 +160,28 @@ namespace Gameplay {
         resume_button.disabled_color = {0.1f, 0.1f, 0.1f, 0.3f};
         World().AddComponent(resume_button_entity, resume_button);
 
+        const auto main_menu_button_entity = World().CreateEntity("MainMenuButton");
+        const auto main_menu_button_pos = pos + glm::vec2(0, 200);
+        auto main_menu_button_rect = Engine::Core::Components::UI::RectTransform(
+            main_menu_button_pos, button_size, pivot, 0.0f, 1);
+        World().AddComponent(main_menu_button_entity, main_menu_button_rect);
+
+        auto main_menu_button = Engine::Core::Components::UI::Button();
+        main_menu_button.button_id = 2;
+        main_menu_button.enabled = true;
+        main_menu_button.default_color = {0.0f, 0.0f, 0.7f, 1.0f};
+        main_menu_button.highlight_color = {0.0f, 0.0f, 1.0f, 1.0f};
+        main_menu_button.click_color = {1.0f, 1.0f, 1.0f, 1.0f};
+        main_menu_button.disabled_color = {0.1f, 0.1f, 0.1f, 0.3f};
+        World().AddComponent(main_menu_button_entity, main_menu_button);
+
         const auto quit_button_entity = World().CreateEntity("QuitButton");
-        const auto quit_pos = pos + glm::vec2(0, 200);
+        const auto quit_pos = pos + glm::vec2(0, 400);
         World().AddComponent(quit_button_entity,
                              Engine::Core::Components::UI::RectTransform(
                                  quit_pos, button_size, pivot, 0.0f, 1));
         auto quit_button = Engine::Core::Components::UI::Button();
-        quit_button.button_id = 2;
+        quit_button.button_id = 3;
         quit_button.enabled = true;
         quit_button.default_color = {0.7f, 0.0f, 0.0f, 1.0f};
         quit_button.highlight_color = {1.0f, 0.0f, 0.0f, 1.0f};

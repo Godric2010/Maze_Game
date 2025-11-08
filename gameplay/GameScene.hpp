@@ -9,7 +9,7 @@
 #include "Collider.hpp"
 #include "components/Inventory.hpp"
 #include "commands/PauseCommand.hpp"
-#include "commands/QuitCommand.hpp"
+#include "commands/LevelFinished.hpp"
 #include "commands/ui/ButtonClickedCommand.hpp"
 
 namespace Gameplay {

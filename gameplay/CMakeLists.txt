@@ -24,7 +24,7 @@ add_library(Gameplay STATIC
         commands/PauseCommand.hpp
         systems/PauseSystem.cpp
         systems/PauseSystem.hpp
-        commands/QuitCommand.hpp
+        commands/LevelFinished.hpp
         GameScene.cpp
         GameScene.hpp
         MainMenuScene.cpp

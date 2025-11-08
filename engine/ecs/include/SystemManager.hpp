@@ -34,23 +34,27 @@ namespace Engine::Ecs {
 
     class SystemManager {
     public:
-        SystemManager();
+        SystemManager(const std::vector<SystemMeta> &system_metas, IServiceToEcsProvider *service_provider);
 
         ~SystemManager();
 
-        void RegisterSystems(const std::vector<SystemMeta> &system_metas, World *world,
-                             IServiceToEcsProvider *service_provider, Core::GameWorld *game_world);
+        void RegisterSystems(World *world,
+                             Core::GameWorld *game_world);
 
         void RunSystems(float delta_time);
 
-        void RegisterForSystemCommands(std::string subscriber_name, std::function<void(std::vector<std::any>)> command_callback);
+        void RegisterForSystemCommands(std::string subscriber_name,
+                                       std::function<void(std::vector<std::any>)> command_callback);
 
         void DeregisterForSystemCommands(const std::string &subscriber_name);
 
     private:
+        std::vector<SystemMeta> m_system_metas;
+        IServiceToEcsProvider *m_service_provider;
+
         std::vector<Phase> m_phase_order;
         std::unordered_map<Phase, std::vector<std::unique_ptr<ISystem> > > m_phase_map;
-        std::unordered_map<std::string, std::function<void(std::vector<std::any>)>> m_command_callback_subscriber;
+        std::unordered_map<std::string, std::function<void(std::vector<std::any>)> > m_command_callback_subscriber;
 
         void RunPhase(Phase phase, float delta_time);
 

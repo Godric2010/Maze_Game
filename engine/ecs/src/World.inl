@@ -31,6 +31,13 @@ namespace Engine::Ecs {
         m_ecs_event_buffer->EnqueueEvent(cmd);
     }
 
+    inline void World::ClearEntities() const {
+        const auto entities = m_impl->entity_manager->GetAllActiveEntities();
+        for (const auto &entity: entities) {
+            DestroyEntity(entity);
+        }
+    }
+
     inline EntityId World::GetEntityByName(const std::string &name) const {
         return m_impl->entity_manager->GetEntityByName(name);
     }

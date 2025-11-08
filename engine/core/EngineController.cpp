@@ -29,14 +29,10 @@ namespace Engine::Core {
         auto render_controller = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
         m_services->RegisterService(std::move(render_controller));
 
-        m_world = std::make_unique<Ecs::World>();
-        m_game_world = std::make_unique<GameWorld>(m_world.get(), m_input_manager.get());
-        m_system_manager = std::make_unique<Ecs::SystemManager>();
-        m_system_manager->RegisterSystems(systems, m_world.get(), m_services.get(), m_game_world.get());
-
+        m_system_manager = std::make_unique<Ecs::SystemManager>(systems, m_services.get());
 
         const auto window_context = m_window->GetWindowContext();
-        m_scene_manager = std::make_unique<SceneManager>(*this, *m_world, *m_game_world, *m_system_manager,
+        m_scene_manager = std::make_unique<SceneManager>(*this, *m_system_manager,
                                                          *m_input_manager,
                                                          static_cast<float>(window_context.width),
                                                          static_cast<float>(window_context.height));

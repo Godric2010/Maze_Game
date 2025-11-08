@@ -1,7 +1,6 @@
 #include "MainMenuScene.hpp"
 
 
-
 namespace Gameplay {
     MainMenuScene::MainMenuScene(MeshHandler *mesh_handler) {
         m_mesh_handler = mesh_handler;
@@ -12,6 +11,7 @@ namespace Gameplay {
     }
 
     void MainMenuScene::OnStart() {
+        std::cout << "MainMenuScene::OnStart" << std::endl;
         SetupCamera();
         CreateMainMenuUiElements();
         Input().EnableInputMap("UIInputMap");
@@ -34,9 +34,7 @@ namespace Gameplay {
     }
 
     void MainMenuScene::OnExit() {
-        for (auto entity: m_scene_entities) {
-            World().DestroyEntity(entity);
-        }
+        std::cout << "MainMenuScene::OnExit" << std::endl;
         Input().DisableInputMap("UIInputMap");
         Input().SetMouseVisibility(false);
     }

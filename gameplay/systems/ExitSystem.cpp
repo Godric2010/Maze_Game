@@ -32,8 +32,8 @@ namespace Gameplay::Systems {
 
         if (inventory->key_collected) {
             std::cout << "Exit successful! You win!!!!" << std::endl;
-            const auto quit_command = Commands::QuitCommand();
-            GameWorld()->PushCommand(quit_command);
+            const auto level_finished = Commands::LevelFinished();
+            GameWorld()->PushCommand(level_finished);
         } else {
             std::cout << "Exit failed! You need the key to exit!" << std::endl;
         }

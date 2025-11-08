@@ -5,11 +5,11 @@
 #pragma once
 
 namespace Gameplay::Commands {
-    class QuitCommand {
+    class LevelFinished {
     public:
-        QuitCommand() = default;
+        LevelFinished() = default;
 
-        ~QuitCommand() = default;
+        ~LevelFinished() = default;
 
     private:
     };

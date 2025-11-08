@@ -3,6 +3,9 @@
 //
 
 #pragma once
+#include <iostream>
+#include <ostream>
+
 #include "GameWorld.hpp"
 #include "SceneContext.hpp"
 #include "InputManager.hpp"
@@ -25,6 +28,7 @@ namespace Engine::Core {
 
         void Initialize(const SceneContext &scene_context) {
             assert(!m_initialized && "Initialize of scene should be called only once!");
+            std::cout << "Initializing scene" << m_scene_name << "..." << std::endl;
             m_context = &scene_context;
             m_initialized = true;
             m_context->system_manager.RegisterForSystemCommands(
@@ -45,7 +49,9 @@ namespace Engine::Core {
         virtual void OnExit() = 0;
 
         void UnloadScene() {
+            std::cout << "Unloading scene " << m_scene_name << "..." << std::endl;
             m_context->system_manager.DeregisterForSystemCommands(m_scene_name);
+            m_context->world.ClearEntities();
             m_initialized = false;
         }
 

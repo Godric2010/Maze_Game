@@ -49,7 +49,6 @@ namespace Engine::Core {
                 return;
             }
         }
-        throw std::runtime_error("Input map name '" + input_map_name + "' not found.");
     }
 
     void InputManager::DisableInputMap(const std::string &input_map_name) {

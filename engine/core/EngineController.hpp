@@ -56,8 +56,6 @@ namespace Engine::Core {
     private:
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;
-        std::unique_ptr<Ecs::World> m_world;
-        std::unique_ptr<GameWorld> m_game_world;
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
         std::unique_ptr<InputManager> m_input_manager;
 

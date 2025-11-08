@@ -116,7 +116,7 @@ TEST_CASE_METHOD(SystemManagerFixture,
 
     // Messing up the order on purpose here
     std::vector<SystemMeta> systems{system_d, system_e, system_c, system_a, system_b};
-    system_manager.RegisterSystems(systems, world, nullptr, nullptr);
+    system_manager.RegisterSystems(world, nullptr);
 
     system_manager.RunSystems(0.0f);
 

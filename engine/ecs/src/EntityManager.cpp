@@ -1,5 +1,7 @@
 #include "EntityManager.hpp"
 
+#include <ranges>
+
 namespace Engine::Ecs {
     EntityManager::EntityManager() {
         // Never use index 0 since it is the indicator for a non-existing entity

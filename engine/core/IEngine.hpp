@@ -9,14 +9,6 @@
 #include "SceneArgs.hpp"
 
 namespace Engine::Core {
-    struct Screen_Old {
-        float width;
-        float height;
-        float scale_x;
-        float scale_y;
-        float aspect;
-    };
-
     class IEngine {
     public:
         virtual ~IEngine() = default;

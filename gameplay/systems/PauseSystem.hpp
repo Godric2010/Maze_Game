@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "GameWorld.hpp"
 #include "../commands/PauseCommand.hpp"
-#include "../commands/QuitCommand.hpp"
+#include "../commands/LevelFinished.hpp"
 #include "ui/Button.hpp"
 #include "ui/RectTransform.hpp"
 #include <iostream>

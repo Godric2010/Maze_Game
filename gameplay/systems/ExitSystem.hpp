@@ -1,6 +1,6 @@
 #pragma once
 #include "ISystem.hpp"
-#include "../commands/QuitCommand.hpp"
+#include "../commands/LevelFinished.hpp"
 
 namespace Gameplay::Systems {
     ECS_SYSTEM(ExitSystem, Update, [])
