@@ -3,13 +3,10 @@
 //
 
 #pragma once
-#include <functional>
-#include <vector>
-#include <any>
 #include "GameWorld.hpp"
 #include "IScene.hpp"
-#include "SceneRegistry.hpp"
 #include "../renderer/Datatypes.hpp"
+#include "SceneArgs.hpp"
 
 namespace Engine::Core {
     struct Screen_Old {

@@ -1,8 +1,21 @@
 #include "SceneManager.hpp"
 
 namespace Engine::Core {
-    SceneManager::SceneManager(const SceneContext &scene_context) {
-        m_context = &scene_context;
+    SceneManager::SceneManager(IApplication &app, Ecs::World &world, GameWorld &game_world,
+                               Ecs::SystemManager &system_manager, InputManager &input_manager,
+                               const float screen_width,
+                               const float screen_height) {
+        m_context.emplace(SceneContext{
+            .app = app,
+            .scene_manager = *this,
+            .world = world,
+            .game_world = game_world,
+            .system_manager = system_manager,
+            .input = input_manager,
+            .screen_width = screen_width,
+            .screen_height = screen_height,
+        });
+
         m_registry = std::make_unique<SceneRegistry>();
     }
 
@@ -39,6 +52,7 @@ namespace Engine::Core {
     void SceneManager::ApplyTransitionToPendingScene() {
         if (m_current_scene) {
             m_current_scene->OnExit();
+            m_current_scene->UnloadScene();
             m_current_scene.reset();
         }
 

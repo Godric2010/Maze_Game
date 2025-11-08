@@ -9,6 +9,8 @@
 #include "IInput.hpp"
 
 namespace Engine::Core {
+    class SceneRegistry;
+
     struct ScreenInfo {
         float width;
         float height;
@@ -16,6 +18,8 @@ namespace Engine::Core {
     };
 
     class IScene {
+        friend class SceneRegistry;
+
     public:
         virtual ~IScene() = default;
 
@@ -24,7 +28,7 @@ namespace Engine::Core {
             m_context = &scene_context;
             m_initialized = true;
             m_context->system_manager.RegisterForSystemCommands(
-                [this](const std::vector<std::any> &commands) {
+                m_scene_name, [this](const std::vector<std::any> &commands) {
                     this->EvaluateSystemCommands(commands);
                 });
         }
@@ -40,10 +44,16 @@ namespace Engine::Core {
 
         virtual void OnExit() = 0;
 
+        void UnloadScene() {
+            m_context->system_manager.DeregisterForSystemCommands(m_scene_name);
+            m_initialized = false;
+        }
+
     protected:
         [[nodiscard]] GameWorld &World() const { return m_context->game_world; }
         [[nodiscard]] IInput &Input() const { return m_context->input; }
         [[nodiscard]] IApplication &Application() const { return m_context->app; }
+        [[nodiscard]] ISceneManager &SceneManager() const { return m_context->scene_manager; }
 
         [[nodiscard]] ScreenInfo Screen() const {
             return ScreenInfo{
@@ -54,6 +64,7 @@ namespace Engine::Core {
         }
 
     private:
+        std::string m_scene_name;
         const SceneContext *m_context{};
         bool m_initialized = false;
     };

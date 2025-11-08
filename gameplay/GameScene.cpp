@@ -20,6 +20,7 @@ namespace Gameplay {
         CreateCamera();
         CreateIngameUiOverlay();
         Input().EnableInputMap("PlayerInputMap");
+        Input().SetMouseVisibility(false);
     }
 
     void GameScene::EvaluateSystemCommands(const std::vector<std::any> &commands) {
@@ -65,12 +66,14 @@ namespace Gameplay {
         Input().DisableInputMap("PlayerInputMap");
         Input().EnableInputMap("UIInputMap");
         Input().EnableInputMap("PauseInputMap");
+        Input().SetMouseVisibility(true);
     }
 
     void GameScene::Resume() const {
         Input().DisableInputMap("UIInputMap");
         Input().DisableInputMap("PauseInputMap");
         Input().EnableInputMap("PlayerInputMap");
+        Input().SetMouseVisibility(false);
 
         const auto resume_button = World().GetEntityByName("ResumeButton");
         World().DestroyEntity(resume_button);
@@ -131,7 +134,7 @@ namespace Gameplay {
         const auto bg_size = glm::vec2(screen.width * 0.9f, screen.height * 0.9f);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
         const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform(
-            bg_position, bg_size, bg_pivot, 0.0f, 1);
+            bg_position, bg_size, bg_pivot, 0.0f, 0);
         World().AddComponent(pause_entity, bg_rect_transform);
 
         constexpr auto bg_image = Engine::Core::Components::UI::Image{.color = {0.3, 0.3, 0.3, 0.9}};

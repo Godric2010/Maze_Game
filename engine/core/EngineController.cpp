@@ -34,16 +34,12 @@ namespace Engine::Core {
         m_system_manager = std::make_unique<Ecs::SystemManager>();
         m_system_manager->RegisterSystems(systems, m_world.get(), m_services.get(), m_game_world.get());
 
-        m_context.emplace(SceneContext{
-            .app = *this,
-            .world = *m_world,
-            .game_world = *m_game_world,
-            .system_manager = *m_system_manager,
-            .input = *m_input_manager,
-            .screen_width = static_cast<float>(m_window->GetWindowContext().width),
-            .screen_height = static_cast<float>(m_window->GetWindowContext().height),
-        });
-        m_scene_manager = std::make_unique<SceneManager>(*m_context);
+
+        const auto window_context = m_window->GetWindowContext();
+        m_scene_manager = std::make_unique<SceneManager>(*this, *m_world, *m_game_world, *m_system_manager,
+                                                         *m_input_manager,
+                                                         static_cast<float>(window_context.width),
+                                                         static_cast<float>(window_context.height));
     }
 
     void EngineController::Update() const {

@@ -26,6 +26,8 @@ add_library(Gameplay STATIC
         systems/PauseSystem.hpp
         commands/QuitCommand.hpp
         GameScene.cpp
-        GameScene.hpp)
+        GameScene.hpp
+        MainMenuScene.cpp
+        MainMenuScene.hpp)
 
 target_link_libraries(Gameplay PUBLIC Engine)

@@ -1,16 +1,7 @@
 #include "GameplayManager.hpp"
 
-#include <iostream>
-
 #include "GameScene.hpp"
-#include "Mesh.hpp"
-#include "commands/PauseCommand.hpp"
-#include "commands/QuitCommand.hpp"
-#include "commands/ui/ButtonClickedCommand.hpp"
-#include "components/Transform.hpp"
-#include "ui/Button.hpp"
-#include "ui/Image.hpp"
-#include "ui/RectTransform.hpp"
+#include "MainMenuScene.hpp"
 
 namespace Gameplay {
     GameplayManager::GameplayManager(Engine::Core::IEngine &engine) : m_engine(engine) {
@@ -46,7 +37,6 @@ namespace Gameplay {
                 }
             },
             .mouse_bindings = {},
-            .mouse_visible = false,
         };
         m_engine.RegisterInputMap(player_input_map);
 
@@ -66,22 +56,23 @@ namespace Gameplay {
                     .press_state = Engine::Environment::PressState::Up
                 }
             },
-            .mouse_visible = true,
         };
         m_engine.RegisterInputMap(pause_input_map);
     }
 
     GameplayManager::~GameplayManager() = default;
 
-    void GameplayManager::Initialize() {
+    void GameplayManager::Initialize() const {
+        m_engine.RegisterScene("MainMenu", [](const Engine::Core::SceneArgs &args) {
+            const auto &mesh_handler = std::any_cast<MeshHandler *>(args.payload);
+            return std::make_unique<MainMenuScene>(mesh_handler);
+        });
+
         m_engine.RegisterScene("Game", [](const Engine::Core::SceneArgs &args) {
             const auto &mesh_handler = std::any_cast<MeshHandler *>(args.payload);
             return std::make_unique<GameScene>(mesh_handler);
         });
-        m_engine.SetInitialScene("Game", Engine::Core::SceneArgs{
-                                     m_mesh_handler.get(),
-
-                                 });
+        m_engine.SetInitialScene("MainMenu", Engine::Core::SceneArgs{m_mesh_handler.get()});
     }
 
     void GameplayManager::Shutdown() {

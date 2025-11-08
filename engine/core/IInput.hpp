@@ -10,8 +10,10 @@ namespace Engine::Core {
     public:
         virtual ~IInput() = default;
 
-        virtual void EnableInputMap(const std::string& map_name) = 0;
+        virtual void EnableInputMap(const std::string &map_name) = 0;
 
-        virtual void DisableInputMap(const std::string& map_name) = 0;
+        virtual void DisableInputMap(const std::string &map_name) = 0;
+
+        virtual void SetMouseVisibility(bool visible) = 0;
     };
 }

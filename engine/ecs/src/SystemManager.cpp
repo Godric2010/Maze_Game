@@ -57,8 +57,13 @@ namespace Engine::Ecs {
         }
     }
 
-    void SystemManager::RegisterForSystemCommands(std::function<void(std::vector<std::any>)> command_callback) {
-        m_system_commands_subscriber.push_back(std::move(command_callback));
+    void SystemManager::RegisterForSystemCommands(std::string subscriber_name,
+                                                  std::function<void(std::vector<std::any>)> command_callback) {
+        m_command_callback_subscriber.emplace(subscriber_name, std::move(command_callback));
+    }
+
+    void SystemManager::DeregisterForSystemCommands(const std::string &subscriber_name) {
+        m_command_callback_subscriber.erase(subscriber_name);
     }
 
 
@@ -69,7 +74,7 @@ namespace Engine::Ecs {
     }
 
     void SystemManager::RaiseCommandsEvent(const std::vector<std::any> &commands) const {
-        for (const auto& subscriber: m_system_commands_subscriber) {
+        for (const auto &subscriber: m_command_callback_subscriber | std::ranges::views::values) {
             subscriber(commands);
         }
     }

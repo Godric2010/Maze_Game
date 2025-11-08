@@ -10,7 +10,7 @@ namespace Gameplay {
 
         ~GameplayManager();
 
-        void Initialize();
+        void Initialize() const;
 
         void Shutdown();
 

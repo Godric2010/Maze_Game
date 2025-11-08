@@ -1,19 +1,16 @@
 #pragma once
 #include <unordered_map>
 #include "IScene.hpp"
+#include "ISceneManager.hpp"
+#include "SceneArgs.hpp"
 #include "SceneRegistry.hpp"
 
 namespace Engine::Core {
-    class ISceneManager {
-    public:
-        virtual ~ISceneManager() = default;
-
-        virtual void LoadScene(const std::string &name, const SceneArgs &args) = 0;
-    };
-
     class SceneManager : public ISceneManager {
     public:
-        explicit SceneManager(const SceneContext &scene_context);
+        explicit SceneManager(IApplication &app, Ecs::World &world, GameWorld &game_world,
+                              Ecs::SystemManager &system_manager, InputManager &input_manager,
+                              float screen_width, float screen_height);
 
         ~SceneManager() override;
 
@@ -24,7 +21,7 @@ namespace Engine::Core {
         void Update(float delta_time);
 
     private:
-        const SceneContext *m_context;
+        std::optional<SceneContext> m_context;
         std::unique_ptr<IScene> m_current_scene;
         std::unique_ptr<IScene> m_pending_scene;
 

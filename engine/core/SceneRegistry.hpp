@@ -2,16 +2,10 @@
 #include <unordered_map>
 #include <functional>
 #include <memory>
-#include <any>
 #include "IScene.hpp"
+#include "SceneArgs.hpp"
 
 namespace Engine::Core {
-    struct SceneArgs {
-        std::any payload;
-    };
-
-    using SceneFactory = std::function<std::unique_ptr<IScene>(SceneArgs) >;
-
     class SceneRegistry {
     public:
         SceneRegistry() = default;

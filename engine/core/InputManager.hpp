@@ -24,7 +24,6 @@ namespace Engine::Core {
         std::string name;
         std::vector<KeyBinding> key_bindings;
         std::vector<MouseKeyBinding> mouse_bindings;
-        bool mouse_visible;
     };
 
     struct InputAction {
@@ -54,7 +53,7 @@ namespace Engine::Core {
     };
 
 
-    class InputManager : public IInput{
+    class InputManager : public IInput {
     public:
         explicit InputManager(std::unique_ptr<Environment::IEnvInput> input_env);
 
@@ -71,6 +70,8 @@ namespace Engine::Core {
         void EnableInputMap(const std::string &input_map_name) override;
 
         void DisableInputMap(const std::string &input_map_name) override;
+
+        void SetMouseVisibility(bool visible) override;
 
         [[nodiscard]] InputBuffer GetInput() const;
 

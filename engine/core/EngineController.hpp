@@ -14,6 +14,7 @@
 #include "../ecs/include/World.hpp"
 #include "../renderer/RenderController.hpp"
 #include "../environment/include/Window.hpp"
+#include "SceneArgs.hpp"
 
 namespace Engine::Core {
     /**
@@ -60,7 +61,6 @@ namespace Engine::Core {
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
         std::unique_ptr<InputManager> m_input_manager;
 
-        std::optional<SceneContext> m_context;
         std::unique_ptr<SceneManager> m_scene_manager;
 
         bool m_is_running = true;

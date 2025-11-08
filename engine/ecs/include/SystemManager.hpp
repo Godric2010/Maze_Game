@@ -43,12 +43,14 @@ namespace Engine::Ecs {
 
         void RunSystems(float delta_time);
 
-        void RegisterForSystemCommands(std::function<void(std::vector<std::any>)> command_callback);
+        void RegisterForSystemCommands(std::string subscriber_name, std::function<void(std::vector<std::any>)> command_callback);
+
+        void DeregisterForSystemCommands(const std::string &subscriber_name);
 
     private:
         std::vector<Phase> m_phase_order;
         std::unordered_map<Phase, std::vector<std::unique_ptr<ISystem> > > m_phase_map;
-        std::vector<std::function<void(std::vector<std::any>)> > m_system_commands_subscriber;
+        std::unordered_map<std::string, std::function<void(std::vector<std::any>)>> m_command_callback_subscriber;
 
         void RunPhase(Phase phase, float delta_time);
 

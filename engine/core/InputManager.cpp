@@ -46,7 +46,6 @@ namespace Engine::Core {
         for (int i = 0; i < m_input_maps.size(); ++i) {
             if (m_input_maps.at(i).name == input_map_name && !m_active_map_indices.contains(i)) {
                 m_active_map_indices.insert(i);
-                m_input_env->ShowMouseCursor(m_input_maps.at(i).mouse_visible);
                 return;
             }
         }
@@ -63,6 +62,10 @@ namespace Engine::Core {
         throw std::runtime_error("Input map name '" + input_map_name + "' not found.");
     }
 
+    void InputManager::SetMouseVisibility(const bool visible) {
+        m_input_env->ShowMouseCursor(visible);
+    }
+
 
     InputBuffer InputManager::GetInput() const {
         return m_input_buffer;
@@ -72,7 +75,7 @@ namespace Engine::Core {
         m_input_buffer = InputBuffer();
 
         for (const auto map_index: m_active_map_indices) {
-            const auto [map_name, key_bindings, mouse_bindings, mouse_visible] = m_input_maps.at(map_index);
+            const auto [map_name, key_bindings, mouse_bindings] = m_input_maps.at(map_index);
             m_input_buffer.active_map_names.emplace(map_name);
             const auto snapshot = m_input_env->GetInputSnapshot();
             if (snapshot == nullptr) {

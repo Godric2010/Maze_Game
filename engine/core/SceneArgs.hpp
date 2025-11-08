@@ -1,0 +1,18 @@
+//
+// Created by Sebastian Borsch on 08.11.25.
+//
+
+#pragma once
+#include <any>
+#include <functional>
+
+#include "IScene.hpp"
+
+namespace Engine::Core {
+    struct SceneArgs {
+        std::any payload;
+    };
+
+    class IScene;
+    using SceneFactory = std::function<std::unique_ptr<IScene>(const SceneArgs&)>;
+}
