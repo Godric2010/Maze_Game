@@ -37,6 +37,8 @@ add_library(Core STATIC
         SceneManager.hpp
         SceneManager.cpp
         IApplication.hpp
+        SceneRegistry.cpp
+        SceneRegistry.hpp
 )
 
 target_include_directories(Core PUBLIC

@@ -74,16 +74,15 @@ namespace Engine::Core {
         return mesh_handle;
     }
 
-    void EngineController::RegisterForSystemCommands(
-        const std::function<void(std::vector<std::any>)> command_callback) {
-        m_system_manager->RegisterForSystemCommands(command_callback);
-    }
-
     void EngineController::RegisterInputMap(const InputMap map) {
         m_input_manager->AddInputMapping(map);
     }
 
-    void EngineController::LoadScene(std::unique_ptr<IScene> scene) {
-        m_scene_manager->LoadScene(std::move(scene));
+    void EngineController::RegisterScene(const std::string &name, const SceneFactory scene_factory) {
+        m_scene_manager->RegisterScene(name, scene_factory);
+    }
+
+    void EngineController::SetInitialScene(const std::string &name, const SceneArgs &args) {
+        m_scene_manager->LoadScene(name, args);
     }
 } // namespace

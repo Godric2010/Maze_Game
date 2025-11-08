@@ -46,11 +46,11 @@ namespace Engine::Core {
 
         Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) override;
 
-        void RegisterForSystemCommands(std::function<void(std::vector<std::any>)> command_callback) override;
-
         void RegisterInputMap(InputMap map) override;
 
-        void LoadScene(std::unique_ptr<IScene> scene) override;
+        void RegisterScene(const std::string &name, SceneFactory scene_factory) override;
+
+        void SetInitialScene(const std::string &name, const SceneArgs &args) override;
 
     private:
         std::unique_ptr<ServiceLocator> m_services;
@@ -64,5 +64,6 @@ namespace Engine::Core {
         std::unique_ptr<SceneManager> m_scene_manager;
 
         bool m_is_running = true;
+        std::string m_initial_scene_name;
     };
 } // namespace

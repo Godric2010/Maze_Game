@@ -8,6 +8,7 @@
 #include <any>
 #include "GameWorld.hpp"
 #include "IScene.hpp"
+#include "SceneRegistry.hpp"
 #include "../renderer/Datatypes.hpp"
 
 namespace Engine::Core {
@@ -23,11 +24,11 @@ namespace Engine::Core {
     public:
         virtual ~IEngine() = default;
 
-        virtual void LoadScene(std::unique_ptr<IScene> scene) = 0;
+        virtual void RegisterScene(const std::string &name, SceneFactory scene_factory) = 0;
+
+        virtual void SetInitialScene(const std::string &name, const SceneArgs &args) = 0;
 
         virtual Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) = 0;
-
-        virtual void RegisterForSystemCommands(std::function<void(std::vector<std::any>)> command_callback) = 0;
 
         virtual void RegisterInputMap(InputMap map) = 0;
     };

@@ -74,8 +74,14 @@ namespace Gameplay {
     GameplayManager::~GameplayManager() = default;
 
     void GameplayManager::Initialize() {
-        auto scene = std::make_unique<GameScene>(m_mesh_handler.get());
-        m_engine.LoadScene(std::move(scene));
+        m_engine.RegisterScene("Game", [](const Engine::Core::SceneArgs &args) {
+            const auto &mesh_handler = std::any_cast<MeshHandler *>(args.payload);
+            return std::make_unique<GameScene>(mesh_handler);
+        });
+        m_engine.SetInitialScene("Game", Engine::Core::SceneArgs{
+                                     m_mesh_handler.get(),
+
+                                 });
     }
 
     void GameplayManager::Shutdown() {
