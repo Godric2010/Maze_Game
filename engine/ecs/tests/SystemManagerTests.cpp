@@ -13,14 +13,6 @@ static std::vector<std::string> trace;
 struct TestWorld : World {
 };
 
-struct SystemManagerFixture {
-    SystemManager system_manager;
-    TestWorld world;
-
-    SystemManagerFixture() {
-        trace.clear();
-    }
-};
 
 class TestSysA final : public ISystem {
 public:
@@ -78,8 +70,7 @@ static std::unique_ptr<ISystem> MakeC() { return std::make_unique<TestSysC>(); }
 static std::unique_ptr<ISystem> MakeD() { return std::make_unique<TestSysD>(); }
 static std::unique_ptr<ISystem> MakeE() { return std::make_unique<TestSysE>(); }
 
-TEST_CASE_METHOD(SystemManagerFixture,
-                 "SystemManger::Register - Register different systems and check their execution order") {
+TEST_CASE("SystemManger::Register - Register different systems and check their execution order") {
     SystemMeta system_a{
         .name = "SystemA",
         .phase = Phase::Input,
@@ -116,9 +107,10 @@ TEST_CASE_METHOD(SystemManagerFixture,
 
     // Messing up the order on purpose here
     std::vector<SystemMeta> systems{system_d, system_e, system_c, system_a, system_b};
-    system_manager.RegisterSystems(world, nullptr);
+    auto system_manager = new SystemManager(systems, nullptr);
+    system_manager->RegisterSystems(world, nullptr);
 
-    system_manager.RunSystems(0.0f);
+    system_manager->RunSystems(0.0f);
 
     const std::vector<std::string> expected = {"A", "B", "C", "D", "E"};
     REQUIRE(trace == expected);
