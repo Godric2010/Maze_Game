@@ -53,7 +53,10 @@ add_dependencies(Maze_Game ecs_codegen)
 target_include_directories(Maze_Game PRIVATE "${GENERATED_FILES_DIR}")
 target_link_libraries(Maze_Game PRIVATE Engine Gameplay)
 
-file(COPY ${CMAKE_SOURCE_DIR}/resources DESTINATION ${CMAKE_BINARY_DIR})
+add_custom_command(TARGET Maze_Game POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources
+        COMMENT "Copying resource folder...")
 
 if (BUILD_TESTING)
     set(APP_REPORT_DIR "${CMAKE_CURRENT_BINARY_DIR}/test-reports" CACHE PATH "Dir for test reports")

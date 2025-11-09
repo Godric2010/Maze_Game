@@ -3,19 +3,20 @@ message(STATUS "SDL2 found: ${SDL2_FOUND}")
 message(STATUS "SDL2_INCLUDE_DIRS: ${SDL2_INCLUDE_DIRS}")
 message(STATUS "SDL2_LIBRARIES: ${SDL2_LIBRARIES}")
 
-add_library(Window STATIC
+add_library(Environment STATIC
         include/Window.hpp
         src/SDLWindow.cpp
         include/EnvironmentBuilder.hpp
         include/EnvInput.hpp
         src/SDLInput.cpp
         src/SDLInput.hpp
+        include/FileReader.hpp
 )
 
-target_include_directories(Window PUBLIC
+target_include_directories(Environment PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-target_link_libraries(Window PUBLIC
+target_link_libraries(Environment PUBLIC
         SDL2::SDL2
 )

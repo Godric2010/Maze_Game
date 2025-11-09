@@ -49,4 +49,4 @@ target_include_directories(Core PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/components
         ${CMAKE_CURRENT_SOURCE_DIR}/systems
 )
-target_link_libraries(Core PUBLIC Window Renderer ECS Physics)
+target_link_libraries(Core PUBLIC Environment Renderer ECS Physics)
