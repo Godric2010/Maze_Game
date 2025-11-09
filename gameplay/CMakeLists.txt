@@ -28,6 +28,8 @@ add_library(Gameplay STATIC
         GameScene.cpp
         GameScene.hpp
         MainMenuScene.cpp
-        MainMenuScene.hpp)
+        MainMenuScene.hpp
+        GameEndScene.cpp
+        GameEndScene.hpp)
 
 target_link_libraries(Gameplay PUBLIC Engine)

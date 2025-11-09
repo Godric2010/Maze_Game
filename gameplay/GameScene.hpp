@@ -29,15 +29,19 @@ namespace Gameplay {
         std::unique_ptr<Mazegenerator::MazeBuilder> m_maze_builder;
         MeshHandler *m_mesh_handler;
 
+
+        std::chrono::time_point<std::chrono::steady_clock> m_start_time;
+        float m_time_passed = 0;
+
         std::vector<Engine::Ecs::EntityId> m_pause_entities;
 
         bool m_is_paused;
 
         void CreateMaze();
 
-        void Pause() const;
+        void Pause();
 
-        void Resume() const;
+        void Resume();
 
         void CreateCamera() const;
 

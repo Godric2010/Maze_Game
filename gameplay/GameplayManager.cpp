@@ -1,5 +1,6 @@
 #include "GameplayManager.hpp"
 
+#include "GameEndScene.hpp"
 #include "GameScene.hpp"
 #include "MainMenuScene.hpp"
 
@@ -72,6 +73,12 @@ namespace Gameplay {
             const auto &mesh_handler = std::any_cast<MeshHandler *>(args.payload);
             return std::make_unique<GameScene>(mesh_handler);
         });
+
+        m_engine.RegisterScene("GameEnd", [](const Engine::Core::SceneArgs &args) {
+            const auto game_end_data = std::any_cast<GameEndShowData>(args.payload);
+            return std::make_unique<GameEndScene>(game_end_data);
+        });
+
         m_engine.SetInitialScene("MainMenu", Engine::Core::SceneArgs{m_mesh_handler.get()});
     }
 

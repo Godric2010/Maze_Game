@@ -3,6 +3,8 @@
 #include <iostream>
 #include <ostream>
 
+#include "GameEndScene.hpp"
+
 namespace Gameplay {
     GameScene::GameScene(MeshHandler *mesh_handler) {
         m_mesh_handler = mesh_handler;
@@ -21,6 +23,7 @@ namespace Gameplay {
         CreateIngameUiOverlay();
         Input().EnableInputMap("PlayerInputMap");
         Input().SetMouseVisibility(false);
+        m_start_time = std::chrono::steady_clock::now();
     }
 
     void GameScene::EvaluateSystemCommands(const std::vector<std::any> &commands) {
@@ -32,7 +35,17 @@ namespace Gameplay {
                 continue;
             }
             if (command.type() == typeid(Commands::LevelFinished)) {
-                SceneManager().LoadScene("MainMenu", Engine::Core::SceneArgs{.payload = m_mesh_handler});
+                const auto end_time = std::chrono::steady_clock::now();
+                const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - m_start_time).
+                        count();
+                m_time_passed += duration;
+
+                SceneManager().LoadScene("GameEnd", Engine::Core::SceneArgs{
+                                             .payload = GameEndShowData{
+                                                 .mesh_handler = m_mesh_handler,
+                                                 .time_to_completion = m_time_passed,
+                                             }
+                                         });
                 continue;
             }
             if (command.type() == typeid(Engine::Core::Commands::UI::ButtonClickedCommand)) {
@@ -62,7 +75,10 @@ namespace Gameplay {
         m_maze_builder->BuildMaze(5, 5, 1337);
     }
 
-    void GameScene::Pause() const {
+    void GameScene::Pause() {
+        const auto end_time = std::chrono::steady_clock::now();
+        const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - m_start_time).count();
+        m_time_passed += duration;
         std::cout << "GameScene::Pause()" << std::endl;
         CreatePauseUiOverlay();
         Input().DisableInputMap("PlayerInputMap");
@@ -71,7 +87,8 @@ namespace Gameplay {
         Input().SetMouseVisibility(true);
     }
 
-    void GameScene::Resume() const {
+    void GameScene::Resume() {
+        m_start_time = std::chrono::steady_clock::now();
         Input().DisableInputMap("UIInputMap");
         Input().DisableInputMap("PauseInputMap");
         Input().EnableInputMap("PlayerInputMap");
