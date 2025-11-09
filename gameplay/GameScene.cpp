@@ -6,8 +6,9 @@
 #include "GameEndScene.hpp"
 
 namespace Gameplay {
-    GameScene::GameScene(MeshHandler *mesh_handler) {
-        m_mesh_handler = mesh_handler;
+    GameScene::GameScene(const GameSceneSettings settings) {
+        m_mesh_handler = settings.mesh_handler;
+        m_difficulty = settings.difficulty;
         m_is_paused = false;
     }
 
@@ -72,7 +73,30 @@ namespace Gameplay {
                                                                       m_mesh_handler->GetWallMesh(),
                                                                       m_mesh_handler->GetKeyMesh(),
                                                                       true);
-        m_maze_builder->BuildMaze(5, 5, 1337);
+        int width = 0;
+        int height = 0;
+        int seed = 1337;
+
+        switch (m_difficulty) {
+            case Difficulty::Developer:
+                width = 5;
+                height = 5;
+                break;
+            case Difficulty::Easy:
+                width = 10;
+                height = 10;
+                break;
+            case Difficulty::Medium:
+                width = 20;
+                height = 20;
+                break;
+            case Difficulty::Hard:
+                width = 30;
+                height = 30;
+                break;
+        }
+
+        m_maze_builder->BuildMaze(width, height, seed);
     }
 
     void GameScene::Pause() {

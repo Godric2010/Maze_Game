@@ -13,9 +13,21 @@
 #include "commands/ui/ButtonClickedCommand.hpp"
 
 namespace Gameplay {
+    enum class Difficulty : int {
+        Developer = 0,
+        Easy = 1,
+        Medium = 2,
+        Hard = 3,
+    };
+
+    struct GameSceneSettings {
+        MeshHandler *mesh_handler;
+        Difficulty difficulty;
+    };
+
     class GameScene : public Engine::Core::IScene {
     public:
-        explicit GameScene(MeshHandler *mesh_handler);
+        explicit GameScene(GameSceneSettings settings);
 
         ~GameScene() override;
 
@@ -28,6 +40,7 @@ namespace Gameplay {
     private:
         std::unique_ptr<Mazegenerator::MazeBuilder> m_maze_builder;
         MeshHandler *m_mesh_handler;
+        Difficulty m_difficulty;
 
 
         std::chrono::time_point<std::chrono::steady_clock> m_start_time;

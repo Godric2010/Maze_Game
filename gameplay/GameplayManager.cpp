@@ -70,8 +70,8 @@ namespace Gameplay {
         });
 
         m_engine.RegisterScene("Game", [](const Engine::Core::SceneArgs &args) {
-            const auto &mesh_handler = std::any_cast<MeshHandler *>(args.payload);
-            return std::make_unique<GameScene>(mesh_handler);
+            const auto game_scene_settings = std::any_cast<GameSceneSettings>(args.payload);
+            return std::make_unique<GameScene>(game_scene_settings);
         });
 
         m_engine.RegisterScene("GameEnd", [](const Engine::Core::SceneArgs &args) {
