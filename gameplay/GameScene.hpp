@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include "IScene.hpp"
 #include "mazegenerator/MazeBuilder.hpp"
 #include "Transform.hpp"
