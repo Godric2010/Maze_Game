@@ -1,6 +1,6 @@
 #include "MainMenuScene.hpp"
-
 #include "GameScene.hpp"
+#include "ui/Text.hpp"
 
 
 namespace Gameplay {
@@ -92,6 +92,15 @@ namespace Gameplay {
         World().AddComponent(pause_entity, bg_image);
     }
 
+    void MainMenuScene::CreateMenuText(const std::string &content, const std::string &font_name, const int font_size,
+                                       const glm::vec2 pos, const glm::vec2 size) const {
+        const auto text_entity = World().CreateEntity("MenuText_" + content);
+        const auto text_transform = Engine::Core::Components::UI::RectTransform(pos, size, 2);
+        const auto text = Engine::Core::Components::UI::Text(content, font_name, font_size);
+        World().AddComponent(text_entity, text_transform);
+        World().AddComponent(text_entity, text);
+    }
+
     void MainMenuScene::CreateMenuButton(const std::string &name, uint32_t button_id, glm::vec2 pos, glm::vec4 color,
                                          glm::vec4 highlight_color) {
         constexpr auto button_size = glm::vec2(200, 100);
@@ -113,6 +122,10 @@ namespace Gameplay {
 
     void MainMenuScene::CreateMainMenuUiElements() {
         const auto screen = Screen();
+
+        CreateMenuText("Space Maze", "SpaceFont", 64, glm::vec2(screen.width / 2.0f, screen.height / 2.0f - 300),
+                       glm::vec2(400, 200));
+
         CreateMenuButton("StartGameButton", m_start_game_button,
                          glm::vec2(screen.width / 2.0f, screen.height / 2.0f - 100), {0.0f, 0.7f, 0.0f, 1.0f},
                          {0.0f, 1.0f, 0.0f, 1.0f});

@@ -26,21 +26,22 @@ namespace Engine::Renderer::ShaderManagement {
 
         const auto vert_shader_content = Environment::FileReader::ReadTextContentFromFile(
             "shaders/" + shader_name + ".vert");
-        if (!vert_shader_content.has_value()) {
-            spdlog::error("Failed to load vertex shader {}", shader_name);
+        if (!vert_shader_content.Ok()) {
+            spdlog::error("Failed to load vertex shader {}\nError: {}", shader_name, vert_shader_content.error.message);
             throw std::runtime_error("Failed to load vertex shader" + shader_name);
         }
         const auto frag_shader_content = Environment::FileReader::ReadTextContentFromFile(
             "shaders/" + shader_name + ".frag");
-        if (!frag_shader_content.has_value()) {
-            spdlog::error("Failed to load fragment shader {}", shader_name);
+        if (!frag_shader_content.Ok()) {
+            spdlog::error("Failed to load fragment shader {}\nError: {}", shader_name,
+                          frag_shader_content.error.message);
             throw std::runtime_error("Failed to load fragment shader" + shader_name);
         }
 
         const auto shader = Shader{
             .name = shader_name,
-            .vertex_shader = vert_shader_content.value(),
-            .fragment_shader = frag_shader_content.value(),
+            .vertex_shader = vert_shader_content.value,
+            .fragment_shader = frag_shader_content.value,
         };
         m_shaders[shader_name] = shader;
     }

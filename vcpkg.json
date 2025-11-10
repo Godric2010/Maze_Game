@@ -32,5 +32,8 @@
   }, {
     "name" : "vcpkg-cmake",
     "version>=" : "2024-04-23"
+  }, {
+    "name" : "freetype",
+    "version>=" : "2.13.3"
   } ]
 }

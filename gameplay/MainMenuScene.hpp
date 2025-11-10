@@ -50,6 +50,9 @@ namespace Gameplay {
 
         void CreateMenuBackground() const;
 
+        void CreateMenuText(const std::string &content, const std::string &font_name, int font_size, glm::vec2 pos,
+                            glm::vec2 size) const;
+
         void CreateMenuButton(const std::string &name, uint32_t button_id, glm::vec2 pos, glm::vec4 color,
                               glm::vec4 highlight_color);
 

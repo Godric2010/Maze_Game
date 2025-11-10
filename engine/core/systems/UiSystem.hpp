@@ -2,7 +2,10 @@
 #include "ISystem.hpp"
 #include "ui/Button.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "InputManager.hpp"
 #include "ui/RectTransform.hpp"
+#include "ui/Text.hpp"
 #include "../commands/ui/ButtonClickedCommand.hpp"
 
 namespace Engine::Core::Systems {
@@ -19,5 +22,9 @@ namespace Engine::Core::Systems {
 
     private:
         static bool IsMouseOverElement(glm::vec2 mouse_pos, const Components::UI::RectTransform* rect);
+
+        void HandleButtons(const InputBuffer &input) const;
+
+        void HandleTextLabels() const;
     };
 } // namespace

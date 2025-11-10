@@ -1,6 +1,7 @@
 #include "UiSystem.hpp"
 
 #include "GameWorld.hpp"
+#include "ui/Text.hpp"
 
 
 namespace Engine::Core::Systems {
@@ -10,11 +11,26 @@ namespace Engine::Core::Systems {
     }
 
     void UiSystem::Run(float delta_time) {
+        HandleTextLabels();
+
         const auto input = GameWorld()->GetInput();
         if (!input.IsMapActive("UIInputMap")) {
             return;
         }
+        HandleButtons(input);
+    }
 
+    bool UiSystem::IsMouseOverElement(const glm::vec2 mouse_pos, const Components::UI::RectTransform *rect) {
+        if (mouse_pos.x > rect->Position().x - rect->Size().x * rect->Pivot().x &&
+            mouse_pos.y > rect->Position().y - rect->Size().y * rect->Pivot().y &&
+            mouse_pos.x < rect->Position().x + rect->Size().x * rect->Pivot().x &&
+            mouse_pos.y < rect->Position().y + rect->Size().y * rect->Pivot().y) {
+            return true;
+        }
+        return false;
+    }
+
+    void UiSystem::HandleButtons(const InputBuffer &input) const {
         auto buttons_with_entities = GameWorld()->GetComponentsOfType<Components::UI::Button>();
         for (auto [button, entity]: buttons_with_entities) {
             const auto rect = GameWorld()->GetComponent<Components::UI::RectTransform>(entity);
@@ -37,13 +53,13 @@ namespace Engine::Core::Systems {
         }
     }
 
-    bool UiSystem::IsMouseOverElement(const glm::vec2 mouse_pos, const Components::UI::RectTransform *rect) {
-        if (mouse_pos.x > rect->Position().x - rect->Size().x * rect->Pivot().x &&
-            mouse_pos.y > rect->Position().y - rect->Size().y * rect->Pivot().y &&
-            mouse_pos.x < rect->Position().x + rect->Size().x * rect->Pivot().x &&
-            mouse_pos.y < rect->Position().y + rect->Size().y * rect->Pivot().y) {
-            return true;
+    void UiSystem::HandleTextLabels() const {
+        auto text_labels = GameWorld()->GetComponentsOfType<Components::UI::Text>();
+        for (const auto text: text_labels | std::views::keys) {
+            if (text->IsDirty()) {
+                // Do something with the text here
+                text->m_is_dirty = false;
+            }
         }
-        return false;
     }
 } // namespace

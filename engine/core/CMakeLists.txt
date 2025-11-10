@@ -41,6 +41,7 @@ add_library(Core STATIC
         SceneRegistry.hpp
         ISceneManager.hpp
         SceneArgs.hpp
+        components/ui/Text.hpp
 )
 
 target_include_directories(Core PUBLIC
@@ -49,4 +50,4 @@ target_include_directories(Core PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/components
         ${CMAKE_CURRENT_SOURCE_DIR}/systems
 )
-target_link_libraries(Core PUBLIC Environment Renderer ECS Physics)
+target_link_libraries(Core PUBLIC Environment Text Renderer ECS Physics)
