@@ -1,6 +1,7 @@
 #include "UiSystem.hpp"
 
 #include "GameWorld.hpp"
+#include "../../text/include/TextController.hpp"
 #include "ui/Text.hpp"
 
 
@@ -58,6 +59,8 @@ namespace Engine::Core::Systems {
         for (const auto text: text_labels | std::views::keys) {
             if (text->IsDirty()) {
                 // Do something with the text here
+                text->m_text_parameters.font = ServiceLocator()->GetService<Text::TextController>()->LoadFont(
+                    text->GetFontName(), text->m_text_parameters.font.font_size);
                 text->m_is_dirty = false;
             }
         }

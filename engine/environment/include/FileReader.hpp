@@ -6,7 +6,7 @@
 
 namespace Engine::Environment {
     struct FileData {
-        std::shared_ptr<uint8_t[]> data;
+        std::vector<uint8_t> data;
         size_t size = 0;
         std::string name;
         std::filesystem::path path;
@@ -28,7 +28,18 @@ namespace Engine::Environment {
     class FileReader {
     public:
         static Result<std::string> ReadTextContentFromFile(const std::string &filepath) {
-            const std::filesystem::path resource_path = std::filesystem::current_path() / "resources" / filepath;
+            const std::filesystem::path base = std::filesystem::current_path() / "resources";
+            std::filesystem::path resource_path = base / filepath;
+
+            resource_path = weakly_canonical(resource_path);
+            if (!resource_path.string().starts_with(base.string())) {
+                return Fail<std::string>("Path traversal attempt detected", -1);
+            }
+            std::error_code ec;
+
+            if (!exists(resource_path, ec) || !is_regular_file(resource_path, ec)) {
+                return Fail<std::string>("Failed to open file: " + resource_path.string(), ec.value());
+            }
 
             std::ifstream file(resource_path, std::ios::ate | std::ios::binary);
             if (!file.is_open()) {
@@ -46,7 +57,13 @@ namespace Engine::Environment {
         }
 
         static Result<FileData> LoadBinaryFromFile(const std::string &filepath) {
-            const std::filesystem::path resource_path = std::filesystem::current_path() / filepath;
+            const std::filesystem::path base = std::filesystem::current_path() / "resources";
+            std::filesystem::path resource_path = base / filepath;
+
+            resource_path = weakly_canonical(resource_path);
+            if (!resource_path.string().starts_with(base.string())) {
+                return Fail<FileData>("Path traversal attempt detected", -1);
+            }
             std::error_code ec;
 
             if (!exists(resource_path, ec) || !is_regular_file(resource_path, ec)) {
@@ -63,14 +80,15 @@ namespace Engine::Environment {
                 return Fail<FileData>("Failed to read file: " + resource_path.string(), 0);
             }
 
-            ifs.seekg(0, std::ios::beg);
-
-            std::shared_ptr<uint8_t[]> buffer(new uint8_t[static_cast<size_t>(file_size)]);
-            if (!buffer) {
-                return Fail<FileData>("Out of memory reading.", 0);
+            constexpr auto max_size = std::numeric_limits<size_t>::max();
+            if (static_cast<std::uintmax_t>(file_size) > max_size) {
+                return Fail<FileData>("File size exceeds maximum size", 0);
             }
 
-            if (!ifs.read(reinterpret_cast<char *>(buffer.get()), file_size)) {
+            ifs.seekg(0, std::ios::beg);
+
+            auto buffer = std::vector<uint8_t>(file_size);
+            if (!ifs.read(reinterpret_cast<char *>(buffer.data()), file_size)) {
                 return Fail<FileData>("Failed to read file: " + resource_path.string(), 0);
             }
 

@@ -3,6 +3,7 @@
 #include "Transform.hpp"
 #include "EnvironmentBuilder.hpp"
 #include "SystemManager.hpp"
+#include "TextController.hpp"
 
 namespace Engine::Core {
     EngineController::EngineController() {
@@ -28,6 +29,9 @@ namespace Engine::Core {
 
         auto render_controller = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
         m_services->RegisterService(std::move(render_controller));
+
+        auto text_controller = std::make_unique<Text::TextController>();
+        m_services->RegisterService(std::move(text_controller));
 
         m_system_manager = std::make_unique<Ecs::SystemManager>(systems, m_services.get());
 

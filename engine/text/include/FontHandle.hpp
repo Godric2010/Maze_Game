@@ -9,5 +9,6 @@ namespace Engine::Text {
     struct FontHandle {
         std::string font_name;
         int font_size;
+        uint32_t id = 0;
     };
 }
