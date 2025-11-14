@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <string>
 #include <vector>
 
 namespace Engine::Text {
@@ -15,5 +16,8 @@ namespace Engine::Text {
         ~Utf8Decoder() = default;
 
         [[nodiscard]] std::vector<uint32_t> GenerateCodepointsFromText(const std::string &text) const;
+
+    private:
+        const uint32_t m_replacement_character = 0xFFFD;
     };
 } // namespace
