@@ -9,7 +9,7 @@
 
 #include "FontLibrary.hpp"
 
-namespace Engine::Text::FontRasterization {
+namespace Engine::Text {
     struct GlyphBitmap {
         int width;
         int height;

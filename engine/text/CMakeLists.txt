@@ -13,16 +13,19 @@ message(STATUS "FT debug lib: ${_dbg}")
 message(STATUS "FT release lib: ${_rel}")
 
 add_library(Text STATIC
-        include/FontHandle.hpp
-        include/TextMeshHandle.hpp
-        include/TextParameters.hpp
         src/TextController.cpp
         include/TextController.hpp
-        src/fontrasterization/FontManager.cpp
-        src/fontrasterization/FontManager.hpp
-        src/fontrasterization/FontLibrary.hpp
-        src/fontrasterization/FontFace.cpp
-        src/fontrasterization/FontFace.hpp)
+        src/FontManager.cpp
+        src/FontManager.hpp
+        src/FontLibrary.hpp
+        src/FontFace.hpp
+        include/Types.hpp
+        src/Utf8Decoder.cpp
+        src/Utf8Decoder.hpp
+        src/LayoutEngine.cpp
+        src/LayoutEngine.hpp
+        src/TextMeshBuilder.cpp
+        src/TextMeshBuilder.hpp)
 
 target_link_libraries(Text PRIVATE Environment Freetype::Freetype spdlog::spdlog)
 

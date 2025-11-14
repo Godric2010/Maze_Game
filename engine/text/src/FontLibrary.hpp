@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <spdlog/spdlog.h>
 
-namespace Engine::Text::FontRasterization {
+namespace Engine::Text {
     class FontLibrary {
     public:
         FontLibrary() {

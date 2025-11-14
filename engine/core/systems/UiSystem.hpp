@@ -4,24 +4,28 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "InputManager.hpp"
+#include "TextController.hpp"
 #include "ui/RectTransform.hpp"
 #include "ui/Text.hpp"
 #include "../commands/ui/ButtonClickedCommand.hpp"
 
 namespace Engine::Core::Systems {
     ECS_SYSTEM(UiSystem, Ui, [ENGINE])
+
     class UiSystem : public Ecs::IEngineSystem {
     public:
         UiSystem();
 
-        ~UiSystem() override = default;
+        ~UiSystem() override;
 
         void Initialize() override;
 
         void Run(float delta_time) override;
 
     private:
-        static bool IsMouseOverElement(glm::vec2 mouse_pos, const Components::UI::RectTransform* rect);
+        Text::TextController *m_text_controller = nullptr;
+
+        static bool IsMouseOverElement(glm::vec2 mouse_pos, const Components::UI::RectTransform *rect);
 
         void HandleButtons(const InputBuffer &input) const;
 

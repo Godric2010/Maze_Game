@@ -1,6 +1,7 @@
 #include "UiSystem.hpp"
 
 #include "GameWorld.hpp"
+#include "ServiceLocator.hpp"
 #include "../../text/include/TextController.hpp"
 #include "ui/Text.hpp"
 
@@ -8,7 +9,10 @@
 namespace Engine::Core::Systems {
     UiSystem::UiSystem() = default;
 
+    UiSystem::~UiSystem() = default;
+
     void UiSystem::Initialize() {
+        m_text_controller = ServiceLocator()->GetService<Text::TextController>();
     }
 
     void UiSystem::Run(float delta_time) {
@@ -59,8 +63,9 @@ namespace Engine::Core::Systems {
         for (const auto text: text_labels | std::views::keys) {
             if (text->IsDirty()) {
                 // Do something with the text here
-                text->m_text_parameters.font = ServiceLocator()->GetService<Text::TextController>()->LoadFont(
-                    text->GetFontName(), text->m_text_parameters.font.font_size);
+                text->m_font_handle = m_text_controller->LoadFont(text->GetFontName(), text->GetFontSize());
+                text->m_text_mesh = m_text_controller->BuildTextMesh(text->GetFontHandle(), text->GetText(),
+                                                                     Text::TextAlignment::Left);
                 text->m_is_dirty = false;
             }
         }
