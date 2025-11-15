@@ -8,8 +8,6 @@ add_library(Text STATIC
         include/TextController.hpp
         src/FontManager.cpp
         src/FontManager.hpp
-        src/FontLibrary.hpp
-        src/FontFace.hpp
         include/Types.hpp
         src/Utf8Decoder.cpp
         src/Utf8Decoder.hpp
