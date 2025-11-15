@@ -7,9 +7,10 @@ namespace Engine::Text {
      * Contains all data needed to define the layout of a glyph
      */
     struct GlyphData {
-        float position_x, position_y;
-        float width, height;
-        float texture_u, texture_v;
+        float x0, y0; // top-left
+        float x1, y1; // bottom-right
+        float u0, v0; // top-left UV
+        float u1, v1; // bottom-right UV
     };
 
     /**
@@ -18,8 +19,11 @@ namespace Engine::Text {
      */
     struct TextLayout {
         std::vector<GlyphData> glyph_data;
-        float bounding_box_width;
-        float bounding_box_height;
+
+        float min_x = 0.0f, max_x = 0.0f, min_y = 0.0f, max_y = 0.0f;
+
+        [[nodiscard]] float Width() const { return max_x - min_x; }
+        [[nodiscard]] float Height() const { return max_y - min_y; }
     };
 
     /**
