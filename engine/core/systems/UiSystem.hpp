@@ -5,6 +5,7 @@
 
 #include "InputManager.hpp"
 #include "TextController.hpp"
+#include "../../renderer/RenderController.hpp"
 #include "ui/RectTransform.hpp"
 #include "ui/Text.hpp"
 #include "../commands/ui/ButtonClickedCommand.hpp"
@@ -24,6 +25,7 @@ namespace Engine::Core::Systems {
 
     private:
         Text::TextController *m_text_controller = nullptr;
+        Renderer::RenderController* m_render_controller = nullptr;
 
         static bool IsMouseOverElement(glm::vec2 mouse_pos, const Components::UI::RectTransform *rect);
 

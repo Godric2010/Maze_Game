@@ -103,14 +103,14 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         const GLint u_ui_color = glGetUniformLocation(shader_program.value(), "u_Color");
         glUseProgram(ui_shader_program.value());
 
-        const auto &mesh = m_mesh_manager->GetMesh(0);
-        glBindVertexArray(mesh.VAO);
         const glm::mat4 ortho = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.0f, 0.0f);
-        for (const auto &[model, _, color]: draw_assets.ui_draw_assets) {
-            glm::mat4 proj = ortho * model;
+        for (const auto &ui_draw_asset: draw_assets.ui_draw_assets) {
+            glm::mat4 proj = ortho * ui_draw_asset.model;
 
+            const auto &mesh = m_mesh_manager->GetMesh(ui_draw_asset.mesh);
+            glBindVertexArray(mesh.VAO);
             glUniformMatrix4fv(u_proj, 1, GL_FALSE, value_ptr(proj));
-            glUniform4fv(u_ui_color, 1, value_ptr(color));
+            glUniform4fv(u_ui_color, 1, glm::value_ptr(ui_draw_asset.color));
 
             glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
         }

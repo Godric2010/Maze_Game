@@ -31,6 +31,7 @@ namespace Engine::Renderer {
 
     struct UiDrawAsset {
         glm::mat4 model;
+        MeshHandle mesh;
         float layer;
         glm::vec4 color;
     };

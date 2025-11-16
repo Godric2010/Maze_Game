@@ -123,8 +123,8 @@ namespace Gameplay {
     void MainMenuScene::CreateMainMenuUiElements() {
         const auto screen = Screen();
 
-        CreateMenuText("Space Maze", "SpaceFont.ttf", 64, glm::vec2(screen.width / 2.0f, screen.height / 2.0f - 300),
-                       glm::vec2(400, 200));
+        CreateMenuText("Space Maze", "SpaceFont.ttf", 128, glm::vec2(screen.width / 2.0f, screen.height / 2.0f - 300),
+                       glm::vec2(1, 1));
 
         CreateMenuButton("StartGameButton", m_start_game_button,
                          glm::vec2(screen.width / 2.0f, screen.height / 2.0f - 100), {0.0f, 0.7f, 0.0f, 1.0f},

@@ -13,6 +13,7 @@ namespace Engine::Core::Systems {
 
     void UiSystem::Initialize() {
         m_text_controller = ServiceLocator()->GetService<Text::TextController>();
+        m_render_controller = ServiceLocator()->GetService<Renderer::RenderController>();
     }
 
     void UiSystem::Run(float delta_time) {
@@ -61,13 +62,23 @@ namespace Engine::Core::Systems {
     void UiSystem::HandleTextLabels() const {
         auto text_labels = GameWorld()->GetComponentsOfType<Components::UI::Text>();
         for (const auto text: text_labels | std::views::keys) {
-            if (text->IsDirty()) {
-                // Do something with the text here
-                text->m_font_handle = m_text_controller->LoadFont(text->GetFontName(), text->GetFontSize());
-                text->m_text_mesh = m_text_controller->BuildTextMesh(text->GetFontHandle(), text->GetText(),
-                                                                     Text::TextAlignment::Left);
-                text->m_is_dirty = false;
+            if (!text->IsDirty()) {
+                continue;
             }
+
+            text->m_font_handle = m_text_controller->LoadFont(text->GetFontName(), text->GetFontSize());
+
+            auto [vertices, indices] = m_text_controller->BuildTextMesh(text->GetFontHandle(), text->GetText(),
+                                                                        Text::TextAlignment::Left);
+            Renderer::MeshAsset text_mesh_asset{};
+            for (const auto &vertex: vertices) {
+                text_mesh_asset.vertices.emplace_back(vertex.x, vertex.y, 0);
+            }
+            text_mesh_asset.indices = indices;
+            auto mesh_handle = m_render_controller->RegisterMesh(text_mesh_asset);
+
+            text->m_text_mesh = mesh_handle;
+            text->m_is_dirty = false;
         }
     }
 } // namespace

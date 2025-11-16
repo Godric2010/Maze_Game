@@ -7,6 +7,7 @@
 #include "ui/Button.hpp"
 #include "ui/Image.hpp"
 #include "ui/RectTransform.hpp"
+#include "ui/Text.hpp"
 
 namespace Engine::Core::Systems {
     RenderSystem::RenderSystem() = default;
@@ -77,18 +78,25 @@ namespace Engine::Core::Systems {
             const auto image_component = GameWorld()->GetComponent<Components::UI::Image>(entity);
             if (image_component != nullptr) {
                 ui_draw_asset.color = image_component->color;
+                ui_draw_asset.mesh = static_cast<Renderer::MeshHandle>(0);
             }
 
             const auto button_component = GameWorld()->GetComponent<Components::UI::Button>(entity);
             if (button_component != nullptr) {
                 ui_draw_asset.color = button_component->GetColor();
+                ui_draw_asset.mesh = static_cast<Renderer::MeshHandle>(0);
             }
 
+            const auto text_component = GameWorld()->GetComponent<Components::UI::Text>(entity);
+            if (text_component != nullptr && text_component->GetTextMesh().has_value()) {
+                ui_draw_asset.color = glm::vec4(1, 0, 1, 1);
+                ui_draw_asset.mesh = text_component->GetTextMesh().value();
+            }
 
             ui_draw_assets[i] = ui_draw_asset;
         }
 
-        std::ranges::sort(ui_draw_assets,[](auto& a, auto& b) {
+        std::ranges::sort(ui_draw_assets, [](auto &a, auto &b) {
             return a.layer < b.layer;
         });
 

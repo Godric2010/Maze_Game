@@ -34,11 +34,8 @@ namespace Engine::Core::Components::UI {
             return m_font_handle.value();
         }
 
-        [[nodiscard]] Engine::Text::TextMesh GetTextMesh() const {
-            if (!m_text_mesh.has_value()) {
-                throw std::invalid_argument("Text mesh has not been initialized");
-            }
-            return m_text_mesh.value();
+        [[nodiscard]] std::optional<Renderer::MeshHandle> GetTextMesh() const {
+            return m_text_mesh;
         }
 
         void SetText(const std::string &text) {
@@ -54,7 +51,7 @@ namespace Engine::Core::Components::UI {
         int m_text_size_in_px;
 
         std::optional<Engine::Text::FontHandle> m_font_handle;
-        std::optional<Engine::Text::TextMesh> m_text_mesh;
+        std::optional<Renderer::MeshHandle> m_text_mesh;
         bool m_is_dirty;
     };
 }
