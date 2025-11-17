@@ -65,7 +65,7 @@ namespace Engine::Text {
 
         [[nodiscard]] bool HasFont(const FontHandle &font_handle) const;
 
-        FontHandle LoadFont(const std::string &font_name, int pixel_size);
+        FontHandleResult LoadFont(const std::string &font_name, int pixel_size);
 
         [[nodiscard]] Font GetFont(const FontHandle &font_handle) const;
 

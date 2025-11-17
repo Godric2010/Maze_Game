@@ -66,13 +66,34 @@ namespace Engine::Core::Systems {
                 continue;
             }
 
-            text->m_font_handle = m_text_controller->LoadFont(text->GetFontName(), text->GetFontSize());
+            auto [font_handle, new_atlas_created] = m_text_controller->LoadFont(
+                text->GetFontName(), text->GetFontSize());
+            if (new_atlas_created) {
+                if (text->GetTextureHandle().has_value()) {
+                    m_render_controller->UnregisterTexture(text->GetTextureHandle().value());
+                }
 
+                const auto texture_desc = m_text_controller->GetTextureDescription(font_handle);
+                Renderer::TextureAsset texture_asset{};
+                texture_asset.width = texture_desc.width;
+                texture_asset.height = texture_desc.height;
+                texture_asset.pixels = texture_desc.pixels;
+                text->m_texture_handle = m_render_controller->RegisterTexture(texture_asset);
+            }
+            text->m_font_handle = font_handle;
+
+            if (text->GetTextMesh().has_value()) {
+                m_render_controller->UnregisterMesh(text->GetTextMesh().value());
+            }
             auto [vertices, indices] = m_text_controller->BuildTextMesh(text->GetFontHandle(), text->GetText(),
                                                                         Text::TextAlignment::Left);
             Renderer::MeshAsset text_mesh_asset{};
             for (const auto &vertex: vertices) {
-                text_mesh_asset.vertices.emplace_back(vertex.x, vertex.y, 0);
+                Renderer::MeshVertex mesh_vertex{
+                    .position = glm::vec3(vertex.x, vertex.y, 0),
+                    .uv = glm::vec2(vertex.u, vertex.v),
+                };
+                text_mesh_asset.vertices.emplace_back(mesh_vertex);
             }
             text_mesh_asset.indices = indices;
             auto mesh_handle = m_render_controller->RegisterMesh(text_mesh_asset);

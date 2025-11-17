@@ -45,6 +45,14 @@ namespace Engine::Renderer {
         m_renderer->RemoveMesh(handle);
     }
 
+    TextureHandle RenderController::RegisterTexture(const TextureAsset &texture) const {
+        return m_renderer->AddTexture(texture);
+    }
+
+    void RenderController::UnregisterTexture(const TextureHandle &handle) const {
+        m_renderer->RemoveTexture(handle);
+    }
+
     void RenderController::BeginFrame(const CameraAsset &camera_asset) const {
         m_renderer->PrepareFrame(camera_asset);
     }

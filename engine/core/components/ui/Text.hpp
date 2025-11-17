@@ -38,6 +38,10 @@ namespace Engine::Core::Components::UI {
             return m_text_mesh;
         }
 
+        [[nodiscard]] std::optional<Renderer::TextureHandle> GetTextureHandle() const {
+            return m_texture_handle;
+        }
+
         void SetText(const std::string &text) {
             m_text_content = text;
             m_is_dirty = true;
@@ -52,6 +56,7 @@ namespace Engine::Core::Components::UI {
 
         std::optional<Engine::Text::FontHandle> m_font_handle;
         std::optional<Renderer::MeshHandle> m_text_mesh;
+        std::optional<Renderer::TextureHandle> m_texture_handle;
         bool m_is_dirty;
     };
 }

@@ -10,7 +10,7 @@ namespace Engine::Text {
         m_text_mesh_builder = std::make_unique<TextMeshBuilder>();
     }
 
-    FontHandle TextController::LoadFont(std::string font_name, const int pixel_size) const {
+    FontHandleResult TextController::LoadFont(std::string font_name, const int pixel_size) const {
         spdlog::info("Loading font {} with size {}", font_name, pixel_size);
         const auto font_handle = m_font_manager->LoadFont(font_name, pixel_size);
         return font_handle;

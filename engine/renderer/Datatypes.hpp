@@ -10,10 +10,22 @@
 
 namespace Engine::Renderer {
     typedef uint32_t MeshHandle;
+    typedef uint32_t TextureHandle;
+
+    struct MeshVertex {
+        glm::vec3 position;
+        glm::vec2 uv;
+    };
 
     struct MeshAsset {
-        std::vector<glm::vec3> vertices;
+        std::vector<MeshVertex> vertices;
         std::vector<uint32_t> indices;
+    };
+
+    struct TextureAsset {
+        float width;
+        float height;
+        std::vector<uint8_t> pixels;
     };
 
     struct CameraAsset {
@@ -32,6 +44,7 @@ namespace Engine::Renderer {
     struct UiDrawAsset {
         glm::mat4 model;
         MeshHandle mesh;
+        TextureHandle texture;
         float layer;
         glm::vec4 color;
     };

@@ -23,11 +23,24 @@ namespace Gameplay {
 
     void MeshHandler::CreateFloorMesh(Engine::Core::IEngine &engine) {
         auto quad_mesh = Engine::Renderer::MeshAsset{};
-        quad_mesh.vertices = std::vector<glm::vec3>();
-        quad_mesh.vertices.emplace_back(-0.5, 0.0, -0.5);
-        quad_mesh.vertices.emplace_back(0.5, 0.0, -0.5);
-        quad_mesh.vertices.emplace_back(0.5, 0.0, 0.5);
-        quad_mesh.vertices.emplace_back(-0.5, 0.0, 0.5);
+        quad_mesh.vertices = std::vector<Engine::Renderer::MeshVertex>();
+        quad_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, 0.0, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        quad_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(.5, 0.0, -0.5),
+            .uv = glm::vec2(1.0f, 0.0f)
+        });
+        quad_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, 0.0, 0.5),
+            .uv = glm::vec2(1.0f, 1.0f)
+        });
+        quad_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, 0.0, 0.5),
+            .uv = glm::vec2(0.0f, 1.0f)
+        });
+
         quad_mesh.indices = std::vector<unsigned int>();
         quad_mesh.indices.push_back(0);
         quad_mesh.indices.push_back(1);
@@ -40,11 +53,24 @@ namespace Gameplay {
 
     void MeshHandler::CreateWallMesh(Engine::Core::IEngine &engine) {
         auto quad_mesh = Engine::Renderer::MeshAsset{};
-        quad_mesh.vertices = std::vector<glm::vec3>();
-        quad_mesh.vertices.emplace_back(-0.5, -0.5, 0.0);
-        quad_mesh.vertices.emplace_back(0.5, -0.5, 0.0);
-        quad_mesh.vertices.emplace_back(0.5, 0.5, 0.0);
-        quad_mesh.vertices.emplace_back(-0.5, 0.5, 0.0);
+        quad_mesh.vertices = std::vector<Engine::Renderer::MeshVertex>();
+        quad_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, -0.5, 0.0),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        quad_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(.5, -0.5, 0.0),
+            .uv = glm::vec2(1.0f, 0.0f)
+        });
+        quad_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, 0.5, 0.0),
+            .uv = glm::vec2(1.0f, 1.0f)
+        });
+        quad_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, 0.5, 0.0f),
+            .uv = glm::vec2(0.0f, 1.0f)
+        });
+
         quad_mesh.indices = std::vector<unsigned int>();
         quad_mesh.indices.push_back(0);
         quad_mesh.indices.push_back(1);
@@ -57,14 +83,26 @@ namespace Gameplay {
 
     void MeshHandler::CreateKeyMesh(Engine::Core::IEngine &engine) {
         auto cube_mesh = Engine::Renderer::MeshAsset{};
-        cube_mesh.vertices = std::vector<glm::vec3>();
+        cube_mesh.vertices = std::vector<Engine::Renderer::MeshVertex>();
         cube_mesh.indices = std::vector<unsigned int>();
 
         // front face
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, -0.5);
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, -0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(.5, -0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, 0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, 0.5, -0.5f),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
         cube_mesh.indices.push_back(0);
         cube_mesh.indices.push_back(1);
         cube_mesh.indices.push_back(2);
@@ -73,10 +111,23 @@ namespace Gameplay {
         cube_mesh.indices.push_back(0);
 
         // back face
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, 0.5);
-        cube_mesh.vertices.emplace_back(0.5, -0.5, 0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, 0.5);
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, 0.5);
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, -0.5, 0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(.5, -0.5, 0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, 0.5, 0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, 0.5, 0.5f),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+
         cube_mesh.indices.push_back(4);
         cube_mesh.indices.push_back(5);
         cube_mesh.indices.push_back(6);
@@ -85,10 +136,23 @@ namespace Gameplay {
         cube_mesh.indices.push_back(4);
 
         // top face
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, 0.5);
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, 0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, 0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, 0.5, 0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, 0.5, 0.5f),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+
         cube_mesh.indices.push_back(8);
         cube_mesh.indices.push_back(9);
         cube_mesh.indices.push_back(10);
@@ -97,10 +161,23 @@ namespace Gameplay {
         cube_mesh.indices.push_back(8);
 
         // bottom face
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, -0.5, 0.5);
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, 0.5);
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, -0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, -0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, -0.5, 0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, -0.5, 0.5f),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+
         cube_mesh.indices.push_back(12);
         cube_mesh.indices.push_back(13);
         cube_mesh.indices.push_back(14);
@@ -109,10 +186,23 @@ namespace Gameplay {
         cube_mesh.indices.push_back(12);
 
         // left face
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, 0.5);
-        cube_mesh.vertices.emplace_back(-0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, -0.5);
-        cube_mesh.vertices.emplace_back(-0.5, 0.5, 0.5);
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, -0.5, 0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, -0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, 0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, 0.5, 0.5f),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+
         cube_mesh.indices.push_back(16);
         cube_mesh.indices.push_back(17);
         cube_mesh.indices.push_back(18);
@@ -121,10 +211,23 @@ namespace Gameplay {
         cube_mesh.indices.push_back(16);
 
         // right face
-        cube_mesh.vertices.emplace_back(0.5, -0.5, -0.5);
-        cube_mesh.vertices.emplace_back(0.5, -0.5, 0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, 0.5);
-        cube_mesh.vertices.emplace_back(0.5, 0.5, -0.5);
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(-0.5, -0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, -0.5, 0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, 0.5, -0.5),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+        cube_mesh.vertices.emplace_back(Engine::Renderer::MeshVertex{
+            .position = glm::vec3(0.5, 0.5, -0.5f),
+            .uv = glm::vec2(0.0f, 0.0f)
+        });
+
         cube_mesh.indices.push_back(20);
         cube_mesh.indices.push_back(21);
         cube_mesh.indices.push_back(22);

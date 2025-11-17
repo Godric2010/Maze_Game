@@ -14,15 +14,15 @@ namespace Engine::Text {
         return m_fonts.contains(font_handle);
     }
 
-    FontHandle FontManager::LoadFont(const std::string &font_name, const int pixel_size) {
+    FontHandleResult FontManager::LoadFont(const std::string &font_name, const int pixel_size) {
         auto font_handle = GenerateFontHandle(font_name, pixel_size);
         if (HasFont(font_handle)) {
-            return font_handle;
+            return {font_handle, false};
         }
 
         auto font = BuildFont(font_name, pixel_size);
         m_fonts.emplace(font_handle, std::move(font));
-        return font_handle;
+        return {font_handle, true};
     }
 
     Font FontManager::GetFont(const FontHandle &font_handle) const {

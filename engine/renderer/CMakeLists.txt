@@ -13,7 +13,10 @@ add_library(Renderer STATIC
         renderframework/OpenGL/OpenGLMeshManager.hpp
         renderframework/OpenGL/OpenGLShaderManager.cpp
         renderframework/OpenGL/OpenGLShaderManager.hpp
-        PrimitiveMeshes.hpp)
+        PrimitiveMeshes.hpp
+        renderframework/OpenGL/OpenGLTextureManager.cpp
+        renderframework/OpenGL/OpenGLTextureManager.hpp
+        renderframework/OpenGL/OpenGLTexture.hpp)
 
 target_include_directories(Renderer PUBLIC RenderController.hpp)
 target_link_libraries(Renderer PRIVATE Environment glad::glad glm::glm spdlog::spdlog)

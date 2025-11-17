@@ -3,7 +3,6 @@
 #include <ranges>
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
-
     OpenGlMeshManager::OpenGlMeshManager() {
         m_mesh_handle = 0;
         m_meshes.clear();
@@ -12,7 +11,6 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
     OpenGlMeshManager::~OpenGlMeshManager() = default;
 
     MeshHandle OpenGlMeshManager::AddMesh(const MeshAsset &mesh) {
-
         const MeshHandle handle = m_mesh_handle;
         m_mesh_handle++;
 
@@ -28,7 +26,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         // Bind vertex buffer
         glBindBuffer(GL_ARRAY_BUFFER, m.VBO);
-        const auto size = static_cast<GLsizeiptr>(m.numVertices * sizeof(glm::vec3));
+        const auto size = static_cast<GLsizeiptr>(m.numVertices * sizeof(MeshVertex));
         glBufferData(GL_ARRAY_BUFFER, size, mesh.vertices.data(), GL_STATIC_DRAW);
 
         // Bind index buffer
@@ -37,7 +35,12 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
                      mesh.indices.data(),GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), static_cast<void *>(0));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
+                              reinterpret_cast<void *>(offsetof(MeshVertex, position)));
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
+                              reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
@@ -66,10 +69,4 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         }
         m_meshes.clear();
     }
-
-
-
-
-
-
 } // namespace

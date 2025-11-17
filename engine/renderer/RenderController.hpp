@@ -1,7 +1,3 @@
-//
-// Created by Godri on 8/10/2025.
-//
-
 #pragma once
 #include <memory>
 
@@ -21,6 +17,10 @@ namespace Engine::Renderer {
         [[nodiscard]] MeshHandle RegisterMesh(const MeshAsset &mesh) const;
 
         void UnregisterMesh(const MeshHandle &handle) const;
+
+        [[nodiscard]] TextureHandle RegisterTexture(const TextureAsset &texture) const;
+
+        void UnregisterTexture(const TextureHandle &handle) const;
 
         void BeginFrame(const CameraAsset &camera_asset) const;
 

@@ -9,6 +9,7 @@
 #include "OpenGLMesh.hpp"
 #include "OpenGLMeshManager.hpp"
 #include "OpenGLShaderManager.hpp"
+#include "OpenGLTextureManager.hpp"
 #include "../../shadermanagement/ShaderManager.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
@@ -29,6 +30,10 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         void RemoveMesh(const MeshHandle &mesh_handle) override;
 
+        TextureHandle AddTexture(const TextureAsset &texture) override;
+
+        void RemoveTexture(const TextureHandle &texture_handle) override;
+
         void Shutdown() override;
 
     private:
@@ -39,7 +44,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         std::unique_ptr<OpenGlShaderManager> m_shader_manager;
         std::unique_ptr<OpenGlMeshManager> m_mesh_manager;
+        std::unique_ptr<OpenGLTextureManager> m_texture_manager;
 
-        glm::vec2 m_window_size;
+        glm::vec2 m_window_size{};
     };
 } // namespace

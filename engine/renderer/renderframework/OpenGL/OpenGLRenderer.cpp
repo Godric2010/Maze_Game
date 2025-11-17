@@ -15,6 +15,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         glViewport(0, 0, window_context.drawableWidth, window_context.drawableHeight);
         m_shader_manager = std::make_unique<OpenGlShaderManager>(shader_manager);
         m_mesh_manager = std::make_unique<OpenGlMeshManager>();
+        m_texture_manager = std::make_unique<OpenGLTextureManager>();
 
         m_camera_asset = {};
         m_camera_ubo = 0;
@@ -99,9 +100,14 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         if (!shader_program.has_value()) {
             throw std::runtime_error("Shader program not found");
         }
-        const GLint u_proj = glGetUniformLocation(ui_shader_program.value(), "u_Proj");
-        const GLint u_ui_color = glGetUniformLocation(shader_program.value(), "u_Color");
         glUseProgram(ui_shader_program.value());
+
+        const GLint u_proj = glGetUniformLocation(ui_shader_program.value(), "u_Proj");
+        const GLint u_ui_color = glGetUniformLocation(ui_shader_program.value(), "u_Color");
+        const GLint u_use_texture = glGetUniformLocation(ui_shader_program.value(), "u_UseTexture");
+        const GLint u_ui_texture = glGetUniformLocation(ui_shader_program.value(), "u_Texture");
+
+        glUniform1i(u_ui_texture, 0);
 
         const glm::mat4 ortho = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.0f, 0.0f);
         for (const auto &ui_draw_asset: draw_assets.ui_draw_assets) {
@@ -111,6 +117,15 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
             glBindVertexArray(mesh.VAO);
             glUniformMatrix4fv(u_proj, 1, GL_FALSE, value_ptr(proj));
             glUniform4fv(u_ui_color, 1, glm::value_ptr(ui_draw_asset.color));
+
+            if (ui_draw_asset.texture != 0) {
+                glUniform1i(u_use_texture, GL_TRUE);
+                const auto &texture = m_texture_manager->GetTexture(ui_draw_asset.texture);
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, texture.texture_id);
+            } else {
+                glUniform1i(u_use_texture, GL_FALSE);
+            }
 
             glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
         }
@@ -126,8 +141,17 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         m_mesh_manager->RemoveMesh(mesh_handle);
     }
 
+    TextureHandle OpenGlRenderer::AddTexture(const TextureAsset &texture) {
+        return m_texture_manager->AddTexture(texture);
+    }
+
+    void OpenGlRenderer::RemoveTexture(const TextureHandle &texture_handle) {
+        m_texture_manager->RemoveTexture(texture_handle);
+    }
+
     void OpenGlRenderer::Shutdown() {
         m_shader_manager.reset();
         m_mesh_manager->Clear();
+        m_texture_manager->Clear();
     }
 } // namespace

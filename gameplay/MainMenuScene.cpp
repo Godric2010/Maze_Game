@@ -126,13 +126,17 @@ namespace Gameplay {
         CreateMenuText("Space Maze", "SpaceFont.ttf", 128, glm::vec2(screen.width / 2.0f, screen.height / 2.0f - 300),
                        glm::vec2(1, 1));
 
+        auto position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f - 100.0f);
         CreateMenuButton("StartGameButton", m_start_game_button,
-                         glm::vec2(screen.width / 2.0f, screen.height / 2.0f - 100), {0.0f, 0.7f, 0.0f, 1.0f},
+                         position, {0.0f, 0.7f, 0.0f, 1.0f},
                          {0.0f, 1.0f, 0.0f, 1.0f});
+        CreateMenuText("Start", "SpaceFont.ttf", 32, position, glm::vec2(1, 1));
 
+        position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f + 100.0f);
         CreateMenuButton("QuitGameButton", m_quit_button,
                          glm::vec2(screen.width / 2.0f, screen.height / 2.0f + 100), {0.7f, 0.0f, 0.0f, 1.0f},
                          {1.0f, 0.0f, 0.0f, 1.0f});
+        CreateMenuText("Quit", "SpaceFont.ttf", 33, position, glm::vec2(1, 1));
     }
 
     void MainMenuScene::EvaluateMainMenuUiElementCommands(const uint32_t button_id) {

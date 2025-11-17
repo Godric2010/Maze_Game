@@ -20,7 +20,7 @@ namespace Engine::Text {
 
         ~TextController() = default;
 
-        [[nodiscard]] FontHandle LoadFont(std::string font_name, int pixel_size) const;
+        [[nodiscard]] FontHandleResult LoadFont(std::string font_name, int pixel_size) const;
 
         [[nodiscard]] TextMesh BuildTextMesh(FontHandle font_handle, const std::string &text,
                                              const TextAlignment &alignment) const;

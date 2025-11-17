@@ -12,6 +12,11 @@ namespace Engine::Text {
      */
     using FontHandle = uint32_t;
 
+    struct FontHandleResult {
+        FontHandle font_handle;
+        bool new_atlas_created;
+    };
+
     /**
      * @enum TextAlignment
      * Defines the alignment of a text horizontally.
