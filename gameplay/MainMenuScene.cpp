@@ -93,12 +93,13 @@ namespace Gameplay {
     }
 
     void MainMenuScene::CreateMenuText(const std::string &content, const std::string &font_name, const int font_size,
-                                       const glm::vec2 pos, const glm::vec2 size) const {
+                                       const glm::vec2 pos, const glm::vec2 size)  {
         const auto text_entity = World().CreateEntity("MenuText_" + content);
         const auto text_transform = Engine::Core::Components::UI::RectTransform(pos, size, 2);
         const auto text = Engine::Core::Components::UI::Text(content, font_name, font_size);
         World().AddComponent(text_entity, text_transform);
         World().AddComponent(text_entity, text);
+        m_active_state_entities.push_back(text_entity);
     }
 
     void MainMenuScene::CreateMenuButton(const std::string &name, uint32_t button_id, glm::vec2 pos, glm::vec4 color,
@@ -136,7 +137,7 @@ namespace Gameplay {
         CreateMenuButton("QuitGameButton", m_quit_button,
                          glm::vec2(screen.width / 2.0f, screen.height / 2.0f + 100), {0.7f, 0.0f, 0.0f, 1.0f},
                          {1.0f, 0.0f, 0.0f, 1.0f});
-        CreateMenuText("Quit", "SpaceFont.ttf", 33, position, glm::vec2(1, 1));
+        CreateMenuText("Quit", "SpaceFont.ttf", 32, position, glm::vec2(1, 1));
     }
 
     void MainMenuScene::EvaluateMainMenuUiElementCommands(const uint32_t button_id) {

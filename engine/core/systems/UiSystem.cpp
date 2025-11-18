@@ -59,7 +59,7 @@ namespace Engine::Core::Systems {
         }
     }
 
-    void UiSystem::HandleTextLabels() const {
+    void UiSystem::HandleTextLabels() {
         auto text_labels = GameWorld()->GetComponentsOfType<Components::UI::Text>();
         for (const auto text: text_labels | std::views::keys) {
             if (!text->IsDirty()) {
@@ -78,9 +78,13 @@ namespace Engine::Core::Systems {
                 texture_asset.width = texture_desc.width;
                 texture_asset.height = texture_desc.height;
                 texture_asset.pixels = texture_desc.pixels;
-                text->m_texture_handle = m_render_controller->RegisterTexture(texture_asset);
+                const auto texture_handle = m_render_controller->RegisterTexture(texture_asset);
+                m_font_textures[font_handle] = texture_handle;
             }
+
             text->m_font_handle = font_handle;
+            text->m_texture_handle = m_font_textures.at(font_handle);
+
 
             if (text->GetTextMesh().has_value()) {
                 m_render_controller->UnregisterMesh(text->GetTextMesh().value());

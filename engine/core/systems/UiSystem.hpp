@@ -1,4 +1,5 @@
 #pragma once
+#include <unordered_map>
 #include "ISystem.hpp"
 #include "ui/Button.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -25,12 +26,13 @@ namespace Engine::Core::Systems {
 
     private:
         Text::TextController *m_text_controller = nullptr;
-        Renderer::RenderController* m_render_controller = nullptr;
+        Renderer::RenderController *m_render_controller = nullptr;
+        std::unordered_map<Text::FontHandle, Renderer::TextureHandle> m_font_textures;
 
         static bool IsMouseOverElement(glm::vec2 mouse_pos, const Components::UI::RectTransform *rect);
 
         void HandleButtons(const InputBuffer &input) const;
 
-        void HandleTextLabels() const;
+        void HandleTextLabels();
     };
 } // namespace
