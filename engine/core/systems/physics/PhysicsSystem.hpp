@@ -1,9 +1,5 @@
 #pragma once
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
+#include <memory>
 #include "Collider.hpp"
 #include "collision/ColliderCache.hpp"
 #include "ISystem.hpp"
