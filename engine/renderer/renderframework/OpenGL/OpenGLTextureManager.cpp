@@ -1,6 +1,8 @@
 #include "OpenGLTextureManager.hpp"
 
 #include <ranges>
+#include <stdexcept>
+#include <string>
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
     OpenGLTextureManager::OpenGLTextureManager() = default;
