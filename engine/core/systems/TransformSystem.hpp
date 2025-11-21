@@ -20,9 +20,5 @@ namespace Engine::Core::Systems {
 
     private:
         static glm::mat4 CalculateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
-
-        static glm::mat4 CalculateUiModelMatrix(const Components::UI::RectTransform *rect_transform);
-
-
     };
 } // namespace

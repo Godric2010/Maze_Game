@@ -85,17 +85,21 @@ namespace Gameplay {
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width, screen.height);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform(
-            bg_position, bg_size, bg_pivot, 0.0f, 1);
+        const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform()
+                .SetPosition(bg_position)
+                .SetSize(bg_size)
+                .SetPivot(bg_pivot);
         World().AddComponent(pause_entity, bg_rect_transform);
         constexpr auto bg_image = Engine::Core::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
         World().AddComponent(pause_entity, bg_image);
     }
 
     void MainMenuScene::CreateMenuText(const std::string &content, const std::string &font_name, const int font_size,
-                                       const glm::vec2 pos, const glm::vec2 size)  {
+                                       const glm::vec2 pos, const glm::vec2 size) {
         const auto text_entity = World().CreateEntity("MenuText_" + content);
-        const auto text_transform = Engine::Core::Components::UI::RectTransform(pos, size, 2);
+        const auto text_transform = Engine::Core::Components::UI::RectTransform()
+                .SetPosition(pos)
+                .SetSize(size);
         const auto text = Engine::Core::Components::UI::Text(content, font_name, font_size);
         World().AddComponent(text_entity, text_transform);
         World().AddComponent(text_entity, text);
@@ -107,7 +111,10 @@ namespace Gameplay {
         constexpr auto button_size = glm::vec2(200, 100);
         const auto start_game_button_entity = World().CreateEntity(name);
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto resume_rect = Engine::Core::Components::UI::RectTransform(pos, button_size, pivot, 0.0f, 1);
+        auto resume_rect = Engine::Core::Components::UI::RectTransform()
+                .SetPosition(pos)
+                .SetSize(button_size)
+                .SetPivot(pivot);
         World().AddComponent(start_game_button_entity, resume_rect);
 
         auto start_game = Engine::Core::Components::UI::Button();

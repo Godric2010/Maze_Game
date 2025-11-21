@@ -68,8 +68,10 @@ namespace Gameplay {
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width, screen.height);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform(
-            bg_position, bg_size, bg_pivot, 0.0f, 1);
+        const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform()
+                .SetPosition(bg_position)
+                .SetSize(bg_size)
+                .SetPivot(bg_pivot);
         World().AddComponent(pause_entity, bg_rect_transform);
         constexpr auto bg_image = Engine::Core::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
         World().AddComponent(pause_entity, bg_image);
@@ -78,7 +80,10 @@ namespace Gameplay {
         const auto main_menu_button = World().CreateEntity("MainMenuButton");
         const auto pos = glm::vec2(screen.width / 2, screen.height / 2 + 200);
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto main_menu_button_rect = Engine::Core::Components::UI::RectTransform(pos, button_size, pivot, 0.0f, 1);
+        auto main_menu_button_rect = Engine::Core::Components::UI::RectTransform()
+                .SetPosition(pos)
+                .SetSize(button_size)
+                .SetPivot(pivot);
         World().AddComponent(main_menu_button, main_menu_button_rect);
 
         auto main_menu = Engine::Core::Components::UI::Button();

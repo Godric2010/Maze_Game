@@ -72,8 +72,8 @@ namespace Engine::Core::Systems {
         for (size_t i = 0; i < rect_transforms.size(); ++i) {
             const auto [rect_transform, entity] = rect_transforms[i];
             Renderer::UiDrawAsset ui_draw_asset{};
-            ui_draw_asset.model = rect_transform->GetMatrix();
-            ui_draw_asset.layer = rect_transform->LayerZ();
+            ui_draw_asset.model = rect_transform->GetModelMatrix();
+            ui_draw_asset.layer = rect_transform->GetLayer();
 
             const auto image_component = GameWorld()->GetComponent<Components::UI::Image>(entity);
             if (image_component != nullptr) {

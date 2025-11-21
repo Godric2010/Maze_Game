@@ -42,6 +42,8 @@ add_library(Core STATIC
         ISceneManager.hpp
         SceneArgs.hpp
         components/ui/Text.hpp
+        systems/RectTransformSystem.cpp
+        systems/RectTransformSystem.hpp
 )
 
 target_include_directories(Core PUBLIC

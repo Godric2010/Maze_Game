@@ -164,7 +164,9 @@ namespace Gameplay {
         const auto screen = Screen();
         constexpr glm::vec2 size = {100, 100};
         const glm::vec2 position = {screen.width - size.x - 50, screen.height - size.y - 50};
-        const auto transform = Engine::Core::Components::UI::RectTransform(position, size, 0);
+        const auto transform = Engine::Core::Components::UI::RectTransform()
+                .SetPosition(position)
+                .SetSize(size);
         World().AddComponent(key_indicator, transform);
 
         constexpr auto image = Engine::Core::Components::UI::Image{.color = {1, 0, 0, 0.5}};
@@ -178,8 +180,10 @@ namespace Gameplay {
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width * 0.9f, screen.height * 0.9f);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform(
-            bg_position, bg_size, bg_pivot, 0.0f, 0);
+        const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform()
+                .SetPosition(bg_position)
+                .SetSize(bg_size)
+                .SetPivot(bg_pivot);
         World().AddComponent(pause_entity, bg_rect_transform);
 
         constexpr auto bg_image = Engine::Core::Components::UI::Image{.color = {0.3, 0.3, 0.3, 0.9}};
@@ -189,7 +193,10 @@ namespace Gameplay {
         const auto resume_button_entity = World().CreateEntity("ResumeButton");
         const auto pos = glm::vec2(screen.width / 2, screen.height / 2 - 100);
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto resume_rect = Engine::Core::Components::UI::RectTransform(pos, button_size, pivot, 0.0f, 1);
+        auto resume_rect = Engine::Core::Components::UI::RectTransform()
+                .SetPosition(pos)
+                .SetSize(button_size)
+                .SetPivot(pivot);
         World().AddComponent(resume_button_entity, resume_rect);
 
         auto resume_button = Engine::Core::Components::UI::Button();
@@ -203,8 +210,10 @@ namespace Gameplay {
 
         const auto main_menu_button_entity = World().CreateEntity("MainMenuButton");
         const auto main_menu_button_pos = pos + glm::vec2(0, 200);
-        auto main_menu_button_rect = Engine::Core::Components::UI::RectTransform(
-            main_menu_button_pos, button_size, pivot, 0.0f, 1);
+        auto main_menu_button_rect = Engine::Core::Components::UI::RectTransform()
+                .SetPosition(main_menu_button_pos)
+                .SetSize(button_size)
+                .SetPivot(pivot);
         World().AddComponent(main_menu_button_entity, main_menu_button_rect);
 
         auto main_menu_button = Engine::Core::Components::UI::Button();
@@ -219,8 +228,10 @@ namespace Gameplay {
         const auto quit_button_entity = World().CreateEntity("QuitButton");
         const auto quit_pos = pos + glm::vec2(0, 400);
         World().AddComponent(quit_button_entity,
-                             Engine::Core::Components::UI::RectTransform(
-                                 quit_pos, button_size, pivot, 0.0f, 1));
+                             Engine::Core::Components::UI::RectTransform()
+                             .SetPosition(quit_pos)
+                             .SetSize(button_size)
+                             .SetPivot(pivot));
         auto quit_button = Engine::Core::Components::UI::Button();
         quit_button.button_id = 3;
         quit_button.enabled = true;
