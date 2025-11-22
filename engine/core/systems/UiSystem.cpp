@@ -27,8 +27,8 @@ namespace Engine::Core::Systems {
     }
 
     bool UiSystem::IsMouseOverElement(const glm::vec2 mouse_pos, const Components::UI::RectTransform *rect) {
-        if (mouse_pos.x > rect->GetGlobalPosition().x - rect->GetGlobalSize().x &&
-            mouse_pos.y > rect->GetGlobalPosition().y - rect->GetGlobalSize().y &&
+        if (mouse_pos.x > rect->GetGlobalPosition().x &&
+            mouse_pos.y > rect->GetGlobalPosition().y &&
             mouse_pos.x < rect->GetGlobalPosition().x + rect->GetGlobalSize().x &&
             mouse_pos.y < rect->GetGlobalPosition().y + rect->GetGlobalSize().y) {
             return true;
@@ -61,7 +61,7 @@ namespace Engine::Core::Systems {
 
     void UiSystem::HandleTextLabels() {
         auto text_labels = GameWorld()->GetComponentsOfType<Components::UI::Text>();
-        for (const auto text: text_labels | std::views::keys) {
+        for (const auto [text, entity]: text_labels) {
             if (!text->IsDirty()) {
                 continue;
             }
@@ -89,21 +89,26 @@ namespace Engine::Core::Systems {
             if (text->GetTextMesh().has_value()) {
                 m_render_controller->UnregisterMesh(text->GetTextMesh().value());
             }
-            auto [vertices, indices] = m_text_controller->BuildTextMesh(text->GetFontHandle(), text->GetText(),
-                                                                        Text::TextAlignment::Left);
+            auto text_mesh = m_text_controller->BuildTextMesh(text->GetFontHandle(), text->GetText(),
+                                                              Text::TextAlignment::Left);
             Renderer::MeshAsset text_mesh_asset{};
-            for (const auto &vertex: vertices) {
+            for (const auto &vertex: text_mesh.vertices) {
                 Renderer::MeshVertex mesh_vertex{
                     .position = glm::vec3(vertex.x, vertex.y, 0),
                     .uv = glm::vec2(vertex.u, vertex.v),
                 };
                 text_mesh_asset.vertices.emplace_back(mesh_vertex);
             }
-            text_mesh_asset.indices = indices;
+
+
+            text_mesh_asset.indices = text_mesh.indices;
             auto mesh_handle = m_render_controller->RegisterMesh(text_mesh_asset);
 
             text->m_text_mesh = mesh_handle;
             text->m_is_dirty = false;
+
+            const auto rect_transform = GameWorld()->GetComponent<Components::UI::RectTransform>(entity);
+            rect_transform->SetSize(glm::vec2(text_mesh.dimensions_width, text_mesh.dimensions_height));
         }
     }
 } // namespace

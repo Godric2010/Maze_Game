@@ -3,21 +3,36 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "GameWorld.hpp"
+#include "ui/Text.hpp"
 
 namespace Engine::Core::Systems {
     void RectTransformSystem::Initialize() {
     }
 
     void RectTransformSystem::Run(float delta_time) {
-        auto rect_transform_components = GameWorld()->GetComponentsOfType<Components::UI::RectTransform>();
-        for (const auto rect_transform_component: rect_transform_components | std::views::keys) {
-            if (!rect_transform_component->m_is_dirty) {
+        m_calculated_layouts.clear();
+        m_dirty_rect_transforms.clear();
+
+        const auto rect_transform_components = GameWorld()->GetComponentsOfType<Components::UI::RectTransform>();
+        for (const auto [rect_transform, entity]: rect_transform_components) {
+            if (!rect_transform->m_is_dirty) {
                 continue;
             }
+            m_dirty_rect_transforms.emplace(entity, rect_transform);
+        }
 
-            const auto layout_result = CreateUiLayoutResult(*rect_transform_component);
-            rect_transform_component->m_layout_result = layout_result;
-            rect_transform_component->m_is_dirty = false;
+        for (const auto [entity, dirty_rect]: m_dirty_rect_transforms) {
+            if (m_calculated_layouts.contains(entity)) {
+                continue;
+            }
+            const auto layout_data = CreateLayoutData(dirty_rect);
+            const auto ui_layout = CreateUiLayoutResult(layout_data);
+            m_calculated_layouts.emplace(entity, ui_layout);
+        }
+
+        for (const auto [entity, layout]: m_calculated_layouts) {
+            m_dirty_rect_transforms[entity]->m_layout_result = layout;
+            m_dirty_rect_transforms[entity]->m_is_dirty = false;
         }
     }
 
@@ -46,29 +61,54 @@ namespace Engine::Core::Systems {
         };
     }
 
-    Components::UI::UiLayoutResult RectTransformSystem::CreateUiLayoutResult(
-        const Components::UI::RectTransform &rect_transform) {
+    LayoutData RectTransformSystem::CreateLayoutData(const Components::UI::RectTransform *rect_transform) {
+        LayoutData result{};
+        result.local_position = rect_transform->GetLocalPosition();
+        result.local_size = rect_transform->GetLocalSize();
+        result.pivot = rect_transform->GetPivot();
+
+        const auto anchor_value = GetAnchorValue(rect_transform->GetAnchor());
+
+        if (rect_transform->GetParent().has_value()) {
+            const auto parent_layout = GetParentLayoutResult(rect_transform->GetParent().value());
+            result.parent_layer = parent_layout.layer;
+            result.anchor_point = parent_layout.global_position + parent_layout.global_size * anchor_value;
+        } else {
+            result.anchor_point = m_world_origin + m_world_scale * anchor_value;
+            result.parent_layer = 0;
+        }
+        return result;
+    }
+
+    Components::UI::UiLayoutResult RectTransformSystem::CreateUiLayoutResult(const LayoutData &rect_layout) {
         Components::UI::UiLayoutResult result{};
 
-        glm::vec2 anchor_point;
-        if (rect_transform.GetParent().has_value()) {
-            // TODO: use the parent here
-            anchor_point = glm::vec2(0, 0);
-        } else {
-            anchor_point = m_world_origin + m_world_scale * GetAnchorValue(rect_transform.GetAnchor());
-        }
-
-        const glm::vec2 global_position = anchor_point + rect_transform.GetLocalPosition() - rect_transform.GetLocalSize() *
-                                          rect_transform.GetPivot();
+        const glm::vec2 global_position = rect_layout.anchor_point + rect_layout.local_position - rect_layout.local_size
+                                          * rect_layout.pivot;
 
         result.global_position = global_position;
-        result.global_size = rect_transform.GetLocalSize(); // TODO: Handle special cases like text size here!
+        result.global_size = rect_layout.local_size;
+        result.layer = rect_layout.parent_layer + 1;
 
         auto matrix = glm::mat4(1.0f);
-        matrix = scale(matrix, glm::vec3(result.global_size.x, result.global_size.y, 0.0f));
         matrix = translate(matrix, glm::vec3(result.global_position.x, result.global_position.y, 0.0f));
+        matrix = scale(matrix, glm::vec3(result.global_size.x, result.global_size.y, 1.0f));
         result.global_matrix = matrix;
 
         return result;
+    }
+
+    Components::UI::UiLayoutResult RectTransformSystem::GetParentLayoutResult(const Ecs::EntityId &entity) {
+        if (m_calculated_layouts.contains(entity)) {
+            return m_calculated_layouts[entity];
+        }
+
+        const auto parent_rect_transform = GameWorld()->GetComponent<Components::UI::RectTransform>(entity);
+        const auto layout_data = CreateLayoutData(parent_rect_transform);
+        auto layout = CreateUiLayoutResult(layout_data);
+        if (m_dirty_rect_transforms.contains(entity)) {
+            m_calculated_layouts.emplace(entity, layout);
+        }
+        return layout;
     }
 } // namespace

@@ -65,6 +65,12 @@ namespace Engine::Text {
             index_base += 4;
         }
 
+        for (auto &vertex: text_mesh.vertices) {
+            vertex.x /= layout.Width();
+            vertex.y /= layout.Height();
+        }
+        text_mesh.dimensions_width = layout.Width();
+        text_mesh.dimensions_height = layout.Height();
         return text_mesh;
     }
 } // namespace

@@ -45,6 +45,8 @@ namespace Engine::Text {
     struct TextMesh {
         std::vector<TextMeshVertex> vertices;
         std::vector<uint32_t> indices;
+        float dimensions_width;
+        float dimensions_height;
     };
 
     /**

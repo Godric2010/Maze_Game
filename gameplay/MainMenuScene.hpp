@@ -1,6 +1,12 @@
 #pragma once
 #include "Camera.hpp"
 #include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
 #include "IScene.hpp"
 #include "MeshHandler.hpp"
 #include "Camera.hpp"
@@ -29,6 +35,7 @@ namespace Gameplay {
         void OnExit() override;
 
     private:
+        Engine::Ecs::EntityId m_background_entity = Engine::Ecs::INVALID_ENTITY_ID;
         std::vector<Engine::Ecs::EntityId> m_active_state_entities;
         const int m_start_game_button = 1;
         const int m_quit_button = 2;
@@ -48,13 +55,15 @@ namespace Gameplay {
 
         void SwitchUiElements(MenuState new_state);
 
-        void CreateMenuBackground() const;
+        Engine::Ecs::EntityId CreateMenuBackground() const;
 
-        void CreateMenuText(const std::string &content, const std::string &font_name, int font_size, glm::vec2 pos,
-                            glm::vec2 size);
+        Engine::Ecs::EntityId CreateMenuText(const std::string &content, const std::string &font_name, int font_size,
+                                             glm::vec2 pos,
+                                             glm::vec2 size, Engine::Ecs::EntityId parent_entity);
 
-        void CreateMenuButton(const std::string &name, uint32_t button_id, glm::vec2 pos, glm::vec4 color,
-                              glm::vec4 highlight_color);
+        Engine::Ecs::EntityId CreateMenuButton(const std::string &name, uint32_t button_id, glm::vec2 pos,
+                                               glm::vec4 color,
+                                               glm::vec4 highlight_color, Engine::Ecs::EntityId parent_entity);
 
         void CreateMainMenuUiElements();
 

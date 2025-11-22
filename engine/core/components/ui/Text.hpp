@@ -5,8 +5,8 @@
 #pragma once
 #include <string>
 #include <optional>
-#include <utility>
 #include "Types.hpp"
+#include "../renderer/Datatypes.hpp"
 
 namespace Engine::Core::Systems {
     class UiSystem;
@@ -24,6 +24,7 @@ namespace Engine::Core::Components::UI {
         [[nodiscard]] std::string GetText() const { return m_text_content; }
         [[nodiscard]] std::string GetFontName() const { return m_font_name; }
         [[nodiscard]] int GetFontSize() const { return m_text_size_in_px; }
+        [[nodiscard]] std::optional<std::pair<float, float> > GetTextDimensions() const { return m_text_dimensions; }
         [[nodiscard]] bool IsDirty() const { return m_is_dirty; }
 
 
@@ -54,6 +55,8 @@ namespace Engine::Core::Components::UI {
         std::string m_font_name;
         int m_text_size_in_px;
 
+
+        std::optional<std::pair<float, float> > m_text_dimensions;
         std::optional<Engine::Text::FontHandle> m_font_handle;
         std::optional<Renderer::MeshHandle> m_text_mesh;
         std::optional<Renderer::TextureHandle> m_texture_handle;
