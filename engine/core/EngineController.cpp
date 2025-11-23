@@ -13,7 +13,7 @@ namespace Engine::Core {
     EngineController::~EngineController() = default;
 
     void EngineController::Initialize(const std::vector<Ecs::SystemMeta>& systems) {
-        m_window = Environment::CreateWindow();
+        m_window = Environment::CreateEnvWindow();
         const Environment::WindowConfig config{
             .width = 1920,
             .height = 1080,

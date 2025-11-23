@@ -11,7 +11,7 @@ namespace Engine::Environment {
      * Create a new window instance.
      * @return The new window instance as unique_ptr.
      */
-    static std::unique_ptr<IWindow> CreateWindow() {
+    static std::unique_ptr<IWindow> CreateEnvWindow() {
         return std::make_unique<SDLWindow>();
     }
 
