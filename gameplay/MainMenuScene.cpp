@@ -1,15 +1,12 @@
 #include "MainMenuScene.hpp"
 
 #include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
 #include "GameScene.hpp"
 #include "ui/Text.hpp"
 
 
 namespace Gameplay {
-    MainMenuScene::MainMenuScene(MeshHandler *mesh_handler) {
+    MainMenuScene::MainMenuScene(MeshHandler* mesh_handler) {
         m_mesh_handler = mesh_handler;
     }
 
@@ -27,8 +24,8 @@ namespace Gameplay {
         SwitchUiElements(MenuState::Main);
     }
 
-    void MainMenuScene::EvaluateSystemCommands(const std::vector<std::any> &commands) {
-        for (const std::any &command: commands) {
+    void MainMenuScene::EvaluateSystemCommands(const std::vector<std::any>& commands) {
+        for (const std::any& command: commands) {
             if (command.type() == typeid(Engine::Core::Commands::UI::ButtonClickedCommand)) {
                 auto button_clicked = std::any_cast<Engine::Core::Commands::UI::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
@@ -69,7 +66,7 @@ namespace Gameplay {
     }
 
     void MainMenuScene::SwitchUiElements(const MenuState new_state) {
-        for (auto &active_element: m_active_state_entities) {
+        for (auto& active_element: m_active_state_entities) {
             World().DestroyEntity(active_element);
         }
 
@@ -100,7 +97,7 @@ namespace Gameplay {
         return bg_entity;
     }
 
-    Engine::Ecs::EntityId MainMenuScene::CreateMenuText(const std::string &content, const std::string &font_name,
+    Engine::Ecs::EntityId MainMenuScene::CreateMenuText(const std::string& content, const std::string& font_name,
                                                         const int font_size,
                                                         const glm::vec2 pos, const glm::vec2 size,
                                                         const Engine::Ecs::EntityId parent_entity) {
@@ -118,9 +115,8 @@ namespace Gameplay {
         return text_entity;
     }
 
-    Engine::Ecs::EntityId MainMenuScene::CreateMenuButton(const std::string &name, uint32_t button_id, glm::vec2 pos,
-                                                          glm::vec4 color,
-                                                          glm::vec4 highlight_color,
+    Engine::Ecs::EntityId MainMenuScene::CreateMenuButton(const std::string& name, uint32_t button_id, glm::vec2 pos,
+                                                          const std::string& content,
                                                           Engine::Ecs::EntityId parent_entity) {
         constexpr auto button_size = glm::vec2(200, 70);
         const auto button_entity = World().CreateEntity(name);
@@ -136,34 +132,31 @@ namespace Gameplay {
         auto button = Engine::Core::Components::UI::Button();
         button.button_id = button_id;
         button.enabled = true;
-        button.default_color = color;
-        button.highlight_color = highlight_color;
-        button.click_color = {1.0f, 1.0f, 1.0f, 1.0f};
-        button.disabled_color = {0.1f, 0.1f, 0.1f, 0.3f};
+        button.default_color = m_button_default_color;
+        button.highlight_color = m_button_highlight_color;
+        button.click_color = m_button_click_color;
+        button.disabled_color = m_button_disabled_color;
         World().AddComponent(button_entity, button);
         m_active_state_entities.push_back(button_entity);
+
+        CreateMenuText(content, "SpaceFont.ttf", 32, glm::vec2(0, 10), glm::vec2(1, 1), button_entity);
         return button_entity;
     }
 
     void MainMenuScene::CreateMainMenuUiElements() {
-        const auto screen = Screen();
-
-        CreateMenuText("Space Maze", "SpaceFont.ttf", 128, glm::vec2(0.0f, -300),
-                       glm::vec2(1, 1), m_background_entity);
+        CreateMenuText("Space Maze",
+                       "SpaceFont.ttf",
+                       128,
+                       glm::vec2(0.0f, -300),
+                       glm::vec2(1, 1),
+                       m_background_entity
+                );
 
         auto position = glm::vec2(0.0f, -100.0f);
-        const auto start_button_entity = CreateMenuButton("StartGameButton", m_start_game_button,
-                                                          position, {1.0f, 1.0f, 1.0f, 0.0f},
-                                                          {1.0f, 1.0f, 1.0f, 0.3f},
-                                                          m_background_entity);
-        CreateMenuText("Start", "SpaceFont.ttf", 32, glm::vec2(0, 10), glm::vec2(1, 1), start_button_entity);
+        CreateMenuButton("StartGameButton", m_start_game_button, position, "Start", m_background_entity);
 
         position = glm::vec2(0.0f, 100.0f);
-        const auto quit_button_entity = CreateMenuButton("QuitGameButton", m_quit_button,
-                                                         position,
-                                                         {1.0f, 1.0f, 1.0f, 0.0f},
-                                                         {1.0f, 1.0f, 1.0f, 0.3f}, m_background_entity);
-        CreateMenuText("Quit", "SpaceFont.ttf", 32, glm::vec2(0, 10), glm::vec2(1, 1), quit_button_entity);
+        CreateMenuButton("QuitGameButton", m_quit_button, position, "Quit", m_background_entity);
     }
 
     void MainMenuScene::EvaluateMainMenuUiElementCommands(const uint32_t button_id) {
@@ -175,55 +168,67 @@ namespace Gameplay {
     }
 
     void MainMenuScene::CreateDifficultyUiElements() {
-        const auto screen = Screen();
-        CreateMenuButton("EasyDifficultyButton", m_easy_difficulty_button,
-                         glm::vec2(screen.width / 2.0f - 300, screen.height / 2.0f), {1.0, 0.6f, 0.6f, 1.0f},
-                         {1.0, 0.0f, 0.0f, 1.0f}, m_background_entity);
-        CreateMenuButton("MediumDifficultyButton", m_medium_difficulty_button,
-                         glm::vec2(screen.width / 2.0f, screen.height / 2.0f), {1.0, 0.4f, 0.4f, 1.0f},
-                         {1.0, 0.0f, 0.0f, 1.0f}, m_background_entity);
-        CreateMenuButton("HardDifficultyButton", m_hard_difficulty_button,
-                         glm::vec2(screen.width / 2.0f + 300, screen.height / 2.0f), {1.0, 0.2f, 0.2f, 1.0f},
-                         {1.0, 0.0f, 0.0f, 1.0f}, m_background_entity);
-        CreateMenuButton("BackButton", m_back_button,
-                         glm::vec2(screen.width / 2.0f - 300, screen.height / 2.0f + 300),
-                         {0.0, 0.0f, 0.7f, 1.0f}, {0.0, 0.0f, 1.0f, 1.0f}, m_background_entity);
-        CreateMenuButton("DevSceneButton", m_dev_scene_button,
-                         glm::vec2(screen.width / 2.0f + 300, screen.height / 2.0f + 300),
-                         {0.7, 0.7f, 0.7f, 1.0f}, {1.0, 1.0f, 1.0f, 1.0f}, m_background_entity);
+        CreateMenuButton("EasyDifficultyButton",
+                         m_easy_difficulty_button,
+                         glm::vec2(-300, 0.0f),
+                         "Easy",
+                         m_background_entity
+                );
+        CreateMenuButton("MediumDifficultyButton",
+                         m_medium_difficulty_button,
+                         glm::vec2(0.0f, 0.0f),
+                         "Medium",
+                         m_background_entity
+                );
+        CreateMenuButton("HardDifficultyButton",
+                         m_hard_difficulty_button,
+                         glm::vec2(300, 0.0f),
+                         "Hard",
+                         m_background_entity
+                );
+        CreateMenuButton("BackButton", m_back_button, glm::vec2(-300, 300), "<-", m_background_entity);
+        CreateMenuButton("DevSceneButton", m_dev_scene_button, glm::vec2(300, 300), "Dev", m_background_entity);
     }
 
     void MainMenuScene::EvaluateDifficultyUiElementCommands(const uint32_t button_id) {
         if (button_id == m_easy_difficulty_button) {
-            SceneManager().LoadScene("Game", Engine::Core::SceneArgs{
+            SceneManager().LoadScene("Game",
+                                     Engine::Core::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Easy
                                          }
-                                     });
+                                     }
+                    );
         } else if (button_id == m_medium_difficulty_button) {
-            SceneManager().LoadScene("Game", Engine::Core::SceneArgs{
+            SceneManager().LoadScene("Game",
+                                     Engine::Core::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Medium
                                          }
-                                     });
+                                     }
+                    );
         } else if (button_id == m_hard_difficulty_button) {
-            SceneManager().LoadScene("Game", Engine::Core::SceneArgs{
+            SceneManager().LoadScene("Game",
+                                     Engine::Core::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Hard
                                          }
-                                     });
+                                     }
+                    );
         } else if (button_id == m_back_button) {
             SwitchUiElements(MenuState::Main);
         } else if (button_id == m_dev_scene_button) {
-            SceneManager().LoadScene("Game", Engine::Core::SceneArgs{
+            SceneManager().LoadScene("Game",
+                                     Engine::Core::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Developer
                                          }
-                                     });
+                                     }
+                    );
         }
     }
 } // namespace

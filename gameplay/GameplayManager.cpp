@@ -5,7 +5,7 @@
 #include "MainMenuScene.hpp"
 
 namespace Gameplay {
-    GameplayManager::GameplayManager(Engine::Core::IEngine &engine) : m_engine(engine) {
+    GameplayManager::GameplayManager(Engine::Core::IEngine& engine) : m_engine(engine) {
         m_mesh_handler = std::make_unique<MeshHandler>(engine);
 
         const Engine::Core::InputMap player_input_map{
@@ -64,23 +64,36 @@ namespace Gameplay {
     GameplayManager::~GameplayManager() = default;
 
     void GameplayManager::Initialize() const {
-        m_engine.RegisterScene("MainMenu", [](const Engine::Core::SceneArgs &args) {
-            const auto &mesh_handler = std::any_cast<MeshHandler *>(args.payload);
-            return std::make_unique<MainMenuScene>(mesh_handler);
-        });
+        m_engine.RegisterScene("MainMenu",
+                               [](const Engine::Core::SceneArgs& args) {
+                                   const auto& mesh_handler = std::any_cast<MeshHandler*>(args.payload);
+                                   return std::make_unique<MainMenuScene>(mesh_handler);
+                               }
+                );
 
-        m_engine.RegisterScene("Game", [](const Engine::Core::SceneArgs &args) {
-            const auto game_scene_settings = std::any_cast<GameSceneSettings>(args.payload);
-            return std::make_unique<GameScene>(game_scene_settings);
-        });
+        m_engine.RegisterScene("Game",
+                               [](const Engine::Core::SceneArgs& args) {
+                                   const auto game_scene_settings = std::any_cast<GameSceneSettings>(args.payload);
+                                   return std::make_unique<GameScene>(game_scene_settings);
+                               }
+                );
 
-        m_engine.RegisterScene("GameEnd", [](const Engine::Core::SceneArgs &args) {
-            const auto game_end_data = std::any_cast<GameEndShowData>(args.payload);
-            return std::make_unique<GameEndScene>(game_end_data);
-        });
+        m_engine.RegisterScene("GameEnd",
+                               [](const Engine::Core::SceneArgs& args) {
+                                   const auto game_end_data = std::any_cast<GameEndShowData>(args.payload);
+                                   return std::make_unique<GameEndScene>(game_end_data);
+                               }
+                );
 
         m_engine.SetInitialScene("MainMenu", Engine::Core::SceneArgs{m_mesh_handler.get()});
+        // m_engine.SetInitialScene("GameEnd",
+        //                          Engine::Core::SceneArgs{
+        //                              GameEndShowData{m_mesh_handler.get(), 72.0f},
+        //
+        //                          }
+        // );
     }
+
 
     void GameplayManager::Shutdown() {
     }

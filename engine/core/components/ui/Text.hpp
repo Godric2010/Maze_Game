@@ -14,12 +14,20 @@ namespace Engine::Core::Systems {
 
 namespace Engine::Core::Components::UI {
     struct Text {
-        explicit Text(const std::string &text, const std::string &font_name, const int font_size) : m_is_dirty(true) {
+        Text(const std::string& text, const std::string& font_name, const int font_size) : m_is_dirty(true) {
             m_text_content = text;
             m_font_name = font_name;
             m_text_size_in_px = font_size;
             m_text_mesh = std::nullopt;
         }
+
+        Text() {
+            m_text_content = "";
+            m_font_name = "";
+            m_text_size_in_px = 0;
+            m_is_dirty = false;
+        }
+
 
         [[nodiscard]] std::string GetText() const { return m_text_content; }
         [[nodiscard]] std::string GetFontName() const { return m_font_name; }
@@ -43,9 +51,22 @@ namespace Engine::Core::Components::UI {
             return m_texture_handle;
         }
 
-        void SetText(const std::string &text) {
+        Text &SetText(const std::string& text) {
             m_text_content = text;
             m_is_dirty = true;
+            return *this;
+        }
+
+        Text &SetFontName(const std::string& font_name) {
+            m_font_name = font_name;
+            m_is_dirty = true;
+            return *this;
+        }
+
+        Text &SetFontSize(const int font_size) {
+            m_text_size_in_px = font_size;
+            m_is_dirty = true;
+            return *this;
         }
 
     private:

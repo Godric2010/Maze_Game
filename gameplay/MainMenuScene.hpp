@@ -1,19 +1,7 @@
 #pragma once
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
 #include "IScene.hpp"
 #include "MeshHandler.hpp"
-#include "Camera.hpp"
 #include "Transform.hpp"
-#include "commands/ui/ButtonClickedCommand.hpp"
-#include "ui/Button.hpp"
-#include "ui/Image.hpp"
 #include "ui/RectTransform.hpp"
 
 namespace Gameplay {
@@ -48,6 +36,11 @@ namespace Gameplay {
 
         MenuState m_menu_state = MenuState::Main;
 
+        glm::vec4 m_button_default_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+        glm::vec4 m_button_highlight_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.3f);
+        glm::vec4 m_button_click_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.8f);
+        glm::vec4 m_button_disabled_color = glm::vec4(0.0f, 0.0f, 0.0f, 0.1f);
+
         //temp:
         MeshHandler *m_mesh_handler;
 
@@ -62,8 +55,7 @@ namespace Gameplay {
                                              glm::vec2 size, Engine::Ecs::EntityId parent_entity);
 
         Engine::Ecs::EntityId CreateMenuButton(const std::string &name, uint32_t button_id, glm::vec2 pos,
-                                               glm::vec4 color,
-                                               glm::vec4 highlight_color, Engine::Ecs::EntityId parent_entity);
+                                               const std::string &content, Engine::Ecs::EntityId parent_entity);
 
         void CreateMainMenuUiElements();
 

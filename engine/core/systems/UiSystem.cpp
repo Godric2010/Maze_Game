@@ -9,7 +9,11 @@
 namespace Engine::Core::Systems {
     UiSystem::UiSystem() = default;
 
-    UiSystem::~UiSystem() = default;
+    UiSystem::~UiSystem() {
+        for (const auto& cache_entry: m_font_textures | std::views::values) {
+            m_render_controller->UnregisterTexture(cache_entry);
+        }
+    }
 
     void UiSystem::Initialize() {
         m_text_controller = ServiceLocator()->GetService<Text::TextController>();
@@ -26,7 +30,7 @@ namespace Engine::Core::Systems {
         HandleButtons(input);
     }
 
-    bool UiSystem::IsMouseOverElement(const glm::vec2 mouse_pos, const Components::UI::RectTransform *rect) {
+    bool UiSystem::IsMouseOverElement(const glm::vec2 mouse_pos, const Components::UI::RectTransform* rect) {
         if (mouse_pos.x > rect->GetGlobalPosition().x &&
             mouse_pos.y > rect->GetGlobalPosition().y &&
             mouse_pos.x < rect->GetGlobalPosition().x + rect->GetGlobalSize().x &&
@@ -36,7 +40,7 @@ namespace Engine::Core::Systems {
         return false;
     }
 
-    void UiSystem::HandleButtons(const InputBuffer &input) const {
+    void UiSystem::HandleButtons(const InputBuffer& input) const {
         auto buttons_with_entities = GameWorld()->GetComponentsOfType<Components::UI::Button>();
         for (auto [button, entity]: buttons_with_entities) {
             const auto rect = GameWorld()->GetComponent<Components::UI::RectTransform>(entity);
@@ -67,32 +71,28 @@ namespace Engine::Core::Systems {
             }
 
             auto [font_handle, new_atlas_created] = m_text_controller->LoadFont(
-                text->GetFontName(), text->GetFontSize());
+                    text->GetFontName(),
+                    text->GetFontSize()
+                    );
             if (new_atlas_created) {
                 if (text->GetTextureHandle().has_value()) {
                     m_render_controller->UnregisterTexture(text->GetTextureHandle().value());
                 }
-
-                const auto texture_desc = m_text_controller->GetTextureDescription(font_handle);
-                Renderer::TextureAsset texture_asset{};
-                texture_asset.width = texture_desc.width;
-                texture_asset.height = texture_desc.height;
-                texture_asset.pixels = texture_desc.pixels;
-                const auto texture_handle = m_render_controller->RegisterTexture(texture_asset);
-                m_font_textures[font_handle] = texture_handle;
             }
 
             text->m_font_handle = font_handle;
-            text->m_texture_handle = m_font_textures.at(font_handle);
+            text->m_texture_handle = GetOrCreateTextureHandleFromFont(font_handle);
 
 
             if (text->GetTextMesh().has_value()) {
                 m_render_controller->UnregisterMesh(text->GetTextMesh().value());
             }
-            auto text_mesh = m_text_controller->BuildTextMesh(text->GetFontHandle(), text->GetText(),
-                                                              Text::TextAlignment::Left);
+            auto text_mesh = m_text_controller->BuildTextMesh(text->GetFontHandle(),
+                                                              text->GetText(),
+                                                              Text::TextAlignment::Left
+                    );
             Renderer::MeshAsset text_mesh_asset{};
-            for (const auto &vertex: text_mesh.vertices) {
+            for (const auto& vertex: text_mesh.vertices) {
                 Renderer::MeshVertex mesh_vertex{
                     .position = glm::vec3(vertex.x, vertex.y, 0),
                     .uv = glm::vec2(vertex.u, vertex.v),
@@ -110,5 +110,19 @@ namespace Engine::Core::Systems {
             const auto rect_transform = GameWorld()->GetComponent<Components::UI::RectTransform>(entity);
             rect_transform->SetSize(glm::vec2(text_mesh.dimensions_width, text_mesh.dimensions_height));
         }
+    }
+
+    Renderer::TextureHandle UiSystem::GetOrCreateTextureHandleFromFont(const Text::FontHandle font_handle) {
+        if (m_font_textures.contains(font_handle)) {
+            return m_font_textures.at(font_handle);
+        }
+        const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
+        Renderer::TextureAsset texture_asset{};
+        texture_asset.width = static_cast<float>(width);
+        texture_asset.height = static_cast<float>(height);
+        texture_asset.pixels = pixels;
+        const auto texture_handle = m_render_controller->RegisterTexture(texture_asset);
+        m_font_textures[font_handle] = texture_handle;
+        return texture_handle;
     }
 } // namespace

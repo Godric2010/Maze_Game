@@ -25,14 +25,16 @@ namespace Engine::Core::Systems {
         void Run(float delta_time) override;
 
     private:
-        Text::TextController *m_text_controller = nullptr;
-        Renderer::RenderController *m_render_controller = nullptr;
+        Text::TextController* m_text_controller = nullptr;
+        Renderer::RenderController* m_render_controller = nullptr;
         std::unordered_map<Text::FontHandle, Renderer::TextureHandle> m_font_textures;
 
-        static bool IsMouseOverElement(glm::vec2 mouse_pos, const Components::UI::RectTransform *rect);
+        static bool IsMouseOverElement(glm::vec2 mouse_pos, const Components::UI::RectTransform* rect);
 
-        void HandleButtons(const InputBuffer &input) const;
+        void HandleButtons(const InputBuffer& input) const;
 
         void HandleTextLabels();
+
+        Renderer::TextureHandle GetOrCreateTextureHandleFromFont(Text::FontHandle font_handle);
     };
 } // namespace

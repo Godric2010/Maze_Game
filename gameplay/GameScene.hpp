@@ -1,5 +1,12 @@
 #pragma once
 #include <chrono>
+
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
+#include "Camera.hpp"
 #include "IScene.hpp"
 #include "mazegenerator/MazeBuilder.hpp"
 #include "Transform.hpp"
@@ -22,7 +29,7 @@ namespace Gameplay {
     };
 
     struct GameSceneSettings {
-        MeshHandler *mesh_handler;
+        MeshHandler* mesh_handler;
         Difficulty difficulty;
     };
 
@@ -34,13 +41,13 @@ namespace Gameplay {
 
         void OnStart() override;
 
-        void EvaluateSystemCommands(const std::vector<std::any> &commands) override;
+        void EvaluateSystemCommands(const std::vector<std::any>& commands) override;
 
         void OnExit() override;
 
     private:
         std::unique_ptr<Mazegenerator::MazeBuilder> m_maze_builder;
-        MeshHandler *m_mesh_handler;
+        MeshHandler* m_mesh_handler;
         Difficulty m_difficulty;
 
 
@@ -61,6 +68,9 @@ namespace Gameplay {
 
         void CreateIngameUiOverlay() const;
 
-        void CreatePauseUiOverlay() const;
+        void CreatePauseUiOverlay() ;
+
+        void CreateUiButton(const glm::vec2& position, const glm::vec2& size, const std::string& content, int button_id,
+                            const Engine::Ecs::EntityId& parent_entity);
     };
 } // namespace

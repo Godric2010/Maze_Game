@@ -30,6 +30,7 @@ add_library(Gameplay STATIC
         MainMenuScene.cpp
         MainMenuScene.hpp
         GameEndScene.cpp
-        GameEndScene.hpp)
+        GameEndScene.hpp
+)
 
 target_link_libraries(Gameplay PUBLIC Engine)

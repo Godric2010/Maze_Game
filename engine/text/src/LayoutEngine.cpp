@@ -36,7 +36,7 @@ namespace Engine::Text {
                 current_line.end_index = glyph_count;
                 line_infos.push_back(current_line);
                 pen_x = 0.0f;
-                baseline_y -= static_cast<float>(font.line_height);
+                baseline_y += static_cast<float>(font.line_height);
                 current_line.start_index = glyph_count;
                 current_line.width = 0.0f;
             }
