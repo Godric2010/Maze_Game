@@ -72,7 +72,7 @@ TEST_CASE("LayoutEngineTests - Build two line text string") {
     REQUIRE(result.Height() == 45);
     REQUIRE(result.glyph_data[0].y0 == 0);
     REQUIRE(result.glyph_data[1].y0 == 0);
-    REQUIRE(result.glyph_data[2].y0 == -fake_font.line_height);
+    REQUIRE(result.glyph_data[2].y0 == fake_font.line_height);
 }
 
 TEST_CASE("LayoutEngineTests - Build two lines, center alignment") {
