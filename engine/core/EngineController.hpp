@@ -2,6 +2,7 @@
 #include <memory>
 #include <functional>
 #include <vector>
+#include <spdlog/spdlog.h>
 
 #include "DebugUIDrawer.hpp"
 #include "DebugViewData.hpp"

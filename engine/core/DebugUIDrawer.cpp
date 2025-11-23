@@ -1,8 +1,5 @@
 #include "DebugUIDrawer.hpp"
-
 #include <ranges>
-
-#include "../../Build/Debug-with-Coverage/vcpkg_installed/arm64-osx/include/spdlog/spdlog.h"
 
 namespace Engine::Core {
     DebugUiDrawer::DebugUiDrawer(Text::TextController* text_controller, Renderer::RenderController* render_controller,

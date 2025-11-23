@@ -8,7 +8,7 @@ elseif (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cma
     set(CMAKE_TOOLCHAIN_FILE "${_LOCAL_VCPKG}" CACHE FILEPATH "vcpkg toolchain")
 endif ()
 
-project(Maze_Game VERSION 0.5.0)
+project(Maze_Game VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

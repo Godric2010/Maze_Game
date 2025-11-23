@@ -6,8 +6,6 @@
 #include <string>
 #include <unordered_map>
 
-#include "../../Build/Debug-with-Coverage/vcpkg_installed/arm64-osx/include/spdlog/spdlog.h"
-
 namespace Engine::Core {
     struct DebugViewData {
     public:
