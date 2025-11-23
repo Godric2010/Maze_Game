@@ -44,6 +44,9 @@ add_library(Core STATIC
         components/ui/Text.hpp
         systems/RectTransformSystem.cpp
         systems/RectTransformSystem.hpp
+        DebugUIDrawer.cpp
+        DebugUIDrawer.hpp
+        DebugViewData.hpp
 )
 
 target_include_directories(Core PUBLIC

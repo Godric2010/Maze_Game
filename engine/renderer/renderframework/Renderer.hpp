@@ -45,6 +45,7 @@ namespace Engine::Renderer::RenderFramework {
          */
         virtual void RemoveTexture(const TextureHandle &texture_handle) = 0;
 
+        virtual uint32_t GetDrawCalls() = 0;
 
         /**
          * Disable the renderer and free its resources.

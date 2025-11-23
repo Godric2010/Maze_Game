@@ -6,6 +6,8 @@
 #include "components/Transform.hpp"
 #include <ranges>
 
+#include "DebugUIDrawer.hpp"
+
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])
 
 namespace Engine::Core::Systems {
@@ -21,6 +23,7 @@ namespace Engine::Core::Systems {
 
     private:
         const Renderer::RenderController *m_render_controller{};
+        DebugUiDrawer *m_debug_ui_drawer{};
 
         static Renderer::CameraAsset CreateCameraAsset(const Components::Camera *camera_component,
                                                        const Components::Transform *camera_transform);

@@ -26,6 +26,8 @@ namespace Engine::Renderer {
 
         void SubmitFrame(DrawAssets &draw_assets) const;
 
+        [[nodiscard]] uint32_t GetDrawCalls() const;
+
     private:
         Environment::WindowContext m_window_context;
         std::unique_ptr<RenderFramework::IRenderer> m_renderer;

@@ -10,15 +10,13 @@ namespace Engine::Text {
         m_text_mesh_builder = std::make_unique<TextMeshBuilder>();
     }
 
-    FontHandleResult TextController::LoadFont(std::string font_name, const int pixel_size) const {
-        spdlog::info("Loading font {} with size {}", font_name, pixel_size);
+    FontHandleResult TextController::LoadFont(const std::string& font_name, const int pixel_size) const {
         const auto font_handle = m_font_manager->LoadFont(font_name, pixel_size);
         return font_handle;
     }
 
     TextMesh TextController::BuildTextMesh(const FontHandle font_handle, const std::string &text,
                                            const TextAlignment &alignment) const {
-        spdlog::info("Building text mesh {}", text);
         const Font &font = m_font_manager->GetFont(font_handle);
 
         const auto codepoints = m_utf8_decoder->GenerateCodepointsFromText(text);

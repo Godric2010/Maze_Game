@@ -4,18 +4,15 @@
 #include "SystemManager.hpp"
 #include "TextController.hpp"
 
-namespace Engine::Core
-{
-    EngineController::EngineController()
-    {
+namespace Engine::Core {
+    EngineController::EngineController() {
         m_services = std::make_unique<ServiceLocator>();
         m_is_running = true;
     };
 
     EngineController::~EngineController() = default;
 
-    void EngineController::Initialize(const std::vector<Ecs::SystemMeta>& systems)
-    {
+    void EngineController::Initialize(const std::vector<Ecs::SystemMeta>& systems) {
         m_window = Environment::CreateWindow();
         const Environment::WindowConfig config{
             .width = 1920,
@@ -35,25 +32,42 @@ namespace Engine::Core
         auto text_controller = std::make_unique<Text::TextController>();
         m_services->RegisterService(std::move(text_controller));
 
+        auto debug_ui_drawer = std::make_unique<DebugUiDrawer>(m_services->TryGetService<Text::TextController>(),
+                                                               m_services->TryGetService<Renderer::RenderController>(),
+                                                               m_window->GetWindowContext()
+                );
+        m_services->RegisterService(std::move(debug_ui_drawer));
+
         m_system_manager = std::make_unique<Ecs::SystemManager>(systems, m_services.get());
 
         const auto window_context = m_window->GetWindowContext();
-        m_scene_manager = std::make_unique<SceneManager>(*this, *m_system_manager,
+        m_scene_manager = std::make_unique<SceneManager>(*this,
+                                                         *m_system_manager,
                                                          *m_input_manager,
                                                          static_cast<float>(window_context.width),
-                                                         static_cast<float>(window_context.height));
+                                                         static_cast<float>(window_context.height)
+                );
     }
 
-    void EngineController::Update() const
-    {
+    void EngineController::Update() {
         auto last_time = std::chrono::high_resolution_clock::now();
         const auto app_events = m_input_manager->GetAppEventSnapshot();
 
-        while (!app_events->is_closed && m_is_running)
-        {
+        while (!app_events->is_closed && m_is_running) {
             auto now = std::chrono::high_resolution_clock::now();
-            const float delta_time = std::chrono::duration_cast<std::chrono::duration<float>>(now - last_time).count();
+            const float delta_time = std::chrono::duration_cast<std::chrono::duration<float> >(now - last_time).count();
             last_time = now;
+
+            m_fps_accumulator += delta_time;
+            m_fps_frames++;
+            if (m_fps_accumulator >= 1.0f) {
+                const auto fps = m_fps_frames / m_fps_accumulator;
+                m_fps_accumulator = 0.0f;
+                m_fps_frames = 0;
+                m_view_data.SetFps(fps);
+            }
+            m_view_data.SetDrawCalls(m_services->GetService<Renderer::RenderController>()->GetDrawCalls());
+            m_services->GetService<DebugUiDrawer>()->SetDrawData(m_view_data.GetData());
 
             m_input_manager->UpdateInput();
             m_scene_manager->Update(delta_time);
@@ -61,34 +75,28 @@ namespace Engine::Core
         }
     }
 
-    void EngineController::Shutdown() const
-    {
+    void EngineController::Shutdown() const {
         m_window->Shutdown();
     }
 
-    void EngineController::Quit()
-    {
+    void EngineController::Quit() {
         m_is_running = false;
     }
 
-    Renderer::MeshHandle EngineController::RegisterMesh(const Renderer::MeshAsset& mesh_asset)
-    {
+    Renderer::MeshHandle EngineController::RegisterMesh(const Renderer::MeshAsset& mesh_asset) {
         const auto mesh_handle = m_services->TryGetService<Renderer::RenderController>()->RegisterMesh(mesh_asset);
         return mesh_handle;
     }
 
-    void EngineController::RegisterInputMap(const InputMap map)
-    {
+    void EngineController::RegisterInputMap(const InputMap map) {
         m_input_manager->AddInputMapping(map);
     }
 
-    void EngineController::RegisterScene(const std::string& name, const SceneFactory scene_factory)
-    {
+    void EngineController::RegisterScene(const std::string& name, const SceneFactory scene_factory) {
         m_scene_manager->RegisterScene(name, scene_factory);
     }
 
-    void EngineController::SetInitialScene(const std::string& name, const SceneArgs& args)
-    {
+    void EngineController::SetInitialScene(const std::string& name, const SceneArgs& args) {
         m_scene_manager->LoadScene(name, args);
     }
 } // namespace

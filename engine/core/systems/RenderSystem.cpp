@@ -15,9 +15,12 @@ namespace Engine::Core::Systems {
     RenderSystem::~RenderSystem() = default;
 
     void RenderSystem::Initialize() {
-        const Renderer::RenderController *render_controller = ServiceLocator()->
+        const Renderer::RenderController* render_controller = ServiceLocator()->
                 GetService<Renderer::RenderController>();
         m_render_controller = render_controller;
+
+        DebugUiDrawer* debug_ui_drawer = ServiceLocator()->GetService<DebugUiDrawer>();
+        m_debug_ui_drawer = debug_ui_drawer;
     }
 
     void RenderSystem::Run(float delta_time) {
@@ -26,7 +29,12 @@ namespace Engine::Core::Systems {
         const auto camera_asset = CreateCameraAsset(camera, camera_transform);
 
         const std::vector<Renderer::MeshDrawAsset> mesh_draw_assets = CreateDrawAssets();
-        const std::vector<Renderer::UiDrawAsset> ui_draw_assets = CreateUiDrawAssets();
+        std::vector<Renderer::UiDrawAsset> ui_draw_assets = CreateUiDrawAssets();
+
+        const auto debug_ui_assets = m_debug_ui_drawer->DrawDebugUi();
+        for (auto debug_asset: debug_ui_assets) {
+            ui_draw_assets.push_back(debug_asset);
+        }
 
         Renderer::DrawAssets draw_assets{};
         draw_assets.mesh_draw_assets = mesh_draw_assets;
@@ -36,8 +44,8 @@ namespace Engine::Core::Systems {
         m_render_controller->SubmitFrame(draw_assets);
     }
 
-    Renderer::CameraAsset RenderSystem::CreateCameraAsset(const Components::Camera *camera_component,
-                                                          const Components::Transform *camera_transform) {
+    Renderer::CameraAsset RenderSystem::CreateCameraAsset(const Components::Camera* camera_component,
+                                                          const Components::Transform* camera_transform) {
         const Renderer::CameraAsset camera_asset{
             .view = camera_component->view,
             .projection = camera_component->projection,
@@ -97,9 +105,11 @@ namespace Engine::Core::Systems {
             ui_draw_assets[i] = ui_draw_asset;
         }
 
-        std::ranges::sort(ui_draw_assets, [](auto &a, auto &b) {
-            return a.layer < b.layer;
-        });
+        std::ranges::sort(ui_draw_assets,
+                          [](auto& a, auto& b) {
+                              return a.layer < b.layer;
+                          }
+                );
 
         return ui_draw_assets;
     }

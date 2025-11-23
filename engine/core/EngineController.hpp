@@ -2,6 +2,9 @@
 #include <memory>
 #include <functional>
 #include <vector>
+
+#include "DebugUIDrawer.hpp"
+#include "DebugViewData.hpp"
 #include "IApplication.hpp"
 #include "IEngine.hpp"
 #include "InputManager.hpp"
@@ -28,12 +31,12 @@ namespace Engine::Core {
         /**
          * Initialize the engine backend
          */
-        void Initialize(const std::vector<Ecs::SystemMeta> &systems);
+        void Initialize(const std::vector<Ecs::SystemMeta>& systems);
 
         /**
          * Update the engines systems, like drawing, the objects in the world, etc.
          */
-        void Update() const;
+        void Update();
 
         /**
          * Shutdown the engines system and free all resources.
@@ -42,13 +45,13 @@ namespace Engine::Core {
 
         void Quit() override;
 
-        Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) override;
+        Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset& mesh_asset) override;
 
         void RegisterInputMap(InputMap map) override;
 
-        void RegisterScene(const std::string &name, SceneFactory scene_factory) override;
+        void RegisterScene(const std::string& name, SceneFactory scene_factory) override;
 
-        void SetInitialScene(const std::string &name, const SceneArgs &args) override;
+        void SetInitialScene(const std::string& name, const SceneArgs& args) override;
 
     private:
         std::unique_ptr<ServiceLocator> m_services;
@@ -60,5 +63,10 @@ namespace Engine::Core {
 
         bool m_is_running = true;
         std::string m_initial_scene_name;
+
+        DebugViewData m_view_data{};
+
+        float m_fps_frames = 0;
+        float m_fps_accumulator = 0;
     };
 } // namespace

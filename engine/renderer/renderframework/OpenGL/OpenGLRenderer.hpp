@@ -15,24 +15,28 @@
 namespace Engine::Renderer::RenderFramework::OpenGl {
     class OpenGlRenderer final : public IRenderer {
     public:
-        explicit OpenGlRenderer(const Environment::WindowContext &window_context,
-                                ShaderManagement::ShaderManager *shader_manager);
+        explicit OpenGlRenderer(const Environment::WindowContext& window_context,
+                                ShaderManagement::ShaderManager* shader_manager);
 
         ~OpenGlRenderer() override;
 
         void Initialize() override;
 
-        void PrepareFrame(const CameraAsset &camera_asset) override;
+        void PrepareFrame(const CameraAsset& camera_asset) override;
 
-        void DrawFrame(DrawAssets &draw_assets) override;
+        void DrawFrame(DrawAssets& draw_assets) override;
 
-        MeshHandle AddMesh(const MeshAsset &mesh) override;
+        MeshHandle AddMesh(const MeshAsset& mesh) override;
 
-        void RemoveMesh(const MeshHandle &mesh_handle) override;
+        void RemoveMesh(const MeshHandle& mesh_handle) override;
 
-        TextureHandle AddTexture(const TextureAsset &texture) override;
+        TextureHandle AddTexture(const TextureAsset& texture) override;
 
-        void RemoveTexture(const TextureHandle &texture_handle) override;
+        void RemoveTexture(const TextureHandle& texture_handle) override;
+
+        uint32_t GetDrawCalls() override {
+            return m_draw_calls;
+        }
 
         void Shutdown() override;
 
@@ -47,5 +51,6 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         std::unique_ptr<OpenGLTextureManager> m_texture_manager;
 
         glm::vec2 m_window_size{};
+        uint32_t m_draw_calls = 0;
     };
 } // namespace

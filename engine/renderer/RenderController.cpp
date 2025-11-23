@@ -8,7 +8,7 @@
 
 
 namespace Engine::Renderer {
-    RenderController::RenderController(const Environment::WindowContext &window_context) {
+    RenderController::RenderController(const Environment::WindowContext& window_context) {
         m_window_context = window_context;
 
         m_shader_manager = std::make_unique<ShaderManagement::ShaderManager>();
@@ -18,7 +18,9 @@ namespace Engine::Renderer {
         switch (window_context.renderApi) {
             case Environment::API::OpenGL:
                 m_renderer = std::make_unique<RenderFramework::OpenGl::OpenGlRenderer>(
-                    m_window_context, m_shader_manager.get());
+                        m_window_context,
+                        m_shader_manager.get()
+                        );
                 break;
             case Environment::API::Vulkan:
                 throw std::runtime_error("Vulkan renderer not supported (yet)");
@@ -37,27 +39,31 @@ namespace Engine::Renderer {
         m_shader_manager.reset();
     }
 
-    MeshHandle RenderController::RegisterMesh(const MeshAsset &mesh) const {
+    MeshHandle RenderController::RegisterMesh(const MeshAsset& mesh) const {
         return m_renderer->AddMesh(mesh);
     }
 
-    void RenderController::UnregisterMesh(const MeshHandle &handle) const {
+    void RenderController::UnregisterMesh(const MeshHandle& handle) const {
         m_renderer->RemoveMesh(handle);
     }
 
-    TextureHandle RenderController::RegisterTexture(const TextureAsset &texture) const {
+    TextureHandle RenderController::RegisterTexture(const TextureAsset& texture) const {
         return m_renderer->AddTexture(texture);
     }
 
-    void RenderController::UnregisterTexture(const TextureHandle &handle) const {
+    void RenderController::UnregisterTexture(const TextureHandle& handle) const {
         m_renderer->RemoveTexture(handle);
     }
 
-    void RenderController::BeginFrame(const CameraAsset &camera_asset) const {
+    void RenderController::BeginFrame(const CameraAsset& camera_asset) const {
         m_renderer->PrepareFrame(camera_asset);
     }
 
-    void RenderController::SubmitFrame(DrawAssets &draw_assets) const {
+    void RenderController::SubmitFrame(DrawAssets& draw_assets) const {
         m_renderer->DrawFrame(draw_assets);
+    }
+
+    uint32_t RenderController::GetDrawCalls() const {
+        return m_renderer->GetDrawCalls();
     }
 }
