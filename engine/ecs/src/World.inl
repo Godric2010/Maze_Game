@@ -53,8 +53,8 @@ namespace Engine::Ecs {
         const auto id = m_impl->component_manager->RegisterType<T>();
 
         EcsEvent cmd{EcsEventType::AddComponent, entity, id};
-        cmd.payload.resize(sizeof(T));
-        std::memcpy(cmd.payload.data(), &component, sizeof(T));
+        cmd.payload = std::vector<std::byte>(sizeof(T));
+        new(cmd.payload.data()) T(component);
         m_ecs_event_buffer->EnqueueEvent(std::move(cmd));
     }
 
