@@ -4,7 +4,7 @@
 
 #pragma once
 #include "GameWorld.hpp"
-#include "IApplication.hpp"
+#include "../interface/include/IApplication.hpp"
 #include "SystemManager.hpp"
 #include "World.hpp"
 #include "InputManager.hpp"

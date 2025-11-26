@@ -36,7 +36,6 @@ add_library(Core STATIC
         SceneContext.hpp
         SceneManager.hpp
         SceneManager.cpp
-        IApplication.hpp
         SceneRegistry.cpp
         SceneRegistry.hpp
         ISceneManager.hpp

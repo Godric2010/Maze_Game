@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Engine::Core {
+namespace Engine {
     class IApplication {
     public:
         virtual ~IApplication() = default;

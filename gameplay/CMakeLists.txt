@@ -33,4 +33,4 @@ add_library(Gameplay STATIC
         GameEndScene.hpp
 )
 
-target_link_libraries(Gameplay PUBLIC Engine)
+target_link_libraries(Gameplay PUBLIC Engine Interface)

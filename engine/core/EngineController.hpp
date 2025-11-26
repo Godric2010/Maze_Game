@@ -1,21 +1,18 @@
 #pragma once
-#include <memory>
 #include <functional>
+#include <memory>
 #include <vector>
 #include <spdlog/spdlog.h>
 
-#include "DebugUIDrawer.hpp"
 #include "DebugViewData.hpp"
-#include "IApplication.hpp"
 #include "IEngine.hpp"
 #include "InputManager.hpp"
+#include "SceneArgs.hpp"
 #include "SceneManager.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
 #include "../ecs/include/World.hpp"
-#include "../renderer/RenderController.hpp"
 #include "../environment/include/Window.hpp"
-#include "SceneArgs.hpp"
 
 namespace Engine::Core {
     /**
