@@ -1,22 +1,23 @@
 #include "SceneManager.hpp"
 
 namespace Engine::Core {
-    SceneManager::SceneManager(IApplication &app,
-                               Ecs::SystemManager &system_manager, Input::IInputManager &input_manager,
+    SceneManager::SceneManager(IApplication& app,
+                               Ecs::SystemManager& system_manager, Input::IInput& input_manager,
                                const float screen_width,
                                const float screen_height) {
         m_active_world = std::make_unique<Ecs::World>();
         m_active_game_world = std::make_unique<GameWorld>(m_active_world.get(), &input_manager);
         m_context.emplace(SceneContext{
-            .app = app,
-            .scene_manager = *this,
-            .world = *m_active_world,
-            .game_world = *m_active_game_world,
-            .system_manager = system_manager,
-            .input = input_manager,
-            .screen_width = screen_width,
-            .screen_height = screen_height,
-        });
+                    .app = app,
+                    .scene_manager = *this,
+                    .world = *m_active_world,
+                    .game_world = *m_active_game_world,
+                    .system_manager = system_manager,
+                    .input = input_manager,
+                    .screen_width = screen_width,
+                    .screen_height = screen_height,
+                }
+                );
 
         m_registry = std::make_unique<SceneRegistry>();
     }
@@ -29,11 +30,11 @@ namespace Engine::Core {
         m_registry.reset();
     }
 
-    void SceneManager::RegisterScene(const std::string &name, const SceneFactory &scene_factory) const {
+    void SceneManager::RegisterScene(const std::string& name, const SceneFactory& scene_factory) const {
         m_registry->RegisterScene(name, scene_factory);
     }
 
-    void SceneManager::LoadScene(const std::string &name, const SceneArgs &args) {
+    void SceneManager::LoadScene(const std::string& name, const SceneArgs& args) {
         if (auto scene = m_registry->CreateScene(name, args)) {
             m_pending_scene = std::move(scene);
             return;

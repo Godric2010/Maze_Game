@@ -4,7 +4,6 @@
 
 #pragma once
 #include "EnvironmentBuilder.hpp"
-#include "InputBuffer.hpp"
 #include "Input/IInput.hpp"
 #include "Input/InputTypes.hpp"
 
@@ -19,6 +18,5 @@ namespace Engine::Input {
 
         virtual void AddInputMapping(const InputMap& input_map) = 0;
 
-        virtual InputBuffer GetInput() = 0;
     };
 }

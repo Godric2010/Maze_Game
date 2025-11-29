@@ -26,9 +26,7 @@ namespace Engine::Core {
         };
         m_window->Setup(config);
 
-        // auto input = CreateInput(*m_window);
-        // m_input_manager = std::make_unique<InputManager>(std::move(input));
-        m_input_manager = Engine::Input::CreateInputManager(m_window.get());
+        m_input_manager = Input::CreateInputManager(m_window.get());
 
         auto render_controller = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
         m_services->RegisterService(std::move(render_controller));

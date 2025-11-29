@@ -3,7 +3,7 @@
 
 #include "InputMapping.hpp"
 #include "../include/IInputManager.hpp"
-#include "../include/InputBuffer.hpp"
+#include "../../interface/include/Input/InputBuffer.hpp"
 #include "Input/InputTypes.hpp"
 
 namespace Engine::Input {

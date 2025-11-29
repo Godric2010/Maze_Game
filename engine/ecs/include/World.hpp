@@ -52,7 +52,7 @@ namespace Engine::Ecs {
             return m_physics_event_bus.get();
         }
 
-        Buffer::EventBuffer<PhysicsEvent> *GetPhysicsEventBuffer() const {
+        [[nodiscard]] Buffer::EventBuffer<PhysicsEvent> *GetPhysicsEventBuffer() const {
             return m_physics_event_buffer.get();
         }
 

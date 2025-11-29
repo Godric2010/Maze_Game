@@ -1,5 +1,5 @@
 #pragma once
-#include "InputBuffer.hpp"
+#include "../../engine/interface/include/Input/InputBuffer.hpp"
 #include "ISystem.hpp"
 
 ECS_SYSTEM(PlayerControllerSystem, Input, [])

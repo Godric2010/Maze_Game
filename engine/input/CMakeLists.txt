@@ -4,7 +4,6 @@ add_library(Input STATIC
         include/IInputManager.hpp
         src/InputManager.cpp
         src/InputManager.hpp
-        include/InputBuffer.hpp
         src/InputMapping.hpp
         include/InputManagerBuilder.hpp
 )

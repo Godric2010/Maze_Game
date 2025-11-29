@@ -5,6 +5,8 @@
 #pragma once
 #include <string>
 
+#include "InputBuffer.hpp"
+
 namespace Engine::Input {
     class IInput {
     public:
@@ -15,5 +17,7 @@ namespace Engine::Input {
         virtual void DisableInputMap(const std::string& map_name) = 0;
 
         virtual void SetMouseVisibility(bool visible) = 0;
+
+        virtual InputBuffer GetInput() = 0;
     };
 }

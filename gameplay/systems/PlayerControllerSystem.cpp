@@ -6,6 +6,7 @@
 
 #include "GameWorld.hpp"
 #include "MotionIntent.hpp"
+#include "ServiceLocator.hpp"
 #include "../commands/PauseCommand.hpp"
 #include "components/Transform.hpp"
 

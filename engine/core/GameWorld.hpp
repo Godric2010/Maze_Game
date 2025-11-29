@@ -10,7 +10,7 @@
 namespace Engine::Core {
     class GameWorld {
     public:
-        explicit GameWorld(Ecs::World* ecs_world, Input::IInputManager* input_manager) {
+        explicit GameWorld(Ecs::World* ecs_world, Input::IInput* input_manager) {
             m_world = ecs_world;
             m_input_manager = input_manager;
         }
@@ -70,6 +70,6 @@ namespace Engine::Core {
 
     private:
         Ecs::World* m_world;
-        Input::IInputManager* m_input_manager;
+        Input::IInput* m_input_manager;
     };
 }

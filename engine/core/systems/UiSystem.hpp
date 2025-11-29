@@ -3,7 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "ISystem.hpp"
 
-#include "InputBuffer.hpp"
+#include "../../interface/include/Input/InputBuffer.hpp"
 #include "TextController.hpp"
 #include "../../renderer/RenderController.hpp"
 #include "ui/RectTransform.hpp"
