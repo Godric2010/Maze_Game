@@ -3,26 +3,25 @@
 //
 
 #pragma once
-#include <memory>
 
-#include "InputManager.hpp"
+#include "IInputManager.hpp"
 #include "World.hpp"
 
 namespace Engine::Core {
     class GameWorld {
     public:
-        explicit GameWorld(Ecs::World *ecs_world, InputManager *input_manager) {
+        explicit GameWorld(Ecs::World* ecs_world, Input::IInputManager* input_manager) {
             m_world = ecs_world;
             m_input_manager = input_manager;
         }
 
         ~GameWorld() = default;
 
-        [[nodiscard]] Ecs::EntityId CreateEntity(const std::string &name) const { return m_world->CreateEntity(name); }
+        [[nodiscard]] Ecs::EntityId CreateEntity(const std::string& name) const { return m_world->CreateEntity(name); }
 
-        void DestroyEntity(const Ecs::EntityId &entity) const { return m_world->DestroyEntity(entity); }
+        void DestroyEntity(const Ecs::EntityId& entity) const { return m_world->DestroyEntity(entity); }
 
-        [[nodiscard]] Ecs::EntityId GetEntityByName(const std::string &name) const {
+        [[nodiscard]] Ecs::EntityId GetEntityByName(const std::string& name) const {
             return m_world->GetEntityByName(name);
         }
 
@@ -37,14 +36,14 @@ namespace Engine::Core {
         }
 
         template<typename T>
-        T *GetComponent(const Ecs::EntityId entity) const { return m_world->GetComponent<T>(entity); }
+        T* GetComponent(const Ecs::EntityId entity) const { return m_world->GetComponent<T>(entity); }
 
         template<typename T>
-        std::vector<std::pair<T *, Ecs::EntityId> > GetComponentsOfType() { return m_world->GetComponentsOfType<T>(); }
+        std::vector<std::pair<T*, Ecs::EntityId> > GetComponentsOfType() { return m_world->GetComponentsOfType<T>(); }
 
 
         void SubscribeToPhysicsEvent(const Ecs::PhysicsEventType event_type,
-                                     const std::function<void(Ecs::EntityId, Ecs::EntityId)> &event_func) const {
+                                     const std::function<void(Ecs::EntityId, Ecs::EntityId)>& event_func) const {
             const auto physics_event_bus = m_world->GetPhysicsEventBus();
             switch (event_type) {
                 case Ecs::PhysicsEventType::OnCollisionEnter:
@@ -67,10 +66,10 @@ namespace Engine::Core {
             m_world->PushCommand(cmd);
         }
 
-        [[nodiscard]] InputBuffer GetInput() const { return m_input_manager->GetInput(); }
+        [[nodiscard]] Input::InputBuffer GetInput() const { return m_input_manager->GetInput(); }
 
     private:
-        Ecs::World *m_world;
-        InputManager *m_input_manager;
+        Ecs::World* m_world;
+        Input::IInputManager* m_input_manager;
     };
 }

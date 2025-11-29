@@ -5,6 +5,7 @@
 #include "SystemManager.hpp"
 #include "TextController.hpp"
 #include "Transform.hpp"
+#include "../input/include/InputManagerBuilder.hpp"
 
 namespace Engine::Core {
     EngineController::EngineController() {
@@ -25,8 +26,9 @@ namespace Engine::Core {
         };
         m_window->Setup(config);
 
-        auto input = CreateInput(*m_window);
-        m_input_manager = std::make_unique<InputManager>(std::move(input));
+        // auto input = CreateInput(*m_window);
+        // m_input_manager = std::make_unique<InputManager>(std::move(input));
+        m_input_manager = Engine::Input::CreateInputManager(m_window.get());
 
         auto render_controller = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
         m_services->RegisterService(std::move(render_controller));
@@ -90,7 +92,7 @@ namespace Engine::Core {
         return mesh_handle;
     }
 
-    void EngineController::RegisterInputMap(const InputMap map) {
+    void EngineController::RegisterInputMap(const Input::InputMap map) {
         m_input_manager->AddInputMapping(map);
     }
 

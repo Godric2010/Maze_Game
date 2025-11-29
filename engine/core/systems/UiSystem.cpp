@@ -3,6 +3,8 @@
 #include "GameWorld.hpp"
 #include "ServiceLocator.hpp"
 #include "../../text/include/TextController.hpp"
+#include "commands/ui/ButtonClickedCommand.hpp"
+#include "ui/Button.hpp"
 #include "ui/Text.hpp"
 
 
@@ -23,7 +25,7 @@ namespace Engine::Core::Systems {
     void UiSystem::Run(float delta_time) {
         HandleTextLabels();
 
-        const auto input = GameWorld()->GetInput();
+        Input::InputBuffer input = GameWorld()->GetInput();
         if (!input.IsMapActive("UIInputMap")) {
             return;
         }
@@ -40,7 +42,7 @@ namespace Engine::Core::Systems {
         return false;
     }
 
-    void UiSystem::HandleButtons(const InputBuffer& input) const {
+    void UiSystem::HandleButtons(const Input::InputBuffer& input) const {
         auto buttons_with_entities = GameWorld()->GetComponentsOfType<Components::UI::Button>();
         for (auto [button, entity]: buttons_with_entities) {
             const auto rect = GameWorld()->GetComponent<Components::UI::RectTransform>(entity);

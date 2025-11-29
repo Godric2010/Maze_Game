@@ -2,7 +2,7 @@
 
 namespace Engine::Core {
     SceneManager::SceneManager(IApplication &app,
-                               Ecs::SystemManager &system_manager, InputManager &input_manager,
+                               Ecs::SystemManager &system_manager, Input::IInputManager &input_manager,
                                const float screen_width,
                                const float screen_height) {
         m_active_world = std::make_unique<Ecs::World>();

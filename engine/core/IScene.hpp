@@ -8,8 +8,7 @@
 
 #include "GameWorld.hpp"
 #include "SceneContext.hpp"
-#include "InputManager.hpp"
-#include "IInput.hpp"
+#include "Input/IInput.hpp"
 
 namespace Engine::Core {
     class SceneRegistry;
@@ -26,20 +25,22 @@ namespace Engine::Core {
     public:
         virtual ~IScene() = default;
 
-        void Initialize(const SceneContext &scene_context) {
+        void Initialize(const SceneContext& scene_context) {
             assert(!m_initialized && "Initialize of scene should be called only once!");
             std::cout << "Initializing scene" << m_scene_name << "..." << std::endl;
             m_context = &scene_context;
             m_initialized = true;
             m_context->system_manager.RegisterForSystemCommands(
-                m_scene_name, [this](const std::vector<std::any> &commands) {
-                    this->EvaluateSystemCommands(commands);
-                });
+                    m_scene_name,
+                    [this](const std::vector<std::any>& commands) {
+                        this->EvaluateSystemCommands(commands);
+                    }
+                    );
         }
 
         virtual void OnStart() = 0;
 
-        virtual void EvaluateSystemCommands(const std::vector<std::any> &commands) {
+        virtual void EvaluateSystemCommands(const std::vector<std::any>& commands) {
         }
 
         void Update(const float delta_time) const {
@@ -57,7 +58,7 @@ namespace Engine::Core {
 
     protected:
         [[nodiscard]] GameWorld &World() const { return m_context->game_world; }
-        [[nodiscard]] IInput &Input() const { return m_context->input; }
+        [[nodiscard]] Input::IInput &Input() const { return m_context->input; }
         [[nodiscard]] IApplication &Application() const { return m_context->app; }
         [[nodiscard]] ISceneManager &SceneManager() const { return m_context->scene_manager; }
 
@@ -71,7 +72,7 @@ namespace Engine::Core {
 
     private:
         std::string m_scene_name;
-        const SceneContext *m_context{};
+        const SceneContext* m_context{};
         bool m_initialized = false;
     };
 }

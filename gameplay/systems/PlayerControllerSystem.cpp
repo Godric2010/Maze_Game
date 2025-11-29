@@ -6,7 +6,7 @@
 
 #include "GameWorld.hpp"
 #include "MotionIntent.hpp"
-#include "components/Camera.hpp"
+#include "../commands/PauseCommand.hpp"
 #include "components/Transform.hpp"
 
 namespace Gameplay::Systems {
@@ -39,7 +39,7 @@ namespace Gameplay::Systems {
     }
 
     void PlayerControllerSystem::CalculateNewTransform(const Engine::Ecs::EntityId player_entity,
-                                                       const Engine::Core::InputBuffer &input) const {
+                                                       const Engine::Input::InputBuffer& input) const {
         const auto transform = GameWorld()->GetComponent<Engine::Core::Components::Transform>(player_entity);
         const auto motion_intent = GameWorld()->GetComponent<Engine::Core::Components::MotionIntent>(player_entity);
         if (transform == nullptr || motion_intent == nullptr) {

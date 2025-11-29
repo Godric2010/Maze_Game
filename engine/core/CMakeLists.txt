@@ -25,14 +25,11 @@ add_library(Core STATIC
         ../physics/include/collision/CollisionQueryService.hpp
         components/ui/Image.hpp
         components/ui/RectTransform.hpp
-        InputManager.cpp
-        InputManager.hpp
         components/ui/Button.hpp
         systems/UiSystem.cpp
         systems/UiSystem.hpp
         commands/ui/ButtonClickedCommand.hpp
         IScene.hpp
-        IInput.hpp
         SceneContext.hpp
         SceneManager.hpp
         SceneManager.cpp
@@ -54,4 +51,4 @@ target_include_directories(Core PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/components
         ${CMAKE_CURRENT_SOURCE_DIR}/systems
 )
-target_link_libraries(Core PUBLIC Environment Text Renderer ECS Physics)
+target_link_libraries(Core PUBLIC Interface Input Environment Text Renderer ECS Physics)

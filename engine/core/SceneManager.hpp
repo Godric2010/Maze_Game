@@ -1,5 +1,7 @@
 #pragma once
 #include <optional>
+
+#include "IInputManager.hpp"
 #include "IScene.hpp"
 #include "ISceneManager.hpp"
 #include "SceneArgs.hpp"
@@ -9,7 +11,7 @@ namespace Engine::Core {
     class SceneManager : public ISceneManager {
     public:
         explicit SceneManager(IApplication &app,
-                              Ecs::SystemManager &system_manager, InputManager &input_manager,
+                              Ecs::SystemManager &system_manager, Input::IInputManager &input_manager,
                               float screen_width, float screen_height);
 
         ~SceneManager() override;

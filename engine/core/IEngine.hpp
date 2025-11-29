@@ -19,6 +19,6 @@ namespace Engine::Core {
 
         virtual Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset &mesh_asset) = 0;
 
-        virtual void RegisterInputMap(InputMap map) = 0;
+        virtual void RegisterInputMap(Input::InputMap map) = 0;
     };
 }

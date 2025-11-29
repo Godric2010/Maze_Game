@@ -1,15 +1,13 @@
 #pragma once
 #include <unordered_map>
-#include "ISystem.hpp"
-#include "ui/Button.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include "ISystem.hpp"
 
-#include "InputManager.hpp"
+#include "InputBuffer.hpp"
 #include "TextController.hpp"
 #include "../../renderer/RenderController.hpp"
 #include "ui/RectTransform.hpp"
 #include "ui/Text.hpp"
-#include "../commands/ui/ButtonClickedCommand.hpp"
 
 namespace Engine::Core::Systems {
     ECS_SYSTEM(UiSystem, Ui, [ENGINE])
@@ -31,7 +29,7 @@ namespace Engine::Core::Systems {
 
         static bool IsMouseOverElement(glm::vec2 mouse_pos, const Components::UI::RectTransform* rect);
 
-        void HandleButtons(const InputBuffer& input) const;
+        void HandleButtons(const Input::InputBuffer& input) const;
 
         void HandleTextLabels();
 

@@ -1,10 +1,6 @@
 #pragma once
-#include "EnvInput.hpp"
-#include "InputManager.hpp"
+#include "InputBuffer.hpp"
 #include "ISystem.hpp"
-#include "MotionIntent.hpp"
-#include "components/Transform.hpp"
-#include "../commands/PauseCommand.hpp"
 
 ECS_SYSTEM(PlayerControllerSystem, Input, [])
 
@@ -27,6 +23,6 @@ namespace Gameplay::Systems {
         const float m_max_pitch = 75.0f;
 
         void CalculateNewTransform(
-            Engine::Ecs::EntityId player_entity, const Engine::Core::InputBuffer& input) const;
+            Engine::Ecs::EntityId player_entity, const Engine::Input::InputBuffer& input) const;
     };
 } // namespace

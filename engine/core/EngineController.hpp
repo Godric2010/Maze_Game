@@ -6,7 +6,7 @@
 
 #include "DebugViewData.hpp"
 #include "IEngine.hpp"
-#include "InputManager.hpp"
+#include "IInputManager.hpp"
 #include "SceneArgs.hpp"
 #include "SceneManager.hpp"
 #include "ServiceLocator.hpp"
@@ -45,7 +45,7 @@ namespace Engine::Core {
 
         Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset& mesh_asset) override;
 
-        void RegisterInputMap(InputMap map) override;
+        void RegisterInputMap(Input::InputMap map) override;
 
         void RegisterScene(const std::string& name, SceneFactory scene_factory) override;
 
@@ -55,7 +55,7 @@ namespace Engine::Core {
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
-        std::unique_ptr<InputManager> m_input_manager;
+        std::unique_ptr<Input::IInputManager> m_input_manager;
 
         std::unique_ptr<SceneManager> m_scene_manager;
 

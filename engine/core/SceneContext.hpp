@@ -4,20 +4,20 @@
 
 #pragma once
 #include "GameWorld.hpp"
-#include "../interface/include/IApplication.hpp"
+#include "IApplication.hpp"
+#include "IInputManager.hpp"
+#include "ISceneManager.hpp"
 #include "SystemManager.hpp"
 #include "World.hpp"
-#include "InputManager.hpp"
-#include "ISceneManager.hpp"
 
 namespace Engine::Core {
     struct SceneContext {
-        IApplication &app;
-        ISceneManager &scene_manager;
-        Ecs::World &world;
-        GameWorld &game_world;
-        Ecs::SystemManager &system_manager;
-        InputManager &input;
+        IApplication& app;
+        ISceneManager& scene_manager;
+        Ecs::World& world;
+        GameWorld& game_world;
+        Ecs::SystemManager& system_manager;
+        Input::IInputManager& input;
         float screen_width;
         float screen_height;
     };

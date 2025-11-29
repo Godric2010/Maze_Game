@@ -1,21 +1,21 @@
 #include "InputManager.hpp"
 
-namespace Engine::Core {
-    InputManager::InputManager(std::unique_ptr<Environment::IEnvInput> input_env) {
-        m_input_env = std::move(input_env);
+namespace Engine::Input {
+    InputManager::InputManager(Environment::IWindow* window) {
+        m_input_env = CreateInput(*window);
 
         const InputMap ui_input_map{
             .name = "UIInputMap",
             .mouse_bindings = {
                 MouseKeyBinding{
                     .name = "UiButtonDown",
-                    .button = Environment::MouseButton::Left,
-                    .press_state = Environment::PressState::Down
+                    .button = MouseButton::Left,
+                    .press_state = PressState::Down
                 },
                 MouseKeyBinding{
                     .name = "UiButtonUp",
-                    .button = Environment::MouseButton::Left,
-                    .press_state = Environment::PressState::Up
+                    .button = MouseButton::Left,
+                    .press_state = PressState::Up
                 },
             },
         };
@@ -30,19 +30,16 @@ namespace Engine::Core {
         PopulateInputActions();
     }
 
-    Environment::InputSnapshot *InputManager::GetInputSnapshot() const {
-        return m_input_env->GetInputSnapshot();
-    }
 
-    Environment::AppEventsSnapshot *InputManager::GetAppEventSnapshot() const {
+    Environment::AppEventsSnapshot* InputManager::GetAppEventSnapshot() {
         return m_input_env->GetAppEventSnapshot();
     }
 
-    void InputManager::AddInputMapping(const InputMap &input_map) {
+    void InputManager::AddInputMapping(const InputMap& input_map) {
         m_input_maps.push_back(input_map);
     }
 
-    void InputManager::EnableInputMap(const std::string &input_map_name) {
+    void InputManager::EnableInputMap(const std::string& input_map_name) {
         for (int i = 0; i < m_input_maps.size(); ++i) {
             if (m_input_maps.at(i).name == input_map_name && !m_active_map_indices.contains(i)) {
                 m_active_map_indices.insert(i);
@@ -51,7 +48,7 @@ namespace Engine::Core {
         }
     }
 
-    void InputManager::DisableInputMap(const std::string &input_map_name) {
+    void InputManager::DisableInputMap(const std::string& input_map_name) {
         for (int i = 0; i < m_input_maps.size(); ++i) {
             if (m_input_maps.at(i).name == input_map_name && m_active_map_indices.contains(i)) {
                 m_active_map_indices.erase(i);
@@ -66,7 +63,7 @@ namespace Engine::Core {
     }
 
 
-    InputBuffer InputManager::GetInput() const {
+    InputBuffer InputManager::GetInput() {
         return m_input_buffer;
     }
 
@@ -84,14 +81,14 @@ namespace Engine::Core {
             m_input_buffer.mouse_delta = snapshot->GetMouseDelta();
             m_input_buffer.mouse_position = snapshot->GetMousePosition();
 
-            for (const auto &[key_binding_name, key, press_state]: key_bindings) {
-                if (snapshot->IsKeyInState(key, press_state)) {
+            for (const auto& [key_binding_name, key, press_state]: key_bindings) {
+                if (snapshot->IsKeyInState(m_mapping.keys[key], m_mapping.press_state[press_state])) {
                     m_input_buffer.actions.push_back(InputAction{.name = key_binding_name});
                 }
             }
 
-            for (const auto &[mouse_binding_name, button, press_state]: mouse_bindings) {
-                if (snapshot->IsMouseButtonInState(button, press_state)) {
+            for (const auto& [mouse_binding_name, button, press_state]: mouse_bindings) {
+                if (snapshot->IsMouseButtonInState(m_mapping.mouse[button], m_mapping.press_state[press_state])) {
                     m_input_buffer.actions.push_back(InputAction{.name = mouse_binding_name});
                 }
             }
