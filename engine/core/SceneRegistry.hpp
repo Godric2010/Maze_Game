@@ -3,7 +3,7 @@
 #include <functional>
 #include <memory>
 #include "IScene.hpp"
-#include "SceneArgs.hpp"
+#include "../interface/include/Scene/SceneArgs.hpp"
 
 namespace Engine::Core {
     class SceneRegistry {

@@ -6,8 +6,6 @@
 #include <any>
 #include <functional>
 
-#include "IScene.hpp"
-
 namespace Engine::Core {
     struct SceneArgs {
         std::any payload;

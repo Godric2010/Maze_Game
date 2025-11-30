@@ -6,9 +6,9 @@
 #include "GameWorld.hpp"
 #include "IApplication.hpp"
 #include "IInputManager.hpp"
-#include "ISceneManager.hpp"
 #include "SystemManager.hpp"
 #include "World.hpp"
+#include "Scene/ISceneManager.hpp"
 
 namespace Engine::Core {
     struct SceneContext {

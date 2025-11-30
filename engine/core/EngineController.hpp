@@ -7,7 +7,6 @@
 #include "DebugViewData.hpp"
 #include "IEngine.hpp"
 #include "IInputManager.hpp"
-#include "SceneArgs.hpp"
 #include "SceneManager.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"

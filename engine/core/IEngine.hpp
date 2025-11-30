@@ -6,7 +6,7 @@
 #include "GameWorld.hpp"
 #include "IScene.hpp"
 #include "../renderer/Datatypes.hpp"
-#include "SceneArgs.hpp"
+#include "../interface/include/Scene/SceneArgs.hpp"
 
 namespace Engine::Core {
     class IEngine {

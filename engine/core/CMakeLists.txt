@@ -35,8 +35,6 @@ add_library(Core STATIC
         SceneManager.cpp
         SceneRegistry.cpp
         SceneRegistry.hpp
-        ISceneManager.hpp
-        SceneArgs.hpp
         components/ui/Text.hpp
         systems/RectTransformSystem.cpp
         systems/RectTransformSystem.hpp

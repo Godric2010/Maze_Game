@@ -5,6 +5,8 @@ add_library(Interface INTERFACE
         include/Input/IInput.hpp
         include/Input/InputTypes.hpp
         include/Input/InputBuffer.hpp
+        include/scene/SceneArgs.hpp
+        include/scene/ISceneManager.hpp
 )
 
 target_include_directories(Interface INTERFACE

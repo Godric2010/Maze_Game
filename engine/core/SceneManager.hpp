@@ -3,8 +3,8 @@
 
 #include "IInputManager.hpp"
 #include "IScene.hpp"
-#include "ISceneManager.hpp"
-#include "SceneArgs.hpp"
+#include "../interface/include/Scene/ISceneManager.hpp"
+#include "../interface/include/Scene/SceneArgs.hpp"
 #include "SceneRegistry.hpp"
 
 namespace Engine::Core {
