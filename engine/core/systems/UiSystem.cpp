@@ -25,7 +25,7 @@ namespace Engine::Core::Systems {
     void UiSystem::Run(float delta_time) {
         HandleTextLabels();
 
-        Input::InputBuffer input = GameWorld()->GetInput();
+        Input::InputBuffer input = Input()->GetInput();
         if (!input.IsMapActive("UIInputMap")) {
             return;
         }

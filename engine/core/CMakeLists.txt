@@ -29,12 +29,6 @@ add_library(Core STATIC
         systems/UiSystem.cpp
         systems/UiSystem.hpp
         commands/ui/ButtonClickedCommand.hpp
-        IScene.hpp
-        SceneContext.hpp
-        SceneManager.hpp
-        SceneManager.cpp
-        SceneRegistry.cpp
-        SceneRegistry.hpp
         components/ui/Text.hpp
         systems/RectTransformSystem.cpp
         systems/RectTransformSystem.hpp
@@ -49,4 +43,4 @@ target_include_directories(Core PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/components
         ${CMAKE_CURRENT_SOURCE_DIR}/systems
 )
-target_link_libraries(Core PUBLIC Interface Input Environment Text Renderer ECS Physics)
+target_link_libraries(Core PUBLIC Interface SceneManagement Input Environment Text Renderer ECS Physics)

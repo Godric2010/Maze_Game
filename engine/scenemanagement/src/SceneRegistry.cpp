@@ -1,6 +1,6 @@
 #include "SceneRegistry.hpp"
 
-namespace Engine::Core {
+namespace Engine::SceneManagement {
     void SceneRegistry::RegisterScene(std::string name, SceneFactory factory) {
         m_registry[std::move(name)] = std::move(factory);
     }

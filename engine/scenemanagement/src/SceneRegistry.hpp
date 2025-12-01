@@ -1,11 +1,11 @@
 #pragma once
-#include <unordered_map>
 #include <functional>
 #include <memory>
-#include "IScene.hpp"
-#include "../interface/include/Scene/SceneArgs.hpp"
+#include <unordered_map>
+#include "../include/IScene.hpp"
+#include "Scene/SceneArgs.hpp"
 
-namespace Engine::Core {
+namespace Engine::SceneManagement {
     class SceneRegistry {
     public:
         SceneRegistry() = default;

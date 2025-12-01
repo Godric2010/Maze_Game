@@ -7,7 +7,7 @@
 
 #include "SceneArgs.hpp"
 
-namespace Engine::Core {
+namespace Engine::SceneManagement {
     class ISceneManager {
     public:
         virtual ~ISceneManager() = default;

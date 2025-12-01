@@ -10,7 +10,7 @@ namespace Gameplay::Systems {
     }
 
     void PauseSystem::Run(float delta_time) {
-        const auto input = GameWorld()->GetInput();
+        const auto input = Input()->GetInput();
         if (!input.IsMapActive("PauseInputMap"))
             return;
 

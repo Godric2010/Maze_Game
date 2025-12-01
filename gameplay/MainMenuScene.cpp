@@ -2,6 +2,9 @@
 
 #include "Camera.hpp"
 #include "GameScene.hpp"
+#include "commands/ui/ButtonClickedCommand.hpp"
+#include "ui/Button.hpp"
+#include "ui/Image.hpp"
 #include "ui/Text.hpp"
 
 
@@ -193,7 +196,7 @@ namespace Gameplay {
     void MainMenuScene::EvaluateDifficultyUiElementCommands(const uint32_t button_id) {
         if (button_id == m_easy_difficulty_button) {
             SceneManager().LoadScene("Game",
-                                     Engine::Core::SceneArgs{
+                                     Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Easy
@@ -202,7 +205,7 @@ namespace Gameplay {
                     );
         } else if (button_id == m_medium_difficulty_button) {
             SceneManager().LoadScene("Game",
-                                     Engine::Core::SceneArgs{
+                                     Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Medium
@@ -211,7 +214,7 @@ namespace Gameplay {
                     );
         } else if (button_id == m_hard_difficulty_button) {
             SceneManager().LoadScene("Game",
-                                     Engine::Core::SceneArgs{
+                                     Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Hard
@@ -222,7 +225,7 @@ namespace Gameplay {
             SwitchUiElements(MenuState::Main);
         } else if (button_id == m_dev_scene_button) {
             SceneManager().LoadScene("Game",
-                                     Engine::Core::SceneArgs{
+                                     Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Developer

@@ -1,15 +1,17 @@
 #pragma once
-#include <unordered_map>
-#include <string>
-#include <functional>
-#include <vector>
 #include <any>
+#include <functional>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "ISystem.hpp"
+#include "../../core/GameWorld.hpp"
 
-namespace Engine::Core {
-    class GameWorld;
+namespace Engine::Input {
+    class IInput;
 }
+
 
 namespace Engine::Ecs {
     enum class Phase {
@@ -34,23 +36,23 @@ namespace Engine::Ecs {
 
     class SystemManager {
     public:
-        SystemManager(const std::vector<SystemMeta> &system_metas, IServiceToEcsProvider *service_provider);
+        SystemManager(const std::vector<SystemMeta>& system_metas, IServiceToEcsProvider* service_provider);
 
         ~SystemManager();
 
-        void RegisterSystems(World *world,
-                             Core::GameWorld *game_world);
+        void RegisterSystems(World* world, Input::IInput* input);
 
         void RunSystems(float delta_time);
 
         void RegisterForSystemCommands(std::string subscriber_name,
                                        std::function<void(std::vector<std::any>)> command_callback);
 
-        void DeregisterForSystemCommands(const std::string &subscriber_name);
+        void DeregisterForSystemCommands(const std::string& subscriber_name);
 
     private:
+        std::unique_ptr<Core::GameWorld> m_game_world;
         std::vector<SystemMeta> m_system_metas;
-        IServiceToEcsProvider *m_service_provider;
+        IServiceToEcsProvider* m_service_provider;
 
         std::vector<Phase> m_phase_order;
         std::unordered_map<Phase, std::vector<std::unique_ptr<ISystem> > > m_phase_map;
@@ -58,6 +60,6 @@ namespace Engine::Ecs {
 
         void RunPhase(Phase phase, float delta_time);
 
-        void RaiseCommandsEvent(const std::vector<std::any> &commands) const;
+        void RaiseCommandsEvent(const std::vector<std::any>& commands) const;
     };
 } // namespace

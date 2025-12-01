@@ -1,5 +1,5 @@
 #pragma once
-#include "IScene.hpp"
+#include "../engine/scenemanagement/include/IScene.hpp"
 #include "MeshHandler.hpp"
 #include "Transform.hpp"
 #include "ui/RectTransform.hpp"
@@ -10,7 +10,7 @@ namespace Gameplay {
         DifficultySelect,
     };
 
-    class MainMenuScene : public Engine::Core::IScene {
+    class MainMenuScene : public Engine::SceneManagement::IScene {
     public:
         explicit MainMenuScene(MeshHandler *mesh_handler);
 

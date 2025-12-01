@@ -43,11 +43,11 @@ namespace Engine::Core {
         m_system_manager = std::make_unique<Ecs::SystemManager>(systems, m_services.get());
 
         const auto window_context = m_window->GetWindowContext();
-        m_scene_manager = std::make_unique<SceneManager>(*this,
-                                                         *m_system_manager,
-                                                         *m_input_manager,
-                                                         static_cast<float>(window_context.width),
-                                                         static_cast<float>(window_context.height)
+        m_scene_manager = std::make_unique<SceneManagement::SceneManager>(*this,
+                                                                          *m_system_manager,
+                                                                          *m_input_manager,
+                                                                          static_cast<float>(window_context.width),
+                                                                          static_cast<float>(window_context.height)
                 );
     }
 
@@ -94,11 +94,11 @@ namespace Engine::Core {
         m_input_manager->AddInputMapping(map);
     }
 
-    void EngineController::RegisterScene(const std::string& name, const SceneFactory scene_factory) {
+    void EngineController::RegisterScene(const std::string& name, const SceneManagement::SceneFactory scene_factory) {
         m_scene_manager->RegisterScene(name, scene_factory);
     }
 
-    void EngineController::SetInitialScene(const std::string& name, const SceneArgs& args) {
+    void EngineController::SetInitialScene(const std::string& name, const SceneManagement::SceneArgs& args) {
         m_scene_manager->LoadScene(name, args);
     }
 } // namespace

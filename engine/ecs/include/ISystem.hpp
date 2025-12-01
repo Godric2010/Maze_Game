@@ -5,6 +5,7 @@
 #pragma once
 #include "IServiceToEcsProvider.hpp"
 #include "World.hpp"
+#include "Input/IInput.hpp"
 
 namespace Engine::Core {
     class GameWorld;
@@ -24,10 +25,12 @@ namespace Engine::Ecs {
         virtual void Run(float delta_time) = 0;
 
     protected:
-        [[nodiscard]] Core::GameWorld *GameWorld() const { return m_game_world; }
+        [[nodiscard]] Core::GameWorld* GameWorld() const { return m_game_world; }
+        [[nodiscard]] Input::IInput* Input() const { return m_input; }
 
     private:
-        Core::GameWorld *m_game_world{};
+        Core::GameWorld* m_game_world{};
+        Input::IInput* m_input{};
     };
 
     class IEngineSystem : public ISystem {
@@ -37,12 +40,11 @@ namespace Engine::Ecs {
         ~IEngineSystem() override = default;
 
     private:
-        IServiceToEcsProvider *m_service_locator{};
-        Ecs::World *m_world{};
-
+        IServiceToEcsProvider* m_service_locator{};
+        Ecs::World* m_world{};
 
     protected:
-        [[nodiscard]] IServiceToEcsProvider *ServiceLocator() const { return m_service_locator; }
-        [[nodiscard]] World* EcsWorld() const {return m_world;}
+        [[nodiscard]] IServiceToEcsProvider* ServiceLocator() const { return m_service_locator; }
+        [[nodiscard]] World* EcsWorld() const { return m_world; }
     };
 }

@@ -7,7 +7,7 @@
 #include "DebugViewData.hpp"
 #include "IEngine.hpp"
 #include "IInputManager.hpp"
-#include "SceneManager.hpp"
+#include "../scenemanagement/src/SceneManager.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
 #include "../ecs/include/World.hpp"
@@ -46,9 +46,9 @@ namespace Engine::Core {
 
         void RegisterInputMap(Input::InputMap map) override;
 
-        void RegisterScene(const std::string& name, SceneFactory scene_factory) override;
+        void RegisterScene(const std::string& name, SceneManagement::SceneFactory scene_factory) override;
 
-        void SetInitialScene(const std::string& name, const SceneArgs& args) override;
+        void SetInitialScene(const std::string& name, const SceneManagement::SceneArgs& args) override;
 
     private:
         std::unique_ptr<ServiceLocator> m_services;
@@ -56,7 +56,7 @@ namespace Engine::Core {
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
         std::unique_ptr<Input::IInputManager> m_input_manager;
 
-        std::unique_ptr<SceneManager> m_scene_manager;
+        std::unique_ptr<SceneManagement::SceneManager> m_scene_manager;
 
         bool m_is_running = true;
         std::string m_initial_scene_name;

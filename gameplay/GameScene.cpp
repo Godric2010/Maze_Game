@@ -4,6 +4,13 @@
 #include <ostream>
 
 #include "GameEndScene.hpp"
+#include "commands/LevelFinished.hpp"
+#include "commands/PauseCommand.hpp"
+#include "commands/ui/ButtonClickedCommand.hpp"
+#include "components/Inventory.hpp"
+#include "ui/Button.hpp"
+#include "ui/Image.hpp"
+#include "ui/RectTransform.hpp"
 #include "ui/Text.hpp"
 
 namespace Gameplay {
@@ -43,7 +50,7 @@ namespace Gameplay {
                 m_time_passed += duration;
 
                 SceneManager().LoadScene("GameEnd",
-                                         Engine::Core::SceneArgs{
+                                         Engine::SceneManagement::SceneArgs{
                                              .payload = GameEndShowData{
                                                  .mesh_handler = m_mesh_handler,
                                                  .time_to_completion = m_time_passed,
@@ -58,7 +65,7 @@ namespace Gameplay {
                 if (button_id == 1) {
                     Resume();
                 } else if (button_id == 2) {
-                    SceneManager().LoadScene("MainMenu", Engine::Core::SceneArgs{.payload = m_mesh_handler});
+                    SceneManager().LoadScene("MainMenu", Engine::SceneManagement::SceneArgs{.payload = m_mesh_handler});
                 } else if (button_id == 3) {
                     Application().Quit();
                 }

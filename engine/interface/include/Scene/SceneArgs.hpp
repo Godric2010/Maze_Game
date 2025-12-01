@@ -6,7 +6,7 @@
 #include <any>
 #include <functional>
 
-namespace Engine::Core {
+namespace Engine::SceneManagement {
     struct SceneArgs {
         std::any payload;
     };

@@ -1,5 +1,5 @@
 #pragma once
-#include "IScene.hpp"
+#include "../engine/scenemanagement/include/IScene.hpp"
 #include "MeshHandler.hpp"
 #include "Camera.hpp"
 
@@ -9,7 +9,7 @@ namespace Gameplay {
         float time_to_completion;
     };
 
-    class GameEndScene : public Engine::Core::IScene {
+    class GameEndScene : public Engine::SceneManagement::IScene {
     public:
         explicit GameEndScene(GameEndShowData game_end_show_data);
 

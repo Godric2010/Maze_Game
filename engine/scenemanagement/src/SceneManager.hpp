@@ -1,13 +1,12 @@
 #pragma once
 #include <optional>
 
-#include "IInputManager.hpp"
-#include "IScene.hpp"
-#include "../interface/include/Scene/ISceneManager.hpp"
-#include "../interface/include/Scene/SceneArgs.hpp"
 #include "SceneRegistry.hpp"
+#include "../include/IScene.hpp"
+#include "Scene/ISceneManager.hpp"
+#include "Scene/SceneArgs.hpp"
 
-namespace Engine::Core {
+namespace Engine::SceneManagement {
     class SceneManager : public ISceneManager {
     public:
         explicit SceneManager(IApplication &app,
@@ -28,7 +27,7 @@ namespace Engine::Core {
         std::unique_ptr<IScene> m_pending_scene;
 
         std::unique_ptr<Ecs::World> m_active_world;
-        std::unique_ptr<GameWorld> m_active_game_world;
+        std::unique_ptr<SceneWorld> m_world_adapter;
 
         std::unique_ptr<SceneRegistry> m_registry;
 

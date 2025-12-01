@@ -1,17 +1,17 @@
 #include "SceneManager.hpp"
 
-namespace Engine::Core {
+namespace Engine::SceneManagement {
     SceneManager::SceneManager(IApplication& app,
                                Ecs::SystemManager& system_manager, Input::IInput& input_manager,
                                const float screen_width,
                                const float screen_height) {
         m_active_world = std::make_unique<Ecs::World>();
-        m_active_game_world = std::make_unique<GameWorld>(m_active_world.get(), &input_manager);
+        m_world_adapter = std::make_unique<SceneWorld>(*m_active_world);
         m_context.emplace(SceneContext{
                     .app = app,
                     .scene_manager = *this,
                     .world = *m_active_world,
-                    .game_world = *m_active_game_world,
+                    .game_world = *m_world_adapter,
                     .system_manager = system_manager,
                     .input = input_manager,
                     .screen_width = screen_width,
@@ -59,24 +59,24 @@ namespace Engine::Core {
             m_current_scene.reset();
         }
 
-        m_active_game_world.reset();
+        m_world_adapter.reset();
         m_active_world.reset();
 
         m_active_world = std::make_unique<Ecs::World>();
-        m_active_game_world = std::make_unique<GameWorld>(m_active_world.get(), &m_context->input);
+        m_world_adapter = std::make_unique<SceneWorld>(*m_active_world);
 
         const auto old_context = m_context.value();
         auto new_context = SceneContext{\
             .app = old_context.app,
             .scene_manager = *this,
             .world = *m_active_world,
-            .game_world = *m_active_game_world,
+            .game_world = *m_world_adapter,
             .system_manager = old_context.system_manager,
             .input = old_context.input,
             .screen_width = old_context.screen_width,
             .screen_height = old_context.screen_height
         };
-        new_context.system_manager.RegisterSystems(m_active_world.get(), m_active_game_world.get());
+        new_context.system_manager.RegisterSystems(m_active_world.get(), &old_context.input);
         m_context.emplace(new_context);
 
         m_current_scene = std::move(m_pending_scene);

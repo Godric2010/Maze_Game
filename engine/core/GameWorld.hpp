@@ -4,15 +4,13 @@
 
 #pragma once
 
-#include "IInputManager.hpp"
 #include "World.hpp"
 
 namespace Engine::Core {
     class GameWorld {
     public:
-        explicit GameWorld(Ecs::World* ecs_world, Input::IInput* input_manager) {
+        explicit GameWorld(Ecs::World* ecs_world) {
             m_world = ecs_world;
-            m_input_manager = input_manager;
         }
 
         ~GameWorld() = default;
@@ -66,10 +64,7 @@ namespace Engine::Core {
             m_world->PushCommand(cmd);
         }
 
-        [[nodiscard]] Input::InputBuffer GetInput() const { return m_input_manager->GetInput(); }
-
     private:
         Ecs::World* m_world;
-        Input::IInput* m_input_manager;
     };
 }

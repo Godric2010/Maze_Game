@@ -8,7 +8,7 @@
 #include "../components/KeyItem.hpp"
 
 namespace Gameplay::Mazegenerator {
-    MazeBuilder::MazeBuilder(Engine::Core::GameWorld *game_world,
+    MazeBuilder::MazeBuilder(Engine::SceneManagement::SceneWorld *game_world,
                              const Engine::Renderer::MeshHandle floor_mesh,
                              const Engine::Renderer::MeshHandle wall_mesh,
                              const Engine::Renderer::MeshHandle key_mesh,

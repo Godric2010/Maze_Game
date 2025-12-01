@@ -6,11 +6,10 @@
 #include <iostream>
 #include <ostream>
 
-#include "GameWorld.hpp"
-#include "SceneContext.hpp"
+#include "../src/SceneContext.hpp"
 #include "Input/IInput.hpp"
 
-namespace Engine::Core {
+namespace Engine::SceneManagement {
     class SceneRegistry;
 
     struct ScreenInfo {
@@ -57,7 +56,7 @@ namespace Engine::Core {
         }
 
     protected:
-        [[nodiscard]] GameWorld &World() const { return m_context->game_world; }
+        [[nodiscard]] SceneWorld &World() const { return m_context->game_world; }
         [[nodiscard]] Input::IInput &Input() const { return m_context->input; }
         [[nodiscard]] IApplication &Application() const { return m_context->app; }
         [[nodiscard]] ISceneManager &SceneManager() const { return m_context->scene_manager; }

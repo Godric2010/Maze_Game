@@ -10,7 +10,7 @@
 namespace Gameplay::Mazegenerator {
     class MazeBuilder {
     public:
-        MazeBuilder(Engine::Core::GameWorld *game_world, Engine::Renderer::MeshHandle floor_mesh,
+        MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Renderer::MeshHandle floor_mesh,
                     Engine::Renderer::MeshHandle wall_mesh, Engine::Renderer::MeshHandle key_mesh,
                     bool enable_debug_view);
 
@@ -21,7 +21,7 @@ namespace Gameplay::Mazegenerator {
         glm::vec3 GetMazeStartPosition() const;
 
     private:
-        Engine::Core::GameWorld *m_game_world;
+        Engine::SceneManagement::SceneWorld* m_game_world;
         std::unique_ptr<MazeAlgorithm> m_maze_algorithm;
         std::unique_ptr<DebugGridDrawer> m_debug_grid_drawer;
         Maze m_maze;
@@ -30,19 +30,19 @@ namespace Gameplay::Mazegenerator {
         Engine::Renderer::MeshHandle m_key_mesh;
 
         void CreateCellFloorTile(
-            const CellIndex &cell_idx, const glm::vec4 &tile_color) const;
+                const CellIndex& cell_idx, const glm::vec4& tile_color) const;
 
-        void CreateWallFloorTile(const CellIndex &cell_idx,
-                                 const glm::vec4 &tile_color, const Direction &direction) const;
+        void CreateWallFloorTile(const CellIndex& cell_idx,
+                                 const glm::vec4& tile_color, const Direction& direction) const;
 
-        [[nodiscard]] glm::vec4 DetermineFloorColorForCell(const CellIndex &cell_idx) const;
+        [[nodiscard]] glm::vec4 DetermineFloorColorForCell(const CellIndex& cell_idx) const;
 
         void CreateCellObjects() const;
 
-        void CreateKeyObject(const CellIndex &cell_index) const;
+        void CreateKeyObject(const CellIndex& cell_index) const;
 
-        void CreateExitTrigger(const CellIndex &cell_index) const;
+        void CreateExitTrigger(const CellIndex& cell_index) const;
 
-        void CreateMazeCell(const Cell &cell) const;
+        void CreateMazeCell(const Cell& cell) const;
     };
 } // namespace

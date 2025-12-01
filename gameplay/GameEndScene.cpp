@@ -33,7 +33,7 @@ namespace Gameplay {
                 auto button_clicked = std::any_cast<Engine::Core::Commands::UI::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
                 if (button_id == m_back_to_main_menu_button_id) {
-                    SceneManager().LoadScene("MainMenu", Engine::Core::SceneArgs{.payload = m_mesh_handler});
+                    SceneManager().LoadScene("MainMenu", Engine::SceneManagement::SceneArgs{.payload = m_mesh_handler});
                 }
             }
         }

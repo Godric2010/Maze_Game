@@ -19,7 +19,7 @@ namespace Gameplay::Systems {
     }
 
     void PlayerControllerSystem::Run(const float delta_time) {
-        const auto input = GameWorld()->GetInput();
+        const auto input = Input()->GetInput();
         if (!input.IsMapActive("PlayerInputMap"))
             return;
 

@@ -1,24 +1,9 @@
 #pragma once
 #include <chrono>
 
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "Camera.hpp"
-#include "IScene.hpp"
+#include "../engine/scenemanagement/include/IScene.hpp"
 #include "mazegenerator/MazeBuilder.hpp"
 #include "Transform.hpp"
-#include "ui/RectTransform.hpp"
-#include "ui/Image.hpp"
-#include "ui/Button.hpp"
-#include "MotionIntent.hpp"
-#include "Collider.hpp"
-#include "components/Inventory.hpp"
-#include "commands/PauseCommand.hpp"
-#include "commands/LevelFinished.hpp"
-#include "commands/ui/ButtonClickedCommand.hpp"
 
 namespace Gameplay {
     enum class Difficulty : int {
@@ -33,7 +18,7 @@ namespace Gameplay {
         Difficulty difficulty;
     };
 
-    class GameScene : public Engine::Core::IScene {
+    class GameScene : public Engine::SceneManagement::IScene {
     public:
         explicit GameScene(GameSceneSettings settings);
 

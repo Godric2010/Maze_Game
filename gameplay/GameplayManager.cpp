@@ -65,27 +65,27 @@ namespace Gameplay {
 
     void GameplayManager::Initialize() const {
         m_engine.RegisterScene("MainMenu",
-                               [](const Engine::Core::SceneArgs& args) {
+                               [](const Engine::SceneManagement::SceneArgs& args) {
                                    const auto& mesh_handler = std::any_cast<MeshHandler*>(args.payload);
                                    return std::make_unique<MainMenuScene>(mesh_handler);
                                }
                 );
 
         m_engine.RegisterScene("Game",
-                               [](const Engine::Core::SceneArgs& args) {
+                               [](const Engine::SceneManagement::SceneArgs& args) {
                                    const auto game_scene_settings = std::any_cast<GameSceneSettings>(args.payload);
                                    return std::make_unique<GameScene>(game_scene_settings);
                                }
                 );
 
         m_engine.RegisterScene("GameEnd",
-                               [](const Engine::Core::SceneArgs& args) {
+                               [](const Engine::SceneManagement::SceneArgs& args) {
                                    const auto game_end_data = std::any_cast<GameEndShowData>(args.payload);
                                    return std::make_unique<GameEndScene>(game_end_data);
                                }
                 );
 
-        m_engine.SetInitialScene("MainMenu", Engine::Core::SceneArgs{m_mesh_handler.get()});
+        m_engine.SetInitialScene("MainMenu", Engine::SceneManagement::SceneArgs{m_mesh_handler.get()});
         // m_engine.SetInitialScene("GameEnd",
         //                          Engine::Input::SceneArgs{
         //                              GameEndShowData{m_mesh_handler.get(), 72.0f},
