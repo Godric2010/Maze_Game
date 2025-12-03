@@ -32,9 +32,6 @@ add_library(Core STATIC
         components/ui/Text.hpp
         systems/RectTransformSystem.cpp
         systems/RectTransformSystem.hpp
-        DebugUIDrawer.cpp
-        DebugUIDrawer.hpp
-        DebugViewData.hpp
 )
 
 target_include_directories(Core PUBLIC
@@ -43,4 +40,4 @@ target_include_directories(Core PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/components
         ${CMAKE_CURRENT_SOURCE_DIR}/systems
 )
-target_link_libraries(Core PUBLIC Interface SceneManagement Input Environment Text Renderer ECS Physics)
+target_link_libraries(Core PUBLIC Interface SceneManagement Input Environment Text Renderer ECS Physics Debug)

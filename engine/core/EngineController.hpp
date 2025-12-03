@@ -4,7 +4,7 @@
 #include <vector>
 #include <spdlog/spdlog.h>
 
-#include "DebugViewData.hpp"
+#include "IDebugConsole.hpp"
 #include "IEngine.hpp"
 #include "IInputManager.hpp"
 #include "../scenemanagement/src/SceneManager.hpp"
@@ -55,13 +55,12 @@ namespace Engine::Core {
         std::unique_ptr<Environment::IWindow> m_window;
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
         std::unique_ptr<Input::IInputManager> m_input_manager;
+        std::unique_ptr<Debug::IDebugConsole> m_debug_console;
 
         std::unique_ptr<SceneManagement::SceneManager> m_scene_manager;
 
         bool m_is_running = true;
         std::string m_initial_scene_name;
-
-        DebugViewData m_view_data{};
 
         float m_fps_frames = 0;
         float m_fps_accumulator = 0;

@@ -15,7 +15,8 @@ namespace Engine::Environment {
         ~SDLWindow() override;
 
         void Setup(WindowConfig config) override;
-        WindowContext GetWindowContext() override;
+
+        WindowContext &GetWindowContext() override;
 
         bool PollEvents_old() override;
         void SwapBuffers() override;

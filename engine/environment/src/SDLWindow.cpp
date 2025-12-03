@@ -57,7 +57,7 @@ namespace Engine::Environment {
         }
     }
 
-    WindowContext SDLWindow::GetWindowContext() {
+    WindowContext &SDLWindow::GetWindowContext() {
         return m_context;
     }
 

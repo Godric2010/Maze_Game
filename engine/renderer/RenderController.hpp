@@ -10,21 +10,23 @@
 namespace Engine::Renderer {
     class RenderController {
     public:
-        explicit RenderController(const Environment::WindowContext &window_context);
+        explicit RenderController(const Environment::WindowContext& window_context);
 
         ~RenderController();
 
-        [[nodiscard]] MeshHandle RegisterMesh(const MeshAsset &mesh) const;
+        [[nodiscard]] MeshHandle RegisterMesh(const MeshAsset& mesh) const;
 
-        void UnregisterMesh(const MeshHandle &handle) const;
+        void UnregisterMesh(const MeshHandle& handle) const;
 
-        [[nodiscard]] TextureHandle RegisterTexture(const TextureAsset &texture) const;
+        [[nodiscard]] TextureHandle RegisterTexture(const TextureAsset& texture) const;
 
-        void UnregisterTexture(const TextureHandle &handle) const;
+        void UnregisterTexture(const TextureHandle& handle) const;
 
-        void BeginFrame(const CameraAsset &camera_asset) const;
+        void BeginFrame(const CameraAsset& camera_asset) const;
 
-        void SubmitFrame(DrawAssets &draw_assets) const;
+        void SubmitFrame(DrawAssets& draw_assets) const;
+
+        void SubmitDebugInfos(const std::vector<UiDrawAsset>& debug_draw_assets);
 
         [[nodiscard]] uint32_t GetDrawCalls() const;
 
@@ -32,5 +34,6 @@ namespace Engine::Renderer {
         Environment::WindowContext m_window_context;
         std::unique_ptr<RenderFramework::IRenderer> m_renderer;
         std::unique_ptr<ShaderManagement::ShaderManager> m_shader_manager;
+        std::vector<UiDrawAsset> m_debug_draw_assets;
     };
 }

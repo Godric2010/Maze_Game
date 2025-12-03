@@ -87,7 +87,7 @@ namespace Engine::Environment {
          * context might vary.
          * @return The context data of this window, necessary to connect a renderer to it
          */
-        virtual WindowContext GetWindowContext() = 0;
+        virtual WindowContext &GetWindowContext() = 0;
 
         /**
          * Poll the events of this window for further processing

@@ -60,7 +60,15 @@ namespace Engine::Renderer {
     }
 
     void RenderController::SubmitFrame(DrawAssets& draw_assets) const {
+        for (auto& debug_draw_asset: m_debug_draw_assets) {
+            draw_assets.ui_draw_assets.push_back(debug_draw_asset);
+        }
         m_renderer->DrawFrame(draw_assets);
+    }
+
+    void RenderController::SubmitDebugInfos(const std::vector<UiDrawAsset>& debug_draw_assets) {
+        m_debug_draw_assets.clear();
+        m_debug_draw_assets = debug_draw_assets;
     }
 
     uint32_t RenderController::GetDrawCalls() const {

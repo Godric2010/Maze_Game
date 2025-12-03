@@ -1,6 +1,6 @@
 #include "EngineController.hpp"
 
-#include "DebugUIDrawer.hpp"
+#include "DebugBuilder.hpp"
 #include "EnvironmentBuilder.hpp"
 #include "SystemManager.hpp"
 #include "TextController.hpp"
@@ -34,11 +34,11 @@ namespace Engine::Core {
         auto text_controller = std::make_unique<Text::TextController>();
         m_services->RegisterService(std::move(text_controller));
 
-        auto debug_ui_drawer = std::make_unique<DebugUiDrawer>(m_services->TryGetService<Text::TextController>(),
-                                                               m_services->TryGetService<Renderer::RenderController>(),
-                                                               m_window->GetWindowContext()
+        m_debug_console = Debug::CreateDebugConsole(m_services->TryGetService<Text::TextController>(),
+                                                    m_services->GetService<Renderer::RenderController>(),
+                                                    m_window->GetWindowContext(),
+                                                    90
                 );
-        m_services->RegisterService(std::move(debug_ui_drawer));
 
         m_system_manager = std::make_unique<Ecs::SystemManager>(systems, m_services.get());
 
@@ -66,11 +66,13 @@ namespace Engine::Core {
                 const auto fps = m_fps_frames / m_fps_accumulator;
                 m_fps_accumulator = 0.0f;
                 m_fps_frames = 0;
-                m_view_data.SetFps(fps);
+                m_debug_console->PushValue("FPS:", fps);
             }
-            m_view_data.SetDrawCalls(m_services->GetService<Renderer::RenderController>()->GetDrawCalls());
-            m_services->GetService<DebugUiDrawer>()->SetDrawData(m_view_data.GetData());
+            m_debug_console->PushValue("Draws:",
+                                       m_services->GetService<Renderer::RenderController>()->GetDrawCalls()
+                    );
 
+            m_debug_console->PushToFrame();
             m_input_manager->UpdateInput();
             m_scene_manager->Update(delta_time);
             m_window->SwapBuffers();

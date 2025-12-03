@@ -18,9 +18,6 @@ namespace Engine::Core::Systems {
         const Renderer::RenderController* render_controller = ServiceLocator()->
                 GetService<Renderer::RenderController>();
         m_render_controller = render_controller;
-
-        DebugUiDrawer* debug_ui_drawer = ServiceLocator()->GetService<DebugUiDrawer>();
-        m_debug_ui_drawer = debug_ui_drawer;
     }
 
     void RenderSystem::Run(float delta_time) {
@@ -29,12 +26,7 @@ namespace Engine::Core::Systems {
         const auto camera_asset = CreateCameraAsset(camera, camera_transform);
 
         const std::vector<Renderer::MeshDrawAsset> mesh_draw_assets = CreateDrawAssets();
-        std::vector<Renderer::UiDrawAsset> ui_draw_assets = CreateUiDrawAssets();
-
-        const auto debug_ui_assets = m_debug_ui_drawer->DrawDebugUi();
-        for (auto debug_asset: debug_ui_assets) {
-            ui_draw_assets.push_back(debug_asset);
-        }
+        const std::vector<Renderer::UiDrawAsset> ui_draw_assets = CreateUiDrawAssets();
 
         Renderer::DrawAssets draw_assets{};
         draw_assets.mesh_draw_assets = mesh_draw_assets;
