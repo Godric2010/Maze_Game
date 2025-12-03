@@ -5,10 +5,10 @@
 
 
 #include "GameWorld.hpp"
-#include "MotionIntent.hpp"
 #include "ServiceLocator.hpp"
+#include "../../engine/components/MotionIntent.hpp"
 #include "../commands/PauseCommand.hpp"
-#include "components/Transform.hpp"
+#include "../components/Transform.hpp"
 
 namespace Gameplay::Systems {
     PlayerControllerSystem::PlayerControllerSystem() = default;

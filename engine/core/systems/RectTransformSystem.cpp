@@ -3,7 +3,7 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "GameWorld.hpp"
-#include "ui/Text.hpp"
+#include "../components/ui/Text.hpp"
 
 namespace Engine::Core::Systems {
     void RectTransformSystem::Initialize() {

@@ -3,7 +3,7 @@
 
 #include "../engine/scenemanagement/include/IScene.hpp"
 #include "mazegenerator/MazeBuilder.hpp"
-#include "Transform.hpp"
+#include "../engine/components/Transform.hpp"
 
 namespace Gameplay {
     enum class Difficulty : int {

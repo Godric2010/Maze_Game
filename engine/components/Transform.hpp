@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-#include "../systems/physics/PhysicsSystem.hpp"
+#include "../core/systems/physics/PhysicsSystem.hpp"
 
 namespace Engine::Core::Components {
     struct Transform {

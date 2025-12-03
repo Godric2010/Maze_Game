@@ -2,7 +2,7 @@
 #include<format>
 #include<string>
 #include<cstdint>
-#include "Camera.hpp"
+#include "../../engine/components/Camera.hpp"
 #include "DebugGridDrawer.hpp"
 #include "MazeAlgorithm.hpp"
 #include "../MeshHandler.hpp"

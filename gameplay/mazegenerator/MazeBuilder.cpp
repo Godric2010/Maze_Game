@@ -2,8 +2,8 @@
 
 #include <ostream>
 
-#include "Mesh.hpp"
-#include "Transform.hpp"
+#include "../../engine/components/Mesh.hpp"
+#include "../../engine/components/Transform.hpp"
 #include "../components/Exit.hpp"
 #include "../components/KeyItem.hpp"
 

@@ -1,10 +1,8 @@
 #pragma once
 #include "ISystem.hpp"
-#include "Mesh.hpp"
+#include "../../components/Transform.hpp"
 #include "../../renderer/RenderController.hpp"
-#include "components/Camera.hpp"
-#include "components/Transform.hpp"
-#include <ranges>
+#include "../components/Camera.hpp"
 
 
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])

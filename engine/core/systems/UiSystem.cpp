@@ -3,9 +3,9 @@
 #include "GameWorld.hpp"
 #include "ServiceLocator.hpp"
 #include "../../text/include/TextController.hpp"
+#include "../components/ui/Button.hpp"
+#include "../components/ui/Text.hpp"
 #include "commands/ui/ButtonClickedCommand.hpp"
-#include "ui/Button.hpp"
-#include "ui/Text.hpp"
 
 
 namespace Engine::Core::Systems {

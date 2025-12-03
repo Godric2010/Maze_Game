@@ -1,8 +1,8 @@
 #pragma once
 #include "../engine/scenemanagement/include/IScene.hpp"
 #include "MeshHandler.hpp"
-#include "Transform.hpp"
-#include "ui/RectTransform.hpp"
+#include "../engine/components/Transform.hpp"
+#include "../../components/ui/RectTransform.hpp"
 
 namespace Gameplay {
     enum class MenuState {

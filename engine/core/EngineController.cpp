@@ -4,7 +4,7 @@
 #include "EnvironmentBuilder.hpp"
 #include "SystemManager.hpp"
 #include "TextController.hpp"
-#include "Transform.hpp"
+#include "../components/Transform.hpp"
 #include "../input/include/InputManagerBuilder.hpp"
 
 namespace Engine::Core {

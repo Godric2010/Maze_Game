@@ -5,7 +5,7 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "GameWorld.hpp"
-#include "components/Transform.hpp"
+#include "../../components/Transform.hpp"
 
 namespace Engine::Core::Systems {
     TransformSystem::TransformSystem() = default;

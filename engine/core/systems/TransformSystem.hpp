@@ -1,9 +1,8 @@
 #pragma once
-#include <glm/glm.hpp>
 #include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 
 #include "ISystem.hpp"
-#include "ui/RectTransform.hpp"
 
 ECS_SYSTEM(TransformSystem, LateUpdate, [ENGINE])
 

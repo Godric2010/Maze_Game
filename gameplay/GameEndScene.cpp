@@ -1,11 +1,11 @@
 #include "GameEndScene.hpp"
 
-#include "Transform.hpp"
+#include "../engine/components/Transform.hpp"
 #include "commands/ui/ButtonClickedCommand.hpp"
-#include "ui/Button.hpp"
-#include "ui/Image.hpp"
-#include "ui/RectTransform.hpp"
-#include "ui/Text.hpp"
+#include "../components/ui/Button.hpp"
+#include "../components/ui/Image.hpp"
+#include "../components/ui/RectTransform.hpp"
+#include "../components/ui/Text.hpp"
 
 namespace Gameplay {
     GameEndScene::GameEndScene(const GameEndShowData game_end_show_data) {

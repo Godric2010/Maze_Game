@@ -1,13 +1,13 @@
 #include "RenderSystem.hpp"
 
 #include "GameWorld.hpp"
-#include "Mesh.hpp"
-#include "components/Camera.hpp"
-#include "components/Transform.hpp"
-#include "ui/Button.hpp"
-#include "ui/Image.hpp"
-#include "ui/RectTransform.hpp"
-#include "ui/Text.hpp"
+#include "../../components/Mesh.hpp"
+#include "../../components/Camera.hpp"
+#include "../../components/Transform.hpp"
+#include "../components/ui/Button.hpp"
+#include "../components/ui/Image.hpp"
+#include "../components/ui/RectTransform.hpp"
+#include "../components/ui/Text.hpp"
 
 namespace Engine::Core::Systems {
     RenderSystem::RenderSystem() = default;

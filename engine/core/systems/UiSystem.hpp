@@ -3,11 +3,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "ISystem.hpp"
 
-#include "../../interface/include/Input/InputBuffer.hpp"
 #include "TextController.hpp"
+#include "../../interface/include/Input/InputBuffer.hpp"
 #include "../../renderer/RenderController.hpp"
-#include "ui/RectTransform.hpp"
-#include "ui/Text.hpp"
+#include "../components/ui/RectTransform.hpp"
+#include "../components/ui/Text.hpp"
 
 namespace Engine::Core::Systems {
     ECS_SYSTEM(UiSystem, Ui, [ENGINE])

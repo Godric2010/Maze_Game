@@ -1,9 +1,9 @@
 #pragma once
 #include <memory>
-#include "Collider.hpp"
+#include "../../../components/Collider.hpp"
 #include "collision/ColliderCache.hpp"
 #include "ISystem.hpp"
-#include "MotionIntent.hpp"
+#include "../../../components/MotionIntent.hpp"
 #include "collision/CollisionQueryService.hpp"
 #include "collision/IBroadphase.hpp"
 #include "collision/MoverSolver.hpp"

@@ -5,7 +5,7 @@
 #include "GameWorld.hpp"
 #include "../components/Inventory.hpp"
 #include "../components/KeyItem.hpp"
-#include "ui/Image.hpp"
+#include "../components/ui/Image.hpp"
 
 namespace Gameplay::Systems {
     ItemSystem::ItemSystem() = default;
