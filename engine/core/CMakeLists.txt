@@ -2,9 +2,6 @@
 add_library(Core STATIC
         EngineController.cpp
         EngineController.hpp
-        ../components/Transform.hpp
-        ../components/Mesh.hpp
-        ../components/Camera.hpp
         systems/TransformSystem.cpp
         systems/TransformSystem.hpp
         systems/CameraSystem.cpp
@@ -17,19 +14,14 @@ add_library(Core STATIC
         GameWorld.hpp
         systems/EngineEventSystem.cpp
         systems/EngineEventSystem.hpp
-        ../components/MotionIntent.hpp
         systems/physics/PhysicsSystem.cpp
         systems/physics/PhysicsSystem.hpp
         ../components/Collider.hpp
         ../physics/include/collision/ColliderCache.hpp
         ../physics/include/collision/CollisionQueryService.hpp
-        ../components/ui/Image.hpp
-        ../components/ui/RectTransform.hpp
-        ../components/ui/Button.hpp
         systems/UiSystem.cpp
         systems/UiSystem.hpp
         commands/ui/ButtonClickedCommand.hpp
-        ../components/ui/Text.hpp
         systems/RectTransformSystem.cpp
         systems/RectTransformSystem.hpp
 )
@@ -40,4 +32,4 @@ target_include_directories(Core PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/components
         ${CMAKE_CURRENT_SOURCE_DIR}/systems
 )
-target_link_libraries(Core PUBLIC Interface SceneManagement Input Environment Text Renderer ECS Physics Debug)
+target_link_libraries(Core PUBLIC Interface Components SceneManagement Input Environment Text Renderer ECS Physics Debug)

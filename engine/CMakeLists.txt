@@ -9,6 +9,7 @@ add_subdirectory(physics)
 add_subdirectory(text)
 add_subdirectory(scenemanagement)
 add_subdirectory(debug)
+add_subdirectory(components)
 
 add_library(Engine INTERFACE)
-target_link_libraries(Engine INTERFACE Debug Interface Input Core Environment Renderer ECS Physics Text SceneManagement)
+target_link_libraries(Engine INTERFACE Interface Components Core SceneManagement)
