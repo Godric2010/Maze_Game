@@ -11,3 +11,9 @@ add_library(Components INTERFACE
         ui/RectTransform.hpp
         ui/Text.hpp
 )
+
+target_include_directories(Components
+        INTERFACE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+        $<INSTALL_INTERFACE:include>
+)

@@ -6,10 +6,9 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/norm.hpp>
 
-#include "../../../components/Collider.hpp"
-#include "GameWorld.hpp"
-#include "../../../components/Transform.hpp"
-#include "../../../physics/src/collision/SpatialHashBroadphase.hpp"
+#include "../../components/Collider.hpp"
+#include "../../components/Transform.hpp"
+#include "../../physics/src/collision/SpatialHashBroadphase.hpp"
 #include "collision/CollisionUtils.hpp"
 #include "collision/MoverSolver.hpp"
 #include "math/TypeUtils.hpp"

@@ -4,8 +4,7 @@
 #include <ostream>
 #include <glm/ext/matrix_transform.hpp>
 
-#include "GameWorld.hpp"
-#include "../../components/Transform.hpp"
+#include "../components/Transform.hpp"
 
 namespace Engine::Core::Systems {
     TransformSystem::TransformSystem() = default;
@@ -16,7 +15,7 @@ namespace Engine::Core::Systems {
     }
 
     void TransformSystem::Run(float delta_time) {
-        auto transform_components = GameWorld()->GetComponentsOfType<Components::Transform>();
+        auto transform_components = EcsWorld()->GetComponentsOfType<Components::Transform>();
         for (const auto transform: transform_components | std::views::keys) {
             if (!transform->IsDirty()) {
                 continue;

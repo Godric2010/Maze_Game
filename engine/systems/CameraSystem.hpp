@@ -6,10 +6,9 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-#include "../../components/Camera.hpp"
-#include "../../components/Transform.hpp"
+#include "../components/Camera.hpp"
+#include "../components/Transform.hpp"
 #include "ISystem.hpp"
-#include "GameWorld.hpp"
 
 ECS_SYSTEM(CameraSystem, LateUpdate, [ENGINE])
 

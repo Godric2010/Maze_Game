@@ -4,8 +4,8 @@
 #include "ISystem.hpp"
 
 #include "TextController.hpp"
-#include "../../interface/include/Input/InputBuffer.hpp"
-#include "../../renderer/RenderController.hpp"
+#include "../interface/include/Input/InputBuffer.hpp"
+#include "../renderer/RenderController.hpp"
 #include "../components/ui/RectTransform.hpp"
 #include "../components/ui/Text.hpp"
 

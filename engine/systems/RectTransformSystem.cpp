@@ -2,9 +2,6 @@
 
 #include <glm/ext/matrix_transform.hpp>
 
-#include "GameWorld.hpp"
-#include "../components/ui/Text.hpp"
-
 namespace Engine::Core::Systems {
     void RectTransformSystem::Initialize() {
     }
@@ -13,7 +10,7 @@ namespace Engine::Core::Systems {
         m_calculated_layouts.clear();
         m_dirty_rect_transforms.clear();
 
-        const auto rect_transform_components = GameWorld()->GetComponentsOfType<Components::UI::RectTransform>();
+        const auto rect_transform_components = EcsWorld()->GetComponentsOfType<Components::UI::RectTransform>();
         for (const auto [rect_transform, entity]: rect_transform_components) {
             if (!rect_transform->m_is_dirty) {
                 continue;
@@ -36,7 +33,7 @@ namespace Engine::Core::Systems {
         }
     }
 
-    glm::vec2 RectTransformSystem::GetAnchorValue(const Components::UI::Anchor &anchor) {
+    glm::vec2 RectTransformSystem::GetAnchorValue(const Components::UI::Anchor& anchor) {
         switch (anchor) {
             case Components::UI::Anchor::TopLeft:
                 return {0.0f, 0.0f};
@@ -61,7 +58,7 @@ namespace Engine::Core::Systems {
         };
     }
 
-    LayoutData RectTransformSystem::CreateLayoutData(const Components::UI::RectTransform *rect_transform) {
+    LayoutData RectTransformSystem::CreateLayoutData(const Components::UI::RectTransform* rect_transform) {
         LayoutData result{};
         result.local_position = rect_transform->GetLocalPosition();
         result.local_size = rect_transform->GetLocalSize();
@@ -80,7 +77,7 @@ namespace Engine::Core::Systems {
         return result;
     }
 
-    Components::UI::UiLayoutResult RectTransformSystem::CreateUiLayoutResult(const LayoutData &rect_layout) {
+    Components::UI::UiLayoutResult RectTransformSystem::CreateUiLayoutResult(const LayoutData& rect_layout) {
         Components::UI::UiLayoutResult result{};
 
         const glm::vec2 global_position = rect_layout.anchor_point + rect_layout.local_position - rect_layout.local_size
@@ -98,12 +95,12 @@ namespace Engine::Core::Systems {
         return result;
     }
 
-    Components::UI::UiLayoutResult RectTransformSystem::GetParentLayoutResult(const Ecs::EntityId &entity) {
+    Components::UI::UiLayoutResult RectTransformSystem::GetParentLayoutResult(const Ecs::EntityId& entity) {
         if (m_calculated_layouts.contains(entity)) {
             return m_calculated_layouts[entity];
         }
 
-        const auto parent_rect_transform = GameWorld()->GetComponent<Components::UI::RectTransform>(entity);
+        const auto parent_rect_transform = EcsWorld()->GetComponent<Components::UI::RectTransform>(entity);
         const auto layout_data = CreateLayoutData(parent_rect_transform);
         auto layout = CreateUiLayoutResult(layout_data);
         if (m_dirty_rect_transforms.contains(entity)) {

@@ -1,9 +1,8 @@
 #include "RenderSystem.hpp"
 
-#include "GameWorld.hpp"
-#include "../../components/Mesh.hpp"
-#include "../../components/Camera.hpp"
-#include "../../components/Transform.hpp"
+#include "../components/Camera.hpp"
+#include "../components/Mesh.hpp"
+#include "../components/Transform.hpp"
 #include "../components/ui/Button.hpp"
 #include "../components/ui/Image.hpp"
 #include "../components/ui/RectTransform.hpp"
@@ -21,8 +20,8 @@ namespace Engine::Core::Systems {
     }
 
     void RenderSystem::Run(float delta_time) {
-        const auto [camera, cameraEntity] = GameWorld()->GetComponentsOfType<Components::Camera>()[0];
-        const auto camera_transform = GameWorld()->GetComponent<Components::Transform>(cameraEntity);
+        const auto [camera, cameraEntity] = EcsWorld()->GetComponentsOfType<Components::Camera>()[0];
+        const auto camera_transform = EcsWorld()->GetComponent<Components::Transform>(cameraEntity);
         const auto camera_asset = CreateCameraAsset(camera, camera_transform);
 
         const std::vector<Renderer::MeshDrawAsset> mesh_draw_assets = CreateDrawAssets();
@@ -48,12 +47,12 @@ namespace Engine::Core::Systems {
     }
 
     std::vector<Renderer::MeshDrawAsset> RenderSystem::CreateDrawAssets() const {
-        const auto mesh_components = GameWorld()->GetComponentsOfType<Components::Mesh>();
+        const auto mesh_components = EcsWorld()->GetComponentsOfType<Components::Mesh>();
         auto draw_assets = std::vector<Renderer::MeshDrawAsset>(mesh_components.size());
 
         for (size_t i = 0; i < mesh_components.size(); ++i) {
             const auto [mesh_component, meshEntity] = mesh_components[i];
-            const auto mesh_transform = GameWorld()->GetComponent<Components::Transform>(meshEntity);
+            const auto mesh_transform = EcsWorld()->GetComponent<Components::Transform>(meshEntity);
 
             Renderer::MeshDrawAsset mesh_draw_assets{};
             mesh_draw_assets.mesh = mesh_component->mesh;
@@ -66,7 +65,7 @@ namespace Engine::Core::Systems {
     }
 
     std::vector<Renderer::UiDrawAsset> RenderSystem::CreateUiDrawAssets() const {
-        const auto rect_transforms = GameWorld()->GetComponentsOfType<Components::UI::RectTransform>();
+        const auto rect_transforms = EcsWorld()->GetComponentsOfType<Components::UI::RectTransform>();
         auto ui_draw_assets = std::vector<Renderer::UiDrawAsset>(rect_transforms.size());
 
         for (size_t i = 0; i < rect_transforms.size(); ++i) {
@@ -75,19 +74,19 @@ namespace Engine::Core::Systems {
             ui_draw_asset.model = rect_transform->GetModelMatrix();
             ui_draw_asset.layer = rect_transform->GetLayer();
 
-            const auto image_component = GameWorld()->GetComponent<Components::UI::Image>(entity);
+            const auto image_component = EcsWorld()->GetComponent<Components::UI::Image>(entity);
             if (image_component != nullptr) {
                 ui_draw_asset.color = image_component->color;
                 ui_draw_asset.mesh = static_cast<Renderer::MeshHandle>(0);
             }
 
-            const auto button_component = GameWorld()->GetComponent<Components::UI::Button>(entity);
+            const auto button_component = EcsWorld()->GetComponent<Components::UI::Button>(entity);
             if (button_component != nullptr) {
                 ui_draw_asset.color = button_component->GetColor();
                 ui_draw_asset.mesh = static_cast<Renderer::MeshHandle>(0);
             }
 
-            const auto text_component = GameWorld()->GetComponent<Components::UI::Text>(entity);
+            const auto text_component = EcsWorld()->GetComponent<Components::UI::Text>(entity);
             if (text_component != nullptr && text_component->GetTextMesh().has_value()) {
                 ui_draw_asset.color = glm::vec4(1, 1, 1, 1);
                 ui_draw_asset.mesh = text_component->GetTextMesh().value();

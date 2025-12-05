@@ -4,7 +4,7 @@ include_guard(GLOBAL)
 # Set variables
 set(CODEGEN_SCRIPT "${CMAKE_SOURCE_DIR}/tools/system_file_generator.py")
 set(CODEGEN_ROOT_DIRS
-        ${CMAKE_SOURCE_DIR}/engine/core/systems
+        ${CMAKE_SOURCE_DIR}/engine/systems
         ${CMAKE_SOURCE_DIR}/gameplay
 )
 

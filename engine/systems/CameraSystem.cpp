@@ -9,10 +9,10 @@ namespace Engine::Core::Systems {
     }
 
     void CameraSystem::Run(float delta_time) {
-        for (const auto cameras = GameWorld()->GetComponentsOfType<Components::Camera>(); auto camera: cameras) {
+        for (const auto cameras = EcsWorld()->GetComponentsOfType<Components::Camera>(); auto camera: cameras) {
             const auto entity = camera.second;
             const auto camera_component = camera.first;
-            const auto camera_transform = GameWorld()->GetComponent<Components::Transform>(entity);
+            const auto camera_transform = EcsWorld()->GetComponent<Components::Transform>(entity);
             CalculateOrientation(camera_component, camera_transform);
         }
     }

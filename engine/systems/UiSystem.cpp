@@ -1,11 +1,10 @@
 #include "UiSystem.hpp"
 
-#include "GameWorld.hpp"
-#include "ServiceLocator.hpp"
-#include "../../text/include/TextController.hpp"
 #include "../components/ui/Button.hpp"
 #include "../components/ui/Text.hpp"
-#include "commands/ui/ButtonClickedCommand.hpp"
+#include "../core/ServiceLocator.hpp"
+#include "../core/commands/ui/ButtonClickedCommand.hpp"
+#include "../text/include/TextController.hpp"
 
 
 namespace Engine::Core::Systems {
@@ -43,9 +42,9 @@ namespace Engine::Core::Systems {
     }
 
     void UiSystem::HandleButtons(const Input::InputBuffer& input) const {
-        auto buttons_with_entities = GameWorld()->GetComponentsOfType<Components::UI::Button>();
+        auto buttons_with_entities = EcsWorld()->GetComponentsOfType<Components::UI::Button>();
         for (auto [button, entity]: buttons_with_entities) {
-            const auto rect = GameWorld()->GetComponent<Components::UI::RectTransform>(entity);
+            const auto rect = EcsWorld()->GetComponent<Components::UI::RectTransform>(entity);
             if (!button->enabled) {
                 button->m_current_color = button->disabled_color;
                 continue;
@@ -59,14 +58,14 @@ namespace Engine::Core::Systems {
                     button->m_current_color = button->click_color;
                 } else if (input.HasAction("UiButtonUp")) {
                     const auto command = Commands::UI::ButtonClickedCommand(button->button_id);
-                    GameWorld()->PushCommand(command);
+                    EcsWorld()->PushCommand(command);
                 }
             }
         }
     }
 
     void UiSystem::HandleTextLabels() {
-        auto text_labels = GameWorld()->GetComponentsOfType<Components::UI::Text>();
+        auto text_labels = EcsWorld()->GetComponentsOfType<Components::UI::Text>();
         for (const auto [text, entity]: text_labels) {
             if (!text->IsDirty()) {
                 continue;
@@ -109,7 +108,7 @@ namespace Engine::Core::Systems {
             text->m_text_mesh = mesh_handle;
             text->m_is_dirty = false;
 
-            const auto rect_transform = GameWorld()->GetComponent<Components::UI::RectTransform>(entity);
+            const auto rect_transform = EcsWorld()->GetComponent<Components::UI::RectTransform>(entity);
             rect_transform->SetSize(glm::vec2(text_mesh.dimensions_width, text_mesh.dimensions_height));
         }
     }

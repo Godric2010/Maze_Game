@@ -1,7 +1,7 @@
 #pragma once
 #include "ISystem.hpp"
-#include "../../components/Transform.hpp"
-#include "../../renderer/RenderController.hpp"
+#include "../components/Transform.hpp"
+#include "../renderer/RenderController.hpp"
 #include "../components/Camera.hpp"
 
 

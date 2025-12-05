@@ -2,7 +2,8 @@
 #include <glm/vec2.hpp>
 
 #include "ISystem.hpp"
-#include "../../components/ui/RectTransform.hpp"
+#include "ui/RectTransform.hpp"
+
 
 namespace Engine::Core::Systems {
     ECS_SYSTEM(RectTransformSystem, LateUpdate, [ENGINE])

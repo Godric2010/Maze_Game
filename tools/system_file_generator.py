@@ -81,8 +81,8 @@ def find_ecs_meta_in_file(file):
 
     file_path = str(file)
     file_path = file_path.split("Maze Game")[-1]
-    if file_path.startswith("/engine/core/"):
-        file_path = file_path.replace("/engine/core/", "")
+    if file_path.startswith("/engine/systems/"):
+        file_path = file_path.replace("/engine/systems/", "../engine/systems/")
     elif file_path.startswith("/gameplay/"):
         file_path = file_path.replace("/gameplay/", "../gameplay/")
 
