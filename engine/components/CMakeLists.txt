@@ -12,6 +12,8 @@ add_library(Components INTERFACE
         ui/Text.hpp
 )
 
+target_link_libraries(Components INTERFACE ECS)
+
 target_include_directories(Components
         INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>

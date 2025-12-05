@@ -1,8 +1,8 @@
 #pragma once
+#include <Camera.hpp>
+#include <Transform.hpp>
 #include "ISystem.hpp"
-#include "../components/Transform.hpp"
 #include "../renderer/RenderController.hpp"
-#include "../components/Camera.hpp"
 
 
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])
