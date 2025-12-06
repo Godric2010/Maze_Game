@@ -9,7 +9,7 @@
 #include "TextController.hpp"
 #include "../../renderer/RenderController.hpp"
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     ECS_SYSTEM(UiSystem, Ui, [ENGINE])
 
     class UiSystem : public Ecs::IEngineSystem {

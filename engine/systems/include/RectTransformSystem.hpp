@@ -5,7 +5,7 @@
 #include "ISystem.hpp"
 
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     ECS_SYSTEM(RectTransformSystem, LateUpdate, [ENGINE])
 
     struct LayoutData {

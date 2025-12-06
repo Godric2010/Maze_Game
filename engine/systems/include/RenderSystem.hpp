@@ -7,7 +7,7 @@
 
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     class RenderSystem : public Ecs::IEngineSystem {
     public:
         RenderSystem();

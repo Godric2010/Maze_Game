@@ -5,7 +5,7 @@
 #pragma once
 #include <glm/glm.hpp>
 
-namespace Engine::Core::Components {
+namespace Engine::Components {
     struct Camera {
         float Width;
         float Height;

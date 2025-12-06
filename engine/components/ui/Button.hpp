@@ -5,11 +5,11 @@
 #pragma once
 #include <glm/vec4.hpp>
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     class UiSystem;
 }
 
-namespace Engine::Core::Components::UI {
+namespace Engine::Components::UI {
     enum class ButtonState {
         Default,
         Highlighted,

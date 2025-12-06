@@ -9,7 +9,7 @@
 
 #include "../systems/include/PhysicsSystem.hpp"
 
-namespace Engine::Core::Components {
+namespace Engine::Components {
     struct Transform {
         friend Systems::Physics::PhysicsSystem;
 

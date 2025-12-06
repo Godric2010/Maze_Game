@@ -7,7 +7,7 @@
 #include "../../core/commands/ui/ButtonClickedCommand.hpp"
 
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     UiSystem::UiSystem() = default;
 
     UiSystem::~UiSystem() {
@@ -57,7 +57,7 @@ namespace Engine::Core::Systems {
                 if (input.HasAction("UiButtonDown")) {
                     button->m_current_color = button->click_color;
                 } else if (input.HasAction("UiButtonUp")) {
-                    const auto command = Commands::UI::ButtonClickedCommand(button->button_id);
+                    const auto command = Core::Commands::UI::ButtonClickedCommand(button->button_id);
                     EcsWorld()->PushCommand(command);
                 }
             }

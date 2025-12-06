@@ -6,7 +6,7 @@
 
 ECS_SYSTEM(EngineEventSystem, EngineEvents, [ENGINE])
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     struct TransformCommand {
         glm::vec3 translation;
         glm::vec3 rotation;

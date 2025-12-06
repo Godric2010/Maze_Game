@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Engine::Core::Components {
+namespace Engine::Components {
     struct SphereCollider {
         bool is_static;
         bool is_trigger;

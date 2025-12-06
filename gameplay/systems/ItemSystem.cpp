@@ -33,7 +33,7 @@ namespace Gameplay::Systems {
             if (ui_entity == Engine::Ecs::INVALID_ENTITY_ID) {
                 return;
             }
-            const auto image_ui = GameWorld()->GetComponent<Engine::Core::Components::UI::Image>(ui_entity);
+            const auto image_ui = GameWorld()->GetComponent<Engine::Components::UI::Image>(ui_entity);
             image_ui->color = {0, 1, 0, 0.8f};
         }
     }

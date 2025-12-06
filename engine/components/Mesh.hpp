@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include "../renderer/Datatypes.hpp"
 
-namespace Engine::Core::Components{
+namespace Engine::Components{
     struct Mesh {
         Renderer::MeshHandle mesh;
         glm::vec4 color;

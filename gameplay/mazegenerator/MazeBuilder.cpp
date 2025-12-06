@@ -50,7 +50,7 @@ namespace Gameplay::Mazegenerator {
 
     void MazeBuilder::CreateKeyObject(const CellIndex &cell_index) const {
         const auto entity = m_game_world->CreateEntity("KeyItem");
-        const auto mesh_component = Engine::Core::Components::Mesh{
+        const auto mesh_component = Engine::Components::Mesh{
             .mesh = m_key_mesh,
             .color = {0.3, 1.0, 1.0, 1.0},
         };
@@ -58,10 +58,10 @@ namespace Gameplay::Mazegenerator {
         const auto position = glm::vec3(cell_index.x, 0.5f, cell_index.y);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
         constexpr auto scale = glm::vec3(0.2f, 0.2f, 0.2f);
-        const auto transform_component = Engine::Core::Components::Transform(position, rotation, scale);
+        const auto transform_component = Engine::Components::Transform(position, rotation, scale);
         m_game_world->AddComponent(entity, transform_component);
 
-        constexpr auto collider = Engine::Core::Components::BoxCollider{
+        constexpr auto collider = Engine::Components::BoxCollider{
             .is_static = true, .width = 0.2f, .height = 1.0f, .depth = 0.2f
         };
         m_game_world->AddComponent(entity, collider);
@@ -75,10 +75,10 @@ namespace Gameplay::Mazegenerator {
         const auto position = glm::vec3(cell_index.x, 0.5f, cell_index.y);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
         constexpr auto scale = glm::vec3(1.0f);
-        const auto transform_component = Engine::Core::Components::Transform(position, rotation, scale);
+        const auto transform_component = Engine::Components::Transform(position, rotation, scale);
         m_game_world->AddComponent(entity, transform_component);
 
-        constexpr auto collider = Engine::Core::Components::BoxCollider{
+        constexpr auto collider = Engine::Components::BoxCollider{
             .is_static = true, .is_trigger = true, .width = 0.2f, .height = 1.0f, .depth = 0.2f
         };
         m_game_world->AddComponent(entity, collider);
@@ -111,14 +111,14 @@ namespace Gameplay::Mazegenerator {
         const CellIndex &cell_idx,
         const glm::vec4 &tile_color) const {
         const auto entity = m_game_world->CreateEntity(std::format("FloorTile [{}|{}]", cell_idx.x, cell_idx.y));
-        const auto mesh_component = Engine::Core::Components::Mesh{
+        const auto mesh_component = Engine::Components::Mesh{
             .mesh = m_floor_mesh,
             .color = tile_color,
         };
         m_game_world->AddComponent(entity, mesh_component);
         const auto position = glm::vec3(cell_idx.x, 0.0f, cell_idx.y);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        const auto transform_component = Engine::Core::Components::Transform(position, rotation);
+        const auto transform_component = Engine::Components::Transform(position, rotation);
         m_game_world->AddComponent(entity, transform_component);
     }
 
@@ -126,7 +126,7 @@ namespace Gameplay::Mazegenerator {
                                           const Direction &direction) const {
         const auto entity = m_game_world->CreateEntity(
             std::format("WallTile [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction)));
-        const auto mesh_component = Engine::Core::Components::Mesh{
+        const auto mesh_component = Engine::Components::Mesh{
             .mesh = m_wall_mesh,
             .color = tile_color,
         };
@@ -153,10 +153,10 @@ namespace Gameplay::Mazegenerator {
 
         const auto position = glm::vec3(cell_idx.x, 0.5f, cell_idx.y) + shift_vector;
         const auto rotation = glm::vec3(0.0f, 0.0f, 0.0f) + rotation_shift;
-        const auto transform_component = Engine::Core::Components::Transform(position, rotation);
+        const auto transform_component = Engine::Components::Transform(position, rotation);
         m_game_world->AddComponent(entity, transform_component);
 
-        constexpr auto collider = Engine::Core::Components::BoxCollider{
+        constexpr auto collider = Engine::Components::BoxCollider{
             .is_static = true, .width = 1.0f, .height = 1.0f, .depth = 1e-6f
         };
         m_game_world->AddComponent(entity, collider);

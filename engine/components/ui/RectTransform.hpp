@@ -8,11 +8,11 @@
 #include <glm/vec2.hpp>
 #include "../ecs/include/World.hpp"
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     class RectTransformSystem;
 }
 
-namespace Engine::Core::Components::UI {
+namespace Engine::Components::UI {
     enum class Anchor {
         TopLeft,
         TopCenter,

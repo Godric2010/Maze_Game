@@ -8,11 +8,11 @@
 #include "Types.hpp"
 #include "../renderer/Datatypes.hpp"
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     class UiSystem;
 }
 
-namespace Engine::Core::Components::UI {
+namespace Engine::Components::UI {
     struct Text {
         Text(const std::string& text, const std::string& font_name, const int font_size) : m_is_dirty(true) {
             m_text_content = text;

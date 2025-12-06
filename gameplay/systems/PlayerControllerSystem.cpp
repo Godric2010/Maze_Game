@@ -28,7 +28,7 @@ namespace Gameplay::Systems {
         if (input.HasAction("pause")) {
             std::cout << "Enabled pause!" << std::endl;
 
-            const auto motion_intent = GameWorld()->GetComponent<Engine::Core::Components::MotionIntent>(player_entity);
+            const auto motion_intent = GameWorld()->GetComponent<Engine::Components::MotionIntent>(player_entity);
             motion_intent->translation = glm::vec3(0.0);
 
             const auto pause_command = Commands::PauseCommand(true);
@@ -41,8 +41,8 @@ namespace Gameplay::Systems {
 
     void PlayerControllerSystem::CalculateNewTransform(const Engine::Ecs::EntityId player_entity,
                                                        const Engine::Input::InputBuffer& input) const {
-        const auto transform = GameWorld()->GetComponent<Engine::Core::Components::Transform>(player_entity);
-        const auto motion_intent = GameWorld()->GetComponent<Engine::Core::Components::MotionIntent>(player_entity);
+        const auto transform = GameWorld()->GetComponent<Engine::Components::Transform>(player_entity);
+        const auto motion_intent = GameWorld()->GetComponent<Engine::Components::MotionIntent>(player_entity);
         if (transform == nullptr || motion_intent == nullptr) {
             return;
         }

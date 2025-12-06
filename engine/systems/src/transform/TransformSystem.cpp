@@ -1,10 +1,10 @@
-#include "../include/TransformSystem.hpp"
+#include "../../include/TransformSystem.hpp"
 
 #include <glm/ext/matrix_transform.hpp>
 
 #include <Transform.hpp>
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     TransformSystem::TransformSystem() = default;
 
     TransformSystem::~TransformSystem() = default;

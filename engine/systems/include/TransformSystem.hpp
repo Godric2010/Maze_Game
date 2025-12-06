@@ -6,7 +6,7 @@
 
 ECS_SYSTEM(TransformSystem, LateUpdate, [ENGINE])
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     class TransformSystem : public Ecs::IEngineSystem {
     public:
         TransformSystem();

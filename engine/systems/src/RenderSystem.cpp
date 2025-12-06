@@ -8,7 +8,7 @@
 #include <ui/RectTransform.hpp>
 #include <ui/Text.hpp>
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     RenderSystem::RenderSystem() = default;
 
     RenderSystem::~RenderSystem() = default;

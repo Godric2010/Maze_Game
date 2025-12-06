@@ -48,7 +48,7 @@ namespace Gameplay {
     void GameEndScene::SetupCamera() const {
         const auto camera_entity = World().CreateEntity("MainCamera");
         const auto [width, height, aspect_ratio] = Screen();
-        const auto camera_component = Engine::Core::Components::Camera{
+        const auto camera_component = Engine::Components::Camera{
             .Width = width,
             .Height = height,
             .FieldOfView = 60,
@@ -57,9 +57,9 @@ namespace Gameplay {
             .FarClip = 1000.0f,
 
         };
-        World().AddComponent<Engine::Core::Components::Camera>(camera_entity, camera_component);
+        World().AddComponent<Engine::Components::Camera>(camera_entity, camera_component);
 
-        const auto camera_transform = Engine::Core::Components::Transform();
+        const auto camera_transform = Engine::Components::Transform();
         World().AddComponent(camera_entity, camera_transform);
     }
 
@@ -69,21 +69,21 @@ namespace Gameplay {
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width, screen.height);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform()
+        const auto bg_rect_transform = Engine::Components::UI::RectTransform()
                 .SetPosition(bg_position)
                 .SetSize(bg_size)
                 .SetPivot(bg_pivot);
         World().AddComponent(bg_entity, bg_rect_transform);
-        constexpr auto bg_image = Engine::Core::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
+        constexpr auto bg_image = Engine::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
         World().AddComponent(bg_entity, bg_image);
 
         const auto heading_entity = World().CreateEntity("Heading");
-        const auto heading_transform = Engine::Core::Components::UI::RectTransform()
+        const auto heading_transform = Engine::Components::UI::RectTransform()
                 .SetPosition(glm::vec2(0.0f, 300))
                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                .SetAnchor(Engine::Core::Components::UI::Anchor::TopCenter)
+                .SetAnchor(Engine::Components::UI::Anchor::TopCenter)
                 .SetParent(bg_entity);
-        const auto heading_text = Engine::Core::Components::UI::Text()
+        const auto heading_text = Engine::Components::UI::Text()
                 .SetText("Congratulations!")
                 .SetFontName("SpaceFont.ttf")
                 .SetFontSize(128.0f);
@@ -92,12 +92,12 @@ namespace Gameplay {
 
 
         const auto sub_heading_entity = World().CreateEntity("SubHeading");
-        const auto sub_heading_transform = Engine::Core::Components::UI::RectTransform()
+        const auto sub_heading_transform = Engine::Components::UI::RectTransform()
                 .SetPosition(glm::vec2(0.0f, 420.0f))
                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                .SetAnchor(Engine::Core::Components::UI::Anchor::TopCenter)
+                .SetAnchor(Engine::Components::UI::Anchor::TopCenter)
                 .SetParent(bg_entity);
-        const auto sub_heading_text = Engine::Core::Components::UI::Text()
+        const auto sub_heading_text = Engine::Components::UI::Text()
                 .SetText("You escaped the maze!")
                 .SetFontName("SpaceFont.ttf")
                 .SetFontSize(48.0f);
@@ -110,12 +110,12 @@ namespace Gameplay {
         const std::string time_needed_str = "Time needed: " + std::to_string(static_cast<int>(minutes)) + ":"
                                             + std::to_string(static_cast<int>(seconds));
         const auto time_display_entity = World().CreateEntity("TimeDisplay");
-        const auto time_display_transform = Engine::Core::Components::UI::RectTransform()
+        const auto time_display_transform = Engine::Components::UI::RectTransform()
                 .SetPosition(glm::vec2(0.0f, 550.0f))
                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                .SetAnchor(Engine::Core::Components::UI::Anchor::TopCenter)
+                .SetAnchor(Engine::Components::UI::Anchor::TopCenter)
                 .SetParent(bg_entity);
-        const auto time_display_text = Engine::Core::Components::UI::Text()
+        const auto time_display_text = Engine::Components::UI::Text()
                 .SetText(time_needed_str)
                 .SetFontName("SpaceFont.ttf")
                 .SetFontSize(32.0f);
@@ -126,15 +126,15 @@ namespace Gameplay {
         const auto main_menu_button = World().CreateEntity("MainMenuButton");
         const auto pos = glm::vec2(0, 900);
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto main_menu_button_rect = Engine::Core::Components::UI::RectTransform()
+        auto main_menu_button_rect = Engine::Components::UI::RectTransform()
                 .SetPosition(pos)
                 .SetSize(button_size)
                 .SetPivot(pivot)
-                .SetAnchor(Engine::Core::Components::UI::Anchor::TopCenter)
+                .SetAnchor(Engine::Components::UI::Anchor::TopCenter)
                 .SetParent(bg_entity);
         World().AddComponent(main_menu_button, main_menu_button_rect);
 
-        auto main_menu = Engine::Core::Components::UI::Button();
+        auto main_menu = Engine::Components::UI::Button();
         main_menu.button_id = m_back_to_main_menu_button_id;
         main_menu.enabled = true;
         main_menu.default_color = {1.0f, 1.0f, 1.0f, 0.0f};
@@ -144,12 +144,12 @@ namespace Gameplay {
         World().AddComponent(main_menu_button, main_menu);
 
         const auto menu_button_text_entity = World().CreateEntity("MenuButton");
-        const auto menu_button_text_transform = Engine::Core::Components::UI::RectTransform()
+        const auto menu_button_text_transform = Engine::Components::UI::RectTransform()
                 .SetPosition(glm::vec2(0, 10))
                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                .SetAnchor(Engine::Core::Components::UI::Anchor::Center)
+                .SetAnchor(Engine::Components::UI::Anchor::Center)
                 .SetParent(main_menu_button);
-        const auto menu_button_text = Engine::Core::Components::UI::Text()
+        const auto menu_button_text = Engine::Components::UI::Text()
                 .SetText("Main Menu")
                 .SetFontName("SpaceFont.ttf")
                 .SetFontSize(32.0f);

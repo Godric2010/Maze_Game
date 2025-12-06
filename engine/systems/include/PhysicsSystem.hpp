@@ -8,7 +8,7 @@
 #include "collision/IBroadphase.hpp"
 #include "collision/MoverSolver.hpp"
 
-namespace Engine::Core::Systems::Physics {
+namespace Engine::Systems::Physics {
     ECS_SYSTEM(PhysicsSystem, Physics, [ENGINE])
 
     class PhysicsSystem final : public Ecs::IEngineSystem {

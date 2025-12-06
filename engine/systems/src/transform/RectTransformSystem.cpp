@@ -1,8 +1,8 @@
-#include "../include/RectTransformSystem.hpp"
+#include "../../include/RectTransformSystem.hpp"
 
 #include <glm/ext/matrix_transform.hpp>
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     void RectTransformSystem::Initialize() {
     }
 

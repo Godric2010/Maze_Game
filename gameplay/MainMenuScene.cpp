@@ -53,7 +53,7 @@ namespace Gameplay {
     void MainMenuScene::SetupCamera() const {
         const auto camera_entity = World().CreateEntity("MainCamera");
         const auto [width, height, aspect_ratio] = Screen();
-        const auto camera_component = Engine::Core::Components::Camera{
+        const auto camera_component = Engine::Components::Camera{
             .Width = width,
             .Height = height,
             .FieldOfView = 60,
@@ -62,9 +62,9 @@ namespace Gameplay {
             .FarClip = 1000.0f,
 
         };
-        World().AddComponent<Engine::Core::Components::Camera>(camera_entity, camera_component);
+        World().AddComponent<Engine::Components::Camera>(camera_entity, camera_component);
 
-        const auto camera_transform = Engine::Core::Components::Transform();
+        const auto camera_transform = Engine::Components::Transform();
         World().AddComponent(camera_entity, camera_transform);
     }
 
@@ -90,12 +90,12 @@ namespace Gameplay {
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width, screen.height);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform()
+        const auto bg_rect_transform = Engine::Components::UI::RectTransform()
                 .SetPosition(bg_position)
                 .SetSize(bg_size)
                 .SetPivot(bg_pivot);
         World().AddComponent(bg_entity, bg_rect_transform);
-        constexpr auto bg_image = Engine::Core::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
+        constexpr auto bg_image = Engine::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
         World().AddComponent(bg_entity, bg_image);
         return bg_entity;
     }
@@ -105,13 +105,13 @@ namespace Gameplay {
                                                         const glm::vec2 pos, const glm::vec2 size,
                                                         const Engine::Ecs::EntityId parent_entity) {
         const auto text_entity = World().CreateEntity("MenuText_" + content);
-        const auto text_transform = Engine::Core::Components::UI::RectTransform()
+        const auto text_transform = Engine::Components::UI::RectTransform()
                 .SetPosition(pos)
                 .SetSize(size)
-                .SetAnchor(Engine::Core::Components::UI::Anchor::Center)
+                .SetAnchor(Engine::Components::UI::Anchor::Center)
                 .SetPivot(glm::vec2{0.5f, 0.0f})
                 .SetParent(parent_entity);
-        const auto text = Engine::Core::Components::UI::Text(content, font_name, font_size);
+        const auto text = Engine::Components::UI::Text(content, font_name, font_size);
         World().AddComponent(text_entity, text_transform);
         World().AddComponent(text_entity, text);
         m_active_state_entities.push_back(text_entity);
@@ -124,15 +124,15 @@ namespace Gameplay {
         constexpr auto button_size = glm::vec2(200, 70);
         const auto button_entity = World().CreateEntity(name);
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto resume_rect = Engine::Core::Components::UI::RectTransform()
+        auto resume_rect = Engine::Components::UI::RectTransform()
                 .SetPosition(pos)
                 .SetSize(button_size)
                 .SetPivot(pivot)
-                .SetAnchor(Engine::Core::Components::UI::Anchor::Center)
+                .SetAnchor(Engine::Components::UI::Anchor::Center)
                 .SetParent(parent_entity);
         World().AddComponent(button_entity, resume_rect);
 
-        auto button = Engine::Core::Components::UI::Button();
+        auto button = Engine::Components::UI::Button();
         button.button_id = button_id;
         button.enabled = true;
         button.default_color = m_button_default_color;

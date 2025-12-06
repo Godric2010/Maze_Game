@@ -13,7 +13,7 @@
 #include "collision/MoverSolver.hpp"
 #include "math/TypeUtils.hpp"
 
-namespace Engine::Core::Systems::Physics {
+namespace Engine::Systems::Physics {
     using namespace Engine::Physics;
 
     PhysicsSystem::PhysicsSystem() {

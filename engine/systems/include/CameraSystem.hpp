@@ -12,7 +12,7 @@
 
 ECS_SYSTEM(CameraSystem, LateUpdate, [ENGINE])
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     class CameraSystem final : public Ecs::IEngineSystem {
     public:
         CameraSystem();

@@ -5,7 +5,7 @@
 #pragma once
 #include <glm/vec3.hpp>
 
-namespace Engine::Core::Components {
+namespace Engine::Components {
     struct MotionIntent {
         glm::vec3 translation{};
         glm::vec3 rotation{};

@@ -138,7 +138,7 @@ namespace Gameplay {
     void GameScene::CreateCamera() const {
         auto player = World().CreateEntity("Player");
         const auto [width, height, aspect_ratio] = Screen();
-        const auto camera_component = Engine::Core::Components::Camera{
+        const auto camera_component = Engine::Components::Camera{
             .Width = width,
             .Height = height,
             .FieldOfView = 60,
@@ -147,16 +147,16 @@ namespace Gameplay {
             .FarClip = 1000.0f,
 
         };
-        World().AddComponent<Engine::Core::Components::Camera>(player, camera_component);
+        World().AddComponent<Engine::Components::Camera>(player, camera_component);
 
-        const auto camera_transform = Engine::Core::Components::Transform(m_maze_builder->GetMazeStartPosition(),
+        const auto camera_transform = Engine::Components::Transform(m_maze_builder->GetMazeStartPosition(),
                                                                           glm::vec3(-10.f, 180.0f, 0.0f)
                 );
         World().AddComponent(player, camera_transform);
-        const auto camera_motion_intent = Engine::Core::Components::MotionIntent();
+        const auto camera_motion_intent = Engine::Components::MotionIntent();
         World().AddComponent(player, camera_motion_intent);
 
-        constexpr auto camera_collider = Engine::Core::Components::SphereCollider{
+        constexpr auto camera_collider = Engine::Components::SphereCollider{
             .is_static = false,
             .radius = 0.1f
         };
@@ -172,12 +172,12 @@ namespace Gameplay {
         const auto screen = Screen();
         constexpr glm::vec2 size = {100, 100};
         const glm::vec2 position = {screen.width - size.x - 50, screen.height - size.y - 50};
-        const auto transform = Engine::Core::Components::UI::RectTransform()
+        const auto transform = Engine::Components::UI::RectTransform()
                 .SetPosition(position)
                 .SetSize(size);
         World().AddComponent(key_indicator, transform);
 
-        constexpr auto image = Engine::Core::Components::UI::Image{.color = {1, 0, 0, 0.5}};
+        constexpr auto image = Engine::Components::UI::Image{.color = {1, 0, 0, 0.5}};
         World().AddComponent(key_indicator, image);
     }
 
@@ -188,23 +188,23 @@ namespace Gameplay {
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width * 0.9f, screen.height * 0.9f);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = Engine::Core::Components::UI::RectTransform()
+        const auto bg_rect_transform = Engine::Components::UI::RectTransform()
                 .SetPosition(bg_position)
                 .SetSize(bg_size)
                 .SetPivot(bg_pivot);
         World().AddComponent(pause_entity, bg_rect_transform);
 
-        constexpr auto bg_image = Engine::Core::Components::UI::Image{.color = {0.3, 0.3, 0.3, 0.9}};
+        constexpr auto bg_image = Engine::Components::UI::Image{.color = {0.3, 0.3, 0.3, 0.9}};
         World().AddComponent(pause_entity, bg_image);
         m_pause_entities.push_back(pause_entity);
 
         const auto heading_entity = World().CreateEntity("Pause");
-        const auto heading_transform = Engine::Core::Components::UI::RectTransform()
+        const auto heading_transform = Engine::Components::UI::RectTransform()
                 .SetPosition(glm::vec2(0.0f, 300.0f))
                 .SetPivot(glm::vec2(0.5f, 0.5f))
-                .SetAnchor(Engine::Core::Components::UI::Anchor::TopCenter)
+                .SetAnchor(Engine::Components::UI::Anchor::TopCenter)
                 .SetParent(pause_entity);
-        const auto heading_text = Engine::Core::Components::UI::Text()
+        const auto heading_text = Engine::Components::UI::Text()
                 .SetText("Pause")
                 .SetFontName("SpaceFont.ttf")
                 .SetFontSize(128.0f);
@@ -222,14 +222,14 @@ namespace Gameplay {
                                    int button_id, const Engine::Ecs::EntityId& parent_entity) {
         const auto button_entity = World().CreateEntity(content + "Button");
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto button_rect = Engine::Core::Components::UI::RectTransform()
+        auto button_rect = Engine::Components::UI::RectTransform()
                 .SetPosition(position)
                 .SetSize(size)
                 .SetPivot(pivot)
-                .SetAnchor(Engine::Core::Components::UI::Anchor::TopCenter)
+                .SetAnchor(Engine::Components::UI::Anchor::TopCenter)
                 .SetParent(parent_entity);
 
-        auto button = Engine::Core::Components::UI::Button();
+        auto button = Engine::Components::UI::Button();
         button.button_id = button_id;
         button.enabled = true;
         button.default_color = {1.0f, 1.0f, 1.0f, 0.0f};
@@ -241,12 +241,12 @@ namespace Gameplay {
         World().AddComponent(button_entity, button_rect);
 
         const auto button_text_entity = World().CreateEntity(content + "ButtonText");
-        auto button_text_rect = Engine::Core::Components::UI::RectTransform()
+        auto button_text_rect = Engine::Components::UI::RectTransform()
                 .SetPosition(glm::vec2(0, 10))
                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                .SetAnchor(Engine::Core::Components::UI::Anchor::Center)
+                .SetAnchor(Engine::Components::UI::Anchor::Center)
                 .SetParent(button_entity);
-        auto button_text = Engine::Core::Components::UI::Text()
+        auto button_text = Engine::Components::UI::Text()
                 .SetText(content)
                 .SetFontName("SpaceFont.ttf")
                 .SetFontSize(32);

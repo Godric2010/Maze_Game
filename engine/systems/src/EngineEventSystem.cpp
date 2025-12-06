@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ostream>
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     void EngineEventSystem::Initialize() {
     }
 

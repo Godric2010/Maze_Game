@@ -1,6 +1,6 @@
 #include "../include/CameraSystem.hpp"
 
-namespace Engine::Core::Systems {
+namespace Engine::Systems {
     CameraSystem::CameraSystem() = default;
 
     CameraSystem::~CameraSystem() = default;
