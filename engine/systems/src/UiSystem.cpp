@@ -1,10 +1,10 @@
-#include "UiSystem.hpp"
+#include "../include/UiSystem.hpp"
 
 #include <TextController.hpp>
 #include <ui/Button.hpp>
 #include <ui/Text.hpp>
-#include "../core/ServiceLocator.hpp"
-#include "../core/commands/ui/ButtonClickedCommand.hpp"
+#include "../../core/ServiceLocator.hpp"
+#include "../../core/commands/ui/ButtonClickedCommand.hpp"
 
 
 namespace Engine::Core::Systems {

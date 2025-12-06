@@ -7,7 +7,7 @@
 #include <ui/RectTransform.hpp>
 #include <ui/Text.hpp>
 #include "TextController.hpp"
-#include "../renderer/RenderController.hpp"
+#include "../../renderer/RenderController.hpp"
 
 namespace Engine::Core::Systems {
     ECS_SYSTEM(UiSystem, Ui, [ENGINE])

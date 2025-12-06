@@ -2,7 +2,7 @@
 #include <Camera.hpp>
 #include <Transform.hpp>
 #include "ISystem.hpp"
-#include "../renderer/RenderController.hpp"
+#include "../../renderer/RenderController.hpp"
 
 
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])

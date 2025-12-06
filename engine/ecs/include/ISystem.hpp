@@ -5,7 +5,7 @@
 #pragma once
 #include "IServiceToEcsProvider.hpp"
 #include "World.hpp"
-#include "Input/IInput.hpp"
+#include <Input/IInput.hpp>
 
 namespace Engine::Core {
     class GameWorld;

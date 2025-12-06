@@ -1,4 +1,4 @@
-#include "PhysicsSystem.hpp"
+#include "../../include/PhysicsSystem.hpp"
 
 #include <ostream>
 #define GLM_ENABLE_EXPERIMENTAL
