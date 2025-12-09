@@ -4,12 +4,12 @@
 #include "EnvironmentBuilder.hpp"
 #include "SystemManager.hpp"
 #include "TextController.hpp"
-#include "../components/Transform.hpp"
 #include "../input/include/InputManagerBuilder.hpp"
 
 namespace Engine::Core {
     EngineController::EngineController() {
         m_services = std::make_unique<ServiceLocator>();
+        m_cache_manager = std::make_unique<Systems::CacheManager>();
         m_is_running = true;
     };
 
@@ -40,7 +40,7 @@ namespace Engine::Core {
                                                     90
                 );
 
-        m_system_manager = std::make_unique<Ecs::SystemManager>(systems, m_services.get());
+        m_system_manager = std::make_unique<Ecs::SystemManager>(systems, m_services.get(), m_cache_manager.get());
 
         const auto window_context = m_window->GetWindowContext();
         m_scene_manager = std::make_unique<SceneManagement::SceneManager>(*this,

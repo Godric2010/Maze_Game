@@ -3,6 +3,7 @@
 #include <Transform.hpp>
 #include "ISystem.hpp"
 #include "../../renderer/RenderController.hpp"
+#include "../src/transform/TransformCache.hpp"
 
 
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])
@@ -19,10 +20,11 @@ namespace Engine::Systems {
         void Run(float delta_time) override;
 
     private:
-        const Renderer::RenderController *m_render_controller{};
+        const Renderer::RenderController* m_render_controller{};
+        Transform::TransformCache* m_transform_cache = nullptr;
 
-        static Renderer::CameraAsset CreateCameraAsset(const Components::Camera *camera_component,
-                                                       const Components::Transform *camera_transform);
+        static Renderer::CameraAsset CreateCameraAsset(const Components::Camera* camera_component,
+                                                       const Components::Transform* camera_transform);
 
         [[nodiscard]] std::vector<Renderer::MeshDrawAsset> CreateDrawAssets() const;
 

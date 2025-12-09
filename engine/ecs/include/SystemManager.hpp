@@ -7,6 +7,7 @@
 
 #include "ISystem.hpp"
 #include "../../core/GameWorld.hpp"
+#include "../../systems/include/CacheManager.hpp"
 
 namespace Engine::Input {
     class IInput;
@@ -36,7 +37,8 @@ namespace Engine::Ecs {
 
     class SystemManager {
     public:
-        SystemManager(const std::vector<SystemMeta>& system_metas, IServiceToEcsProvider* service_provider);
+        SystemManager(const std::vector<SystemMeta>& system_metas, IServiceToEcsProvider* service_provider,
+                      Systems::CacheManager* cache_manager);
 
         ~SystemManager();
 
@@ -53,6 +55,7 @@ namespace Engine::Ecs {
         std::unique_ptr<Core::GameWorld> m_game_world;
         std::vector<SystemMeta> m_system_metas;
         IServiceToEcsProvider* m_service_provider;
+        Systems::CacheManager* m_cache_manager;
 
         std::vector<Phase> m_phase_order;
         std::unordered_map<Phase, std::vector<std::unique_ptr<ISystem> > > m_phase_map;

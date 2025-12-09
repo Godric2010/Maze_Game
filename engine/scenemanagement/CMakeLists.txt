@@ -12,7 +12,7 @@ add_library(SceneManagement STATIC
         src/SceneManager.cpp
 )
 
-target_link_libraries(SceneManagement PUBLIC ECS Interface Input)
+target_link_libraries(SceneManagement PUBLIC ECS Interface Input Systems)
 
 if (COMMAND enable_coverage)
     message("SceneManagement- Enable coverage")

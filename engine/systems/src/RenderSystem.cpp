@@ -17,6 +17,7 @@ namespace Engine::Systems {
         const Renderer::RenderController* render_controller = ServiceLocator()->
                 GetService<Renderer::RenderController>();
         m_render_controller = render_controller;
+        m_transform_cache = Cache()->GetTransformCache();
     }
 
     void RenderSystem::Run(float delta_time) {
@@ -52,11 +53,10 @@ namespace Engine::Systems {
 
         for (size_t i = 0; i < mesh_components.size(); ++i) {
             const auto [mesh_component, meshEntity] = mesh_components[i];
-            const auto mesh_transform = EcsWorld()->GetComponent<Components::Transform>(meshEntity);
 
             Renderer::MeshDrawAsset mesh_draw_assets{};
             mesh_draw_assets.mesh = mesh_component->mesh;
-            mesh_draw_assets.model = mesh_transform->GetMatrix();
+            mesh_draw_assets.model = m_transform_cache->GetValue(meshEntity);
             mesh_draw_assets.color = mesh_component->color;
 
             draw_assets[i] = mesh_draw_assets;

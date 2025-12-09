@@ -3,9 +3,11 @@
 //
 
 #pragma once
+#include <Input/IInput.hpp>
 #include "IServiceToEcsProvider.hpp"
 #include "World.hpp"
-#include <Input/IInput.hpp>
+
+#include "CacheManager.hpp"
 
 namespace Engine::Core {
     class GameWorld;
@@ -42,9 +44,11 @@ namespace Engine::Ecs {
     private:
         IServiceToEcsProvider* m_service_locator{};
         Ecs::World* m_world{};
+        Systems::CacheManager* m_cache_manager{};
 
     protected:
         [[nodiscard]] IServiceToEcsProvider* ServiceLocator() const { return m_service_locator; }
         [[nodiscard]] World* EcsWorld() const { return m_world; }
+        [[nodiscard]] Systems::CacheManager* Cache() const { return m_cache_manager; }
     };
 }

@@ -19,6 +19,13 @@ add_library(Systems STATIC
         include/UiSystem.hpp
         src/transform/TransformCache.cpp
         src/transform/TransformCache.hpp
+        include/CacheManager.hpp
 )
 
-target_link_libraries(Systems PUBLIC Renderer Text Physics glm::glm ECS Input Components)
+target_link_libraries(Systems PUBLIC Components Renderer Text Physics glm::glm Input )
+
+target_include_directories(Systems
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+        $<INSTALL_INTERFACE:include>
+)

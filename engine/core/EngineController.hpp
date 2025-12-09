@@ -12,6 +12,7 @@
 #include "SystemManager.hpp"
 #include "../ecs/include/World.hpp"
 #include "../environment/include/Window.hpp"
+#include "../systems/include/CacheManager.hpp"
 
 namespace Engine::Core {
     /**
@@ -54,6 +55,7 @@ namespace Engine::Core {
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
+        std::unique_ptr<Systems::CacheManager> m_cache_manager;
         std::unique_ptr<Input::IInputManager> m_input_manager;
         std::unique_ptr<Debug::IDebugConsole> m_debug_console;
 

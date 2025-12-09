@@ -5,7 +5,7 @@
 
 namespace Engine::Ecs {
     SystemManager::SystemManager(const std::vector<SystemMeta>& system_metas,
-                                 IServiceToEcsProvider* service_provider) {
+                                 IServiceToEcsProvider* service_provider, Systems::CacheManager* cache_manager) {
         m_phase_order = std::vector{
             Phase::Input,
             Phase::Physics,
@@ -19,10 +19,12 @@ namespace Engine::Ecs {
 
         m_system_metas = system_metas;
         m_service_provider = service_provider;
+        m_cache_manager = cache_manager;
     }
 
     SystemManager::~SystemManager() {
         m_service_provider = nullptr;
+        m_cache_manager = nullptr;
         m_phase_order.clear();
         m_system_metas.clear();
     }
@@ -49,6 +51,7 @@ namespace Engine::Ecs {
                 if (const auto engine_sys = dynamic_cast<IEngineSystem*>(system.get())) {
                     engine_sys->m_service_locator = m_service_provider;
                     engine_sys->m_world = world;
+                    engine_sys->m_cache_manager = m_cache_manager;
                 }
             }
             system->Initialize();
