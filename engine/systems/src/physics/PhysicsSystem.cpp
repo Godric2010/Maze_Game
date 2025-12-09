@@ -5,6 +5,7 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/norm.hpp>
 
+#include "CacheManager.hpp"
 #include "../../components/Collider.hpp"
 #include "../../components/Transform.hpp"
 #include "../../physics/src/collision/SpatialHashBroadphase.hpp"
@@ -25,6 +26,8 @@ namespace Engine::Systems::Physics {
     }
 
     void PhysicsSystem::Initialize() {
+        m_transform_cache = Cache()->GetTransformCache();
+
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::BoxCollider>(
                 [this](const Ecs::EntityId entity, const Components::BoxCollider& box_collider) {
                     const Components::Transform* transform = EcsWorld()->GetComponent<Components::Transform>(entity);
@@ -52,39 +55,37 @@ namespace Engine::Systems::Physics {
     }
 
     void PhysicsSystem::Run(const float delta_time) {
-        const auto movable_objects = EcsWorld()->GetComponentsOfType<Components::MotionIntent>();
-        for (const auto [motion_intent, entity]: movable_objects) {
-            const auto transform = EcsWorld()->GetComponent<Components::Transform>(entity);
-            if (!transform) {
+        const auto movable_objects = EcsWorld()->GetComponentsOfType<Components::Transform>();
+        for (const auto [transform, entity]: movable_objects) {
+            auto cache_val = m_transform_cache->GetValue(entity);
+
+            if (!m_transform_cache->IsDirty(entity, transform)) {
                 continue;
             }
 
-            auto position = transform->GetPosition();
-            glm::vec3 move_delta;
-            if (!TryGetMoveDelta(position,
-                                 transform->GetRotation(),
-                                 motion_intent,
-                                 delta_time,
-                                 &move_delta
-                    )) {
-                transform->SetRotation(motion_intent->rotation).SetScale(motion_intent->scale);
-                return;
+            const glm::vec3 old_position = cache_val.last_position;
+            const glm::vec3 desired_position = transform->GetPosition();
+            glm::vec3 move_delta = desired_position - old_position;
+
+            if (length2(move_delta) < m_epsilon) {
+                continue;
             }
-            std::vector<Ecs::EntityId> blocking_candidates;
-            std::vector<Ecs::EntityId> trigger_candidates;
+
             const auto it_sphere = m_collider_cache->sphere_colliders.find(entity);
             if (it_sphere == m_collider_cache->sphere_colliders.end()) {
                 continue;
             }
             const float radius = it_sphere->second.world_sphere.radius;
 
-            RunBroadphase(entity, radius, position, move_delta, blocking_candidates, trigger_candidates);
+            std::vector<Ecs::EntityId> blocking_candidates;
+            std::vector<Ecs::EntityId> trigger_candidates;
+            RunBroadphase(entity, radius, old_position, move_delta, blocking_candidates, trigger_candidates);
 
             glm::vec3 final_position;
-            PerformCollisionSweep(entity, position, move_delta, radius, blocking_candidates, &final_position);
+            PerformCollisionSweep(entity, old_position, move_delta, radius, blocking_candidates, &final_position);
             DetectTriggerInteractions(final_position, radius, entity, trigger_candidates);
 
-            transform->SetPosition(final_position).SetRotation(motion_intent->rotation);
+            transform->SetPosition(final_position);
         }
     }
 
@@ -127,20 +128,6 @@ namespace Engine::Systems::Physics {
             const auto proxy_sphere = Math::Util::FromSphere(sphere);
             m_broadphase->Insert({entity, proxy_sphere, sphere_collider.is_static});
         }
-    }
-
-    bool PhysicsSystem::TryGetMoveDelta(const glm::vec3& position, const glm::vec3& rotation,
-                                        const Components::MotionIntent* intent, const float dt,
-                                        glm::vec3* move_delta) const {
-        const auto delta = IntentToDelta(intent, position, rotation, dt);
-        const float length = length2(delta);
-
-        if (length < m_epsilon) {
-            return false;
-        }
-
-        *move_delta = delta;
-        return true;
     }
 
     void PhysicsSystem::RunBroadphase(const Ecs::EntityId target_entity, const float radius, const glm::vec3& position,
@@ -301,25 +288,6 @@ namespace Engine::Systems::Physics {
         }
     }
 
-
-    glm::vec3 PhysicsSystem::IntentToDelta(const Components::MotionIntent* intent, const glm::vec3& world_pos,
-                                           const glm::vec3& world_rot, const float delta_time) const {
-        (void) world_pos;
-        (void) world_rot;
-
-        glm::vec3 local = intent->translation;
-        local.y = 0.0f; // Vertical movement is not allowed
-
-        const float local_length_sqr = length2(local);
-        if (local_length_sqr < m_epsilon) {
-            return glm::vec3(0.0f);
-        }
-
-        const glm::vec3 local_direction = (local_length_sqr > 1.0f) ? (local / std::sqrt(local_length_sqr)) : local;
-
-        const float speed = 1.0f * (intent->speed_multiplier > 0.0f ? intent->speed_multiplier : 1.0f);
-        return local_direction * speed * delta_time;
-    }
 
     Math::AABB PhysicsSystem::BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest, const float radius) noexcept {
         const glm::vec3 p0 = pos;

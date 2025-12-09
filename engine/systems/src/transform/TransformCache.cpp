@@ -36,9 +36,9 @@ namespace Engine::Systems::Transform {
         };
     }
 
-    glm::mat4 TransformCache::GetValue(const uint64_t entity) {
+    const TransformCacheValue &TransformCache::GetValue(const uint64_t entity) {
         if (m_cache.contains(entity)) {
-            return m_cache[entity].transform_matrix;
+            return m_cache[entity];
         }
         throw std::runtime_error("Transform cache does not exist");
     }

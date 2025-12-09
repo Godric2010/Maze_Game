@@ -4,7 +4,6 @@ add_library(Components INTERFACE
         Camera.hpp
         Collider.hpp
         Mesh.hpp
-        MotionIntent.hpp
         Transform.hpp
         ui/Button.hpp
         ui/Image.hpp

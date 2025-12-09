@@ -31,7 +31,7 @@ namespace Engine::Systems::Transform {
         void SetValue(uint64_t entity, const Components::Transform* transform,
                       const glm::mat4& transform_mat);
 
-        glm::mat4 GetValue(uint64_t entity);
+        const TransformCacheValue &GetValue(uint64_t entity);
 
     private:
         std::unordered_map<uint64_t, TransformCacheValue> m_cache;

@@ -5,8 +5,6 @@
 
 
 #include "GameWorld.hpp"
-#include "ServiceLocator.hpp"
-#include "../../engine/components/MotionIntent.hpp"
 #include "../commands/PauseCommand.hpp"
 #include "../components/Transform.hpp"
 
@@ -28,35 +26,37 @@ namespace Gameplay::Systems {
         if (input.HasAction("pause")) {
             std::cout << "Enabled pause!" << std::endl;
 
-            const auto motion_intent = GameWorld()->GetComponent<Engine::Components::MotionIntent>(player_entity);
-            motion_intent->translation = glm::vec3(0.0);
-
             const auto pause_command = Commands::PauseCommand(true);
             GameWorld()->PushCommand(pause_command);
             return;
         }
 
-        CalculateNewTransform(player_entity, input);
+        CalculateNewTransform(player_entity, input, delta_time);
     }
 
     void PlayerControllerSystem::CalculateNewTransform(const Engine::Ecs::EntityId player_entity,
-                                                       const Engine::Input::InputBuffer& input) const {
+                                                       const Engine::Input::InputBuffer& input,
+                                                       const float delta_time) const {
         const auto transform = GameWorld()->GetComponent<Engine::Components::Transform>(player_entity);
-        const auto motion_intent = GameWorld()->GetComponent<Engine::Components::MotionIntent>(player_entity);
-        if (transform == nullptr || motion_intent == nullptr) {
+        if (transform == nullptr) {
             return;
         }
 
         // Calculate camera rotation
         const auto mouse_delta = input.mouse_delta;
-        const float yaw_delta = -mouse_delta.x * m_sensitivity;
-        const float pitch_delta = -mouse_delta.y * m_sensitivity;
+        const float yaw_delta = -mouse_delta.x * m_sensitivity * delta_time;
+        const float pitch_delta = -mouse_delta.y * m_sensitivity * delta_time;
 
         const auto cam_rotation = transform->GetRotation();
         const float pitch = glm::clamp(cam_rotation.x + pitch_delta, m_min_pitch, m_max_pitch);
         const float yaw = cam_rotation.y + yaw_delta;
-        const auto new_camera_rotation = glm::vec3(pitch, yaw, cam_rotation.z);
-        motion_intent->rotation = new_camera_rotation;
+        auto new_camera_rotation = glm::vec3(pitch, yaw, cam_rotation.z);
+
+        float smoothing = 5.0f;
+        float t = 1.0f - std::exp(-smoothing * delta_time);
+        new_camera_rotation = mix(cam_rotation, new_camera_rotation, t);
+
+        transform->SetRotation(new_camera_rotation);
 
         // Calculate camera position
         const auto forward_vec = normalize(glm::vec3(sin(glm::radians(yaw)), 0.0f, cos(glm::radians(yaw))));
@@ -77,7 +77,6 @@ namespace Gameplay::Systems {
         }
         const glm::vec3 pos_delta = right_vec * camera_displacement.x + forward_vec * camera_displacement.z;
 
-        motion_intent->translation = pos_delta;
-        motion_intent->speed_multiplier = m_movement_speed;
+        transform->SetPosition(transform->GetPosition() + (pos_delta * m_movement_speed) * delta_time);
     }
 } // namespace

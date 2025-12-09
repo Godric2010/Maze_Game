@@ -56,7 +56,7 @@ namespace Engine::Systems {
 
             Renderer::MeshDrawAsset mesh_draw_assets{};
             mesh_draw_assets.mesh = mesh_component->mesh;
-            mesh_draw_assets.model = m_transform_cache->GetValue(meshEntity);
+            mesh_draw_assets.model = m_transform_cache->GetValue(meshEntity).transform_matrix;
             mesh_draw_assets.color = mesh_component->color;
 
             draw_assets[i] = mesh_draw_assets;

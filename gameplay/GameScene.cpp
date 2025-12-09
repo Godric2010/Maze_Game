@@ -5,7 +5,6 @@
 
 #include "Collider.hpp"
 #include "GameEndScene.hpp"
-#include "MotionIntent.hpp"
 #include "commands/LevelFinished.hpp"
 #include "commands/PauseCommand.hpp"
 #include "commands/ui/ButtonClickedCommand.hpp"
@@ -155,8 +154,6 @@ namespace Gameplay {
                 .SetPosition(m_maze_builder->GetMazeStartPosition())
                 .SetRotation(glm::vec3(-10.0f, 180.0f, 0.0f));
         World().AddComponent(player, camera_transform);
-        const auto camera_motion_intent = Engine::Components::MotionIntent();
-        World().AddComponent(player, camera_motion_intent);
 
         constexpr auto camera_collider = Engine::Components::SphereCollider{
             .is_static = false,

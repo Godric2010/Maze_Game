@@ -1,8 +1,9 @@
 #pragma once
 #include <memory>
+
+#include "CacheManager.hpp"
 #include "ISystem.hpp"
 #include "../../components/Collider.hpp"
-#include "../../components/MotionIntent.hpp"
 #include "collision/ColliderCache.hpp"
 #include "collision/CollisionQueryService.hpp"
 #include "collision/IBroadphase.hpp"
@@ -24,6 +25,7 @@ namespace Engine::Systems::Physics {
     private:
         const float m_epsilon = 1e-6f;
 
+        Transform::TransformCache* m_transform_cache = nullptr;
         std::unique_ptr<Engine::Physics::Collision::ColliderCache> m_collider_cache;
         std::unique_ptr<Engine::Physics::Collision::IBroadphase> m_broadphase;
         std::unique_ptr<Engine::Physics::Collision::ICollisionQueryService> m_collision_query_service;
@@ -37,9 +39,6 @@ namespace Engine::Systems::Physics {
 
         void BuildSphereCollider(Ecs::EntityId entity, Components::SphereCollider sphere_collider,
                                  glm::vec3 position) const;
-
-        bool TryGetMoveDelta(const glm::vec3& position, const glm::vec3& rotation,
-                             const Components::MotionIntent* intent, float dt, glm::vec3* move_delta) const;
 
         void RunBroadphase(Ecs::EntityId target_entity, float radius, const glm::vec3& position, glm::vec3 move_delta,
                            std::vector<Ecs::EntityId>& blocking_candidates,
@@ -60,8 +59,6 @@ namespace Engine::Systems::Physics {
         void RaiseTriggerEvents(Ecs::EntityId target_entity,
                                 std::unordered_set<Ecs::EntityId>& trigger_entities);
 
-        glm::vec3 IntentToDelta(const Components::MotionIntent* intent, const glm::vec3& world_pos,
-                                const glm::vec3& world_rot, float delta_time) const;
 
         static Engine::Physics::Math::AABB BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest,
                                                           float radius) noexcept;
