@@ -5,9 +5,6 @@
 #pragma once
 #include <glm/vec4.hpp>
 
-namespace Engine::Systems {
-    class UiSystem;
-}
 
 namespace Engine::Components::UI {
     enum class ButtonState {
@@ -18,9 +15,6 @@ namespace Engine::Components::UI {
     };
 
     struct Button {
-    private:
-        friend class Systems::UiSystem;
-
     public:
         uint32_t button_id;
         glm::vec4 default_color;
@@ -29,10 +23,6 @@ namespace Engine::Components::UI {
         glm::vec4 disabled_color;
         bool enabled;
 
-        [[nodiscard]] glm::vec4 GetColor() const { return m_current_color; }
-
     private:
-        ButtonState m_state{};
-        glm::vec4 m_current_color{};
     };
 }

@@ -23,6 +23,7 @@ namespace Engine::Systems {
         void Run(float delta_time) override;
 
     private:
+        UI::UiCache* m_ui_cache = nullptr;
         Text::TextController* m_text_controller = nullptr;
         Renderer::RenderController* m_render_controller = nullptr;
         std::unordered_map<Text::FontHandle, Renderer::TextureHandle> m_font_textures;

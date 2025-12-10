@@ -15,13 +15,15 @@ add_library(Systems STATIC
         include/RenderSystem.hpp
         src/transform/TransformSystem.cpp
         include/TransformSystem.hpp
-        src/UiSystem.cpp
+        src/ui/UiSystem.cpp
         include/UiSystem.hpp
         src/transform/TransformCache.cpp
         src/transform/TransformCache.hpp
         include/CacheManager.hpp
         src/camera/CameraCache.cpp
         src/camera/CameraCache.hpp
+        src/ui/UiCache.cpp
+        src/ui/UiCache.hpp
 )
 
 target_link_libraries(Systems PUBLIC Components Renderer Text Physics glm::glm Input )

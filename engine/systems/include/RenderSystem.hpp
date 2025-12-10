@@ -23,6 +23,7 @@ namespace Engine::Systems {
         const Renderer::RenderController* m_render_controller{};
         Transform::TransformCache* m_transform_cache = nullptr;
         Camera::CameraCache* m_camera_cache = nullptr;
+        UI::UiCache* m_ui_cache = nullptr;
 
         Renderer::CameraAsset CreateCameraAsset(const Ecs::EntityId& camera_entity,
                                                 const Components::Transform* camera_transform) const;

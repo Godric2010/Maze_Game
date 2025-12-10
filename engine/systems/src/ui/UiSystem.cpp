@@ -1,10 +1,10 @@
-#include "../include/UiSystem.hpp"
+#include "../../include/UiSystem.hpp"
 
 #include <TextController.hpp>
 #include <ui/Button.hpp>
 #include <ui/Text.hpp>
-#include "../../core/ServiceLocator.hpp"
-#include "../../core/commands/ui/ButtonClickedCommand.hpp"
+#include "../../../core/ServiceLocator.hpp"
+#include "../../../core/commands/ui/ButtonClickedCommand.hpp"
 
 
 namespace Engine::Systems {
@@ -17,14 +17,42 @@ namespace Engine::Systems {
     }
 
     void UiSystem::Initialize() {
+        m_ui_cache = Cache()->GetUiCache();
         m_text_controller = ServiceLocator()->GetService<Text::TextController>();
         m_render_controller = ServiceLocator()->GetService<Renderer::RenderController>();
+
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Button>(
+                [this](const Ecs::EntityId entity, const Components::UI::Button& _) {
+                    if (this->m_ui_cache == nullptr) {
+                        throw std::runtime_error("UiSystem: Cache is null");
+                    }
+                    this->m_ui_cache->RegisterButtonEntity(entity);
+                }
+                );
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Text>(
+                [this](const Ecs::EntityId entity, const Components::UI::Text& _) {
+                    if (this->m_ui_cache == nullptr) {
+                        throw std::runtime_error("UiSystem: Cache is null");
+                    }
+                    this->m_ui_cache->RegisterTextEntity(entity);
+                }
+                );
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Button>(
+                [this](const Ecs::EntityId entity) {
+                    this->m_ui_cache->DeregisterButtonEntity(entity);
+                }
+                );
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Text>(
+                [this](const Ecs::EntityId entity) {
+                    this->m_ui_cache->DeregisterTextEntity(entity);
+                }
+                );
     }
 
     void UiSystem::Run(float delta_time) {
         HandleTextLabels();
 
-        Input::InputBuffer input = Input()->GetInput();
+        const Input::InputBuffer input = Input()->GetInput();
         if (!input.IsMapActive("UIInputMap")) {
             return;
         }
@@ -45,22 +73,25 @@ namespace Engine::Systems {
         auto buttons_with_entities = EcsWorld()->GetComponentsOfType<Components::UI::Button>();
         for (auto [button, entity]: buttons_with_entities) {
             const auto rect = EcsWorld()->GetComponent<Components::UI::RectTransform>(entity);
+            UI::UiCache::ButtonElement cached_button{};
             if (!button->enabled) {
-                button->m_current_color = button->disabled_color;
+                cached_button.color = button->disabled_color;
+                m_ui_cache->SetButtonElementValue(entity, cached_button);
                 continue;
             }
 
-            button->m_current_color = button->default_color;
+            cached_button.color = button->default_color;
             if (IsMouseOverElement(input.mouse_position, rect)) {
-                button->m_current_color = button->highlight_color;
+                cached_button.color = button->highlight_color;
 
                 if (input.HasAction("UiButtonDown")) {
-                    button->m_current_color = button->click_color;
+                    cached_button.color = button->click_color;
                 } else if (input.HasAction("UiButtonUp")) {
                     const auto command = Core::Commands::UI::ButtonClickedCommand(button->button_id);
                     EcsWorld()->PushCommand(command);
                 }
             }
+            m_ui_cache->SetButtonElementValue(entity, cached_button);
         }
     }
 

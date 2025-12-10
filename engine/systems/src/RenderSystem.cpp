@@ -19,6 +19,7 @@ namespace Engine::Systems {
         m_render_controller = render_controller;
         m_transform_cache = Cache()->GetTransformCache();
         m_camera_cache = Cache()->GetCameraCache();
+        m_ui_cache = Cache()->GetUiCache();
     }
 
     void RenderSystem::Run(float delta_time) {
@@ -84,7 +85,7 @@ namespace Engine::Systems {
 
             const auto button_component = EcsWorld()->GetComponent<Components::UI::Button>(entity);
             if (button_component != nullptr) {
-                ui_draw_asset.color = button_component->GetColor();
+                ui_draw_asset.color = m_ui_cache->GetButtonElement(entity).color;
                 ui_draw_asset.mesh = static_cast<Renderer::MeshHandle>(0);
             }
 
