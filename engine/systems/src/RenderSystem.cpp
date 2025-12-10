@@ -18,12 +18,13 @@ namespace Engine::Systems {
                 GetService<Renderer::RenderController>();
         m_render_controller = render_controller;
         m_transform_cache = Cache()->GetTransformCache();
+        m_camera_cache = Cache()->GetCameraCache();
     }
 
     void RenderSystem::Run(float delta_time) {
         const auto [camera, cameraEntity] = EcsWorld()->GetComponentsOfType<Components::Camera>()[0];
         const auto camera_transform = EcsWorld()->GetComponent<Components::Transform>(cameraEntity);
-        const auto camera_asset = CreateCameraAsset(camera, camera_transform);
+        const auto camera_asset = CreateCameraAsset(cameraEntity, camera_transform);
 
         const std::vector<Renderer::MeshDrawAsset> mesh_draw_assets = CreateDrawAssets();
         const std::vector<Renderer::UiDrawAsset> ui_draw_assets = CreateUiDrawAssets();
@@ -36,11 +37,12 @@ namespace Engine::Systems {
         m_render_controller->SubmitFrame(draw_assets);
     }
 
-    Renderer::CameraAsset RenderSystem::CreateCameraAsset(const Components::Camera* camera_component,
-                                                          const Components::Transform* camera_transform) {
+    Renderer::CameraAsset RenderSystem::CreateCameraAsset(const Ecs::EntityId& camera_entity,
+                                                          const Components::Transform* camera_transform) const {
+        const auto camera_cache_val = m_camera_cache->GetCacheValue(camera_entity);
         const Renderer::CameraAsset camera_asset{
-            .view = camera_component->view,
-            .projection = camera_component->projection,
+            .view = camera_cache_val.view,
+            .projection = camera_cache_val.projection,
             .cameraPosition = glm::vec4(camera_transform->GetPosition(), 1.0f)
         };
 

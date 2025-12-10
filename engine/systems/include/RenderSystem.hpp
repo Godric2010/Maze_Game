@@ -22,9 +22,10 @@ namespace Engine::Systems {
     private:
         const Renderer::RenderController* m_render_controller{};
         Transform::TransformCache* m_transform_cache = nullptr;
+        Camera::CameraCache* m_camera_cache = nullptr;
 
-        static Renderer::CameraAsset CreateCameraAsset(const Components::Camera* camera_component,
-                                                       const Components::Transform* camera_transform);
+        Renderer::CameraAsset CreateCameraAsset(const Ecs::EntityId& camera_entity,
+                                                const Components::Transform* camera_transform) const;
 
         [[nodiscard]] std::vector<Renderer::MeshDrawAsset> CreateDrawAssets() const;
 

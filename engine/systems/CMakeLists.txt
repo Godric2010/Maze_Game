@@ -5,7 +5,7 @@ find_package(glm)
 add_library(Systems STATIC
         src/physics/PhysicsSystem.cpp
         include/PhysicsSystem.hpp
-        src/CameraSystem.cpp
+        src/camera/CameraSystem.cpp
         include/CameraSystem.hpp
         include/EngineEventSystem.hpp
         src/EngineEventSystem.cpp
@@ -20,6 +20,8 @@ add_library(Systems STATIC
         src/transform/TransformCache.cpp
         src/transform/TransformCache.hpp
         include/CacheManager.hpp
+        src/camera/CameraCache.cpp
+        src/camera/CameraCache.hpp
 )
 
 target_link_libraries(Systems PUBLIC Components Renderer Text Physics glm::glm Input )

@@ -44,6 +44,6 @@ namespace Engine::Components {
         [[nodiscard]] glm::vec3 GetPosition() const { return this->m_position; }
         [[nodiscard]] glm::vec3 GetRotation() const { return this->m_rotation; }
         [[nodiscard]] glm::vec3 GetScale() const { return this->m_scale; }
-        uint64_t GetVersion() const { return this->m_version; }
+        [[nodiscard]] uint64_t GetVersion() const { return this->m_version; }
     };
 }

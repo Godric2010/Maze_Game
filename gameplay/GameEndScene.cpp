@@ -48,15 +48,13 @@ namespace Gameplay {
     void GameEndScene::SetupCamera() const {
         const auto camera_entity = World().CreateEntity("MainCamera");
         const auto [width, height, aspect_ratio] = Screen();
-        const auto camera_component = Engine::Components::Camera{
-            .Width = width,
-            .Height = height,
-            .FieldOfView = 60,
-            .AspectRatio = aspect_ratio,
-            .NearClip = 0.01f,
-            .FarClip = 1000.0f,
-
-        };
+        const auto camera_component = Engine::Components::Camera()
+                .SetWidth(width)
+                .SetHeight(height)
+                .SetAspectRatio(aspect_ratio)
+                .SetFieldOfView(60)
+                .SetNearClip(0.01f)
+                .SetFarClip(1000.0f);
         World().AddComponent<Engine::Components::Camera>(camera_entity, camera_component);
 
         const auto camera_transform = Engine::Components::Transform();
