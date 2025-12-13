@@ -106,8 +106,8 @@ namespace Engine::Systems {
                         text->GetFontSize()
                         );
 
-                if (new_atlas_created) {
-                    m_render_controller->UnregisterTexture(text_cache_value.texture_handle);
+                if (new_atlas_created && text_cache_value.texture_handle.has_value()) {
+                    m_render_controller->UnregisterTexture(text_cache_value.texture_handle.value());
                 }
 
                 text_cache_value.font_handle = font_handle;
@@ -117,8 +117,13 @@ namespace Engine::Systems {
             }
 
             if (text->GetTextVersion() != text_cache_value.last_text_version) {
-                m_render_controller->UnregisterMesh(text_cache_value.text_mesh);
-                auto text_mesh = m_text_controller->BuildTextMesh(text_cache_value.font_handle,
+                if (text_cache_value.text_mesh.has_value()) {
+                    m_render_controller->UnregisterMesh(text_cache_value.text_mesh.value());
+                }
+                if (!text_cache_value.font_handle.has_value()) {
+                    continue;
+                }
+                auto text_mesh = m_text_controller->BuildTextMesh(text_cache_value.font_handle.value(),
                                                                   text->GetText(),
                                                                   Text::TextAlignment::Left
                         );

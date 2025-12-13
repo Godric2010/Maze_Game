@@ -91,9 +91,14 @@ namespace Engine::Systems {
 
             const auto text_component = EcsWorld()->GetComponent<Components::UI::Text>(entity);
             if (text_component != nullptr) {
+                auto text_element = m_ui_cache->GetTextElement(entity);
+                if (!text_element.texture_handle.has_value() || !text_element.text_mesh.has_value()) {
+                    continue;
+                }
+
                 ui_draw_asset.color = glm::vec4(1, 1, 1, 1);
-                ui_draw_asset.mesh = m_ui_cache->GetTextElement(entity).text_mesh;
-                ui_draw_asset.texture = m_ui_cache->GetTextElement(entity).texture_handle;
+                ui_draw_asset.mesh = m_ui_cache->GetTextElement(entity).text_mesh.value();
+                ui_draw_asset.texture = m_ui_cache->GetTextElement(entity).texture_handle.value();
             }
 
             ui_draw_assets[i] = ui_draw_asset;

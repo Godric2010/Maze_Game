@@ -18,8 +18,8 @@ namespace Engine::Components::UI {
         [[nodiscard]] std::string GetText() const { return m_text_content; }
         [[nodiscard]] std::string GetFontName() const { return m_font_name; }
         [[nodiscard]] int GetFontSize() const { return m_text_size_in_px; }
-        [[nodiscard]] bool GetFontVersion() const { return m_font_version; }
-        [[nodiscard]] bool GetTextVersion() const { return m_text_version; }
+        [[nodiscard]] uint64_t GetFontVersion() const { return m_font_version; }
+        [[nodiscard]] uint64_t GetTextVersion() const { return m_text_version; }
 
         Text &SetText(const std::string& text) {
             m_text_content = text;

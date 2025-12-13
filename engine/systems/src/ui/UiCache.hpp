@@ -1,4 +1,6 @@
 #pragma once
+#include <optional>
+#include <unordered_map>
 #include <glm/vec4.hpp>
 
 #include "TextController.hpp"
@@ -11,9 +13,9 @@ namespace Engine::Systems::UI {
             uint64_t last_text_version;
             uint64_t last_font_version;
             std::pair<float, float> text_dimensions;
-            Text::FontHandle font_handle;
-            Renderer::MeshHandle text_mesh;
-            Renderer::TextureHandle texture_handle;
+            std::optional<Text::FontHandle> font_handle;
+            std::optional<Renderer::MeshHandle> text_mesh;
+            std::optional<Renderer::TextureHandle> texture_handle;
         };
 
         struct ButtonElement {

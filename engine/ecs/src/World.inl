@@ -17,13 +17,7 @@ namespace Engine::Ecs {
         m_command_queue = std::make_unique<Buffer::SystemCommandQueue>();
     }
 
-    inline World::~World() {
-        // const auto active_entities = m_impl->entity_manager->GetAllActiveEntities();
-        // for (const auto &entity: active_entities) {
-        //     DestroyEntity(entity);
-        // }
-        // ApplyEngineEvents();
-    }
+    inline World::~World() = default;
 
     inline EntityId World::CreateEntity(const std::string& name) const {
         const auto entity = m_impl->entity_manager->ReserveEntity(name);
