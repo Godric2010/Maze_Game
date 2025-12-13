@@ -98,49 +98,50 @@ namespace Engine::Systems {
     void UiSystem::HandleTextLabels() {
         auto text_labels = EcsWorld()->GetComponentsOfType<Components::UI::Text>();
         for (const auto [text, entity]: text_labels) {
-            if (!text->IsDirty()) {
-                continue;
-            }
+            auto text_cache_value = m_ui_cache->GetTextElement(entity);
 
-            auto [font_handle, new_atlas_created] = m_text_controller->LoadFont(
-                    text->GetFontName(),
-                    text->GetFontSize()
-                    );
-            if (new_atlas_created) {
-                if (text->GetTextureHandle().has_value()) {
-                    m_render_controller->UnregisterTexture(text->GetTextureHandle().value());
+            if (text->GetFontVersion() != text_cache_value.last_font_version) {
+                auto [font_handle, new_atlas_created] = m_text_controller->LoadFont(
+                        text->GetFontName(),
+                        text->GetFontSize()
+                        );
+
+                if (new_atlas_created) {
+                    m_render_controller->UnregisterTexture(text_cache_value.texture_handle);
                 }
+
+                text_cache_value.font_handle = font_handle;
+                text_cache_value.texture_handle = GetOrCreateTextureHandleFromFont(font_handle);
+                text_cache_value.last_font_version = text->GetFontVersion();
+                m_ui_cache->SetTextElementValue(entity, text_cache_value);
             }
 
-            text->m_font_handle = font_handle;
-            text->m_texture_handle = GetOrCreateTextureHandleFromFont(font_handle);
+            if (text->GetTextVersion() != text_cache_value.last_text_version) {
+                m_render_controller->UnregisterMesh(text_cache_value.text_mesh);
+                auto text_mesh = m_text_controller->BuildTextMesh(text_cache_value.font_handle,
+                                                                  text->GetText(),
+                                                                  Text::TextAlignment::Left
+                        );
+                Renderer::MeshAsset text_mesh_asset{};
+                for (const auto& vertex: text_mesh.vertices) {
+                    Renderer::MeshVertex mesh_vertex{
+                        .position = glm::vec3(vertex.x, vertex.y, 0),
+                        .uv = glm::vec2(vertex.u, vertex.v),
+                    };
+                    text_mesh_asset.vertices.emplace_back(mesh_vertex);
+                }
 
 
-            if (text->GetTextMesh().has_value()) {
-                m_render_controller->UnregisterMesh(text->GetTextMesh().value());
+                text_mesh_asset.indices = text_mesh.indices;
+                const auto mesh_handle = m_render_controller->RegisterMesh(text_mesh_asset);
+
+                text_cache_value.text_mesh = mesh_handle;
+                text_cache_value.last_text_version = text->GetTextVersion();
+                m_ui_cache->SetTextElementValue(entity, text_cache_value);
+
+                const auto rect_transform = EcsWorld()->GetComponent<Components::UI::RectTransform>(entity);
+                rect_transform->SetSize(glm::vec2(text_mesh.dimensions_width, text_mesh.dimensions_height));
             }
-            auto text_mesh = m_text_controller->BuildTextMesh(text->GetFontHandle(),
-                                                              text->GetText(),
-                                                              Text::TextAlignment::Left
-                    );
-            Renderer::MeshAsset text_mesh_asset{};
-            for (const auto& vertex: text_mesh.vertices) {
-                Renderer::MeshVertex mesh_vertex{
-                    .position = glm::vec3(vertex.x, vertex.y, 0),
-                    .uv = glm::vec2(vertex.u, vertex.v),
-                };
-                text_mesh_asset.vertices.emplace_back(mesh_vertex);
-            }
-
-
-            text_mesh_asset.indices = text_mesh.indices;
-            auto mesh_handle = m_render_controller->RegisterMesh(text_mesh_asset);
-
-            text->m_text_mesh = mesh_handle;
-            text->m_is_dirty = false;
-
-            const auto rect_transform = EcsWorld()->GetComponent<Components::UI::RectTransform>(entity);
-            rect_transform->SetSize(glm::vec2(text_mesh.dimensions_width, text_mesh.dimensions_height));
         }
     }
 

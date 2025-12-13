@@ -15,6 +15,7 @@ namespace Engine::Systems::Camera {
     void CameraCache::DeregisterEntity(const uint64_t entity) {
         if (m_cache.contains(entity)) {
             m_cache.erase(entity);
+            return;
         }
 
         throw std::runtime_error("Camera Cache unregister: Entity does not exists");

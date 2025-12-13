@@ -50,8 +50,9 @@ namespace Engine::SceneManagement {
 
         void UnloadScene() {
             std::cout << "Unloading scene " << m_scene_name << "..." << std::endl;
-            m_context->system_manager.DeregisterForSystemCommands(m_scene_name);
             m_context->world.ClearEntities();
+            m_context->system_manager.DeregisterForSystemCommands(m_scene_name);
+
             m_initialized = false;
         }
 

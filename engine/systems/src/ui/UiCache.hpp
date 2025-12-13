@@ -2,11 +2,18 @@
 #include <glm/vec4.hpp>
 
 #include "TextController.hpp"
+#include "../../renderer/Datatypes.hpp"
 
 namespace Engine::Systems::UI {
     class UiCache {
     public:
         struct TextElement {
+            uint64_t last_text_version;
+            uint64_t last_font_version;
+            std::pair<float, float> text_dimensions;
+            Text::FontHandle font_handle;
+            Renderer::MeshHandle text_mesh;
+            Renderer::TextureHandle texture_handle;
         };
 
         struct ButtonElement {

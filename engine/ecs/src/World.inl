@@ -17,9 +17,15 @@ namespace Engine::Ecs {
         m_command_queue = std::make_unique<Buffer::SystemCommandQueue>();
     }
 
-    inline World::~World() = default;
+    inline World::~World() {
+        // const auto active_entities = m_impl->entity_manager->GetAllActiveEntities();
+        // for (const auto &entity: active_entities) {
+        //     DestroyEntity(entity);
+        // }
+        // ApplyEngineEvents();
+    }
 
-    inline EntityId World::CreateEntity(const std::string &name) const {
+    inline EntityId World::CreateEntity(const std::string& name) const {
         const auto entity = m_impl->entity_manager->ReserveEntity(name);
         const EcsEvent cmd{EcsEventType::CreateEntity, entity};
         m_ecs_event_buffer->EnqueueEvent(cmd);
@@ -33,12 +39,13 @@ namespace Engine::Ecs {
 
     inline void World::ClearEntities() const {
         const auto entities = m_impl->entity_manager->GetAllActiveEntities();
-        for (const auto &entity: entities) {
+        for (const auto& entity: entities) {
             DestroyEntity(entity);
         }
+        ApplyEngineEvents();
     }
 
-    inline EntityId World::GetEntityByName(const std::string &name) const {
+    inline EntityId World::GetEntityByName(const std::string& name) const {
         return m_impl->entity_manager->GetEntityByName(name);
     }
 
@@ -89,7 +96,7 @@ namespace Engine::Ecs {
         }
         m_physics_event_buffer->ClearEvents();
 
-        for (const auto &[type, entity, component_type_id, payload]: m_ecs_event_buffer->Get()) {
+        for (const auto& [type, entity, component_type_id, payload]: m_ecs_event_buffer->Get()) {
             switch (type) {
                 case EcsEventType::CreateEntity: {
                     m_impl->entity_manager->CommitEntity(entity);
@@ -97,7 +104,7 @@ namespace Engine::Ecs {
                 }
                 case EcsEventType::DestroyEntity: {
                     auto components_of_entity = m_impl->component_manager->GetAllComponentsOfEntity(entity);
-                    for (const auto &component: components_of_entity) {
+                    for (const auto& component: components_of_entity) {
                         if (component.on_remove_event) {
                             component.on_remove_event(*m_component_event_bus, entity);
                         }
@@ -134,7 +141,7 @@ namespace Engine::Ecs {
     }
 
     template<typename T>
-    T *World::GetComponent(const EntityId entity) {
+    T* World::GetComponent(const EntityId entity) {
         if (!m_impl->entity_manager->IsEntityAlive(entity)) {
             return nullptr;
         }
@@ -147,10 +154,10 @@ namespace Engine::Ecs {
     }
 
     template<typename T>
-    std::vector<std::pair<T *, EntityId> > World::GetComponentsOfType() {
+    std::vector<std::pair<T*, EntityId> > World::GetComponentsOfType() {
         const auto entities = m_impl->entity_manager->GetAllActiveEntities();
-        std::vector<std::pair<T *, EntityId> > components;
-        for (const auto &entity: entities) {
+        std::vector<std::pair<T*, EntityId> > components;
+        for (const auto& entity: entities) {
             if (m_impl->component_manager->HasComponent<T>(entity)) {
                 auto component = m_impl->component_manager->GetComponent<T>(entity);
                 components.emplace_back(std::make_pair(component, entity));

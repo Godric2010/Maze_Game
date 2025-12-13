@@ -110,7 +110,10 @@ namespace Gameplay {
                 .SetAnchor(Engine::Components::UI::Anchor::Center)
                 .SetPivot(glm::vec2{0.5f, 0.0f})
                 .SetParent(parent_entity);
-        const auto text = Engine::Components::UI::Text(content, font_name, font_size);
+        const auto text = Engine::Components::UI::Text()
+                .SetText(content)
+                .SetFontName(font_name)
+                .SetFontSize(font_size);
         World().AddComponent(text_entity, text_transform);
         World().AddComponent(text_entity, text);
         m_active_state_entities.push_back(text_entity);
