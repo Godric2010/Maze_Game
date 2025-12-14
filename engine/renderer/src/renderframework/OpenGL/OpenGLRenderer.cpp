@@ -1,8 +1,5 @@
 #include "OpenGLRenderer.hpp"
-
 #include <vector>
-
-#include "../../../components/Mesh.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
     OpenGlRenderer::OpenGlRenderer(const Environment::WindowContext& window_context,

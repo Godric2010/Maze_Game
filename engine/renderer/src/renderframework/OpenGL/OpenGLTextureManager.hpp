@@ -1,8 +1,8 @@
 #pragma once
 #include <unordered_map>
 
+#include "Datatypes.hpp"
 #include "OpenGLTexture.hpp"
-#include "../../Datatypes.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
     class OpenGLTextureManager {

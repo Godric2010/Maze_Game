@@ -4,7 +4,7 @@
 
 #pragma once
 #include <glm/glm.hpp>
-#include "../renderer/Datatypes.hpp"
+#include "../renderer/include/Datatypes.hpp"
 
 namespace Engine::Components{
     struct Mesh {

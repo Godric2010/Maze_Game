@@ -4,7 +4,7 @@
 #include <glm/vec4.hpp>
 
 #include "TextController.hpp"
-#include "../../renderer/Datatypes.hpp"
+#include "../../../renderer/include/Datatypes.hpp"
 
 namespace Engine::Systems::UI {
     class UiCache {

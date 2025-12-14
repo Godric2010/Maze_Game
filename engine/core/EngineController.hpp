@@ -7,11 +7,11 @@
 #include "IDebugConsole.hpp"
 #include "IEngine.hpp"
 #include "IInputManager.hpp"
-#include "../scenemanagement/src/SceneManager.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
-#include "../ecs/include/World.hpp"
-#include "../environment/include/Window.hpp"
+#include "Window.hpp"
+#include "World.hpp"
+#include "../scenemanagement/src/SceneManager.hpp"
 #include "../systems/src/CacheManager.hpp"
 
 namespace Engine::Core {

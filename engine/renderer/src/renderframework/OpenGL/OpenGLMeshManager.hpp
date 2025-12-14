@@ -1,10 +1,7 @@
 #pragma once
 #include <unordered_map>
-#include <glm/glm.hpp>
-#include <glad/glad.h>
-
+#include "Datatypes.hpp"
 #include "OpenGLMesh.hpp"
-#include "../../Datatypes.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
     class OpenGlMeshManager {

@@ -1,8 +1,7 @@
 #pragma once
+#include <IRenderController.hpp>
+#include <ISystem.hpp>
 #include <Transform.hpp>
-#include "ISystem.hpp"
-#include "../../../renderer/RenderController.hpp"
-
 
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])
 
@@ -18,7 +17,7 @@ namespace Engine::Systems {
         void Run(float delta_time) override;
 
     private:
-        const Renderer::RenderController* m_render_controller{};
+        const Renderer::IRenderController* m_render_controller{};
 
         Renderer::CameraAsset CreateCameraAsset(const Ecs::EntityId& camera_entity,
                                                 const Components::Transform* camera_transform) const;

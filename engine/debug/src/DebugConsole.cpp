@@ -3,7 +3,7 @@
 #include <ranges>
 
 namespace Engine::Debug {
-    DebugConsole::DebugConsole(Text::TextController* text_controller, Renderer::RenderController* render_controller,
+    DebugConsole::DebugConsole(Text::TextController* text_controller, Renderer::IRenderController* render_controller,
                                const Environment::WindowContext& context,
                                const uint32_t column_width) : m_font_handle(0),
                                                               m_texture_handle(0) {

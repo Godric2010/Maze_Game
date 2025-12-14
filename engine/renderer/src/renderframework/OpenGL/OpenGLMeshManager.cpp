@@ -1,6 +1,7 @@
 #include "OpenGLMeshManager.hpp"
 
 #include <ranges>
+#include <glad/glad.h>
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
     OpenGlMeshManager::OpenGlMeshManager() {

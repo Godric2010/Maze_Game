@@ -1,6 +1,7 @@
 #pragma once
+#include <IRenderController.hpp>
+#include <Window.hpp>
 #include "TextController.hpp"
-#include "../../renderer/RenderController.hpp"
 #include "../include/IDebugConsole.hpp"
 
 namespace Engine::Debug {
@@ -19,7 +20,7 @@ namespace Engine::Debug {
 
     class DebugConsole : public IDebugConsole {
     public:
-        DebugConsole(Text::TextController* text_controller, Renderer::RenderController* render_controller,
+        DebugConsole(Text::TextController* text_controller, Renderer::IRenderController* render_controller,
                      const Environment::WindowContext& context, uint32_t column_width);
 
         ~DebugConsole() override;
@@ -30,7 +31,7 @@ namespace Engine::Debug {
 
     private:
         Text::TextController* m_text_controller;
-        Renderer::RenderController* m_render_controller;
+        Renderer::IRenderController* m_render_controller;
         float m_window_width;
         float m_window_height;
 

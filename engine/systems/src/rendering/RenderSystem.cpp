@@ -14,8 +14,7 @@ namespace Engine::Systems {
     RenderSystem::~RenderSystem() = default;
 
     void RenderSystem::Initialize() {
-        const Renderer::RenderController* render_controller = ServiceLocator()->
-                GetService<Renderer::RenderController>();
+        const auto* render_controller = ServiceLocator()->GetService<Renderer::IRenderController>();
         m_render_controller = render_controller;
     }
 

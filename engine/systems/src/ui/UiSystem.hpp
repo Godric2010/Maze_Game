@@ -1,16 +1,13 @@
 #pragma once
+#include <ISystem.hpp>
 #include <unordered_map>
-#include <glm/gtc/matrix_transform.hpp>
-#include "ISystem.hpp"
 
 #include <Input/InputBuffer.hpp>
 #include <ui/RectTransform.hpp>
-#include <ui/Text.hpp>
 
+#include <IRenderController.hpp>
+#include <TextController.hpp>
 #include "../CacheManager.hpp"
-#include "../CacheManager.hpp"
-#include "TextController.hpp"
-#include "../../../renderer/RenderController.hpp"
 
 namespace Engine::Systems {
     ECS_SYSTEM(UiSystem, Ui, [ENGINE])
@@ -29,7 +26,7 @@ namespace Engine::Systems {
         Transform::TransformCache* m_transform_cache = nullptr;
         UI::UiCache* m_ui_cache = nullptr;
         Text::TextController* m_text_controller = nullptr;
-        Renderer::RenderController* m_render_controller = nullptr;
+        Renderer::IRenderController* m_render_controller = nullptr;
         std::unordered_map<Text::FontHandle, Renderer::TextureHandle> m_font_textures;
 
         bool IsMouseOverElement(glm::vec2 mouse_pos, const Ecs::EntityId& rect_entity) const;

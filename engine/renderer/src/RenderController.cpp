@@ -4,6 +4,7 @@
 
 #include "RenderController.hpp"
 
+#include "PrimitiveMeshes.hpp"
 #include "renderframework/OpenGL/OpenGLRenderer.hpp"
 
 

@@ -20,7 +20,7 @@ namespace Engine::Systems {
         m_transform_cache = Cache()->GetTransformCache();
         m_ui_cache = Cache()->GetUiCache();
         m_text_controller = ServiceLocator()->GetService<Text::TextController>();
-        m_render_controller = ServiceLocator()->GetService<Renderer::RenderController>();
+        m_render_controller = ServiceLocator()->GetService<Renderer::IRenderController>();
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Button>(
                 [this](const Ecs::EntityId entity, const Components::UI::Button& _) {

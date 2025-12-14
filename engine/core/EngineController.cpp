@@ -3,6 +3,7 @@
 #include "CacheManagerFactory.hpp"
 #include "DebugBuilder.hpp"
 #include "EnvironmentBuilder.hpp"
+#include "RenderControllerFactory.hpp"
 #include "SystemManager.hpp"
 #include "TextController.hpp"
 #include "../input/include/InputManagerBuilder.hpp"
@@ -29,14 +30,15 @@ namespace Engine::Core {
 
         m_input_manager = Input::CreateInputManager(m_window.get());
 
-        auto render_controller = std::make_unique<Renderer::RenderController>(m_window->GetWindowContext());
+        auto render_controller =
+                Renderer::RenderControllerFactory::CreateRenderController(m_window->GetWindowContext());
         m_services->RegisterService(std::move(render_controller));
 
         auto text_controller = std::make_unique<Text::TextController>();
         m_services->RegisterService(std::move(text_controller));
 
         m_debug_console = Debug::CreateDebugConsole(m_services->TryGetService<Text::TextController>(),
-                                                    m_services->GetService<Renderer::RenderController>(),
+                                                    m_services->GetService<Renderer::IRenderController>(),
                                                     m_window->GetWindowContext(),
                                                     90
                 );
@@ -70,7 +72,7 @@ namespace Engine::Core {
                 m_debug_console->PushValue("FPS:", fps);
             }
             m_debug_console->PushValue("Draws:",
-                                       m_services->GetService<Renderer::RenderController>()->GetDrawCalls()
+                                       m_services->GetService<Renderer::IRenderController>()->GetDrawCalls()
                     );
 
             m_debug_console->PushToFrame();
@@ -89,7 +91,7 @@ namespace Engine::Core {
     }
 
     Renderer::MeshHandle EngineController::RegisterMesh(const Renderer::MeshAsset& mesh_asset) {
-        const auto mesh_handle = m_services->TryGetService<Renderer::RenderController>()->RegisterMesh(mesh_asset);
+        const auto mesh_handle = m_services->TryGetService<Renderer::IRenderController>()->RegisterMesh(mesh_asset);
         return mesh_handle;
     }
 
