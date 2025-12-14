@@ -57,7 +57,7 @@ namespace Engine::Systems::Physics {
     void PhysicsSystem::Run(const float delta_time) {
         const auto movable_objects = EcsWorld()->GetComponentsOfType<Components::Transform>();
         for (const auto [transform, entity]: movable_objects) {
-            auto cache_val = m_transform_cache->GetValue(entity);
+            auto cache_val = m_transform_cache->GetTransformValue(entity);
 
             if (!m_transform_cache->IsDirty(entity, transform)) {
                 continue;

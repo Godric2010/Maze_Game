@@ -6,6 +6,9 @@
 #include <Input/InputBuffer.hpp>
 #include <ui/RectTransform.hpp>
 #include <ui/Text.hpp>
+
+#include "CacheManager.hpp"
+#include "CacheManager.hpp"
 #include "TextController.hpp"
 #include "../../renderer/RenderController.hpp"
 
@@ -23,12 +26,13 @@ namespace Engine::Systems {
         void Run(float delta_time) override;
 
     private:
+        Transform::TransformCache* m_transform_cache = nullptr;
         UI::UiCache* m_ui_cache = nullptr;
         Text::TextController* m_text_controller = nullptr;
         Renderer::RenderController* m_render_controller = nullptr;
         std::unordered_map<Text::FontHandle, Renderer::TextureHandle> m_font_textures;
 
-        static bool IsMouseOverElement(glm::vec2 mouse_pos, const Components::UI::RectTransform* rect);
+        bool IsMouseOverElement(glm::vec2 mouse_pos, const Ecs::EntityId& rect_entity) const;
 
         void HandleButtons(const Input::InputBuffer& input) const;
 

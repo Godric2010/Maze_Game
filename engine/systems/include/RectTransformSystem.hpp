@@ -27,16 +27,15 @@ namespace Engine::Systems {
         void Run(float delta_time) override;
 
     private:
-        static glm::vec2 GetAnchorValue(const Components::UI::Anchor &anchor);
+        static glm::vec2 GetAnchorValue(const Components::UI::Anchor& anchor);
 
         LayoutData CreateLayoutData(const Components::UI::RectTransform* rect_transform);
 
-        static Components::UI::UiLayoutResult CreateUiLayoutResult(const LayoutData &rect_layout);
+        static Transform::RectTransformCacheValue CreateUiLayoutResult(const LayoutData& rect_layout);
 
-        Components::UI::UiLayoutResult GetParentLayoutResult(const Ecs::EntityId &entity);
+        Transform::RectTransformCacheValue GetParentLayoutResult(const Ecs::EntityId& parent_entity);
 
-        std::unordered_map<Ecs::EntityId, Components::UI::RectTransform *> m_dirty_rect_transforms;
-        std::unordered_map<Ecs::EntityId, Components::UI::UiLayoutResult> m_calculated_layouts;
+        Transform::TransformCache* m_transform_cache;
 
         glm::vec2 m_world_origin = glm::vec2(0.0f);
         glm::vec2 m_world_scale = glm::vec2(1920, 1080);

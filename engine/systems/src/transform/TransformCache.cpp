@@ -8,26 +8,50 @@ namespace Engine::Systems::Transform {
 
     TransformCache::~TransformCache() = default;
 
-    void TransformCache::RegisterEntity(const uint64_t entity) {
-        m_cache[entity] = TransformCacheValue();
+    void TransformCache::RegisterTransformEntity(const uint64_t entity) {
+        if (m_transform_cache.contains(entity)) {
+            throw std::runtime_error("Entity already exists in Transform cache.");
+        }
+        m_transform_cache[entity] = TransformCacheValue();
     }
 
-    void TransformCache::DeregisterEntity(const uint64_t entity) {
-        m_cache.erase(entity);
+    void TransformCache::RegisterRectTransformEntity(const uint64_t entity) {
+        if (m_rect_transform_cache.contains(entity)) {
+            throw std::runtime_error("Entity already exists in Rect Transform cache");
+        }
+        m_rect_transform_cache[entity] = RectTransformCacheValue();
+    }
+
+    void TransformCache::DeregisterTransformEntity(const uint64_t entity) {
+        if (!m_transform_cache.contains(entity)) {
+            throw std::runtime_error("Entity does not exist in Transform cache.");
+        }
+        m_transform_cache.erase(entity);
+    }
+
+    void TransformCache::DeregisterRectTransformEntity(const uint64_t entity) {
+        if (!m_rect_transform_cache.contains(entity)) {
+            throw std::runtime_error("Entity does not exist in Rect Transform cache.");
+        }
+        m_rect_transform_cache.erase(entity);
     }
 
     bool TransformCache::IsDirty(const uint64_t entity, const Components::Transform* transform) {
-        if (!m_cache.contains(entity)) {
+        if (!m_transform_cache.contains(entity)) {
             throw std::runtime_error("Transform cache does not exist for entity " + std::to_string(entity));
         }
 
-        const auto cache_val = m_cache[entity];
+        const auto cache_val = m_transform_cache[entity];
         return cache_val.last_version != transform->GetVersion();
     }
 
     void TransformCache::SetValue(const uint64_t entity, const Components::Transform* transform,
                                   const glm::mat4& transform_mat) {
-        m_cache[entity] = TransformCacheValue{
+        if (!m_transform_cache.contains(entity)) {
+            throw std::runtime_error("Entity does not exist in Transform cache.");
+        }
+
+        m_transform_cache[entity] = TransformCacheValue{
             .last_position = transform->GetPosition(),
             .last_rotation = transform->GetRotation(),
             .last_scale = transform->GetScale(),
@@ -36,10 +60,24 @@ namespace Engine::Systems::Transform {
         };
     }
 
-    const TransformCacheValue &TransformCache::GetValue(const uint64_t entity) {
-        if (m_cache.contains(entity)) {
-            return m_cache[entity];
+    void TransformCache::SetValue(const uint64_t entity, const RectTransformCacheValue& rect_transform_cache_value) {
+        if (!m_rect_transform_cache.contains(entity)) {
+            throw std::runtime_error("Entity does not exist in Rect Transform cache.");
         }
-        throw std::runtime_error("Transform cache does not exist");
+        m_rect_transform_cache[entity] = rect_transform_cache_value;
+    }
+
+    const TransformCacheValue &TransformCache::GetTransformValue(const uint64_t entity) {
+        if (m_transform_cache.contains(entity)) {
+            return m_transform_cache[entity];
+        }
+        throw std::runtime_error("Entity does not exist in Transform cache.");
+    }
+
+    const RectTransformCacheValue &TransformCache::GetRectTransformValue(const uint64_t entity) {
+        if (m_rect_transform_cache.contains(entity)) {
+            return m_rect_transform_cache[entity];
+        }
+        throw std::runtime_error("Entity does not exist in Rect Transform cache.");
     }
 } // namespace

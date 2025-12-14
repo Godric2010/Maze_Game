@@ -17,6 +17,7 @@ namespace Engine::Systems {
     }
 
     void UiSystem::Initialize() {
+        m_transform_cache = Cache()->GetTransformCache();
         m_ui_cache = Cache()->GetUiCache();
         m_text_controller = ServiceLocator()->GetService<Text::TextController>();
         m_render_controller = ServiceLocator()->GetService<Renderer::RenderController>();
@@ -59,11 +60,12 @@ namespace Engine::Systems {
         HandleButtons(input);
     }
 
-    bool UiSystem::IsMouseOverElement(const glm::vec2 mouse_pos, const Components::UI::RectTransform* rect) {
-        if (mouse_pos.x > rect->GetGlobalPosition().x &&
-            mouse_pos.y > rect->GetGlobalPosition().y &&
-            mouse_pos.x < rect->GetGlobalPosition().x + rect->GetGlobalSize().x &&
-            mouse_pos.y < rect->GetGlobalPosition().y + rect->GetGlobalSize().y) {
+    bool UiSystem::IsMouseOverElement(const glm::vec2 mouse_pos, const Ecs::EntityId& rect_entity) const {
+        const auto cached_values = m_transform_cache->GetRectTransformValue(rect_entity);
+        if (mouse_pos.x > cached_values.global_position.x &&
+            mouse_pos.y > cached_values.global_position.y &&
+            mouse_pos.x < cached_values.global_position.x + cached_values.global_size.x &&
+            mouse_pos.y < cached_values.global_position.y + cached_values.global_size.y) {
             return true;
         }
         return false;
@@ -72,7 +74,6 @@ namespace Engine::Systems {
     void UiSystem::HandleButtons(const Input::InputBuffer& input) const {
         auto buttons_with_entities = EcsWorld()->GetComponentsOfType<Components::UI::Button>();
         for (auto [button, entity]: buttons_with_entities) {
-            const auto rect = EcsWorld()->GetComponent<Components::UI::RectTransform>(entity);
             UI::UiCache::ButtonElement cached_button{};
             if (!button->enabled) {
                 cached_button.color = button->disabled_color;
@@ -81,7 +82,7 @@ namespace Engine::Systems {
             }
 
             cached_button.color = button->default_color;
-            if (IsMouseOverElement(input.mouse_position, rect)) {
+            if (IsMouseOverElement(input.mouse_position, entity)) {
                 cached_button.color = button->highlight_color;
 
                 if (input.HasAction("UiButtonDown")) {

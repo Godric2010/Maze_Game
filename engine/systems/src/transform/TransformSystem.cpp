@@ -17,13 +17,13 @@ namespace Engine::Systems {
                     if (this->m_transform_cache == nullptr) {
                         throw std::runtime_error("TransformSystem: Transform cache is null");
                     }
-                    this->m_transform_cache->RegisterEntity(entity);
+                    this->m_transform_cache->RegisterTransformEntity(entity);
                 }
                 );
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::Transform>(
                 [this](const Ecs::EntityId entity) {
-                    this->m_transform_cache->DeregisterEntity(entity);
+                    this->m_transform_cache->DeregisterTransformEntity(entity);
                 }
                 );
     }

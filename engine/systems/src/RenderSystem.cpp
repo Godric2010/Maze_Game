@@ -59,7 +59,7 @@ namespace Engine::Systems {
 
             Renderer::MeshDrawAsset mesh_draw_assets{};
             mesh_draw_assets.mesh = mesh_component->mesh;
-            mesh_draw_assets.model = m_transform_cache->GetValue(meshEntity).transform_matrix;
+            mesh_draw_assets.model = m_transform_cache->GetTransformValue(meshEntity).transform_matrix;
             mesh_draw_assets.color = mesh_component->color;
 
             draw_assets[i] = mesh_draw_assets;
@@ -73,9 +73,10 @@ namespace Engine::Systems {
 
         for (size_t i = 0; i < rect_transforms.size(); ++i) {
             const auto [rect_transform, entity] = rect_transforms[i];
+            auto rect_transform_cache_value = m_transform_cache->GetRectTransformValue(entity);
             Renderer::UiDrawAsset ui_draw_asset{};
-            ui_draw_asset.model = rect_transform->GetModelMatrix();
-            ui_draw_asset.layer = rect_transform->GetLayer();
+            ui_draw_asset.model = rect_transform_cache_value.global_matrix;
+            ui_draw_asset.layer = rect_transform_cache_value.layer;
 
             const auto image_component = EcsWorld()->GetComponent<Components::UI::Image>(entity);
             if (image_component != nullptr) {
