@@ -1,4 +1,4 @@
-#include "../include/RenderSystem.hpp"
+#include "RenderSystem.hpp"
 
 #include <Camera.hpp>
 #include <Mesh.hpp>

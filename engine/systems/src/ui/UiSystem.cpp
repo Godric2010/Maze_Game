@@ -1,4 +1,4 @@
-#include "../../include/UiSystem.hpp"
+#include "UiSystem.hpp"
 
 #include <TextController.hpp>
 #include <ui/Button.hpp>

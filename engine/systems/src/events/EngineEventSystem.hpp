@@ -1,5 +1,4 @@
 #pragma once
-#include <queue>
 #include <glm/vec3.hpp>
 
 #include "ISystem.hpp"

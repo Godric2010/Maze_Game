@@ -4,19 +4,19 @@ find_package(glm)
 
 add_library(Systems STATIC
         src/physics/PhysicsSystem.cpp
-        include/PhysicsSystem.hpp
+        src/physics/PhysicsSystem.hpp
         src/camera/CameraSystem.cpp
-        include/CameraSystem.hpp
-        include/EngineEventSystem.hpp
-        src/EngineEventSystem.cpp
+        src/camera/CameraSystem.hpp
+        src/events/EngineEventSystem.hpp
+        src/events/EngineEventSystem.cpp
         src/transform/RectTransformSystem.cpp
-        include/RectTransformSystem.hpp
-        src/RenderSystem.cpp
-        include/RenderSystem.hpp
+        src/transform/RectTransformSystem.hpp
+        src/rendering/RenderSystem.cpp
+        src/rendering/RenderSystem.hpp
         src/transform/TransformSystem.cpp
-        include/TransformSystem.hpp
+        src/transform/TransformSystem.hpp
         src/ui/UiSystem.cpp
-        include/UiSystem.hpp
+        src/ui/UiSystem.hpp
         src/transform/TransformCache.cpp
         src/transform/TransformCache.hpp
         src/CacheManager.hpp

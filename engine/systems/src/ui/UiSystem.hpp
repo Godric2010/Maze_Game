@@ -7,10 +7,10 @@
 #include <ui/RectTransform.hpp>
 #include <ui/Text.hpp>
 
-#include "../src/CacheManager.hpp"
-#include "../src/CacheManager.hpp"
+#include "../CacheManager.hpp"
+#include "../CacheManager.hpp"
 #include "TextController.hpp"
-#include "../../renderer/RenderController.hpp"
+#include "../../../renderer/RenderController.hpp"
 
 namespace Engine::Systems {
     ECS_SYSTEM(UiSystem, Ui, [ENGINE])

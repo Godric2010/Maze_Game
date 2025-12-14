@@ -1,4 +1,4 @@
-#include "../include/EngineEventSystem.hpp"
+#include "EngineEventSystem.hpp"
 
 #include <iostream>
 #include <ostream>
