@@ -1,5 +1,7 @@
 #include "InputManager.hpp"
 
+#include <stdexcept>
+
 namespace Engine::Input {
     InputManager::InputManager(Environment::IWindow* window) {
         m_input_env = CreateInput(*window);

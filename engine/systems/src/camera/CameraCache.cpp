@@ -1,4 +1,5 @@
 #include "CameraCache.hpp"
+#include <stdexcept>
 
 namespace Engine::Systems::Camera {
     CameraCache::CameraCache() = default;

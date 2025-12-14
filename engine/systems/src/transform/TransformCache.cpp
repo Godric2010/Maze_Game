@@ -1,5 +1,6 @@
 #include "TransformCache.hpp"
 
+#include <stdexcept>
 #include <string>
 #include <Transform.hpp>
 

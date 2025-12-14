@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include <algorithm>
 #include <optional>
 #include <glm/vec2.hpp>
 #include "../ecs/include/World.hpp"

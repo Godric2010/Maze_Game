@@ -1,5 +1,7 @@
 #include "UiCache.hpp"
 
+#include <stdexcept>
+
 namespace Engine::Systems::UI {
     UiCache::UiCache() = default;
 
