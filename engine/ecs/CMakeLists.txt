@@ -25,7 +25,7 @@ add_library(ECS STATIC
         src/CommandSystem.hpp
 )
 
-target_link_libraries(ECS PRIVATE Input Systems)
+target_link_libraries(ECS PUBLIC Input Systems)
 
 if(COMMAND enable_coverage)
     message("ECS- Enable coverage")

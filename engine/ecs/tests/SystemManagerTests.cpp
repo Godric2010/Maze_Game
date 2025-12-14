@@ -107,7 +107,7 @@ TEST_CASE("SystemManger::Register - Register different systems and check their e
 
     // Messing up the order on purpose here
     std::vector<SystemMeta> systems{system_d, system_e, system_c, system_a, system_b};
-    auto system_manager = new SystemManager(systems, nullptr);
+    auto system_manager = new SystemManager(systems, nullptr, nullptr);
     system_manager->RegisterSystems(world, nullptr);
 
     system_manager->RunSystems(0.0f);
