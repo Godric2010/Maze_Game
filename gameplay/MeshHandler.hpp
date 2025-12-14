@@ -1,5 +1,4 @@
 #pragma once
-#include "GameWorld.hpp"
 #include "IEngine.hpp"
 
 namespace Gameplay {
@@ -16,11 +15,11 @@ namespace Gameplay {
         [[nodiscard]] Engine::Renderer::MeshHandle GetKeyMesh() const;
 
     private:
-        Engine::Renderer::MeshHandle m_wall_mesh_handle;
+        Engine::Renderer::MeshHandle m_wall_mesh_handle{};
 
-        Engine::Renderer::MeshHandle m_floor_mesh_handle;
+        Engine::Renderer::MeshHandle m_floor_mesh_handle{};
 
-        Engine::Renderer::MeshHandle m_key_mesh_handle;
+        Engine::Renderer::MeshHandle m_key_mesh_handle{};
 
         void CreateWallMesh(Engine::Core::IEngine& engine);
 

@@ -1,9 +1,8 @@
 #pragma once
 #include <chrono>
 
-#include "../engine/scenemanagement/include/IScene.hpp"
+#include "IScene.hpp"
 #include "mazegenerator/MazeBuilder.hpp"
-#include "../engine/components/Transform.hpp"
 
 namespace Gameplay {
     enum class Difficulty : int {

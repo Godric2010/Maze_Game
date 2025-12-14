@@ -1,7 +1,6 @@
 #pragma once
-#include "../engine/scenemanagement/include/IScene.hpp"
+#include "IScene.hpp"
 #include "MeshHandler.hpp"
-#include "../engine/components/Camera.hpp"
 
 namespace Gameplay {
     struct GameEndShowData {

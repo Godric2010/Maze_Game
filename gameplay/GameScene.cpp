@@ -9,10 +9,10 @@
 #include "commands/PauseCommand.hpp"
 #include "commands/ui/ButtonClickedCommand.hpp"
 #include "components/Inventory.hpp"
-#include "../components/ui/Button.hpp"
-#include "../components/ui/Image.hpp"
-#include "../components/ui/RectTransform.hpp"
-#include "../components/ui/Text.hpp"
+#include "ui/Button.hpp"
+#include "ui/Image.hpp"
+#include "ui/RectTransform.hpp"
+#include "ui/Text.hpp"
 
 namespace Gameplay {
     GameScene::GameScene(const GameSceneSettings settings) {

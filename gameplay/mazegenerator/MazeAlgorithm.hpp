@@ -1,11 +1,9 @@
 #pragma once
-#include <random>
-#include <vector>
-#include <unordered_map>
-#include <cstddef>
-#include <cstdint>
 #include <optional>
+#include <random>
 #include <stack>
+#include <unordered_map>
+#include <vector>
 
 #include "Cell.hpp"
 

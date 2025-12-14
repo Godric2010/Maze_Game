@@ -1,6 +1,5 @@
 #pragma once
 #include <EngineController.hpp>
-
 #include "MeshHandler.hpp"
 
 namespace Gameplay {

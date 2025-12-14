@@ -1,11 +1,11 @@
 #include "MainMenuScene.hpp"
 
+#include "Camera.hpp"
 #include "GameScene.hpp"
-#include "../components/ui/Button.hpp"
-#include "../components/ui/Image.hpp"
-#include "../components/ui/Text.hpp"
-#include "../engine/components/Camera.hpp"
 #include "commands/ui/ButtonClickedCommand.hpp"
+#include "ui/Button.hpp"
+#include "ui/Image.hpp"
+#include "ui/Text.hpp"
 
 
 namespace Gameplay {

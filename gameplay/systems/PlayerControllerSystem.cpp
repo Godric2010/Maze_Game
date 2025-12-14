@@ -2,11 +2,9 @@
 
 #include <iostream>
 #include <ostream>
-
-
 #include "GameWorld.hpp"
+#include "Transform.hpp"
 #include "../commands/PauseCommand.hpp"
-#include "../components/Transform.hpp"
 
 namespace Gameplay::Systems {
     PlayerControllerSystem::PlayerControllerSystem() = default;

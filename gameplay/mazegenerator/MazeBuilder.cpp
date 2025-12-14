@@ -3,8 +3,8 @@
 #include <ostream>
 
 #include "Collider.hpp"
-#include "../../engine/components/Mesh.hpp"
-#include "../../engine/components/Transform.hpp"
+#include "Mesh.hpp"
+#include "Transform.hpp"
 #include "../components/Exit.hpp"
 #include "../components/KeyItem.hpp"
 

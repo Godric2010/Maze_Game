@@ -17,8 +17,8 @@ namespace Gameplay {
 
         Mazegenerator::Cell& GetCell(std::vector<Mazegenerator::Cell>& cells, uint32_t x, uint32_t y);
 
-        Mazegenerator::CellIndex m_start_idx;
-        Mazegenerator::CellIndex m_end_idx;
-        Mazegenerator::CellIndex m_key_idx;
+        Mazegenerator::CellIndex m_start_idx{};
+        Mazegenerator::CellIndex m_end_idx{};
+        Mazegenerator::CellIndex m_key_idx{};
     };
 } // namespace

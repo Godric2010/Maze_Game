@@ -3,10 +3,9 @@
 //
 
 #pragma once
-#include "GameWorld.hpp"
-#include "../scenemanagement/include/IScene.hpp"
-#include "../renderer/include/Datatypes.hpp"
-#include "../interface/include/Scene/SceneArgs.hpp"
+#include "Datatypes.hpp"
+#include "IScene.hpp"
+#include "Scene/SceneArgs.hpp"
 
 namespace Engine::Core {
     class IEngine {

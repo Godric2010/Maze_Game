@@ -10,7 +10,6 @@
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
 #include "Window.hpp"
-#include "World.hpp"
 #include "../scenemanagement/src/SceneManager.hpp"
 #include "../systems/src/CacheManager.hpp"
 

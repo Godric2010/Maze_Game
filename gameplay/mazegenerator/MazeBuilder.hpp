@@ -1,8 +1,5 @@
 #pragma once
-#include<format>
-#include<string>
-#include<cstdint>
-#include "../../engine/components/Camera.hpp"
+#include <format>
 #include "DebugGridDrawer.hpp"
 #include "MazeAlgorithm.hpp"
 #include "../MeshHandler.hpp"

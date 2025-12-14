@@ -43,7 +43,7 @@ namespace Engine::Ecs {
 
     private:
         IServiceToEcsProvider* m_service_locator{};
-        Ecs::World* m_world{};
+        World* m_world{};
         Systems::CacheManager* m_cache_manager{};
 
     protected:
