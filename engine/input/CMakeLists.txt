@@ -7,6 +7,7 @@ add_library(Input STATIC
         src/InputManager.hpp
         src/InputMapping.hpp
         include/InputManagerBuilder.hpp
+        src/InputManagerBuilder.cpp
 )
 
 target_link_libraries(Input PUBLIC Environment Interface glm::glm)

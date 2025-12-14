@@ -28,7 +28,7 @@ namespace Engine::Core {
         };
         m_window->Setup(config);
 
-        m_input_manager = Input::CreateInputManager(m_window.get());
+        m_input_manager = Input::InputManagerBuilder::CreateInputManager(m_window.get());
 
         auto render_controller =
                 Renderer::RenderControllerFactory::CreateRenderController(m_window->GetWindowContext());
