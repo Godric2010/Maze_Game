@@ -1,9 +1,8 @@
 #pragma once
 #include <memory>
 
-#include "CacheManager.hpp"
+#include "Collider.hpp"
 #include "ISystem.hpp"
-#include "../../components/Collider.hpp"
 #include "collision/ColliderCache.hpp"
 #include "collision/CollisionQueryService.hpp"
 #include "collision/IBroadphase.hpp"

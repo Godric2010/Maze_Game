@@ -7,7 +7,7 @@
 
 #include "ISystem.hpp"
 #include "../../core/GameWorld.hpp"
-#include "../../systems/include/CacheManager.hpp"
+#include "../../systems/src/CacheManager.hpp"
 
 namespace Engine::Input {
     class IInput;
@@ -38,7 +38,7 @@ namespace Engine::Ecs {
     class SystemManager {
     public:
         SystemManager(const std::vector<SystemMeta>& system_metas, IServiceToEcsProvider* service_provider,
-                      Systems::CacheManager* cache_manager);
+                      Systems::ICacheManager* cache_manager);
 
         ~SystemManager();
 

@@ -1,4 +1,4 @@
-#include "../../include/CameraSystem.hpp"
+#include "CameraSystem.hpp"
 
 namespace Engine::Systems {
     CameraSystem::CameraSystem() = default;
@@ -6,18 +6,17 @@ namespace Engine::Systems {
     CameraSystem::~CameraSystem() = default;
 
     void CameraSystem::Initialize() {
-        m_cache = Cache()->GetCameraCache();
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::Camera>(
                 [this](const Ecs::EntityId entity, const Components::Camera& _) {
-                    if (this->m_cache == nullptr) {
+                    if (this->Cache()->GetCameraCache() == nullptr) {
                         throw std::runtime_error("CameraSystem::Initialize() - cache is null");
                     }
-                    this->m_cache->RegisterEntity(entity);
+                    this->Cache()->GetCameraCache()->RegisterEntity(entity);
                 }
                 );
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::Camera>(
                 [this](const Ecs::EntityId entity) {
-                    this->m_cache->DeregisterEntity(entity);
+                    this->Cache()->GetCameraCache()->DeregisterEntity(entity);
                 }
                 );
     }
@@ -28,13 +27,13 @@ namespace Engine::Systems {
             const auto camera_transform = EcsWorld()->GetComponent<Components::Transform>(entity);
             auto view_mat = CalculatedViewMat(camera_transform);
 
-            const auto cache_val = m_cache->GetCacheValue(entity);
+            const auto cache_val = Cache()->GetCameraCache()->GetCacheValue(entity);
             auto proj_mat = cache_val.projection;
             if (cache_val.version != camera->GetVersion()) {
                 proj_mat = CalculateProjectionMat(camera);
             }
 
-            m_cache->SetCacheValue(entity, view_mat, proj_mat, camera->GetVersion());
+            Cache()->GetCameraCache()->SetCacheValue(entity, view_mat, proj_mat, camera->GetVersion());
         }
     }
 

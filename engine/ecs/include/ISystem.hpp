@@ -7,7 +7,7 @@
 #include "IServiceToEcsProvider.hpp"
 #include "World.hpp"
 
-#include "CacheManager.hpp"
+#include "../../systems/src/CacheManager.hpp"
 
 namespace Engine::Core {
     class GameWorld;

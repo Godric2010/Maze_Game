@@ -17,9 +17,6 @@ namespace Engine::Systems {
         const Renderer::RenderController* render_controller = ServiceLocator()->
                 GetService<Renderer::RenderController>();
         m_render_controller = render_controller;
-        m_transform_cache = Cache()->GetTransformCache();
-        m_camera_cache = Cache()->GetCameraCache();
-        m_ui_cache = Cache()->GetUiCache();
     }
 
     void RenderSystem::Run(float delta_time) {
@@ -40,7 +37,7 @@ namespace Engine::Systems {
 
     Renderer::CameraAsset RenderSystem::CreateCameraAsset(const Ecs::EntityId& camera_entity,
                                                           const Components::Transform* camera_transform) const {
-        const auto camera_cache_val = m_camera_cache->GetCacheValue(camera_entity);
+        const auto camera_cache_val = Cache()->GetCameraCache()->GetCacheValue(camera_entity);
         const Renderer::CameraAsset camera_asset{
             .view = camera_cache_val.view,
             .projection = camera_cache_val.projection,
@@ -59,7 +56,7 @@ namespace Engine::Systems {
 
             Renderer::MeshDrawAsset mesh_draw_assets{};
             mesh_draw_assets.mesh = mesh_component->mesh;
-            mesh_draw_assets.model = m_transform_cache->GetTransformValue(meshEntity).transform_matrix;
+            mesh_draw_assets.model = Cache()->GetTransformCache()->GetTransformValue(meshEntity).transform_matrix;
             mesh_draw_assets.color = mesh_component->color;
 
             draw_assets[i] = mesh_draw_assets;
@@ -73,7 +70,7 @@ namespace Engine::Systems {
 
         for (size_t i = 0; i < rect_transforms.size(); ++i) {
             const auto [rect_transform, entity] = rect_transforms[i];
-            auto rect_transform_cache_value = m_transform_cache->GetRectTransformValue(entity);
+            auto rect_transform_cache_value = Cache()->GetTransformCache()->GetRectTransformValue(entity);
             Renderer::UiDrawAsset ui_draw_asset{};
             ui_draw_asset.model = rect_transform_cache_value.global_matrix;
             ui_draw_asset.layer = rect_transform_cache_value.layer;
@@ -86,20 +83,20 @@ namespace Engine::Systems {
 
             const auto button_component = EcsWorld()->GetComponent<Components::UI::Button>(entity);
             if (button_component != nullptr) {
-                ui_draw_asset.color = m_ui_cache->GetButtonElement(entity).color;
+                ui_draw_asset.color = Cache()->GetUiCache()->GetButtonElement(entity).color;
                 ui_draw_asset.mesh = static_cast<Renderer::MeshHandle>(0);
             }
 
             const auto text_component = EcsWorld()->GetComponent<Components::UI::Text>(entity);
             if (text_component != nullptr) {
-                auto text_element = m_ui_cache->GetTextElement(entity);
+                auto text_element = Cache()->GetUiCache()->GetTextElement(entity);
                 if (!text_element.texture_handle.has_value() || !text_element.text_mesh.has_value()) {
                     continue;
                 }
 
                 ui_draw_asset.color = glm::vec4(1, 1, 1, 1);
-                ui_draw_asset.mesh = m_ui_cache->GetTextElement(entity).text_mesh.value();
-                ui_draw_asset.texture = m_ui_cache->GetTextElement(entity).texture_handle.value();
+                ui_draw_asset.mesh = Cache()->GetUiCache()->GetTextElement(entity).text_mesh.value();
+                ui_draw_asset.texture = Cache()->GetUiCache()->GetTextElement(entity).texture_handle.value();
             }
 
             ui_draw_assets[i] = ui_draw_asset;

@@ -1,9 +1,7 @@
 #pragma once
-#include <Camera.hpp>
 #include <Transform.hpp>
 #include "ISystem.hpp"
 #include "../../renderer/RenderController.hpp"
-#include "../src/transform/TransformCache.hpp"
 
 
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])
@@ -21,9 +19,6 @@ namespace Engine::Systems {
 
     private:
         const Renderer::RenderController* m_render_controller{};
-        Transform::TransformCache* m_transform_cache = nullptr;
-        Camera::CameraCache* m_camera_cache = nullptr;
-        UI::UiCache* m_ui_cache = nullptr;
 
         Renderer::CameraAsset CreateCameraAsset(const Ecs::EntityId& camera_entity,
                                                 const Components::Transform* camera_transform) const;

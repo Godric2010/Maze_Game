@@ -1,14 +1,9 @@
 #pragma once
-#include <glm/vec3.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/ext/matrix_clip_space.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
 #include <Camera.hpp>
 #include <Transform.hpp>
-
-#include "CacheManager.hpp"
 #include "ISystem.hpp"
 
 ECS_SYSTEM(CameraSystem, LateUpdate, [ENGINE])
@@ -28,7 +23,5 @@ namespace Engine::Systems {
         static glm::mat4 CalculatedViewMat(
                 const Components::Transform* transform);
         static glm::mat4 CalculateProjectionMat(const Components::Camera *camera_component);
-
-        Camera::CameraCache* m_cache = nullptr;
     };
 } // namespace

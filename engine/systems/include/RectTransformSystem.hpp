@@ -1,9 +1,7 @@
 #pragma once
 #include <glm/vec2.hpp>
-
 #include <ui/RectTransform.hpp>
 #include "ISystem.hpp"
-
 
 namespace Engine::Systems {
     ECS_SYSTEM(RectTransformSystem, LateUpdate, [ENGINE])
@@ -34,8 +32,6 @@ namespace Engine::Systems {
         static Transform::RectTransformCacheValue CreateUiLayoutResult(const LayoutData& rect_layout);
 
         Transform::RectTransformCacheValue GetParentLayoutResult(const Ecs::EntityId& parent_entity);
-
-        Transform::TransformCache* m_transform_cache;
 
         glm::vec2 m_world_origin = glm::vec2(0.0f);
         glm::vec2 m_world_scale = glm::vec2(1920, 1080);

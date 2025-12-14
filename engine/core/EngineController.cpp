@@ -1,5 +1,6 @@
 #include "EngineController.hpp"
 
+#include "CacheManagerFactory.hpp"
 #include "DebugBuilder.hpp"
 #include "EnvironmentBuilder.hpp"
 #include "SystemManager.hpp"
@@ -9,7 +10,7 @@
 namespace Engine::Core {
     EngineController::EngineController() {
         m_services = std::make_unique<ServiceLocator>();
-        m_cache_manager = std::make_unique<Systems::CacheManager>();
+        m_cache_manager = Systems::CacheManagerFactory::CreateCacheManager();
         m_is_running = true;
     };
 

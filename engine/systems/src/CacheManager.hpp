@@ -1,12 +1,13 @@
 #pragma once
 #include <memory>
 
-#include "../src/camera/CameraCache.hpp"
-#include "../src/transform/TransformCache.hpp"
-#include "../src/ui/UiCache.hpp"
+#include "ICacheManager.hpp"
+#include "camera/CameraCache.hpp"
+#include "transform/TransformCache.hpp"
+#include "ui/UiCache.hpp"
 
 namespace Engine::Systems {
-    class CacheManager {
+    class CacheManager : public ICacheManager {
     public:
         CacheManager() {
             m_transform_cache = std::make_unique<Transform::TransformCache>();
@@ -14,7 +15,7 @@ namespace Engine::Systems {
             m_ui_cache = std::make_unique<UI::UiCache>();
         }
 
-        ~CacheManager() = default;
+        ~CacheManager() override = default;
 
         [[nodiscard]] Transform::TransformCache* GetTransformCache() const {
             return m_transform_cache.get();

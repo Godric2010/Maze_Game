@@ -1,22 +1,20 @@
-#include "../../include/RectTransformSystem.hpp"
-
+#include "RectTransformSystem.hpp"
 #include <glm/ext/matrix_transform.hpp>
 
 namespace Engine::Systems {
     void RectTransformSystem::Initialize() {
-        m_transform_cache = Cache()->GetTransformCache();
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::RectTransform>(
                 [this](const Ecs::EntityId entity, const Components::UI::RectTransform& _) {
-                    if (this->m_transform_cache == nullptr) {
+                    if (this->Cache()->GetTransformCache() == nullptr) {
                         throw std::runtime_error("TransformSystem: Transform cache is null");
                     }
-                    this->m_transform_cache->RegisterRectTransformEntity(entity);
+                    this->Cache()->GetTransformCache()->RegisterRectTransformEntity(entity);
                 }
                 );
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::RectTransform>(
                 [this](const Ecs::EntityId entity) {
-                    this->m_transform_cache->DeregisterRectTransformEntity(entity);
+                    this->Cache()->GetTransformCache()->DeregisterRectTransformEntity(entity);
                 }
                 );
     }
@@ -24,7 +22,7 @@ namespace Engine::Systems {
     void RectTransformSystem::Run(float delta_time) {
         const auto rect_transform_components = EcsWorld()->GetComponentsOfType<Components::UI::RectTransform>();
         for (const auto [rect_transform, entity]: rect_transform_components) {
-            auto rect_transform_cache_value = m_transform_cache->GetRectTransformValue(entity);
+            auto rect_transform_cache_value = Cache()->GetTransformCache()->GetRectTransformValue(entity);
             if (rect_transform->GetVersion() == rect_transform_cache_value.last_version) {
                 continue;
             }
@@ -32,7 +30,7 @@ namespace Engine::Systems {
             const auto layout_data = CreateLayoutData(rect_transform);
             auto ui_layout = CreateUiLayoutResult(layout_data);
             ui_layout.last_version = rect_transform->GetVersion();
-            m_transform_cache->SetValue(entity, ui_layout);
+            Cache()->GetTransformCache()->SetValue(entity, ui_layout);
         }
     }
 
@@ -100,14 +98,14 @@ namespace Engine::Systems {
 
     Transform::RectTransformCacheValue RectTransformSystem::GetParentLayoutResult(const Ecs::EntityId& parent_entity) {
         const auto parent_rect_transform = EcsWorld()->GetComponent<Components::UI::RectTransform>(parent_entity);
-        const auto rect_transform_cache = m_transform_cache->GetRectTransformValue(parent_entity);
+        const auto rect_transform_cache = Cache()->GetTransformCache()->GetRectTransformValue(parent_entity);
         if (parent_rect_transform->GetVersion() == rect_transform_cache.last_version) {
             return rect_transform_cache;
         }
 
         const auto layout_data = CreateLayoutData(parent_rect_transform);
         const auto layout = CreateUiLayoutResult(layout_data);
-        m_transform_cache->SetValue(parent_entity, layout);
+        Cache()->GetTransformCache()->SetValue(parent_entity, layout);
         return layout;
     }
 } // namespace

@@ -1,13 +1,11 @@
-#include "../../include/PhysicsSystem.hpp"
+#include "PhysicsSystem.hpp"
 
-#include <ostream>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/norm.hpp>
 
-#include "CacheManager.hpp"
-#include "../../components/Collider.hpp"
-#include "../../components/Transform.hpp"
+#include "Collider.hpp"
+#include "Transform.hpp"
 #include "../../physics/src/collision/SpatialHashBroadphase.hpp"
 #include "collision/CollisionUtils.hpp"
 #include "collision/MoverSolver.hpp"

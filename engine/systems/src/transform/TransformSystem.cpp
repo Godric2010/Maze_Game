@@ -1,8 +1,6 @@
-#include "../../include/TransformSystem.hpp"
-
-#include <glm/ext/matrix_transform.hpp>
-
+#include "TransformSystem.hpp"
 #include <Transform.hpp>
+#include <glm/ext/matrix_transform.hpp>
 
 namespace Engine::Systems {
     TransformSystem::TransformSystem() = default;
@@ -10,20 +8,18 @@ namespace Engine::Systems {
     TransformSystem::~TransformSystem() = default;
 
     void TransformSystem::Initialize() {
-        m_transform_cache = Cache()->GetTransformCache();
-
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::Transform>(
                 [this](const Ecs::EntityId entity, const Components::Transform& _) {
-                    if (this->m_transform_cache == nullptr) {
+                    if (this->Cache()->GetTransformCache() == nullptr) {
                         throw std::runtime_error("TransformSystem: Transform cache is null");
                     }
-                    this->m_transform_cache->RegisterTransformEntity(entity);
+                    this->Cache()->GetTransformCache()->RegisterTransformEntity(entity);
                 }
                 );
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::Transform>(
                 [this](const Ecs::EntityId entity) {
-                    this->m_transform_cache->DeregisterTransformEntity(entity);
+                    this->Cache()->GetTransformCache()->DeregisterTransformEntity(entity);
                 }
                 );
     }
@@ -31,14 +27,14 @@ namespace Engine::Systems {
     void TransformSystem::Run(float delta_time) {
         const auto transform_components = EcsWorld()->GetComponentsOfType<Components::Transform>();
         for (const auto [transform, entity]: transform_components) {
-            if (!m_transform_cache->IsDirty(entity, transform)) {
+            if (!Cache()->GetTransformCache()->IsDirty(entity, transform)) {
                 continue;
             }
             auto matrix = CalculateModelMatrix(transform->GetPosition(),
                                                transform->GetRotation(),
                                                transform->GetScale()
                     );
-            m_transform_cache->SetValue(entity, transform, matrix);
+            Cache()->GetTransformCache()->SetValue(entity, transform, matrix);
         }
     }
 

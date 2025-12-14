@@ -7,8 +7,8 @@
 #include <ui/RectTransform.hpp>
 #include <ui/Text.hpp>
 
-#include "CacheManager.hpp"
-#include "CacheManager.hpp"
+#include "../src/CacheManager.hpp"
+#include "../src/CacheManager.hpp"
 #include "TextController.hpp"
 #include "../../renderer/RenderController.hpp"
 
