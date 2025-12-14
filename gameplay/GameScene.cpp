@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ostream>
 
+#include "Camera.hpp"
 #include "Collider.hpp"
 #include "GameEndScene.hpp"
 #include "commands/LevelFinished.hpp"

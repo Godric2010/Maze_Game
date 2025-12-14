@@ -1,5 +1,6 @@
 #include "GameEndScene.hpp"
 
+#include "Camera.hpp"
 #include "../engine/components/Transform.hpp"
 #include "commands/ui/ButtonClickedCommand.hpp"
 #include "../components/ui/Button.hpp"
