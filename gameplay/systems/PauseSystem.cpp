@@ -21,7 +21,7 @@ namespace Gameplay::Systems {
         if (input.HasAction("resume")) {
             std::cout << "Resume game!" << std::endl;
             const auto pause_command = Commands::PauseCommand(false);
-            GameWorld()->PushCommand(pause_command);
+            SendCommand(pause_command);
             return;
         }
     }

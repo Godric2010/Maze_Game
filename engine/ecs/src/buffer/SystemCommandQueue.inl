@@ -4,9 +4,8 @@ namespace Engine::Ecs::Buffer {
 
     inline SystemCommandQueue::~SystemCommandQueue() = default;
 
-    template<typename T>
-    void SystemCommandQueue::PushCommand(T cmd) {
-        m_commands.emplace_back(std::make_any<T>(std::move(cmd)));
+    inline void SystemCommandQueue::PushCommand(const std::any& cmd) {
+        m_commands.emplace_back(std::move(cmd));
     }
 
     inline std::vector<std::any> SystemCommandQueue::ConsumeAll() {

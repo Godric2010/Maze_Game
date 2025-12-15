@@ -8,14 +8,13 @@ namespace Gameplay::Systems {
     ItemSystem::ItemSystem() = default;
 
     void ItemSystem::Initialize() {
-        GameWorld()->SubscribeToPhysicsEvent(Engine::Ecs::PhysicsEventType::OnCollisionEnter,
-                                             [this](const Engine::Ecs::EntityId target,
-                                                    const Engine::Ecs::EntityId other) {
-                                                 CheckIfItemGotPickedUp(target, other);
-                                             });
     }
 
     void ItemSystem::Run(float delta_time) {
+    }
+
+    void ItemSystem::OnCollisionEnter(const Engine::Ecs::EntityId& target, const Engine::Ecs::EntityId& other) {
+        CheckIfItemGotPickedUp(target, other);
     }
 
     void ItemSystem::CheckIfItemGotPickedUp(const Engine::Ecs::EntityId target_entity,

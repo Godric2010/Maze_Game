@@ -1,5 +1,4 @@
 #include "SystemManager.hpp"
-#include <ostream>
 #include <utility>
 #include "CommandSystem.hpp"
 
@@ -46,6 +45,35 @@ namespace Engine::Ecs {
             auto system = sys_meta.factory();
             system->m_game_world = m_game_world.get();
             system->m_input = input;
+            auto system_ptr = system.get();
+            world->GetPhysicsEventBus()->SubscribeToOnCollisionEnter(
+                    [system_ptr](const EntityId target, const EntityId other) {
+                        system_ptr->OnCollisionEnter(target, other);
+                    }
+                    );
+
+            world->GetPhysicsEventBus()->SubscribeToOnCollisionExit(
+                    [system_ptr](const EntityId target, const EntityId other) {
+                        system_ptr->OnCollisionExit(target, other);
+                    }
+                    );
+
+            world->GetPhysicsEventBus()->SubscribeToOnTriggerEnter(
+                    [system_ptr](const EntityId target, const EntityId other) {
+                        system_ptr->OnTriggerEnter(target, other);
+                    }
+                    );
+
+            world->GetPhysicsEventBus()->SubscribeToOnTriggerExit(
+                    [system_ptr](const EntityId target, const EntityId other) {
+                        system_ptr->OnTriggerExit(target, other);
+                    }
+                    );
+
+            system_ptr->m_command_event = [world](const std::any& command) {
+                world->PushCommand(command);
+            };
+
 
             if (std::ranges::find(sys_meta.tags, "ENGINE") != sys_meta.tags.end()) {
                 if (const auto engine_sys = dynamic_cast<IEngineSystem*>(system.get())) {

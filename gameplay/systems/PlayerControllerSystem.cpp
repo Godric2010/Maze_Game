@@ -25,7 +25,7 @@ namespace Gameplay::Systems {
             std::cout << "Enabled pause!" << std::endl;
 
             const auto pause_command = Commands::PauseCommand(true);
-            GameWorld()->PushCommand(pause_command);
+            SendCommand(pause_command);
             return;
         }
 

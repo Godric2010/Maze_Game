@@ -20,19 +20,38 @@ namespace Engine::Ecs {
         friend class SystemManager;
 
     public:
+        using CommandEvent = std::function<void(const std::any& command)>;
+
         virtual ~ISystem() = default;
 
         virtual void Initialize() = 0;
 
         virtual void Run(float delta_time) = 0;
 
+        virtual void OnCollisionEnter(const EntityId& target, const EntityId& other) {
+        }
+
+        virtual void OnCollisionExit(const EntityId& target, const EntityId& other) {
+        }
+
+        virtual void OnTriggerEnter(const EntityId& target, const EntityId& other) {
+        }
+
+        virtual void OnTriggerExit(const EntityId& target, const EntityId& other) {
+        }
+
     protected:
         [[nodiscard]] Core::GameWorld* GameWorld() const { return m_game_world; }
         [[nodiscard]] Input::IInput* Input() const { return m_input; }
 
+        void SendCommand(const std::any& command) const {
+            m_command_event(command);
+        }
+
     private:
         Core::GameWorld* m_game_world{};
         Input::IInput* m_input{};
+        CommandEvent m_command_event{};
     };
 
     class IEngineSystem : public ISystem {

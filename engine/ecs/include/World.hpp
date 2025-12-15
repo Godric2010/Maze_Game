@@ -14,17 +14,17 @@
 namespace Engine::Ecs {
     class World {
     public:
-         World();
+        World();
 
         ~World();
 
-        [[nodiscard]] EntityId CreateEntity(const std::string &name) const;
+        [[nodiscard]] EntityId CreateEntity(const std::string& name) const;
 
         void DestroyEntity(EntityId entity) const;
 
         void ClearEntities() const;
 
-        [[nodiscard]] EntityId GetEntityByName(const std::string &name) const;
+        [[nodiscard]] EntityId GetEntityByName(const std::string& name) const;
 
         template<typename T>
         void AddComponent(EntityId entity, T component);
@@ -35,29 +35,28 @@ namespace Engine::Ecs {
         void ApplyEngineEvents() const;
 
         template<typename T>
-        T *GetComponent(EntityId entity);
+        T* GetComponent(EntityId entity);
 
         template<typename T>
-        std::vector<std::pair<T *, EntityId> > GetComponentsOfType();
+        std::vector<std::pair<T*, EntityId> > GetComponentsOfType();
 
-        [[nodiscard]] ComponentEventBus *GetComponentEventBus() const {
+        [[nodiscard]] ComponentEventBus* GetComponentEventBus() const {
             return m_component_event_bus.get();
         }
 
-        [[nodiscard]] const ComponentEventBus *GetEventBusConst() const {
+        [[nodiscard]] const ComponentEventBus* GetEventBusConst() const {
             return m_component_event_bus.get();
         }
 
-        [[nodiscard]] PhysicsEventBus *GetPhysicsEventBus() const {
+        [[nodiscard]] PhysicsEventBus* GetPhysicsEventBus() const {
             return m_physics_event_bus.get();
         }
 
-        [[nodiscard]] Buffer::EventBuffer<PhysicsEvent> *GetPhysicsEventBuffer() const {
+        [[nodiscard]] Buffer::EventBuffer<PhysicsEvent>* GetPhysicsEventBuffer() const {
             return m_physics_event_buffer.get();
         }
 
-        template<typename T>
-        void PushCommand(T cmd) {
+        void PushCommand(const std::any& cmd) const {
             m_command_queue->PushCommand(cmd);
         }
 

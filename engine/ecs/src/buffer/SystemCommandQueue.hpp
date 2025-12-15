@@ -9,8 +9,7 @@ namespace Engine::Ecs::Buffer {
 
         ~SystemCommandQueue();
 
-        template<typename T>
-        void PushCommand(T cmd);
+        void PushCommand(const std::any& cmd);
 
         std::vector<std::any> ConsumeAll();
 
