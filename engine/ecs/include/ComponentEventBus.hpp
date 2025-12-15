@@ -7,8 +7,7 @@
 #include <typeindex>
 #include <unordered_map>
 
-#include "../src/Entity.hpp"
-
+#include "Ecs/Types.hpp"
 
 namespace Engine::Ecs {
     class ComponentEventBus {

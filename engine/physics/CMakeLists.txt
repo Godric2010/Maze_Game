@@ -34,7 +34,7 @@ target_include_directories(Physics
         $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(Physics PRIVATE Interface glm::glm)
+target_link_libraries(Physics PUBLIC Interface PRIVATE glm::glm)
 
 if (BUILD_TESTING)
     include(testing)
