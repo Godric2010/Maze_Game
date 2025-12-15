@@ -7,6 +7,8 @@ add_library(Interface INTERFACE
         include/Input/InputBuffer.hpp
         include/scene/SceneArgs.hpp
         include/scene/ISceneManager.hpp
+        include/Ecs/ISystem.hpp
+        include/Ecs/Types.hpp
 )
 
 target_include_directories(Interface INTERFACE

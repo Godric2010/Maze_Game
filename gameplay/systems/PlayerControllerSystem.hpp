@@ -1,6 +1,6 @@
 #pragma once
 #include "Input/InputBuffer.hpp"
-#include "ISystem.hpp"
+#include "IEngineSystem.hpp"
 
 ECS_SYSTEM(PlayerControllerSystem, Input, [])
 

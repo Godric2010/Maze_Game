@@ -4,9 +4,9 @@
 
 #pragma once
 #include <cstdint>
+#include "Ecs/Types.hpp"
 
 namespace Engine::Ecs {
-    using EntityId = uint64_t;
     inline constexpr EntityId INVALID_ENTITY_ID = 0;
 
     inline constexpr uint64_t INDEX_BITS = 40;

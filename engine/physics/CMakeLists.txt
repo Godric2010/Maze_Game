@@ -23,7 +23,7 @@ add_library(Physics STATIC
         include/collision/CollisionUtils.hpp
 )
 
-if(COMMAND enable_coverage)
+if (COMMAND enable_coverage)
     message("Physics- Enable coverage")
     enable_coverage(Physics)
 endif ()
@@ -34,7 +34,7 @@ target_include_directories(Physics
         $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(Physics PRIVATE glm::glm)
+target_link_libraries(Physics PRIVATE Interface glm::glm)
 
 if (BUILD_TESTING)
     include(testing)

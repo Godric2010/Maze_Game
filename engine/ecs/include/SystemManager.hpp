@@ -5,8 +5,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "ISystem.hpp"
-#include "../../core/GameWorld.hpp"
+#include "SystemWorld.hpp"
+#include "IEngineSystem.hpp"
 #include "../../systems/src/CacheManager.hpp"
 
 namespace Engine::Input {
@@ -52,7 +52,7 @@ namespace Engine::Ecs {
         void DeregisterForSystemCommands(const std::string& subscriber_name);
 
     private:
-        std::unique_ptr<Core::GameWorld> m_game_world;
+        std::unique_ptr<SystemWorld> m_game_world;
         std::vector<SystemMeta> m_system_metas;
         IServiceToEcsProvider* m_service_provider;
         Systems::CacheManager* m_cache_manager;

@@ -4,7 +4,7 @@
 
 #include <Camera.hpp>
 #include <Transform.hpp>
-#include "ISystem.hpp"
+#include "IEngineSystem.hpp"
 
 ECS_SYSTEM(CameraSystem, LateUpdate, [ENGINE])
 

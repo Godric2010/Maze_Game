@@ -1,5 +1,5 @@
 #pragma once
-#include "ISystem.hpp"
+#include "IEngineSystem.hpp"
 
 namespace Gameplay::Systems {
     ECS_SYSTEM(PauseSystem, Update, [])

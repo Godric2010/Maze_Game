@@ -5,7 +5,7 @@
 #pragma once
 #include <unordered_set>
 
-#include "ISystem.hpp"
+#include "IEngineSystem.hpp"
 
 namespace Engine::Ecs {
     class CommandSystem : public IEngineSystem {

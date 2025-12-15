@@ -10,7 +10,7 @@ add_library(ECS STATIC
         src/ComponentPool.inl
         src/ComponentPool.hpp
         src/Entity.hpp
-        include/ISystem.hpp
+        include/IEngineSystem.hpp
         src/SystemManager.cpp
         include/SystemManager.hpp
         include/IServiceToEcsProvider.hpp
@@ -23,11 +23,15 @@ add_library(ECS STATIC
         src/buffer/SystemCommandQueue.inl
         src/buffer/SystemCommandQueue.hpp
         src/CommandSystem.hpp
+        src/EngineBindToken.hpp
+        src/SystemBinder.hpp
+        src/ISystem.cpp
+        include/SystemWorld.hpp
 )
 
-target_link_libraries(ECS PUBLIC Input Systems)
+target_link_libraries(ECS PUBLIC Interface Input Systems)
 
-if(COMMAND enable_coverage)
+if (COMMAND enable_coverage)
     message("ECS- Enable coverage")
     enable_coverage(ECS)
 endif ()

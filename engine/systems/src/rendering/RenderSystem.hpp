@@ -1,6 +1,6 @@
 #pragma once
 #include <IRenderController.hpp>
-#include <ISystem.hpp>
+#include <IEngineSystem.hpp>
 #include <Transform.hpp>
 
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])

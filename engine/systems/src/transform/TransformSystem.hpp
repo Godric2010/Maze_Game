@@ -2,7 +2,7 @@
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 
-#include "ISystem.hpp"
+#include "IEngineSystem.hpp"
 ECS_SYSTEM(TransformSystem, LateUpdate, [ENGINE])
 
 namespace Engine::Systems {

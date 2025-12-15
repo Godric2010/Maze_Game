@@ -1,5 +1,6 @@
 #pragma once
-#include "ISystem.hpp"
+#include "IEngineSystem.hpp"
+#include "Ecs/Types.hpp"
 #include "../commands/LevelFinished.hpp"
 
 namespace Gameplay::Systems {

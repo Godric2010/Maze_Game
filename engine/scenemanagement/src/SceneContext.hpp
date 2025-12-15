@@ -5,8 +5,7 @@
 #pragma once
 #include "IApplication.hpp"
 #include "SystemManager.hpp"
-#include "World.hpp"
-#include "../include/SceneWorld.hpp"
+#include "SceneWorld.hpp"
 #include "Input/IInput.hpp"
 #include "Scene/ISceneManager.hpp"
 

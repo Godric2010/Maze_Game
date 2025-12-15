@@ -2,7 +2,8 @@
 
 #include <iostream>
 #include <ostream>
-#include "GameWorld.hpp"
+
+#include "SystemWorld.hpp"
 #include "Transform.hpp"
 #include "../commands/PauseCommand.hpp"
 

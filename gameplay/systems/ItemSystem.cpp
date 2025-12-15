@@ -1,5 +1,4 @@
 #include "ItemSystem.hpp"
-#include "GameWorld.hpp"
 #include "../components/Inventory.hpp"
 #include "../components/KeyItem.hpp"
 #include "../components/ui/Image.hpp"

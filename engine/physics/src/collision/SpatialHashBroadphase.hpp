@@ -2,6 +2,7 @@
 #include <unordered_map>
 
 #include "collision/IBroadphase.hpp"
+#include "Ecs/Types.hpp"
 
 namespace Engine::Physics::Collision {
     struct CellKey {

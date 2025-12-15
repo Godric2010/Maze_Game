@@ -5,7 +5,6 @@ add_library(Core STATIC
         ServiceLocator.inl
         ServiceLocator.hpp
         IEngine.hpp
-        GameWorld.hpp
         commands/ui/ButtonClickedCommand.hpp
 )
 

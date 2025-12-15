@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/vec2.hpp>
 #include <ui/RectTransform.hpp>
-#include "ISystem.hpp"
+#include "IEngineSystem.hpp"
 
 namespace Engine::Systems {
     ECS_SYSTEM(RectTransformSystem, LateUpdate, [ENGINE])

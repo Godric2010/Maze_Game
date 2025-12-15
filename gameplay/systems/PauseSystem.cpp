@@ -1,7 +1,6 @@
 #include "PauseSystem.hpp"
 
 #include <iostream>
-#include "GameWorld.hpp"
 #include "../commands/PauseCommand.hpp"
 
 

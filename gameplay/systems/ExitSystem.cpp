@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "GameWorld.hpp"
+#include "SystemWorld.hpp"
 #include "../components/Exit.hpp"
 #include "../components/Inventory.hpp"
 

@@ -2,7 +2,7 @@
 #include <memory>
 
 #include "Collider.hpp"
-#include "ISystem.hpp"
+#include "IEngineSystem.hpp"
 #include "collision/ColliderCache.hpp"
 #include "collision/CollisionQueryService.hpp"
 #include "collision/IBroadphase.hpp"
