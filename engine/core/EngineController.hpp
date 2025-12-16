@@ -5,7 +5,6 @@
 #include <spdlog/spdlog.h>
 
 #include "IDebugConsole.hpp"
-#include "IEngine.hpp"
 #include "IInputManager.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
@@ -19,7 +18,7 @@ namespace Engine::Core {
      * The central engine controller that brings all elements of the engine together.
      * All systems and their events are managed through this instance.
      */
-    class EngineController final : public IEngine, public IApplication {
+    class EngineController final : public IApplication {
     public:
         EngineController();
 

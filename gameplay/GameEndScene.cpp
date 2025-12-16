@@ -2,7 +2,7 @@
 
 #include "Camera.hpp"
 #include "../engine/components/Transform.hpp"
-#include "commands/ui/ButtonClickedCommand.hpp"
+#include "Commands/UI/ButtonClickedCommand.hpp"
 #include "../components/ui/Button.hpp"
 #include "../components/ui/Image.hpp"
 #include "../components/ui/RectTransform.hpp"
@@ -30,8 +30,8 @@ namespace Gameplay {
 
     void GameEndScene::EvaluateSystemCommands(const std::vector<std::any>& commands) {
         for (const std::any& command: commands) {
-            if (command.type() == typeid(Engine::Core::Commands::UI::ButtonClickedCommand)) {
-                auto button_clicked = std::any_cast<Engine::Core::Commands::UI::ButtonClickedCommand>(command);
+            if (command.type() == typeid(Engine::Commands::UI::ButtonClickedCommand)) {
+                auto button_clicked = std::any_cast<Engine::Commands::UI::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
                 if (button_id == m_back_to_main_menu_button_id) {
                     SceneManager().LoadScene("MainMenu", Engine::SceneManagement::SceneArgs{.payload = m_mesh_handler});
@@ -105,7 +105,7 @@ namespace Gameplay {
 
         const float completed_in_seconds = m_time_to_completion / 1000.0f;
         const float minutes = (completed_in_seconds / 60.0f);
-        const float seconds = (completed_in_seconds - (static_cast<int>(minutes) * 60));
+        const float seconds = (completed_in_seconds - static_cast<int>(minutes) * 60);
         const std::string time_needed_str = "Time needed: " + std::to_string(static_cast<int>(minutes)) + ":"
                                             + std::to_string(static_cast<int>(seconds));
         const auto time_display_entity = World().CreateEntity("TimeDisplay");
@@ -123,7 +123,7 @@ namespace Gameplay {
 
         constexpr auto button_size = glm::vec2(200, 70);
         const auto main_menu_button = World().CreateEntity("MainMenuButton");
-        const auto pos = glm::vec2(0, 900);
+        constexpr auto pos = glm::vec2(0, 900);
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
         auto main_menu_button_rect = Engine::Components::UI::RectTransform()
                 .SetPosition(pos)

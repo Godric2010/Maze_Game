@@ -5,7 +5,7 @@
 #pragma once
 #include <cstdint>
 
-namespace Engine::Core::Commands::UI {
+namespace Engine::Commands::UI {
     class ButtonClickedCommand {
     public:
         explicit ButtonClickedCommand(const uint32_t button_id) {

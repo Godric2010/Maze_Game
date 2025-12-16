@@ -5,7 +5,7 @@
 #include "MainMenuScene.hpp"
 
 namespace Gameplay {
-    GameplayManager::GameplayManager(Engine::Core::IEngine& engine) : m_engine(engine) {
+    GameplayManager::GameplayManager(Engine::IApplication& engine) : m_engine(engine) {
         m_mesh_handler = std::make_unique<MeshHandler>(engine);
 
         const Engine::Input::InputMap player_input_map{

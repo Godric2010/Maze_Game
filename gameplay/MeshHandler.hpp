@@ -1,10 +1,11 @@
 #pragma once
-#include "IEngine.hpp"
+#include "IApplication.hpp"
+#include "Renderer/Types.hpp"
 
 namespace Gameplay {
     class MeshHandler {
     public:
-        explicit MeshHandler(Engine::Core::IEngine& engine);
+        explicit MeshHandler(Engine::IApplication& engine);
 
         ~MeshHandler();
 
@@ -21,10 +22,10 @@ namespace Gameplay {
 
         Engine::Renderer::MeshHandle m_key_mesh_handle{};
 
-        void CreateWallMesh(Engine::Core::IEngine& engine);
+        void CreateWallMesh(Engine::IApplication& engine);
 
-        void CreateFloorMesh(Engine::Core::IEngine& engine);
+        void CreateFloorMesh(Engine::IApplication& engine);
 
-        void CreateKeyMesh(Engine::Core::IEngine& engine);
+        void CreateKeyMesh(Engine::IApplication& engine);
     };
 } // namespace

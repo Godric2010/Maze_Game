@@ -21,7 +21,7 @@ add_library(Renderer STATIC
         src/RenderControllerFactory.cpp
         include/RenderControllerFactory.hpp)
 
-target_link_libraries(Renderer PRIVATE Environment glad::glad glm::glm spdlog::spdlog)
+target_link_libraries(Renderer PUBLIC Interface PRIVATE Environment glad::glad glm::glm spdlog::spdlog)
 
 target_include_directories(Renderer
         PUBLIC

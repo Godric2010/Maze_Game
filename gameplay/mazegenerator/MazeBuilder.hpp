@@ -2,6 +2,7 @@
 #include <format>
 #include "DebugGridDrawer.hpp"
 #include "MazeAlgorithm.hpp"
+#include "SceneWorld.hpp"
 #include "../MeshHandler.hpp"
 
 namespace Gameplay::Mazegenerator {

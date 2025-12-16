@@ -40,7 +40,7 @@ namespace Engine::Systems {
         const Renderer::CameraAsset camera_asset{
             .view = camera_cache_val.view,
             .projection = camera_cache_val.projection,
-            .cameraPosition = glm::vec4(camera_transform->GetPosition(), 1.0f)
+            .camera_position = glm::vec4(camera_transform->GetPosition(), 1.0f)
         };
 
         return camera_asset;

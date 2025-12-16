@@ -6,32 +6,14 @@
 #include <vector>
 #include <glm/fwd.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/vec3.hpp>
+#include "Renderer/Types.hpp"
 
 namespace Engine::Renderer {
-    typedef uint32_t MeshHandle;
-    typedef uint32_t TextureHandle;
-
-    struct MeshVertex {
-        glm::vec3 position;
-        glm::vec2 uv;
-    };
-
-    struct MeshAsset {
-        std::vector<MeshVertex> vertices;
-        std::vector<uint32_t> indices;
-    };
-
-    struct TextureAsset {
-        float width;
-        float height;
-        std::vector<uint8_t> pixels;
-    };
 
     struct CameraAsset {
         glm::mat4 view;
         glm::mat4 projection;
-        glm::vec4 cameraPosition;
+        glm::vec4 camera_position;
     };
 
 

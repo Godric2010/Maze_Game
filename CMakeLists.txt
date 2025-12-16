@@ -60,7 +60,7 @@ add_executable(Maze_Game
 )
 add_dependencies(Maze_Game ecs_codegen)
 target_include_directories(Maze_Game PRIVATE "${GENERATED_FILES_DIR}")
-target_link_libraries(Maze_Game PRIVATE Engine Gameplay)
+target_link_libraries(Maze_Game PRIVATE Engine Core Gameplay)
 
 add_custom_command(TARGET Maze_Game POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory

@@ -4,8 +4,7 @@ add_library(Core STATIC
         EngineController.hpp
         ServiceLocator.inl
         ServiceLocator.hpp
-        IEngine.hpp
-        commands/ui/ButtonClickedCommand.hpp
+        ../interface/include/Commands/ui/ButtonClickedCommand.hpp
 )
 
 target_include_directories(Core PUBLIC

@@ -2,7 +2,7 @@
 
 #include "Camera.hpp"
 #include "GameScene.hpp"
-#include "commands/ui/ButtonClickedCommand.hpp"
+#include "Commands/UI/ButtonClickedCommand.hpp"
 #include "ui/Button.hpp"
 #include "ui/Image.hpp"
 #include "ui/Text.hpp"
@@ -29,8 +29,8 @@ namespace Gameplay {
 
     void MainMenuScene::EvaluateSystemCommands(const std::vector<std::any>& commands) {
         for (const std::any& command: commands) {
-            if (command.type() == typeid(Engine::Core::Commands::UI::ButtonClickedCommand)) {
-                auto button_clicked = std::any_cast<Engine::Core::Commands::UI::ButtonClickedCommand>(command);
+            if (command.type() == typeid(Engine::Commands::UI::ButtonClickedCommand)) {
+                auto button_clicked = std::any_cast<Engine::Commands::UI::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
                 switch (m_menu_state) {
                     case MenuState::Main:

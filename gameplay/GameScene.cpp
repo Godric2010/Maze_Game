@@ -8,7 +8,7 @@
 #include "GameEndScene.hpp"
 #include "commands/LevelFinished.hpp"
 #include "commands/PauseCommand.hpp"
-#include "commands/ui/ButtonClickedCommand.hpp"
+#include "Commands/UI/ButtonClickedCommand.hpp"
 #include "components/Inventory.hpp"
 #include "ui/Button.hpp"
 #include "ui/Image.hpp"
@@ -61,8 +61,8 @@ namespace Gameplay {
                         );
                 continue;
             }
-            if (command.type() == typeid(Engine::Core::Commands::UI::ButtonClickedCommand)) {
-                auto button_clicked = std::any_cast<Engine::Core::Commands::UI::ButtonClickedCommand>(command);
+            if (command.type() == typeid(Engine::Commands::UI::ButtonClickedCommand)) {
+                auto button_clicked = std::any_cast<Engine::Commands::UI::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
                 if (button_id == 1) {
                     Resume();

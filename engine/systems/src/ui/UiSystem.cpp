@@ -4,7 +4,7 @@
 #include <ui/Button.hpp>
 #include <ui/Text.hpp>
 #include "../../../core/ServiceLocator.hpp"
-#include "../../../core/commands/ui/ButtonClickedCommand.hpp"
+#include "Commands/UI/ButtonClickedCommand.hpp"
 
 
 namespace Engine::Systems {
@@ -88,7 +88,7 @@ namespace Engine::Systems {
                 if (input.HasAction("UiButtonDown")) {
                     cached_button.color = button->click_color;
                 } else if (input.HasAction("UiButtonUp")) {
-                    const auto command = Core::Commands::UI::ButtonClickedCommand(button->button_id);
+                    const auto command = Commands::UI::ButtonClickedCommand(button->button_id);
                     EcsWorld()->PushCommand(command);
                 }
             }

@@ -13,4 +13,4 @@ add_subdirectory(components)
 add_subdirectory(systems)
 
 add_library(Engine INTERFACE)
-target_link_libraries(Engine INTERFACE Interface Components Core SceneManagement)
+target_link_libraries(Engine INTERFACE Interface Components SceneManagement)
