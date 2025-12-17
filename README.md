@@ -1,7 +1,7 @@
 # Readme Maze Game
 
 Maze Game is a training and showcase project. It features a simple maze puzzle game, written in a custom C++ engine.
-The emphasis lies more on the engine development and architecture, than on the gameplay part.
+The emphasis lies more on the [engine](/engine/Readme.md) development and architecture, than on the gameplay part.
 The project is primarily designed to learn about engine development and to showcase my development over time.
 So every curious C++/Engine Dev or Recruiter is welcome to take a look.
 
