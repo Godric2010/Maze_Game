@@ -1,16 +1,19 @@
 # The Engine
 
 This is a modular, 3D engine written in C++, designed for learning and growing as an engine developer. It features a renderer, using OpenGL 4.1,
-a custom entity-component-system and custom collision physics.
+a custom entity-component-system and custom collision physics. It builds the foundation the [Maze Game](../README.md) is built upon.
 
 It has no intention to be a competitor to big, AAA Engines out in the market. There is no Editor, custom scripting or any of that. 
 
 The focus lies solely on the modularity and architecture, as well as the personal learning and growing options of me as an *Engine Developer*.
+Therefore, this documentation targets other interested C++ and engine developers.
 
-## Design Principals
+## Architecture overview and design principles
 
 The engine is designed to keep a clear interface to the game using it. By implementing the *Engine* Library into a game project, the game gains access to
 all high-level interfaces to communicate with the engine itself. This *Engine*-Library serves as an interface, so the game logic can use engine functions.
+This allows the engine to hide internal functionality from gameplay, so no unintended calls can be made. Furthermore, this approach allows for a clear distinction
+between engine functionality and engine usage.
 
 *Interface* is the in-engine abstraction for many of the engines subsystems, allowing for clean access, without providing unnecessary engine details to the game.
 *Components* is a collection of components, provided by the engine, to be used in gameplay.
@@ -29,11 +32,12 @@ This allows working with in-engine and gameplay systems alike in one update loop
 
 ## Engine Libraries
 
-The engine contains multiple libraries, that encapsulate various functionality of the engine, allowing for a modular setup and testing.
+The engine contains multiple libraries that encapsulate various functionality of the engine, allowing for a modular setup and testing.
 
 ### Core
-The core library is the *internal* library that is responsible for bootstrapping the other engines libraries and keep the engine running until further notice.
-It implements almost all libraries in engine, owns them and is responsible for their setup, updating and destruction.
+The core library is the *internal* library that is responsible for bootstrapping the other engines libraries and keeping the engine running until further notice.
+It implements almost all libraries in engine, owns them and is responsible for their setup, updating and destruction. This makes core the library with dependencies to 
+every other library in the engine.
 
 ### ECS
 The ecs library is an *internal* library, responsible for managing the entities, their components and the systems in a scene. It relies on the in-engine systems
@@ -54,7 +58,9 @@ The interface library is a *public* library, containing various datatypes and in
 engine internal libraries and functionality.
 
 ### Renderer
-The renderer library is an *internal* library that is responsible for the entire rendering process. It utilizes the OpenGL framework to draw objects to the screen,
+The renderer library is an *internal* library that is responsible for the entire rendering process. Gameplay is not supposed to interact with rendering directly. 
+Objects that should be rendered are controlled via the objects in the scene that have mesh components.
+It uses the OpenGL framework to draw objects to the screen,
 handles the meshes and shaders that are needed for rendering and features two render passes. One for Opaque objects and one for UI elements.
 
 ### Input
@@ -62,7 +68,8 @@ The input library is an *internal* library, responsible for managing the raw inp
 various input maps and input actions and preparing them for usage in the systems. For gameplay systems, the data is provided via the *Interface* library.
 
 ### Physics
-The physics library is an *internal* library, managing the calculation of collision physics in the engine. It uses the *Interface* library to ensure
+The physics library is an *internal* library, managing the calculation of collision physics in the engine. Physics shall never be controlled by gameplay directly.
+To use physics results, override the corresponding functions in the gameplay system. It uses the *Interface* library to ensure
 that the datatypes are the same as the gameplay section defined.
 
 ### Scene Management
@@ -79,14 +86,80 @@ To use the engine in a game, the *Engine* interface-library needs to be linked a
 Link the gameplay library and the engine library, as well as the core library of the engine, against the executable and create the engine first, then the gameplay library.
 This way, the gameplay stays clean, and the engine can be set up correctly by instantiating the Engine Controller.
 
+The link order looks like this:
+
+Gameplay → Interface → Engine
+
 ## How to: Add a new system
-To add a new system, a new class needs to be created. On top of the class the *ECS_SYSTEM* makro needs to be used, defining the systems name and 
-position in the execution order. 
+To add a new system, a new class needs to be created. On top of the class, the *ECS_SYSTEM* makro needs to be used, defining the systems name and 
+position in the execution order. To learn more about the execution order of systems, refer to the [ECS Readme](ecs/Readme.md) 
 
 If the system is a gameplay system, derive the class from *ISystem* and implement the initialize and run function. From here on the system is good to go.
 If the system is an engine system, place the class in the systems library, derive it from *IEngineSystem* and implement the initialize and run functions.
+Engine Systems are inherently more powerful, since they have access to engine internal libraries and functionalities, while gameplay systems only communicate of the 
+engine interface, to ensure the distinction between "Engine Internal" and "Engine usage".
 
 The systems don't need to be registered any further. On build-time, a scraper runs over all files, searching for the ECS_SYSTEM makro and then generating a 
-class, where all systems from engine and gameplay get instantiated. This code-gen allows for maximum flexibility when it comes to working with systems.
+class, where all systems from engine and gameplay get instantiated. This solution allows for a zero-registration implementation of the systems, making their usage and 
+writing easier without needing to worry about missing references at any time.
 
 ## How to: Add a new engine library
+To add a new library, create a new subdirectory in the engine directory. By convention, all library directories are lower case.
+Inside this new library directory, create an include, src and optional a test directory.
+For each library that it is highly encouraged to write Unit-Tests that should be stored in that test directory. High test coverage is
+highly encouraged in this project to ensure functionality of each component without needing to rely on manual testing. 
+
+Additionally, add a CMakeLists.txt file. State the name of the library in this CMake file. Note: Library names are UpperCase by convention.
+To round of the basic setup, move to the CMakeLists.txt in the engine directory and add the new directory with add_subdirectory.
+
+The structure should now look like this:
+```bash
+engine
+├── libraryname
+│   ├── CMakeLists.txt
+│   ├── include
+│   ├── src
+│   └── tests
+└── CMakeLists.txt
+```
+
+The new library is now ready to use. 
+
+To make the files in include available for all library users, add the following statement underneath the add_library call
+```CMake
+target_include_directories(<Library>
+    PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
+```
+
+To add the library to the coverage report, add the following statement to the CMakeLists.txt of the library:
+```CMake
+if (COMMAND enable_coverage)
+    enable_coverage(<Library>)
+endif ()
+
+```
+
+To add the library to CTest, add the following statement to the CMakeLists.txt. Remember that a test directory and at least one valid Catch2 test file are mandatory for this to work:
+```CMake
+if (BUILD_TESTING)
+    include(testing)
+
+    file(GLOB TEST_SOURCES
+            CONFIGURE_DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp")
+    add_catch2_tests(
+            TARGET <Library>_tests
+            PREFIX "<library>."     # Note: the prefix is by convention lower case
+            LINK <Library>
+            SOURCES ${TEST_SOURCES}
+    )
+
+endif ()
+```
+Tests that are added like this will be executed through GitHub Actions on every push of this project on the master branch.
+
+
+
