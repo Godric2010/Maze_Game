@@ -34,7 +34,7 @@ This allows working with in-engine and gameplay systems alike in one update loop
 
 The engine contains multiple libraries that encapsulate various functionality of the engine, allowing for a modular setup and testing.
 
-### Core
+### [Core](core/Readme.md)
 The core library is the *internal* library that is responsible for bootstrapping the other engines libraries and keeping the engine running until further notice.
 It implements almost all libraries in engine, owns them and is responsible for their setup, updating and destruction. This makes core the library with dependencies to 
 every other library in the engine.
@@ -43,41 +43,41 @@ every other library in the engine.
 The ecs library is an *internal* library, responsible for managing the entities, their components and the systems in a scene. It relies on the in-engine systems
 library, as well as the input and public *Interface* library. The library itself provides no access to the gameplay section.
 
-### Systems
+### [Systems](systems/Readme.md)
 The systems library is an *internal* library, containing all in-engine systems, like the render and physics system, that are needed to keep the engine running.
 Furthermore, it contains the caches for the results of the systems that are used to share data in between systems. Naturally, it depends on the libraries needed 
 to execute logic in the engine, such as the *Render* or the *Physics* library.
 
-### Components
+### [Components](components/Readme.md)
 The components library is a *public* library, accessible in engine and gameplay. It provides the necessary component structs that store engine relevant data.
 In there, components like the *Camera* or the *Transform* information are stored. Those components follow a strict "plain-old-data" policy. No component contains any kind of 
 logic, with getter and setter functions for values being the exception.
 
-### Interface
+### [Interface](interface/Readme.md)
 The interface library is a *public* library, containing various datatypes and interfaces, that are provided to gameplay while concealing 
 engine internal libraries and functionality.
 
-### Renderer
+### [Renderer](renderer/Readme.md)
 The renderer library is an *internal* library that is responsible for the entire rendering process. Gameplay is not supposed to interact with rendering directly. 
 Objects that should be rendered are controlled via the objects in the scene that have mesh components.
 It uses the OpenGL framework to draw objects to the screen,
 handles the meshes and shaders that are needed for rendering and features two render passes. One for Opaque objects and one for UI elements.
 
-### Input
+### [Input](input/Readme.md)
 The input library is an *internal* library, responsible for managing the raw input and providing it to the active input map. It also manages the 
 various input maps and input actions and preparing them for usage in the systems. For gameplay systems, the data is provided via the *Interface* library.
 
-### Physics
+### [Physics](physics/Readme.md)
 The physics library is an *internal* library, managing the calculation of collision physics in the engine. Physics shall never be controlled by gameplay directly.
 To use physics results, override the corresponding functions in the gameplay system. It uses the *Interface* library to ensure
 that the datatypes are the same as the gameplay section defined.
 
-### Scene Management
+### [Scene Management](scenemanagement/Readme.md)
 The scene management library is a *public* library, responsible for storing and switching scenes. Each scene switch creates a new world of the ECS and
 therefore allows for a fresh start everytime a scene is changed. It does not define any scenes by itself. All scenes are provided by the gameplay. Scene management
 is just responsible for keeping track of them. Since it has a heavy influence on it, the library relies on the *ECS*, *Input*, *Interface* and *Systems* library.
 
-### Debug
+### [Debug](debug/Readme.md)
 The debug library is an *internal* library, responsible for building debug output of the engine that gets rendered in the scene.
 It relies heavily on the *UI* and *Render* library.
 
