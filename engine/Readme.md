@@ -39,7 +39,7 @@ The core library is the *internal* library that is responsible for bootstrapping
 It implements almost all libraries in engine, owns them and is responsible for their setup, updating and destruction. This makes core the library with dependencies to 
 every other library in the engine.
 
-### ECS
+### [ECS](ecs/Readme.md)
 The ecs library is an *internal* library, responsible for managing the entities, their components and the systems in a scene. It relies on the in-engine systems
 library, as well as the input and public *Interface* library. The library itself provides no access to the gameplay section.
 
