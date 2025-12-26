@@ -1,7 +1,6 @@
 # Readme Maze Game
 
-[![macOS](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml/badge.svg?branch=master&query=job%3Abuild_macos)](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml?query=branch%3Amaster)
-[![Windows](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml/badge.svg?branch=master&query=job%3Abuild_windows)](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml?query=branch%3Amaster)
+[![CI](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml/badge.svg?branch=master)](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml?query=branch%3Amaster)
 
 Maze Game is a training and showcase project. It features a simple maze puzzle game, written in a custom C++ engine.
 The emphasis lies more on the [engine](/engine/Readme.md) development and architecture, than on the gameplay part.
@@ -9,16 +8,17 @@ The project is primarily designed to learn about engine development and to showc
 So every curious C++/Engine Dev or Recruiter is welcome to take a look.
 
 ## Features
+
 - Custom C++ Engine
-  - OpenGL Render support 
-  - Custom Entity-Component-System 
-  - Custom Collision Physics calculation
-  - UI Support
-  - Scene Management
-  - Automatic system detection and code-generated registration
-  - Debug User Interface 
+    - OpenGL Render support
+    - Custom Entity-Component-System
+    - Custom Collision Physics calculation
+    - UI Support
+    - Scene Management
+    - Automatic system detection and code-generated registration
+    - Debug User Interface
 - Procedurally generated mazes
-- Various sized levels 
+- Various sized levels
 
 ## Platforms
 
@@ -26,14 +26,18 @@ While primarily developed on macOS, Windows compatibility is also supported.
 Linux is not officially supported.
 
 ## Requirements
+
 ### Compiler
+
 - macOS: clang
 - Windows: MSVC
 
 ### Build Tool
+
 - CMake
 
 ### Package Manager
+
 - vcpkg manifest
 
 ## How to run
@@ -58,4 +62,5 @@ Game Controllers are not (yet) supported.
 - Tools: Contains scripts for at-build scripts, like code gen
 
 ## License
+
 The project falls under the licensing of public domain. Use it, modify it and tinker with it however you like.
