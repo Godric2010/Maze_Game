@@ -9,18 +9,14 @@ permissions:
   contents: read
 
 env:
-  CMAKE_BUILD_TYPE: Release
   VCPKG_COMMIT: 1d86fc5936d17f8fc77b17634627b746e2f7145a
 
 jobs:
-  build-and-test:
-    name: Build & Test (${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ macos-latest, windows-latest ]
+  build-test-macos:
+    name: macos
+    runs-on: macos-latest
     env:
+      CMAKE_BUILD_TYPE: Debug
       CC: clang
       CXX: clang++
 
@@ -44,18 +40,11 @@ jobs:
       - name: Configure (CMake)
         shell: bash
         run: |
-          if [[ "$RUNNER_OS" == "macOS" ]]; then
-           export CC=clang
-           export CXX=clang++
-           cmake -S . -B build -G Ninja \
-              -DCMAKE_BUILD_TYPE=Debug \
-              -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
-              -DENABLE_COVERAGE=ON
-          else
-            cmake -S . -B build -G Ninja \
-              -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-          fi
+          set -euo pipefail
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
+            -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
+            -DENABLE_COVERAGE=ON
 
       - name: Build
         shell: bash
@@ -65,10 +54,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "$RUNNER_OS" == "macOS" ]]; then 
-            mkdir -p build/coverage/raw
-            export LLVM_PROFILE_FILE="$PWD/build/coverage/raw/%p-%m.profraw"
-          fi
+          mkdir -p build/coverage/raw
+          mkdir -p build/junit
+          export LLVM_PROFILE_FILE="$PWD/build/coverage/raw/%p-%m.profraw"
           
           echo "== Tool version =="
           cmake --version
@@ -77,13 +65,14 @@ jobs:
           echo "== What CTest will run =="
           ctest --test-dir build -N
           
-          echo "== Running tests (JUnit to build/test-results.xml) =="
-          
-          ctest --test-dir build --output-on-failure --timeout 180
+          echo "== Running tests =="
+          ctest --test-dir build \
+            --output-on-failure \
+            --timeout 180 \
+            --output-junit build/junit/ctest.xml
 
 
-      - name: Install LLVM Tools (macOS only)
-        if: startsWith(matrix.os, 'macos')
+      - name: Install LLVM Tools
         shell: bash
         run: |
           set -euo pipefail
@@ -107,10 +96,10 @@ jobs:
           llvm-cov --version
           llvm-profdata --version
 
-      - name: Generate Coverage (macOS only)
-        if: startsWith(matrix.os, 'macos')
+      - name: Generate Coverage
         shell: bash
         run: |
+          set -euo pipefail
           chmod +x scripts/coverage.sh
           ./scripts/coverage.sh build
 
@@ -118,14 +107,13 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: tests-${{ matrix.os }}
+          name: tests-macos
           path: |
             build/junit/*.xml
             build/Testing/Temporary/LastTest.log
           if-no-files-found: ignore
 
-      - name: Upload coverage artifacts (macOS only)
-        if: startsWith(matrix.os, 'macos')
+      - name: Upload coverage artifacts
         uses: actions/upload-artifact@v4
         with:
           name: coverage-macos
@@ -134,9 +122,72 @@ jobs:
             build/coverage/html
           if-no-files-found: error
 
+  build-test-windows:
+    name: windows
+    runs-on: windows-latest
+    env:
+      CMAKE_BUILD_TYPE: Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get CMake & Ninja
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: 3.31.x
+          ninjaVersion: latest
+
+      - name: Setup vcpkg (manifest + cache)
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+          vcpkgJsonGlob: 'vcpkg.json'
+          runVcpkgInstall: true
+
+      - name: Configure (CMake)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake -S . -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
+            -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+
+      - name: Build
+        shell: bash
+        run: cmake --build build --parallel
+
+      - name: Test (JUnit)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build/junit
+          
+          echo "== Tool version =="
+          cmake --version
+          ctest --version
+          
+          echo "== What CTest will run =="
+          ctest --test-dir build -N
+          
+          echo "== Running tests =="
+          ctest --test-dir build \
+            --output-on-failure \
+            --timeout 180 \
+            --output-junit build/junit/ctest.xml
+
+      - name: Upload test results (Windows)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-windows
+          path: |
+            build/junit/*.xml
+            build/Testing/Temporary/LastTest.log
+          if-no-files-found: ignore
+
   notify-discord:
     name: Notify-Discord
-    needs: [ build-and-test ]
+    needs: [ build-test-macos, build-test-windows ]
     runs-on: ubuntu-latest
     if: always()
     steps:
