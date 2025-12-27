@@ -5,6 +5,7 @@
 #pragma once
 #include <any>
 #include <functional>
+#include <memory>
 
 namespace Engine::SceneManagement {
     struct SceneArgs {
