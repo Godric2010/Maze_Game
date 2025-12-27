@@ -1,8 +1,7 @@
 # Readme Maze Game
 
-[![macOS](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml/badge.svg?branch=master&job=macos)](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml?query=branch%3Amaster)
-
-[![Windows](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml/badge.svg?branch=master&job=windows)](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml?query=branch%3Amaster)
+[![macOS](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml/badge.svg?branch=master&job=macos&label=macOS%20Build)](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml?query=branch%3Amaster)
+[![Windows](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml/badge.svg?branch=master&job=windows&label=Windows%20Build)](https://github.com/Godric2010/Maze_Game/actions/workflows/build_and_test.yml?query=branch%3Amaster)
 
 Maze Game is a training and showcase project. It features a simple maze puzzle game, written in a custom C++ engine.
 The emphasis lies more on the [engine](/engine/Readme.md) development and architecture, than on the gameplay part.

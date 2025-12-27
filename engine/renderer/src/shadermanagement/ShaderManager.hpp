@@ -5,6 +5,7 @@
 #pragma once
 #include <unordered_map>
 #include <optional>
+#include <vector>
 #include "FileReader.hpp"
 
 #include "Shader.hpp"
