@@ -1,0 +1,130 @@
+name: Build Win
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  VCPKG_COMMIT: 1d86fc5936d17f8fc77b17634627b746e2f7145a
+
+
+jobs:
+  build-test-windows:
+    name: windows
+    runs-on: windows-latest
+    env:
+      CMAKE_BUILD_TYPE: Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get CMake & Ninja
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: 3.31.x
+          ninjaVersion: latest
+
+      - name: Setup vcpkg (manifest + cache)
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+          vcpkgJsonGlob: 'vcpkg.json'
+          runVcpkgInstall: true
+
+      - name: Configure (CMake, MSVC)
+        shell: pwsh
+        run: |
+          cmake -S . -B build `
+            -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake"
+
+      - name: Build
+        shell: pwsh
+        run: cmake --build build --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
+
+      - name: Test (JUnit)
+        shell: pwsh
+        run: |
+          mkdir -p build/junit
+          echo "== Running tests =="
+          ctest --test-dir build -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure --timeout 180 --output-junit build/junit/ctest.xml
+
+      - name: Upload test results (Windows)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-windows
+          path: |
+            build/junit/*.xml
+            build/Testing/Temporary/LastTest.log
+          if-no-files-found: ignore
+  
+  notify-discord:
+    name: Notify-Discord
+    needs: [ build-test-windows ]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout repo (for scripts)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download artifacts (tests + coverage)
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: "*"
+
+      - name: List repo & artifacts (debug)
+        shell: bash
+        run: |
+          pwd
+          ls -la
+          [ -d artifacts ] && find artifacts -maxdepth 5 -type d -print | sort || echo "No artifacts directory found!"
+
+      - name: Ensure jq (for JSON)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq
+
+      - name: Parse JUnit (Windows)
+        id: junit_windows
+        shell: bash
+        run: |
+          set -euo pipefail
+          WIN_DIRS=()
+          while IFS= read -r line; do
+            WIN_DIRS+=("$line")
+          done < <(find artifacts -type d \( -path '*tests-windows*/junit' -o -path '*tests-windows*/build/junit' \) -print 2>/dev/null || true)
+          if [[ ${#WIN_DIRS[@]} -eq 0 ]]; then
+            echo "No Windows junit dirs found..."
+            { echo "overall_status<<EOF"; echo "❓"; echo "EOF"; } >> "$GITHUB_OUTPUT"
+          else
+            bash scripts/parse_junit.sh "${WIN_DIRS[@]}" || true
+          fi
+
+      - name: Post to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_BOT }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REF_NAME: ${{ github.ref_name }}
+          WINDOWS: ${{ steps.junit_windows.outputs.overall_status }}
+          COV: ${{ steps.cov.outputs.pct }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          CONTENT="**CI Results** (${REF_NAME})
+                  Windows: ${WINDOWS:-❓}
+                  Coverage (macOS): ${COV:-n/a}
+                  RUN: ${RUN_URL}"
+          
+          curl -sS -X POST \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n --arg c "$CONTENT" '{content:$c}')" \
+              "${DISCORD_WEBHOOK_URL}"

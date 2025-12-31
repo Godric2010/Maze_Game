@@ -1,4 +1,4 @@
-name: CI
+name: Build macOS
 
 on:
   push:
@@ -122,59 +122,9 @@ jobs:
             build/coverage/html
           if-no-files-found: error
 
-  build-test-windows:
-    name: windows
-    runs-on: windows-latest
-    env:
-      CMAKE_BUILD_TYPE: Release
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Get CMake & Ninja
-        uses: lukka/get-cmake@latest
-        with:
-          cmakeVersion: 3.31.x
-          ninjaVersion: latest
-
-      - name: Setup vcpkg (manifest + cache)
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
-          vcpkgJsonGlob: 'vcpkg.json'
-          runVcpkgInstall: true
-
-      - name: Configure (CMake, MSVC)
-        shell: pwsh
-        run: |
-          cmake -S . -B build `
-            -G "Visual Studio 17 2022" -A x64 `
-            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} `
-            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake"
-
-      - name: Build
-        shell: pwsh 
-        run: cmake --build build --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
-
-      - name: Test (JUnit)
-        shell: pwsh 
-        run: |
-          echo "== Running tests =="
-          ctest --test-dir build -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure --timeout 180 --output-junit build/junit/ctest.xml
-
-      - name: Upload test results (Windows)
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: tests-windows
-          path: |
-            build/junit/*.xml
-            build/Testing/Temporary/LastTest.log
-          if-no-files-found: ignore
-
   notify-discord:
     name: Notify-Discord
-    needs: [ build-test-macos, build-test-windows ]
+    needs: [ build-test-macos ]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -217,23 +167,6 @@ jobs:
             bash scripts/parse_junit.sh "${MAC_DIRS[@]}" || true
           fi
 
-
-      - name: Parse JUnit (Windows)
-        id: junit_windows
-        shell: bash
-        run: |
-          set -euo pipefail
-          WIN_DIRS=()
-          while IFS= read -r line; do
-            WIN_DIRS+=("$line")
-          done < <(find artifacts -type d \( -path '*tests-windows*/junit' -o -path '*tests-windows*/build/junit' \) -print 2>/dev/null || true)
-          if [[ ${#WIN_DIRS[@]} -eq 0 ]]; then
-            echo "No Windows junit dirs found..."
-            { echo "overall_status<<EOF"; echo "❓"; echo "EOF"; } >> "$GITHUB_OUTPUT"
-          else
-            bash scripts/parse_junit.sh "${WIN_DIRS[@]}" || true
-          fi
-
       - name: Compute coverage percent (macOS)
         id: cov
         shell: bash
@@ -256,7 +189,6 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           REF_NAME: ${{ github.ref_name }}
           MACOS: ${{ steps.junit_macos.outputs.overall_status }}
-          WINDOWS: ${{ steps.junit_windows.outputs.overall_status }}
           COV: ${{ steps.cov.outputs.pct }}
         shell: bash
         run: |
