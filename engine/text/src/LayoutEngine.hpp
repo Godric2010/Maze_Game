@@ -1,5 +1,6 @@
 #pragma once
 #include "FontManager.hpp"
+#include <vector>
 
 namespace Engine::Text {
     /**

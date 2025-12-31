@@ -144,36 +144,24 @@ jobs:
           vcpkgJsonGlob: 'vcpkg.json'
           runVcpkgInstall: true
 
-      - name: Configure (CMake)
-        shell: bash
+      - name: Configure (CMake, MSVC)
+        shell: pwsh
         run: |
-          set -euo pipefail
-          cmake -S . -B build -G Ninja \
-            -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
-            -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+          cmake -S . -B build `
+            -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} `
+            -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake"
 
       - name: Build
-        shell: bash
-        run: cmake --build build --parallel
+        shell: pwsh 
+        run: cmake --build build --config ${{ env.CMAKE_BUILD_TYPE }} --parallel
 
       - name: Test (JUnit)
-        shell: bash
+        shell: pwsh 
         run: |
-          set -euo pipefail
           mkdir -p build/junit
-          
-          echo "== Tool version =="
-          cmake --version
-          ctest --version
-          
-          echo "== What CTest will run =="
-          ctest --test-dir build -N
-          
           echo "== Running tests =="
-          ctest --test-dir build \
-            --output-on-failure \
-            --timeout 180 \
-            --output-junit build/junit/ctest.xml
+          ctest --test-dir build -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure --timeout 180 --output-junit build/junit/ctest.xml
 
       - name: Upload test results (Windows)
         if: always()

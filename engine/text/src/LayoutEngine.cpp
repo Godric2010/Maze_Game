@@ -1,11 +1,15 @@
 #include "LayoutEngine.hpp"
+#include <limits>
 
-namespace Engine::Text {
-    TextLayout LayoutEngine::GenerateTextLayout(const Font &font, const std::vector<uint32_t> &codepoints,
-                                                const TextAlignment &alignment) {
+namespace Engine::Text
+{
+    TextLayout LayoutEngine::GenerateTextLayout(const Font& font, const std::vector<uint32_t>& codepoints,
+                                                const TextAlignment& alignment)
+    {
         TextLayout text_layout{};
 
-        if (codepoints.empty() || font.glyphs.empty()) {
+        if (codepoints.empty() || font.glyphs.empty())
+        {
             return text_layout;
         }
         float pen_x = 0.0f;
@@ -16,7 +20,8 @@ namespace Engine::Text {
         float max_x = -std::numeric_limits<float>::infinity();
         float max_y = -std::numeric_limits<float>::infinity();
 
-        struct LineInfo {
+        struct LineInfo
+        {
             size_t start_index = 0;
             size_t end_index = 0;
             float width = 0.0f;
@@ -31,8 +36,10 @@ namespace Engine::Text {
 
         size_t glyph_count = 0;
 
-        for (const uint32_t codepoint: codepoints) {
-            if (codepoint == static_cast<uint32_t>('\n')) {
+        for (const uint32_t codepoint : codepoints)
+        {
+            if (codepoint == static_cast<uint32_t>('\n'))
+            {
                 current_line.end_index = glyph_count;
                 line_infos.push_back(current_line);
                 pen_x = 0.0f;
@@ -41,8 +48,9 @@ namespace Engine::Text {
                 current_line.width = 0.0f;
             }
 
-            const GlyphMetrics *metrics = font.GetGlyphMetrics(codepoint);
-            if (metrics == nullptr) {
+            const GlyphMetrics* metrics = font.GetGlyphMetrics(codepoint);
+            if (metrics == nullptr)
+            {
                 continue;
             }
 
@@ -73,12 +81,14 @@ namespace Engine::Text {
 
             pen_x += static_cast<float>(metrics->advance_x);
         }
-        if (glyph_count > 0) {
+        if (glyph_count > 0)
+        {
             current_line.end_index = glyph_count;
             line_infos.push_back(current_line);
         }
 
-        if (glyph_count == 0) {
+        if (glyph_count == 0)
+        {
             return text_layout;
         }
 
@@ -87,29 +97,34 @@ namespace Engine::Text {
         text_layout.max_x = max_x;
         text_layout.max_y = max_y;
 
-        if (alignment != TextAlignment::Left) {
-            for (const auto &[start_index, end_index, width]: line_infos) {
+        if (alignment != TextAlignment::Left)
+        {
+            for (const auto& [start_index, end_index, width] : line_infos)
+            {
                 const float line_width = width;
                 float offset_x = 0.0f;
 
-                switch (alignment) {
-                    case TextAlignment::Center:
-                        offset_x = -line_width * 0.5f;
-                        break;
-                    case TextAlignment::Right:
-                        offset_x = -line_width;
-                        break;
-                    case TextAlignment::Left:
-                    default:
-                        break;
+                switch (alignment)
+                {
+                case TextAlignment::Center:
+                    offset_x = -line_width * 0.5f;
+                    break;
+                case TextAlignment::Right:
+                    offset_x = -line_width;
+                    break;
+                case TextAlignment::Left:
+                default:
+                    break;
                 }
 
-                if (offset_x == 0.0f) {
+                if (offset_x == 0.0f)
+                {
                     continue;
                 }
 
-                for (size_t i = start_index; i < end_index; ++i) {
-                    auto &glyph_data = text_layout.glyph_data[i];
+                for (size_t i = start_index; i < end_index; ++i)
+                {
+                    auto& glyph_data = text_layout.glyph_data[i];
                     glyph_data.x0 += offset_x;
                     glyph_data.x1 += offset_x;
                 }
@@ -118,7 +133,8 @@ namespace Engine::Text {
             min_x = std::numeric_limits<float>::infinity();
             max_x = -std::numeric_limits<float>::infinity();
 
-            for (const auto &glyph: text_layout.glyph_data) {
+            for (const auto& glyph : text_layout.glyph_data)
+            {
                 min_x = std::min(min_x, glyph.x0);
                 max_x = std::max(max_x, glyph.x1);
             }

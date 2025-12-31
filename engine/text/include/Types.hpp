@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include <stdint.h>
 #include <vector>
 
 namespace Engine::Text {
