@@ -50,7 +50,6 @@ jobs:
       - name: Test (JUnit)
         shell: pwsh
         run: |
-          mkdir -p build/junit
           echo "== Running tests =="
           ctest --test-dir build -C ${{ env.CMAKE_BUILD_TYPE }} --output-on-failure --timeout 180 --output-junit build/junit/ctest.xml
 
