@@ -195,7 +195,6 @@ jobs:
           set -euo pipefail
           CONTENT="**CI Results** (${REF_NAME})
                   macOS: ${MACOS:-❓}
-                  Windows: ${WINDOWS:-❓}
                   Coverage (macOS): ${COV:-n/a}
                   RUN: ${RUN_URL}"
           

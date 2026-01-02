@@ -114,13 +114,11 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           REF_NAME: ${{ github.ref_name }}
           WINDOWS: ${{ steps.junit_windows.outputs.overall_status }}
-          COV: ${{ steps.cov.outputs.pct }}
         shell: bash
         run: |
           set -euo pipefail
           CONTENT="**CI Results** (${REF_NAME})
                   Windows: ${WINDOWS:-❓}
-                  Coverage (macOS): ${COV:-n/a}
                   RUN: ${RUN_URL}"
           
           curl -sS -X POST \
