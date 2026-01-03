@@ -25,17 +25,17 @@ target_include_directories(SceneManagement
         $<INSTALL_INTERFACE:include>
 )
 
-#if (BUILD_TESTING)
-#    include(testing)
-#
-#    file(GLOB TEST_SOURCES
-#            CONFIGURE_DEPENDS
-#            "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp")
-#    add_catch2_tests(
-#            TARGET SceneManagement_tests
-#            PREFIX "scenemanagement."
-#            LINK SceneManagement
-#            SOURCES ${TEST_SOURCES}
-#    )
-#
-#endif ()
+if (BUILD_TESTING)
+    include(testing)
+
+    file(GLOB TEST_SOURCES
+            CONFIGURE_DEPENDS
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp")
+    add_catch2_tests(
+            TARGET SceneManagement_tests
+            PREFIX "scenemanagement."
+            LINK SceneManagement
+            SOURCES ${TEST_SOURCES}
+    )
+
+endif ()

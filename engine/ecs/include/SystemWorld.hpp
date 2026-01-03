@@ -9,7 +9,7 @@
 namespace Engine::Ecs {
     class SystemWorld {
     public:
-        explicit SystemWorld(Ecs::World* ecs_world) {
+        explicit SystemWorld(World* ecs_world) {
             m_world = ecs_world;
         }
 

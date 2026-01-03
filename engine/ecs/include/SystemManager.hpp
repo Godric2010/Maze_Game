@@ -7,6 +7,7 @@
 
 #include "SystemWorld.hpp"
 #include "IEngineSystem.hpp"
+#include "ISystemManager.hpp"
 #include "../../systems/src/CacheManager.hpp"
 
 namespace Engine::Input {
@@ -15,41 +16,21 @@ namespace Engine::Input {
 
 
 namespace Engine::Ecs {
-    enum class Phase {
-        Input,
-        Physics,
-        Ui,
-        Update,
-        EngineEvents,
-        LateUpdate,
-        Commands,
-        Render,
-    };
-
-    using SystemFactory = std::unique_ptr<ISystem>(*)();
-
-    struct SystemMeta {
-        std::string name;
-        Phase phase;
-        std::vector<std::string> tags;
-        SystemFactory factory;
-    };
-
-    class SystemManager {
+    class SystemManager : public ISystemManager {
     public:
         SystemManager(const std::vector<SystemMeta>& system_metas, IServiceToEcsProvider* service_provider,
                       Systems::ICacheManager* cache_manager);
 
-        ~SystemManager();
+        ~SystemManager() override;
 
-        void RegisterSystems(World* world, Input::IInput* input);
+        void RegisterSystems(World* world, Input::IInput* input) override;
 
-        void RunSystems(float delta_time);
+        void RunSystems(float delta_time) override;
 
         void RegisterForSystemCommands(std::string subscriber_name,
-                                       std::function<void(std::vector<std::any>)> command_callback);
+                                       std::function<void(std::vector<std::any>)> command_callback) override;
 
-        void DeregisterForSystemCommands(const std::string& subscriber_name);
+        void DeregisterForSystemCommands(const std::string& subscriber_name) override;
 
     private:
         std::unique_ptr<SystemWorld> m_game_world;

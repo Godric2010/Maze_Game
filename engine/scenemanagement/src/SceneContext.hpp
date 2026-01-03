@@ -15,7 +15,7 @@ namespace Engine::SceneManagement {
         ISceneManager& scene_manager;
         Ecs::World& world;
         SceneWorld& game_world;
-        Ecs::SystemManager& system_manager;
+        Ecs::ISystemManager& system_manager;
         Input::IInput& input;
         float screen_width;
         float screen_height;

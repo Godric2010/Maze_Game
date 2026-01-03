@@ -27,6 +27,7 @@ add_library(ECS STATIC
         src/SystemBinder.hpp
         src/ISystem.cpp
         include/SystemWorld.hpp
+        include/ISystemManager.hpp
 )
 
 target_link_libraries(ECS PUBLIC Interface Input Systems)
