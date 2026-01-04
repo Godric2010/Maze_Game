@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.31)
 
+find_package(spdlog CONFIG REQUIRED)
 add_library(SceneManagement STATIC
         include/IScene.hpp
         include/SceneWorld.hpp
@@ -13,7 +14,7 @@ add_library(SceneManagement STATIC
         tests/MockedClasses.hpp
 )
 
-target_link_libraries(SceneManagement PUBLIC ECS Interface Input Systems)
+target_link_libraries(SceneManagement PUBLIC ECS Interface Input Systems spdlog::spdlog)
 
 if (COMMAND enable_coverage)
     message("SceneManagement- Enable coverage")
