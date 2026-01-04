@@ -3,8 +3,10 @@
 //
 
 #pragma once
+#include <exception>
 #include <iostream>
 #include <ostream>
+#include <spdlog/spdlog.h>
 
 #include "../src/SceneContext.hpp"
 #include "Input/IInput.hpp"
@@ -16,6 +18,13 @@ namespace Engine::SceneManagement {
         float width;
         float height;
         float aspect_ratio;
+    };
+
+    class SceneRuntimeException : public std::exception {
+        const char* what() const throw() override {
+            spdlog::critical("Error in scene runtime. Context has not been initialized!");
+            return "SceneRuntimeException";
+        }
     };
 
     class IScene {
@@ -57,10 +66,33 @@ namespace Engine::SceneManagement {
         }
 
     protected:
-        [[nodiscard]] SceneWorld &World() const { return m_context->game_world; }
-        [[nodiscard]] Input::IInput &Input() const { return m_context->input; }
-        [[nodiscard]] IApplication &Application() const { return m_context->app; }
-        [[nodiscard]] ISceneManager &SceneManager() const { return m_context->scene_manager; }
+        [[nodiscard]] SceneWorld &World() const {
+            if (m_context == nullptr) {
+                throw SceneRuntimeException();
+            }
+            return m_context->game_world;
+        }
+
+        [[nodiscard]] Input::IInput &Input() const {
+            if (m_context == nullptr) {
+                throw SceneRuntimeException();
+            }
+            return m_context->input;
+        }
+
+        [[nodiscard]] IApplication &Application() const {
+            if (m_context == nullptr) {
+                throw SceneRuntimeException();
+            }
+            return m_context->app;
+        }
+
+        [[nodiscard]] ISceneManager &SceneManager() const {
+            if (m_context == nullptr) {
+                throw SceneRuntimeException();
+            }
+            return m_context->scene_manager;
+        }
 
         [[nodiscard]] ScreenInfo Screen() const {
             return ScreenInfo{

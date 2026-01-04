@@ -10,6 +10,7 @@ add_library(SceneManagement STATIC
         src/SceneRegistry.cpp
         src/SceneManager.hpp
         src/SceneManager.cpp
+        tests/MockedClasses.hpp
 )
 
 target_link_libraries(SceneManagement PUBLIC ECS Interface Input Systems)
@@ -30,7 +31,9 @@ if (BUILD_TESTING)
 
     file(GLOB TEST_SOURCES
             CONFIGURE_DEPENDS
-            "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp")
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cpp"
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.hpp"
+    )
     add_catch2_tests(
             TARGET SceneManagement_tests
             PREFIX "scenemanagement."
