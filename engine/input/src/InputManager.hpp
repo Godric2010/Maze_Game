@@ -3,13 +3,13 @@
 
 #include "InputMapping.hpp"
 #include "../include/IInputManager.hpp"
-#include "../../interface/include/Input/InputBuffer.hpp"
+#include "Input/InputBuffer.hpp"
 #include "Input/InputTypes.hpp"
 
 namespace Engine::Input {
     class InputManager : public IInputManager {
     public:
-        explicit InputManager(Environment::IWindow* window);
+        explicit InputManager(std::unique_ptr<Environment::IEnvInput> env_input);
 
         ~InputManager() override;
 

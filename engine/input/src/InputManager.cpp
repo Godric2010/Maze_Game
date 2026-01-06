@@ -3,8 +3,8 @@
 #include <stdexcept>
 
 namespace Engine::Input {
-    InputManager::InputManager(Environment::IWindow* window) {
-        m_input_env = CreateInput(*window);
+    InputManager::InputManager(std::unique_ptr<Environment::IEnvInput> env_input) {
+        m_input_env = std::move(env_input);
 
         const InputMap ui_input_map{
             .name = "UIInputMap",
@@ -38,6 +38,11 @@ namespace Engine::Input {
     }
 
     void InputManager::AddInputMapping(const InputMap& input_map) {
+        for (const auto& input_map_name: m_input_maps) {
+            if (input_map_name.name == input_map.name) {
+                throw std::runtime_error("Same input map has been registered already!");
+            }
+        }
         m_input_maps.push_back(input_map);
     }
 
