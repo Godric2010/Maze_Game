@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <string>
+#include <utility>
+#include <vector>
 #include "World.hpp"
 
 namespace Engine::Ecs {
