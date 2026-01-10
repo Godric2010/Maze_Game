@@ -9,7 +9,7 @@ elseif (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cma
 endif ()
 
 
-project(Maze_Game VERSION 1.0.0)
+project(Maze_Game VERSION 1.0.1)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
