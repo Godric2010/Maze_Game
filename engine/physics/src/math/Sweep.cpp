@@ -77,30 +77,30 @@ namespace Engine::Physics::Math {
             const float dz_min = std::abs(p.z - b.min.z);
             const float dz_max = std::abs(b.max.z - p.z);
 
-            float m = dx_min;
-            glm::vec3 n(-1, 0, 0);
+            float min = dx_min;
+            glm::vec3 normal(-1, 0, 0);
 
-            if (dx_max < m) {
-                m = dx_max;
-                n = glm::vec3(1, 0, 0);
+            if (dx_max < min) {
+                min = dx_max;
+                normal = glm::vec3(1, 0, 0);
             }
-            if (dy_min < m) {
-                m = dy_min;
-                n = glm::vec3(0, -1, 0);
+            if (dy_min < min) {
+                min = dy_min;
+                normal = glm::vec3(0, -1, 0);
             }
-            if (dy_max < m) {
-                m = dy_max;
-                n = glm::vec3(0, 1, 0);
+            if (dy_max < min) {
+                min = dy_max;
+                normal = glm::vec3(0, 1, 0);
             }
-            if (dz_min < m) {
-                m = dz_min;
-                n = glm::vec3(0, 0, -1);
+            if (dz_min < min) {
+                min = dz_min;
+                normal = glm::vec3(0, 0, -1);
             }
-            if (dz_max < m) {
-                m = dz_max;
-                n = glm::vec3(0, 0, 1);
+            if (dz_max < min) {
+                min = dz_max;
+                normal = glm::vec3(0, 0, 1);
             }
-            return n;
+            return normal;
         }
 
         /**
@@ -175,7 +175,7 @@ namespace Engine::Physics::Math {
 
             hit.time_of_impact = std::max(0.0f, std::min(t_enter, len));
             hit.point = sphere.center + dir * hit.time_of_impact;
-            hit.normal = NormalFromEntryPoint(hit.point, dir, hit.time_of_impact, expanded);
+            hit.normal = NormalFromEntryPoint(sphere.center, dir, hit.time_of_impact, expanded);
             hit.penetration_depth = 0.0f;
         }
         return hit;

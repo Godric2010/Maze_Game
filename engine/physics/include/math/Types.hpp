@@ -90,7 +90,7 @@ namespace Engine::Physics::Math {
      */
     struct CollisionHit {
         bool hit{false};
-        float time_of_impact{1.0f};
+        float time_of_impact{0.0f};
         glm::vec3 point;
         glm::vec3 normal;
         float penetration_depth{0};
