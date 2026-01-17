@@ -1,10 +1,10 @@
 #include "../include/TextController.hpp"
 #include <spdlog/spdlog.h>
-#include "FileReader.hpp"
+#include "IFileReader.hpp"
 
 namespace Engine::Text {
-    TextController::TextController() {
-        m_font_manager = std::make_unique<FontManager>();
+    TextController::TextController(Environment::Files::IFileReader* file_reader) {
+        m_font_manager = std::make_unique<FontManager>(file_reader);
         m_utf8_decoder = std::make_unique<Utf8Decoder>();
         m_layout_engine = std::make_unique<LayoutEngine>();
         m_text_mesh_builder = std::make_unique<TextMeshBuilder>();

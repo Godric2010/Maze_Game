@@ -51,6 +51,7 @@ namespace Engine::Core {
     private:
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;
+        std::unique_ptr<Environment::Files::IFileReader> m_file_reader;
         std::unique_ptr<Ecs::SystemManager> m_system_manager;
         std::unique_ptr<Systems::ICacheManager> m_cache_manager;
         std::unique_ptr<Input::IInputManager> m_input_manager;

@@ -10,7 +10,11 @@ add_library(Environment STATIC
         include/EnvInput.hpp
         src/SDLInput.cpp
         src/SDLInput.hpp
-        include/FileReader.hpp
+        src/Files/FileReader.cpp
+        src/Files/FileReader.hpp
+        include/IFileReader.hpp
+        src/EnvironmentBuilder.cpp
+        src/Files/ExecutablePath.hpp
 )
 
 target_include_directories(Environment PUBLIC

@@ -9,10 +9,11 @@
 
 
 namespace Engine::Renderer {
-    RenderController::RenderController(const Environment::WindowContext& window_context) {
+    RenderController::RenderController(const Environment::WindowContext& window_context,
+                                       Environment::Files::IFileReader* file_reader) {
         m_window_context = window_context;
 
-        m_shader_manager = std::make_unique<ShaderManagement::ShaderManager>();
+        m_shader_manager = std::make_unique<ShaderManagement::ShaderManager>(file_reader);
         m_shader_manager->LoadShader("mesh_opaque");
         m_shader_manager->LoadShader("ui");
 

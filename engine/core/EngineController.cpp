@@ -12,13 +12,14 @@ namespace Engine::Core {
     EngineController::EngineController() {
         m_services = std::make_unique<ServiceLocator>();
         m_cache_manager = Systems::CacheManagerFactory::CreateCacheManager();
+        m_file_reader = Environment::EnvironmentBuilder::CreateFileReader();
         m_is_running = true;
     };
 
     EngineController::~EngineController() = default;
 
     void EngineController::Initialize(const std::vector<Ecs::SystemMeta>& systems) {
-        m_window = Environment::CreateEngineWindow();
+        m_window = Environment::EnvironmentBuilder::CreateEngineWindow();
         const Environment::WindowConfig config{
             .width = 1920,
             .height = 1080,
@@ -30,11 +31,13 @@ namespace Engine::Core {
 
         m_input_manager = Input::InputManagerBuilder::CreateInputManager(m_window.get());
 
-        auto render_controller =
-                Renderer::RenderControllerFactory::CreateRenderController(m_window->GetWindowContext());
+        auto render_controller = Renderer::RenderControllerFactory::CreateRenderController(
+                m_window->GetWindowContext(),
+                m_file_reader.get()
+                );
         m_services->RegisterService(std::move(render_controller));
 
-        auto text_controller = std::make_unique<Text::TextController>();
+        auto text_controller = std::make_unique<Text::TextController>(m_file_reader.get());
         m_services->RegisterService(std::move(text_controller));
 
         m_debug_console = Debug::CreateDebugConsole(m_services->TryGetService<Text::TextController>(),

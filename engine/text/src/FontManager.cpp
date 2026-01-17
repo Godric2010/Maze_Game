@@ -1,20 +1,24 @@
-#include <functional>
 #include "FontManager.hpp"
+#include <functional>
 
-#include <FileReader.hpp>
 #include <ft2build.h>
+#include <IFileReader.hpp>
 #include FT_FREETYPE_H
 
-#include <stdexcept>
 #include <algorithm>
+#include <stdexcept>
 #include <spdlog/spdlog.h>
 
 namespace Engine::Text {
-    bool FontManager::HasFont(const FontHandle &font_handle) const {
+    FontManager::FontManager(Environment::Files::IFileReader* file_reader) {
+        m_file_reader = file_reader;
+    }
+
+    bool FontManager::HasFont(const FontHandle& font_handle) const {
         return m_fonts.contains(font_handle);
     }
 
-    FontHandleResult FontManager::LoadFont(const std::string &font_name, const int pixel_size) {
+    FontHandleResult FontManager::LoadFont(const std::string& font_name, const int pixel_size) {
         auto font_handle = GenerateFontHandle(font_name, pixel_size);
         if (HasFont(font_handle)) {
             return {font_handle, false};
@@ -25,11 +29,11 @@ namespace Engine::Text {
         return {font_handle, true};
     }
 
-    Font FontManager::GetFont(const FontHandle &font_handle) const {
+    Font FontManager::GetFont(const FontHandle& font_handle) const {
         return m_fonts.at(font_handle);
     }
 
-    Font FontManager::BuildFont(const std::string &font_name, const int pixel_size) {
+    Font FontManager::BuildFont(const std::string& font_name, const int pixel_size) {
         auto font_bytes = LoadFontFromFile(font_name);
 
         FT_Library ft_library = nullptr;
@@ -94,8 +98,8 @@ namespace Engine::Text {
 
             temp.bitmap.resize(temp.width * temp.height);
             for (int y = 0; y < glyph_bitmap.rows; ++y) {
-                const auto *src = glyph_bitmap.buffer + y * glyph_bitmap.pitch;
-                auto *dst = temp.bitmap.data() + y * glyph_bitmap.width;
+                const auto* src = glyph_bitmap.buffer + y * glyph_bitmap.pitch;
+                auto* dst = temp.bitmap.data() + y * glyph_bitmap.width;
                 std::copy_n(src, glyph_bitmap.width, dst);
             }
             if (current_row_width + temp.width > 1024) {
@@ -126,7 +130,7 @@ namespace Engine::Text {
         unsigned int pen_x = 0;
         unsigned int pen_y = 0;
         unsigned int row_height = 0;
-        for (const auto &glyph_bitmap: glyph_bitmaps) {
+        for (const auto& glyph_bitmap: glyph_bitmaps) {
             if (pen_x + glyph_bitmap.width > font.atlas_width) {
                 pen_x = 0;
                 pen_y += row_height;
@@ -137,8 +141,8 @@ namespace Engine::Text {
                 if (dest_y > font.atlas_height) {
                     continue;
                 }
-                uint8_t *dest_row = font.atlas_pixels.data() + dest_y * font.atlas_width;
-                const uint8_t *src_row = glyph_bitmap.bitmap.data() + y * glyph_bitmap.width;
+                uint8_t* dest_row = font.atlas_pixels.data() + dest_y * font.atlas_width;
+                const uint8_t* src_row = glyph_bitmap.bitmap.data() + y * glyph_bitmap.width;
                 std::copy_n(src_row, glyph_bitmap.width, dest_row + pen_x);
             }
 
@@ -170,8 +174,8 @@ namespace Engine::Text {
         return font;
     }
 
-    std::vector<uint8_t> FontManager::LoadFontFromFile(const std::string &name) {
-        const auto font_data = Environment::FileReader::LoadBinaryFromFile("fonts/" + name);
+    std::vector<uint8_t> FontManager::LoadFontFromFile(const std::string& name) {
+        const auto font_data = m_file_reader->ReadBinaryFromFile("fonts/" + name);
         if (!font_data.Ok()) {
             spdlog::error("Failed to load font file {}. Error: {}", name, font_data.error.message);
             throw std::runtime_error("Failed to load font " + name);
@@ -180,7 +184,7 @@ namespace Engine::Text {
     }
 
 
-    FontHandle FontManager::GenerateFontHandle(const std::string &name, const int pixel_size) {
+    FontHandle FontManager::GenerateFontHandle(const std::string& name, const int pixel_size) {
         const auto string_hash = std::hash<std::string>()(name);
         const auto pixel_hash = std::hash<int>()(pixel_size);
         const auto font_hash = string_hash ^ pixel_hash;

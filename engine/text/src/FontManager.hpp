@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <string>
 
+#include "IFileReader.hpp"
 #include "Types.hpp"
 
 namespace Engine::Text {
@@ -59,7 +60,7 @@ namespace Engine::Text {
      */
     class FontManager {
     public:
-        FontManager() = default;
+        explicit FontManager(Environment::Files::IFileReader* file_reader);
 
         ~FontManager() = default;
 
@@ -73,10 +74,11 @@ namespace Engine::Text {
     private:
         // FontLibrary m_font_library{};
         std::unordered_map<FontHandle, Font> m_fonts;
+        Environment::Files::IFileReader* m_file_reader;
 
         static FontHandle GenerateFontHandle(const std::string &name, int pixel_size);
 
-        static std::vector<uint8_t> LoadFontFromFile(const std::string &name);
+        std::vector<uint8_t> LoadFontFromFile(const std::string &name);
 
         Font BuildFont(const std::string &font_name, int pixel_size);
     };

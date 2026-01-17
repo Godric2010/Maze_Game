@@ -16,7 +16,7 @@ namespace Engine::Text {
      */
     class TextController {
     public:
-        TextController();
+        explicit TextController(Environment::Files::IFileReader* file_reader);
 
         ~TextController() = default;
 

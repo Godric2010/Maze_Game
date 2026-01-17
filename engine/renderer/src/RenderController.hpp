@@ -10,7 +10,7 @@
 namespace Engine::Renderer {
     class RenderController : public IRenderController {
     public:
-        explicit RenderController(const Environment::WindowContext& window_context);
+        explicit RenderController(const Environment::WindowContext& window_context, Environment::Files::IFileReader* file_reader);
 
         ~RenderController() override;
 
