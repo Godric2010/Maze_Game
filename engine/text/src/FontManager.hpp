@@ -1,8 +1,8 @@
 #pragma once
 #include <unordered_map>
-#include <string>
+#include "string"
 
-#include "IFileReader.hpp"
+#include <AssetHandler.hpp>
 #include "Types.hpp"
 
 namespace Engine::Text {
@@ -45,7 +45,7 @@ namespace Engine::Text {
             return descriptor;
         }
 
-        [[nodiscard]] const GlyphMetrics *GetGlyphMetrics(const uint32_t codepoint) const {
+        [[nodiscard]] const GlyphMetrics* GetGlyphMetrics(const uint32_t codepoint) const {
             const auto it = glyphs.find(codepoint);
             if (it == glyphs.end()) {
                 return nullptr;
@@ -60,26 +60,23 @@ namespace Engine::Text {
      */
     class FontManager {
     public:
-        explicit FontManager(Environment::Files::IFileReader* file_reader);
+        explicit FontManager(AssetHandling::AssetHandler* asset_handler);
 
         ~FontManager() = default;
 
 
-        [[nodiscard]] bool HasFont(const FontHandle &font_handle) const;
+        [[nodiscard]] bool HasFont(const FontHandle& font_handle) const;
 
-        FontHandleResult LoadFont(const std::string &font_name, int pixel_size);
+        FontHandleResult LoadFont(const std::string& font_name, int pixel_size);
 
-        [[nodiscard]] Font GetFont(const FontHandle &font_handle) const;
+        [[nodiscard]] Font GetFont(const FontHandle& font_handle) const;
 
     private:
-        // FontLibrary m_font_library{};
         std::unordered_map<FontHandle, Font> m_fonts;
-        Environment::Files::IFileReader* m_file_reader;
+        AssetHandling::AssetHandler* m_asset_handler;
 
-        static FontHandle GenerateFontHandle(const std::string &name, int pixel_size);
+        static FontHandle GenerateFontHandle(const std::string& name, int pixel_size);
 
-        std::vector<uint8_t> LoadFontFromFile(const std::string &name);
-
-        Font BuildFont(const std::string &font_name, int pixel_size);
+        [[nodiscard]] Font BuildFont(const std::string& font_name, int pixel_size) const;
     };
 } // namespace

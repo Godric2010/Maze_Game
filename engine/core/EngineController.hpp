@@ -3,12 +3,12 @@
 #include <vector>
 #include <spdlog/spdlog.h>
 
+#include "AssetHandler.hpp"
 #include "IDebugConsole.hpp"
 #include "IInputManager.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
 #include "Window.hpp"
-#include "../assethandling/include/AssetHandler.hpp"
 #include "../scenemanagement/src/SceneManager.hpp"
 #include "../systems/src/CacheManager.hpp"
 

@@ -1,12 +1,13 @@
 #pragma once
+#include <AssetHandler.hpp>
 #include <memory>
 #include <string>
 #include "Types.hpp"
 
 #include "../src/FontManager.hpp"
+#include "../src/LayoutEngine.hpp"
 #include "../src/TextMeshBuilder.hpp"
 #include "../src/Utf8Decoder.hpp"
-#include "../src/LayoutEngine.hpp"
 
 namespace Engine::Text {
     /**
@@ -16,7 +17,7 @@ namespace Engine::Text {
      */
     class TextController {
     public:
-        explicit TextController(Environment::Files::IFileReader* file_reader);
+        explicit TextController(AssetHandling::AssetHandler* asset_handler);
 
         ~TextController() = default;
 

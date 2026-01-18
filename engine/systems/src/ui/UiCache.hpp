@@ -1,7 +1,6 @@
 #pragma once
 #include <optional>
 #include <unordered_map>
-#include <glm/vec4.hpp>
 
 #include "TextController.hpp"
 #include "../../../renderer/include/Datatypes.hpp"

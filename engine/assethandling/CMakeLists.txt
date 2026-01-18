@@ -9,7 +9,7 @@ add_library(AssetHandling STATIC
         src/Mesh/MeshImporter.hpp
 )
 
-target_link_libraries(AssetHandling PRIVATE Environment)
+target_link_libraries(AssetHandling PUBLIC Environment)
 
 target_include_directories(AssetHandling
         PUBLIC

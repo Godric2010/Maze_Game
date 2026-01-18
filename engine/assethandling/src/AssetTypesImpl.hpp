@@ -31,4 +31,21 @@ namespace Engine::AssetHandling {
             return shader_asset;
         }
     };
+
+    template<>
+    struct AssetTraits<FontAsset> {
+        static constexpr std::string dir_name = "fonts";
+
+        static std::shared_ptr<FontAsset> Load(Environment::Files::IFileReader* file_reader,
+                                               const std::string& asset_name) {
+            const auto font_content = file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
+            if (!font_content.Ok()) {
+                throw std::runtime_error("Failed to load font asset" + asset_name);
+            }
+            const auto font_asset = std::make_shared<FontAsset>();
+            font_asset->name = asset_name;
+            font_asset->bytes = font_content.value.data;
+            return font_asset;
+        }
+    };
 }

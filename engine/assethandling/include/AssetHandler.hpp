@@ -1,10 +1,10 @@
 #pragma once
+#include <IFileReader.hpp>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 #include "AssetTypes.hpp"
-#include "IFileReader.hpp"
 
 namespace Engine::AssetHandling {
     class AssetHandler {
@@ -15,6 +15,9 @@ namespace Engine::AssetHandling {
 
         template<AssetType T>
         std::shared_ptr<T> LoadAsset(const std::string& asset_name);
+
+        template<AssetType T>
+        std::shared_ptr<T> LoadAssetWithoutCaching(const std::string& asset_name);
 
         template<AssetType T>
         std::vector<std::shared_ptr<T> > GetAllAssetsOfType();

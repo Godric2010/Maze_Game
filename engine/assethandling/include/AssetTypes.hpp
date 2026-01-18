@@ -14,4 +14,9 @@ namespace Engine::AssetHandling {
         std::string vertex_content;
         std::string fragment_content;
     };
+
+    struct FontAsset : Asset {
+        std::string name;
+        std::vector<uint8_t> bytes;
+    };
 }

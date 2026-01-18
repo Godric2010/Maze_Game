@@ -3,8 +3,8 @@
 #include "IFileReader.hpp"
 
 namespace Engine::Text {
-    TextController::TextController(Environment::Files::IFileReader* file_reader) {
-        m_font_manager = std::make_unique<FontManager>(file_reader);
+    TextController::TextController(AssetHandling::AssetHandler* asset_handler) {
+        m_font_manager = std::make_unique<FontManager>(asset_handler);
         m_utf8_decoder = std::make_unique<Utf8Decoder>();
         m_layout_engine = std::make_unique<LayoutEngine>();
         m_text_mesh_builder = std::make_unique<TextMeshBuilder>();

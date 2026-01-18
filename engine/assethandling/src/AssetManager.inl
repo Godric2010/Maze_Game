@@ -21,6 +21,11 @@ namespace Engine::AssetHandling {
     }
 
     template<AssetType T>
+    std::shared_ptr<T> AssetHandler::LoadAssetWithoutCaching(const std::string& asset_name) {
+        return AssetTraits<T>::Load(m_file_reader.get(), asset_name);
+    }
+
+    template<AssetType T>
     std::vector<std::shared_ptr<T> > AssetHandler::GetAllAssetsOfType() {
         auto& cache = Cache<T>();
         std::vector<std::shared_ptr<T> > result;

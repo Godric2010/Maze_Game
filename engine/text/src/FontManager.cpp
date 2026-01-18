@@ -2,7 +2,6 @@
 #include <functional>
 
 #include <ft2build.h>
-#include <IFileReader.hpp>
 #include FT_FREETYPE_H
 
 #include <algorithm>
@@ -10,8 +9,8 @@
 #include <spdlog/spdlog.h>
 
 namespace Engine::Text {
-    FontManager::FontManager(Environment::Files::IFileReader* file_reader) {
-        m_file_reader = file_reader;
+    FontManager::FontManager(AssetHandling::AssetHandler* asset_handler) {
+        m_asset_handler = asset_handler;
     }
 
     bool FontManager::HasFont(const FontHandle& font_handle) const {
@@ -33,8 +32,9 @@ namespace Engine::Text {
         return m_fonts.at(font_handle);
     }
 
-    Font FontManager::BuildFont(const std::string& font_name, const int pixel_size) {
-        auto font_bytes = LoadFontFromFile(font_name);
+    Font FontManager::BuildFont(const std::string& font_name, const int pixel_size) const {
+        auto font_asset = m_asset_handler->LoadAssetWithoutCaching<AssetHandling::FontAsset>(font_name);
+        auto font_bytes = font_asset->bytes;
 
         FT_Library ft_library = nullptr;
         if (FT_Init_FreeType(&ft_library) != 0) {
@@ -173,16 +173,6 @@ namespace Engine::Text {
 
         return font;
     }
-
-    std::vector<uint8_t> FontManager::LoadFontFromFile(const std::string& name) {
-        const auto font_data = m_file_reader->ReadBinaryFromFile("fonts/" + name);
-        if (!font_data.Ok()) {
-            spdlog::error("Failed to load font file {}. Error: {}", name, font_data.error.message);
-            throw std::runtime_error("Failed to load font " + name);
-        }
-        return font_data.value.data;
-    }
-
 
     FontHandle FontManager::GenerateFontHandle(const std::string& name, const int pixel_size) {
         const auto string_hash = std::hash<std::string>()(name);

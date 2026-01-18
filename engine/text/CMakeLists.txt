@@ -16,7 +16,7 @@ add_library(Text STATIC
         src/TextMeshBuilder.cpp
         src/TextMeshBuilder.hpp)
 
-target_link_libraries(Text PRIVATE Environment Freetype::Freetype spdlog::spdlog)
+target_link_libraries(Text PUBLIC AssetHandling PRIVATE Freetype::Freetype spdlog::spdlog)
 
 if (COMMAND enable_coverage)
     message("Text- Enable coverage")

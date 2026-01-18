@@ -34,11 +34,10 @@ namespace Engine::Core {
 
         auto render_controller = Renderer::RenderControllerFactory::CreateRenderController(
                 m_window->GetWindowContext(),
-                m_asset_handler.get()
-                );
+                m_asset_handler.get());
         m_services->RegisterService(std::move(render_controller));
 
-        auto text_controller = std::make_unique<Text::TextController>(m_file_reader.get());
+        auto text_controller = std::make_unique<Text::TextController>(m_asset_handler.get());
         m_services->RegisterService(std::move(text_controller));
 
         m_debug_console = Debug::CreateDebugConsole(m_services->TryGetService<Text::TextController>(),
