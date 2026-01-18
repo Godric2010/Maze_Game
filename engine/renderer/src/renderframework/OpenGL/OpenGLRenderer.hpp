@@ -1,22 +1,21 @@
 #pragma once
+#include <string_view>
+#include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
+#include <spdlog/spdlog.h>
 #include "Window.hpp"
 #include "../Renderer.hpp"
-#include <glad/glad.h>
-#include <string_view>
-#include <spdlog/spdlog.h>
-#include <glm/gtc/type_ptr.hpp>
 
-#include "OpenGLMesh.hpp"
+#include "AssetHandler.hpp"
 #include "OpenGLMeshManager.hpp"
 #include "OpenGLShaderManager.hpp"
 #include "OpenGLTextureManager.hpp"
-#include "../../shadermanagement/ShaderManager.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
     class OpenGlRenderer final : public IRenderer {
     public:
         explicit OpenGlRenderer(const Environment::WindowContext& window_context,
-                                ShaderManagement::ShaderManager* shader_manager);
+                                AssetHandling::AssetHandler* asset_handler);
 
         ~OpenGlRenderer() override;
 

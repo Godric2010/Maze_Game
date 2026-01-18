@@ -4,7 +4,8 @@
 
 namespace Engine::Renderer {
     std::unique_ptr<IRenderController> RenderControllerFactory::CreateRenderController(
-            const Environment::WindowContext& window_context, Environment::Files::IFileReader* file_reader) {
-        return std::make_unique<RenderController>(window_context, file_reader);
+            const Environment::WindowContext& window_context, AssetHandling::
+            AssetHandler* asset_handler) {
+        return std::make_unique<RenderController>(window_context,  asset_handler);
     }
 } // namespace

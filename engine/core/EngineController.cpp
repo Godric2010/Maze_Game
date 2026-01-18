@@ -28,12 +28,13 @@ namespace Engine::Core {
             .windowMode = Environment::WindowMode::Window
         };
         m_window->Setup(config);
+        m_asset_handler = std::make_unique<AssetHandling::AssetHandler>();
 
         m_input_manager = Input::InputManagerBuilder::CreateInputManager(m_window.get());
 
         auto render_controller = Renderer::RenderControllerFactory::CreateRenderController(
                 m_window->GetWindowContext(),
-                m_file_reader.get()
+                m_asset_handler.get()
                 );
         m_services->RegisterService(std::move(render_controller));
 

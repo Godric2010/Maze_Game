@@ -10,26 +10,23 @@
 
 namespace Engine::Renderer {
     RenderController::RenderController(const Environment::WindowContext& window_context,
-                                       Environment::Files::IFileReader* file_reader) {
+                                       AssetHandling::AssetHandler* asset_handler) {
         m_window_context = window_context;
 
-        m_shader_manager = std::make_unique<ShaderManagement::ShaderManager>(file_reader);
-        m_shader_manager->LoadShader("mesh_opaque");
-        m_shader_manager->LoadShader("ui");
+        asset_handler->LoadAsset<AssetHandling::ShaderAsset>("mesh_opaque");
+        asset_handler->LoadAsset<AssetHandling::ShaderAsset>("ui");
 
         switch (window_context.renderApi) {
             case Environment::API::OpenGL:
                 m_renderer = std::make_unique<RenderFramework::OpenGl::OpenGlRenderer>(
                         m_window_context,
-                        m_shader_manager.get()
+                        asset_handler
                         );
                 break;
             case Environment::API::Vulkan:
                 throw std::runtime_error("Vulkan renderer not supported (yet)");
-                break;
             case Environment::API::Metal:
                 throw std::runtime_error("Metal renderer not supported (yet)");
-                break;
         }
         m_renderer->Initialize();
         m_renderer->AddMesh(CreateUiPrimitive());
@@ -38,7 +35,6 @@ namespace Engine::Renderer {
     RenderController::~RenderController() {
         m_renderer->Shutdown();
         m_renderer.reset();
-        m_shader_manager.reset();
     }
 
     MeshHandle RenderController::RegisterMesh(const MeshAsset& mesh) const {

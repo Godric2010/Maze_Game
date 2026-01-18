@@ -3,14 +3,14 @@
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
     OpenGlRenderer::OpenGlRenderer(const Environment::WindowContext& window_context,
-                                   ShaderManagement::ShaderManager* shader_manager) {
+                                   AssetHandling::AssetHandler* asset_handler) {
         if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
             throw std::runtime_error("Failed to initialize OpenGL context");
         }
 
         m_window_size = {window_context.width, window_context.height};
         glViewport(0, 0, window_context.drawableWidth, window_context.drawableHeight);
-        m_shader_manager = std::make_unique<OpenGlShaderManager>(shader_manager);
+        m_shader_manager = std::make_unique<OpenGlShaderManager>(asset_handler);
         m_mesh_manager = std::make_unique<OpenGlMeshManager>();
         m_texture_manager = std::make_unique<OpenGLTextureManager>();
 

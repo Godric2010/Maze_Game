@@ -3,22 +3,22 @@
 #include <unordered_map>
 #include <glad/glad.h>
 #include <spdlog/spdlog.h>
-#include "../../shadermanagement/Shader.hpp"
-#include "../../shadermanagement/ShaderManager.hpp"
+
+#include "AssetHandler.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
     class OpenGlShaderManager {
     public:
-        OpenGlShaderManager(ShaderManagement::ShaderManager *shader_manager);
+        OpenGlShaderManager(AssetHandling::AssetHandler* asset_handler);
 
         ~OpenGlShaderManager();
 
         void CompileShaders();
 
-        std::optional<GLuint> GetShaderProgram(const std::string &shader_name) const;
+        std::optional<GLuint> GetShaderProgram(const std::string& shader_name) const;
 
     private:
-        ShaderManagement::ShaderManager *m_shader_manager;
+        AssetHandling::AssetHandler* m_asset_handler;
         std::unordered_map<std::string, GLuint> m_shader_program_map;
 
 
