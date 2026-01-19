@@ -6,7 +6,7 @@
 
 namespace Engine::Environment::Files {
     FileReader::FileReader() {
-        m_root_data_path = GetExecutableDirectory();
+        m_root_data_path = GetExecutableDirectory().string();
     }
 
     Result<std::string> FileReader::ReadTextFromFile(const std::string& relative_path) {
@@ -78,7 +78,7 @@ namespace Engine::Environment::Files {
         out.data = std::move(buffer);
         out.size = static_cast<size_t>(file_size);
         out.name = file_path.filename().string();
-        out.path = file_path;
+        out.path = file_path.string();
         out.mtime = mtime;
 
 
@@ -89,7 +89,7 @@ namespace Engine::Environment::Files {
 
     bool FileReader::ValidatePath(const std::string& relative_path, std::filesystem::path& path, std::string& error,
                                   std::error_code& error_code) {
-        if (relative_path.size() == 0) {
+        if (relative_path.empty()) {
             throw std::invalid_argument("relative file path is null");
         }
         const auto base = std::filesystem::path(m_root_data_path) / m_resource_dir_name;
@@ -99,9 +99,9 @@ namespace Engine::Environment::Files {
          for (const auto& file: relative_file_path) {
             if (file.string().starts_with(".") ||
                 file.string().starts_with("..") ||
-                file.string().find("/") == 0 ||
-                file.string().find("\\") == 0 ||
-                file.string().find(":") == 0){
+                file.string().find('/') == 0 ||
+                file.string().find('\\') == 0 ||
+                file.string().find(':') == 0){
                 throw std::invalid_argument("Invalid file path: " + relative_file_path.string());
             }
 

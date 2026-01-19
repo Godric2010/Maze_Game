@@ -3,6 +3,8 @@
 //
 
 #pragma once
+#include <stdexcept>
+
 #include "IFileReader.hpp"
 #include "../include/AssetTypes.hpp"
 
@@ -12,7 +14,7 @@ namespace Engine::AssetHandling {
 
     template<>
     struct AssetTraits<ShaderAsset> {
-        static constexpr std::string dir_name = "shaders";
+        inline static const std::string dir_name = std::string("shaders");
 
         static std::shared_ptr<ShaderAsset> Load(Environment::Files::IFileReader* file_reader,
                                                  const std::string& asset_name) {
@@ -34,7 +36,7 @@ namespace Engine::AssetHandling {
 
     template<>
     struct AssetTraits<FontAsset> {
-        static constexpr std::string dir_name = "fonts";
+        inline static const std::string dir_name = std::string("fonts");
 
         static std::shared_ptr<FontAsset> Load(Environment::Files::IFileReader* file_reader,
                                                const std::string& asset_name) {

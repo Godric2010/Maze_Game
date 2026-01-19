@@ -4,7 +4,7 @@
 #include <spdlog/spdlog.h>
 
 #include "AssetHandler.hpp"
-#include "IDebugConsole.hpp"
+#include <IDebugConsole.hpp>
 #include "IInputManager.hpp"
 #include "ServiceLocator.hpp"
 #include "SystemManager.hpp"
