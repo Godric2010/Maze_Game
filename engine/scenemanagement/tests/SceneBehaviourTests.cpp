@@ -51,20 +51,20 @@ public:
         m_entities.emplace(entity_id);
     }
 
-    void TestApplication() {
+    void TestApplication() const {
         // ReSharper disable once CppNoDiscardExpression
         Application();
     }
 
-    void TestInput() {
+    void TestInput() const {
         Input();
     }
 
-    void TestSceneWorld() {
+    void TestSceneWorld() const {
         World();
     }
 
-    void TestSceneManager() {
+    void TestSceneManager() const {
         SceneManager();
     }
 };

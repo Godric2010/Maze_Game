@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <vector>
+#include <glm/glm.hpp>
 
 namespace Engine::AssetHandling {
     struct Asset {
@@ -18,5 +20,16 @@ namespace Engine::AssetHandling {
     struct FontAsset : Asset {
         std::string name;
         std::vector<uint8_t> bytes;
+    };
+
+    struct MeshVertex {
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec2 uv;
+    };
+
+    struct MeshAsset : Asset {
+        std::vector<MeshVertex> vertices;
+        std::vector<uint32_t> indices;
     };
 }
