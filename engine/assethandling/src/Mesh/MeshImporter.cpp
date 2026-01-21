@@ -3,28 +3,41 @@
 #include <iostream>
 #include <sstream>
 
-namespace Engine::Assethandling::Mesh
+namespace Engine::AssetHandling::Mesh
 {
     void MeshImporter::BuildMeshAssetFromObj(const std::string& obj_string,
-                                             std::vector<AssetHandling::MeshVertex>& vertices,
+                                             std::vector<MeshVertex>& vertices,
                                              std::vector<uint32_t>& indices)
     {
         std::vector<glm::vec3> vertex_positions;
-        AnalyseString(obj_string, vertex_positions, indices);
+        std::vector<glm::vec3> vertex_normals;
+        std::vector<glm::vec2> vertex_uvs;
+        std::vector<VertexIndices> vertex_indices;
+        AnalyseString(obj_string, vertex_positions, vertex_normals, vertex_uvs, vertex_indices);
 
-        for (const auto vertex_position : vertex_positions)
+
+        for (uint32_t i = 0; i < vertex_indices.size(); ++i)
         {
-            vertices.push_back(AssetHandling::MeshVertex{
-                    .position = vertex_position,
-                    .normal = glm::vec3(0.0f, 0.0f, 0.0f),
-                    .uv = glm::vec2(0.0f, 0.0f),
-                }
-            );
+            const auto [PositionIndex, NormalIndex, UvIndex] = vertex_indices[i];
+
+            MeshVertex vertex{};
+            vertex.position = vertex_positions[PositionIndex - 1];
+            if (NormalIndex != 0)
+            {
+                vertex.normal = vertex_normals[NormalIndex - 1];
+            }
+            if (UvIndex != 0)
+            {
+                vertex.uv = vertex_uvs[UvIndex - 1];
+            }
+            vertices.push_back(vertex);
+            indices.push_back(i);
         }
     }
 
     void MeshImporter::AnalyseString(const std::string& str, std::vector<glm::vec3>& vertex_positions,
-                                     std::vector<uint32_t>& indices)
+                                     std::vector<glm::vec3>& vertex_normals, std::vector<glm::vec2>& vertex_uvs,
+                                     std::vector<VertexIndices>& indices)
     {
         std::stringstream stream(str);
         if (str.empty())
@@ -72,18 +85,68 @@ namespace Engine::Assethandling::Mesh
                 std::istringstream token_stream_z(line_tokens[3]);
                 token_stream_z >> z;
                 vertex_positions.emplace_back(x, y, z);
-                std::cout << "Vertex:" << x << ", " << y << ", " << z << std::endl;
+                std::cout << "Vertex Pos:" << x << ", " << y << ", " << z << std::endl;
+                continue;
+            }
+            if (prefix == "vn")
+            {
+                float x, y, z;
+                std::istringstream token_stream_x(line_tokens[1]);
+                token_stream_x >> x;
+                std::istringstream token_stream_y(line_tokens[2]);
+                token_stream_y >> y;
+                std::istringstream token_stream_z(line_tokens[3]);
+                token_stream_z >> z;
+                vertex_normals.emplace_back(x, y, z);
+                std::cout << "Vertex Normal:" << x << ", " << y << ", " << z << std::endl;
+                continue;
+            }
+            if (prefix == "vt")
+            {
+                float x, y;
+                std::istringstream token_stream_x(line_tokens[1]);
+                token_stream_x >> x;
+                std::istringstream token_stream_y(line_tokens[2]);
+                token_stream_y >> y;
+                vertex_uvs.emplace_back(x, y);
+                std::cout << "Vertex UV:" << x << ", " << y << std::endl;
                 continue;
             }
             if (prefix == "f")
             {
                 std::cout << "Face:";
+                if (line_tokens.size() <= 3)
+                {
+                    throw std::runtime_error("Cannot have a face with less than three vertices!");
+                }
                 for (uint i = 1; i < line_tokens.size(); ++i)
                 {
-                    int index;
+                    std::string token;
                     std::istringstream token_stream(line_tokens[i]);
-                    token_stream >> index;
-                    indices.push_back(--index);
+
+                    std::string position_token;
+                    std::string normal_token;
+                    std::string uv_token;
+
+                    std::getline(token_stream, position_token, '/');
+                    std::getline(token_stream, uv_token, '/');
+                    std::getline(token_stream, normal_token, '/');
+
+                    uint32_t position_index = 0, normal_index = 0, uv_index = 0;
+                    position_index = std::stoi(position_token);
+                    if (!normal_token.empty())
+                    {
+                        normal_index = std::stoi(normal_token);
+                    }
+                    if (!uv_token.empty())
+                    {
+                        uv_index = std::stoi(uv_token);
+                    }
+                    VertexIndices vertex_indices{};
+                    vertex_indices.PositionIndex = position_index;
+                    vertex_indices.NormalIndex = normal_index;
+                    vertex_indices.UvIndex = uv_index;
+                    indices.push_back(vertex_indices);
                     std::cout << index << ", ";
                 }
                 std::cout << std::endl;
