@@ -2,6 +2,7 @@
 
 [![macOS](https://github.com/Godric2010/Maze_Game/actions/workflows/build_macOS.yml/badge.svg?branch=master)](https://github.com/Godric2010/Maze_Game/actions/workflows/build_macOS.yml?query=branch%3Amaster)
 [![Windows](https://github.com/Godric2010/Maze_Game/actions/workflows/build_windows.yml/badge.svg?branch=master)](https://github.com/Godric2010/Maze_Game/actions/workflows/build_windows.yml?query=branch%3Amaster)
+[![Linux](https://github.com/Godric2010/Maze_Game/actions/workflows/build_linux.yml/badge.svg?branch=master)](https://github.com/Godric2010/Maze_Game/actions/workflows/build_linux.yml?query=branch%3Amaster)
 
 Maze Game is a training and showcase project. It features a simple maze puzzle game, written in a custom C++ engine.
 The emphasis lies more on the [engine](/engine/Readme.md) development and architecture, than on the gameplay part.
@@ -23,8 +24,7 @@ So every curious C++/Engine Dev or Recruiter is welcome to take a look.
 
 ## Platforms
 
-While primarily developed on macOS, Windows compatibility is also supported.
-Linux is not officially supported.
+While primarily developed on macOS, Windows and Linux compatibility are also supported.
 
 ## Requirements
 
@@ -32,6 +32,7 @@ Linux is not officially supported.
 
 - macOS: clang
 - Windows: MSVC
+- Linux: clang
 
 ### Build Tool
 

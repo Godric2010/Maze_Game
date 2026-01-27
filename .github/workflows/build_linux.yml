@@ -1,0 +1,135 @@
+name: Build Linux
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  VCPKG_COMMIT: 1d86fc5936d17f8fc77b17634627b746e2f7145a
+
+jobs:
+  build-test-linux:
+    name: linux
+    runs-on: ubuntu-latest
+    env:
+      CMAKE_BUILD_TYPE: Release
+      CC: clang
+      CXX: clang++
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Clang
+        shell: bash
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y clang
+
+      - name: Get CMake & Ninja
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: 3.31.x
+          ninjaVersion: latest
+
+      - name: Setup vcpkg (manifest + cache)
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+          vcpkgJsonGlob: 'vcpkg.json'
+          runVcpkgInstall: true
+
+      - name: Configure (CMake, Ninja + Clang)
+        shell: bash
+        run: |
+          cmake -S . -B build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=${{ env.CMAKE_BUILD_TYPE }} \
+            -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+
+      - name: Build
+        shell: bash
+        run: cmake --build build --parallel
+
+      - name: Test (JUnit)
+        shell: bash
+        run: |
+          echo "== Running tests =="
+          ctest --test-dir build --output-on-failure --timeout 180 --output-junit build/junit/ctest.xml
+
+      - name: Upload test results (Linux)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-linux
+          path: |
+            build/junit/*.xml
+            build/Testing/Temporary/LastTest.log
+          if-no-files-found: ignore
+
+  notify-discord:
+    name: Notify-Discord
+    needs: [ build-test-linux ]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout repo (for scripts)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download artifacts (tests + coverage)
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: "*"
+
+      - name: List repo & artifacts (debug)
+        shell: bash
+        run: |
+          pwd
+          ls -la
+          [ -d artifacts ] && find artifacts -maxdepth 5 -type d -print | sort || echo "No artifacts directory found!"
+
+      - name: Ensure jq (for JSON)
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y jq
+
+      - name: Parse JUnit (Linux)
+        id: junit_linux
+        shell: bash
+        run: |
+          set -euo pipefail
+          LINUX_DIRS=()
+          while IFS= read -r line; do
+            LINUX_DIRS+=("$line")
+          done < <(find artifacts -type d \( -path '*tests-linux*/junit' -o -path '*tests-linux*/build/junit' \) -print 2>/dev/null || true)
+
+          if [[ ${#LINUX_DIRS[@]} -eq 0 ]]; then
+            echo "No Linux junit dirs found..."
+            { echo "overall_status<<EOF"; echo "❓"; echo "EOF"; } >> "$GITHUB_OUTPUT"
+          else
+            bash scripts/parse_junit.sh "${LINUX_DIRS[@]}" || true
+          fi
+
+      - name: Post to Discord
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_BOT }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REF_NAME: ${{ github.ref_name }}
+          LINUX: ${{ steps.junit_linux.outputs.overall_status }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          CONTENT="**CI Results** (${REF_NAME})
+                  Linux: ${LINUX:-❓}
+                  RUN: ${RUN_URL}"
+
+          curl -sS -X POST \
+              -H "Content-Type: application/json" \
+              -d "$(jq -n --arg c "$CONTENT" '{content:$c}')" \
+              "${DISCORD_WEBHOOK_URL}"
