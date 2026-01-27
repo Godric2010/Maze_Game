@@ -34,7 +34,32 @@ jobs:
         with:
           cmakeVersion: 3.31.x
           ninjaVersion: latest
+          
+      - name: Install Linux build deps (vcpkg prerequisites)
+        shell: bash
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            build-essential ninja-build pkg-config \
+            autoconf automake libtool m4 \
+            perl python3 \
+            curl zip unzip tar \
+            git ca-certificates
+          
+      - name: Dump vcpkg logs on failure
+        if: failure()
+        shell: bash
+        run: |
+          echo "=== issue_body.md ==="
+          (ls -la && cat issue_body.md) || true
 
+          echo "=== vcpkg buildtrees logs (top few) ==="
+          find "$VCPKG_ROOT/buildtrees" -maxdepth 4 -type f \( -name "*-out.log" -o -name "*-err.log" \) \
+            | head -n 20 | while read -r f; do
+                echo "----- $f -----"
+                tail -n 200 "$f" || true
+              done
+      
       - name: Setup vcpkg (manifest + cache)
         uses: lukka/run-vcpkg@v11
         with:
