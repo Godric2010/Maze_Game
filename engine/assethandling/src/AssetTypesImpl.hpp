@@ -65,7 +65,7 @@ namespace Engine::AssetHandling {
 
             std::vector<MeshVertex> vertices;
             std::vector<uint32_t> indices;
-            Assethandling::Mesh::MeshImporter::BuildMeshAssetFromObj(mesh_content.value, vertices, indices);
+            Mesh::MeshImporter::BuildMeshAssetFromObj(mesh_content.value, vertices, indices);
             auto mesh_asset = std::make_shared<MeshAsset>();
             mesh_asset->vertices = vertices;
             mesh_asset->indices = indices;

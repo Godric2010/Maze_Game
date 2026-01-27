@@ -10,6 +10,7 @@
 #include "../src/Mesh/MeshImporter.hpp"
 
 using namespace Engine::AssetHandling::Mesh;
+
 bool are_vectors_equal(const glm::vec3 actual, const glm::vec3 expected)
 {
     const float x_diff = std::abs(actual.x - expected.x);
@@ -134,7 +135,19 @@ f 1/1/1 2/2/1 3/3/1 4/4/1)";
     std::vector<uint32_t> indices;
     MeshImporter::BuildMeshAssetFromObj(obj_content, vertices, indices);
 
-    // REQUIRE(vertices.size() == 3);
-    // REQUIRE(indices.size() == 3);
-    REQUIRE(true);
+    REQUIRE(vertices.size() == 4);
+    REQUIRE(indices.size() == 4);
+    REQUIRE(indices == std::vector<uint32_t>({0, 1, 2, 3}));
+    REQUIRE(are_vectors_equal(vertices[0].position, glm::vec3(-1,-1,1)));
+    REQUIRE(are_vectors_equal(vertices[1].position, glm::vec3(1,-1,1)));
+    REQUIRE(are_vectors_equal(vertices[2].position, glm::vec3(1,1,1)));
+    REQUIRE(are_vectors_equal(vertices[3].position, glm::vec3(-1,1,1)));
+    REQUIRE(are_vectors_equal(vertices[0].normal, glm::vec3(0,0,1)));
+    REQUIRE(are_vectors_equal(vertices[1].normal, glm::vec3(0,0,1)));
+    REQUIRE(are_vectors_equal(vertices[2].normal, glm::vec3(0,0,1)));
+    REQUIRE(are_vectors_equal(vertices[3].normal, glm::vec3(0,0,1)));
+    REQUIRE(are_vectors_equal(vertices[0].uv, glm::vec2(0,0)));
+    REQUIRE(are_vectors_equal(vertices[1].uv, glm::vec2(1,0)));
+    REQUIRE(are_vectors_equal(vertices[2].uv, glm::vec2(1,1)));
+    REQUIRE(are_vectors_equal(vertices[3].uv, glm::vec2(0,1)));
 }

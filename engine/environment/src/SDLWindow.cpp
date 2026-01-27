@@ -49,7 +49,7 @@ namespace Engine::Environment {
                     .windowHandle = m_window,
                     .context = SDL_GL_CreateContext(m_window),
                 };
-                SDL_GL_SetSwapInterval(1);
+                SDL_GL_SetSwapInterval(0);
                 break;
             case API::Vulkan:
             case API::Metal:
