@@ -7,8 +7,8 @@ add_library(Interface INTERFACE
         include/Input/IInput.hpp
         include/Input/InputTypes.hpp
         include/Input/InputBuffer.hpp
-        include/scene/SceneArgs.hpp
-        include/scene/ISceneManager.hpp
+        include/Scene/SceneArgs.hpp
+        include/Scene/ISceneManager.hpp
         include/Ecs/ISystem.hpp
         include/Ecs/Types.hpp
         include/Renderer/Types.hpp

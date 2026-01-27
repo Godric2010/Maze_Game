@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ComponentPool.hpp"
+#include <limits>
 
 namespace Engine::Ecs {
     template<class T>

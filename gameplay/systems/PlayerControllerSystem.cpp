@@ -43,8 +43,8 @@ namespace Gameplay::Systems {
 
         // Calculate camera rotation
         const auto mouse_delta = input.mouse_delta;
-        const float yaw_delta = -mouse_delta.x * m_sensitivity * delta_time;
-        const float pitch_delta = -mouse_delta.y * m_sensitivity * delta_time;
+        const float yaw_delta = -mouse_delta.x * m_sensitivity;
+        const float pitch_delta = -mouse_delta.y * m_sensitivity;
 
         const auto cam_rotation = transform->GetRotation();
         const float pitch = glm::clamp(cam_rotation.x + pitch_delta, m_min_pitch, m_max_pitch);
