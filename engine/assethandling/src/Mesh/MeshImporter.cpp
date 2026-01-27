@@ -114,14 +114,12 @@ namespace Engine::AssetHandling::Mesh
             }
             if (prefix == "f")
             {
-                std::cout << "Face:";
-                if (line_tokens.size() <= 3)
+                if (line_tokens.size() < 4)
                 {
                     throw std::runtime_error("Cannot have a face with less than three vertices!");
                 }
                 for (uint i = 1; i < line_tokens.size(); ++i)
                 {
-                    std::string token;
                     std::istringstream token_stream(line_tokens[i]);
 
                     std::string position_token;
@@ -147,9 +145,7 @@ namespace Engine::AssetHandling::Mesh
                     vertex_indices.NormalIndex = normal_index;
                     vertex_indices.UvIndex = uv_index;
                     indices.push_back(vertex_indices);
-                    std::cout << index << ", ";
                 }
-                std::cout << std::endl;
                 continue;
             }
         }
