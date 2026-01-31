@@ -1,8 +1,10 @@
 #include "MeshImporter.hpp"
 
 #include <algorithm>
+#include <AssetHandler.hpp>
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
 
 namespace Engine::AssetHandling::Mesh
 {
@@ -13,21 +15,44 @@ namespace Engine::AssetHandling::Mesh
         std::vector<glm::vec3> vertex_positions;
         std::vector<glm::vec3> vertex_normals;
         std::vector<glm::vec2> vertex_uvs;
-        std::vector<VertexIndices> vertex_indices;
-        AnalyseString(obj_string, vertex_positions, vertex_normals, vertex_uvs, vertex_indices);
+        std::vector<Face> faces;
+        AnalyseString(obj_string, vertex_positions, vertex_normals, vertex_uvs, faces);
 
-
-        for (uint32_t i = 0; i < vertex_indices.size(); ++i)
+        size_t estimated_unique_keys = 0;
+        size_t total_index_count = 0;
+        for (auto& face : faces)
         {
-            MeshVertex vertex = BuildMeshVertex(vertex_indices[i], vertex_positions, vertex_normals, vertex_uvs);
-            vertices.push_back(vertex);
+            estimated_unique_keys += face.Indices.size();
+            FanTriangulateFace(face);
+            total_index_count += face.Indices.size();
+        }
 
-            indices.push_back(i);
+        auto face_index_vertex_map = std::unordered_map<FaceVertexIndex, uint32_t, FaceVertexIndexHasher>();
+        face_index_vertex_map.reserve(estimated_unique_keys);
+        vertices.reserve(estimated_unique_keys);
+        indices.reserve(total_index_count);
+        for (auto& face : faces)
+        {
+            for (auto& corner_indices : face.Indices)
+            {
+                auto new_index = static_cast<uint32_t>(vertices.size());
+                auto [it, inserted] = face_index_vertex_map.try_emplace(corner_indices, new_index);
+
+                if (inserted)
+                {
+                    auto mesh_vertex = BuildMeshVertex(corner_indices, vertex_positions, vertex_normals, vertex_uvs);
+                    vertices.push_back(mesh_vertex);
+                }
+
+                indices.push_back(it->second);
+            }
         }
     }
 
-    MeshVertex MeshImporter::BuildMeshVertex(const VertexIndices indices, const std::vector<glm::vec3>& vertex_positions,
-                                             const std::vector<glm::vec3>& vertex_normals, const std::vector<glm::vec2>& vertex_uvs)
+    MeshVertex MeshImporter::BuildMeshVertex(const FaceVertexIndex indices,
+                                             const std::vector<glm::vec3>& vertex_positions,
+                                             const std::vector<glm::vec3>& vertex_normals,
+                                             const std::vector<glm::vec2>& vertex_uvs)
     {
         MeshVertex vertex{};
         if (IsIndexValid("PositionIndex", indices.PositionIndex, vertex_positions.size(), true))
@@ -47,7 +72,7 @@ namespace Engine::AssetHandling::Mesh
 
     void MeshImporter::AnalyseString(const std::string& str, std::vector<glm::vec3>& vertex_positions,
                                      std::vector<glm::vec3>& vertex_normals, std::vector<glm::vec2>& vertex_uvs,
-                                     std::vector<VertexIndices>& indices)
+                                     std::vector<Face>& face)
     {
         std::stringstream stream(str);
         if (str.empty())
@@ -99,13 +124,14 @@ namespace Engine::AssetHandling::Mesh
             }
             if (prefix == "f")
             {
-                ParseFace(line_stream, indices);
+                ParseFace(line_stream, face);
                 continue;
             }
         }
     }
 
-    bool MeshImporter::IsIndexValid(const std::string& name, const uint32_t index, const size_t size, const bool throw_error_at_zero_index)
+    bool MeshImporter::IsIndexValid(const std::string& name, const uint32_t index, const size_t size,
+                                    const bool throw_error_at_zero_index)
     {
         if (index == 0)
         {
@@ -152,7 +178,7 @@ namespace Engine::AssetHandling::Mesh
         return true;
     }
 
-    void MeshImporter::ParseFace(std::istringstream& line_stream, std::vector<VertexIndices>& indices)
+    void MeshImporter::ParseFace(std::istringstream& line_stream, std::vector<Face>& faces)
     {
         std::vector<std::string> corner_tokens;
         std::string token;
@@ -165,6 +191,7 @@ namespace Engine::AssetHandling::Mesh
         {
             throw std::runtime_error("Cannot have a face with less than three vertices!");
         }
+        Face face{};
         for (const auto& corner_token : corner_tokens)
         {
             std::istringstream token_stream(corner_token);
@@ -186,13 +213,33 @@ namespace Engine::AssetHandling::Mesh
             {
                 uv_index = ParseStringToIndex(uv_token, "UV", corner_token);
             }
-            VertexIndices vertex_indices{};
+            FaceVertexIndex vertex_indices{};
             vertex_indices.PositionIndex = position_index;
             vertex_indices.NormalIndex = normal_index;
             vertex_indices.UvIndex = uv_index;
-            indices.push_back(vertex_indices);
+            face.Indices.push_back(vertex_indices);
         }
+        faces.push_back(face);
     } // namespace
+
+    void MeshImporter::FanTriangulateFace(Face& face)
+    {
+        if (face.Indices.size() < 3)
+        {
+            throw std::runtime_error("Cannot have a face with less than three vertices!");
+        }
+
+        std::vector<FaceVertexIndex> triangulated_indices;
+        triangulated_indices.reserve(3 * (face.Indices.size() - 2));
+        const FaceVertexIndex anchor = face.Indices[0];
+        for (size_t i = 1; i < face.Indices.size() - 1; i++)
+        {
+            triangulated_indices.push_back(anchor);
+            triangulated_indices.push_back(face.Indices[i]);
+            triangulated_indices.push_back(face.Indices[i + 1]);
+        }
+        face.Indices = triangulated_indices;
+    }
 
     bool MeshImporter::TryParseVector3(std::istringstream& line_stream, glm::vec3& result)
     {

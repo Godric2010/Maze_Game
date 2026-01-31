@@ -88,8 +88,8 @@ TEST_CASE("OBJImporterTests - Analyse minimal quad mesh")
     MeshImporter::BuildMeshAssetFromObj(obj_content, vertices, indices);
 
     REQUIRE(vertices.size() == 4);
-    REQUIRE(indices.size() == 4);
-    REQUIRE(indices == std::vector<uint32_t>({0, 1, 2, 3}));
+    REQUIRE(indices.size() == 6);
+    REQUIRE(indices == std::vector<uint32_t>({0, 1, 2, 0, 2, 3}));
     REQUIRE(are_vectors_equal(vertices[0].position, glm::vec3(0,0,0)));
     REQUIRE(are_vectors_equal(vertices[1].position, glm::vec3(1,0,0)));
     REQUIRE(are_vectors_equal(vertices[2].position, glm::vec3(1,1,0)));
@@ -136,8 +136,8 @@ f 1/1/1 2/2/1 3/3/1 4/4/1)";
     MeshImporter::BuildMeshAssetFromObj(obj_content, vertices, indices);
 
     REQUIRE(vertices.size() == 4);
-    REQUIRE(indices.size() == 4);
-    REQUIRE(indices == std::vector<uint32_t>({0, 1, 2, 3}));
+    REQUIRE(indices.size() == 6);
+    REQUIRE(indices == std::vector<uint32_t>({0, 1, 2, 0, 2, 3}));
     REQUIRE(are_vectors_equal(vertices[0].position, glm::vec3(-1,-1,1)));
     REQUIRE(are_vectors_equal(vertices[1].position, glm::vec3(1,-1,1)));
     REQUIRE(are_vectors_equal(vertices[2].position, glm::vec3(1,1,1)));
