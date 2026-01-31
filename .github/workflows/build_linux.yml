@@ -47,6 +47,13 @@ jobs:
             curl zip unzip tar \
             git ca-certificates
           
+      - name: Setup vcpkg (manifest + cache)
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+          vcpkgJsonGlob: 'vcpkg.json'
+          runVcpkgInstall: true
+
       - name: Dump vcpkg logs on failure
         if: failure()
         shell: bash
@@ -61,13 +68,6 @@ jobs:
                 tail -n 200 "$f" || true
               done
       
-      - name: Setup vcpkg (manifest + cache)
-        uses: lukka/run-vcpkg@v11
-        with:
-          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
-          vcpkgJsonGlob: 'vcpkg.json'
-          runVcpkgInstall: true
-
       - name: Configure (CMake, Ninja + Clang)
         shell: bash
         run: |
