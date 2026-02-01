@@ -6,7 +6,6 @@
 
 namespace Gameplay {
     GameplayManager::GameplayManager(Engine::IApplication& engine) : m_engine(engine) {
-        m_mesh_handler = std::make_unique<MeshHandler>(engine);
 
         const Engine::Input::InputMap player_input_map{
             .name = "PlayerInputMap",
@@ -66,8 +65,7 @@ namespace Gameplay {
     void GameplayManager::Initialize() const {
         m_engine.RegisterScene("MainMenu",
                                [](const Engine::SceneManagement::SceneArgs& args) {
-                                   const auto& mesh_handler = std::any_cast<MeshHandler*>(args.payload);
-                                   return std::make_unique<MainMenuScene>(mesh_handler);
+                                   return std::make_unique<MainMenuScene>();
                                }
                 );
 
@@ -85,7 +83,7 @@ namespace Gameplay {
                                }
                 );
 
-        m_engine.SetInitialScene("MainMenu", Engine::SceneManagement::SceneArgs{m_mesh_handler.get()});
+        m_engine.SetInitialScene("MainMenu", Engine::SceneManagement::SceneArgs{});
         // m_engine.SetInitialScene("GameEnd",
         //                          Engine::Input::SceneArgs{
         //                              GameEndShowData{m_mesh_handler.get(), 72.0f},

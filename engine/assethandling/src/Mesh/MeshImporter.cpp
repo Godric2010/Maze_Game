@@ -9,7 +9,7 @@
 namespace Engine::AssetHandling::Mesh
 {
     void MeshImporter::BuildMeshAssetFromObj(const std::string& obj_string,
-                                             std::vector<MeshVertex>& vertices,
+                                             std::vector<MeshVertexAsset>& vertices,
                                              std::vector<uint32_t>& indices)
     {
         std::vector<glm::vec3> vertex_positions;
@@ -49,12 +49,12 @@ namespace Engine::AssetHandling::Mesh
         }
     }
 
-    MeshVertex MeshImporter::BuildMeshVertex(const FaceVertexIndex indices,
+    MeshVertexAsset MeshImporter::BuildMeshVertex(const FaceVertexIndex indices,
                                              const std::vector<glm::vec3>& vertex_positions,
                                              const std::vector<glm::vec3>& vertex_normals,
                                              const std::vector<glm::vec2>& vertex_uvs)
     {
-        MeshVertex vertex{};
+        MeshVertexAsset vertex{};
         if (IsIndexValid("PositionIndex", indices.PositionIndex, vertex_positions.size(), true))
         {
             vertex.position = vertex_positions[indices.PositionIndex - 1];

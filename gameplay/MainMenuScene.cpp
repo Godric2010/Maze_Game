@@ -9,12 +9,10 @@
 
 
 namespace Gameplay {
-    MainMenuScene::MainMenuScene(MeshHandler* mesh_handler) {
-        m_mesh_handler = mesh_handler;
+    MainMenuScene::MainMenuScene() {
     }
 
     MainMenuScene::~MainMenuScene() {
-        m_mesh_handler = nullptr;
     }
 
     void MainMenuScene::OnStart() {
@@ -200,7 +198,6 @@ namespace Gameplay {
             SceneManager().LoadScene("Game",
                                      Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
-                                             .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Easy
                                          }
                                      }
@@ -209,7 +206,6 @@ namespace Gameplay {
             SceneManager().LoadScene("Game",
                                      Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
-                                             .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Medium
                                          }
                                      }
@@ -218,7 +214,6 @@ namespace Gameplay {
             SceneManager().LoadScene("Game",
                                      Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
-                                             .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Hard
                                          }
                                      }
@@ -229,7 +224,6 @@ namespace Gameplay {
             SceneManager().LoadScene("Game",
                                      Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
-                                             .mesh_handler = m_mesh_handler,
                                              .difficulty = Difficulty::Developer
                                          }
                                      }

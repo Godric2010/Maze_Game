@@ -51,7 +51,7 @@ v 0.0 1.0 0.0
 
 f 1 2 3)";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
     MeshImporter::BuildMeshAssetFromObj(obj_content, vertices, indices);
 
@@ -83,7 +83,7 @@ TEST_CASE("OBJImporterTests - Analyse minimal quad mesh")
             f 1/1/1 2/2/1 3/3/1 4/4/1
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
     MeshImporter::BuildMeshAssetFromObj(obj_content, vertices, indices);
 
@@ -131,7 +131,7 @@ s 1
 
 f 1/1/1 2/2/1 3/3/1 4/4/1)";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
     MeshImporter::BuildMeshAssetFromObj(obj_content, vertices, indices);
 
@@ -159,7 +159,7 @@ TEST_CASE("OBJImporterTests - CRLF + Inline comments, no exception")
         "v 1 0 0\r\n"
         "v 0 1 0\r\n"
         "f 1 2 3\r\n";
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_NOTHROW(MeshImporter::BuildMeshAssetFromObj(OBJ_CRLF_AND_INLINE_COMMENT, vertices, indices));
@@ -168,7 +168,7 @@ TEST_CASE("OBJImporterTests - CRLF + Inline comments, no exception")
 TEST_CASE("OBJImporterTests - Empty obj string")
 {
     const std::string OBJ_EMPTY = "";
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_EMPTY, vertices, indices), std::invalid_argument);
@@ -181,7 +181,7 @@ v 0.0 1.0
 f 1 2 3
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_BAD_V, vertices, indices), std::runtime_error);
@@ -197,7 +197,7 @@ v 0 1 0
 f 1 2 3
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_BAD_VN, vertices, indices), std::runtime_error);
@@ -213,7 +213,7 @@ v 0 1 0
 f 1 2 3
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_BAD_VT, vertices, indices), std::runtime_error);
@@ -227,7 +227,7 @@ v 1 0 0
 f 1 2
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_FACE_TOO_SHORT, vertices, indices), std::runtime_error);
@@ -240,7 +240,7 @@ v 0 0 0
 f 2 1 1
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_POS_OOB, vertices, indices), std::out_of_range);
@@ -255,7 +255,7 @@ v 0 1 0
 f 0 1 2
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_POS_ZERO, vertices, indices), std::out_of_range);
@@ -275,7 +275,7 @@ vn 0 0 1
 f 1/2/1 2/1/1 3/1/1
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_UV_OOB, vertices, indices), std::out_of_range);
@@ -297,7 +297,7 @@ vn 0 0 1
 f 1/1/2 2/2/1 3/3/1
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_NORM_OOB, vertices, indices), std::out_of_range);
@@ -312,7 +312,7 @@ v 0 1 0
 f a 2 3
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_POS_NON_NUMERIC, vertices, indices), std::runtime_error);
@@ -334,7 +334,7 @@ vn 0 0 1
 f 1/x/1 2/2/1 3/3/1
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_UV_NON_NUMERIC, vertices, indices), std::runtime_error);
@@ -356,7 +356,7 @@ vn 0 0 1
 f 1/1/y 2/2/1 3/3/1
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_NORM_NON_NUMERIC, vertices, indices), std::runtime_error);
@@ -371,7 +371,7 @@ v 0 1 0
 f 999999999999999999999999999999 2 3
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_INDEX_OUT_OF_RANGE, vertices, indices),
@@ -387,7 +387,7 @@ v 0 1 0
 f -1 2 3
 )";
 
-    std::vector<Engine::AssetHandling::MeshVertex> vertices;
+    std::vector<Engine::AssetHandling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
     REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_NEGATIVE_INDEX, vertices, indices), std::runtime_error);

@@ -9,7 +9,7 @@ namespace Engine::AssetHandling::Mesh
     {
     public:
         static void BuildMeshAssetFromObj(const std::string& obj_string,
-                                          std::vector<MeshVertex>& vertices,
+                                          std::vector<MeshVertexAsset>& vertices,
                                           std::vector<uint32_t>& indices);
         static void ParseFace(std::istringstream line_stream);
 
@@ -51,7 +51,7 @@ namespace Engine::AssetHandling::Mesh
                                   std::vector<Face>& face);
 
 
-        static MeshVertex BuildMeshVertex(FaceVertexIndex indices, const std::vector<glm::vec3>& vertex_positions,
+        static MeshVertexAsset BuildMeshVertex(FaceVertexIndex indices, const std::vector<glm::vec3>& vertex_positions,
                                           const std::vector<glm::vec3>& vertex_normals,
                                           const std::vector<glm::vec2>& vertex_uvs);
 

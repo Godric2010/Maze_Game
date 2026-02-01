@@ -10,8 +10,6 @@ add_library(Gameplay STATIC
         mazegenerator/Cell.hpp
         mazegenerator/DebugGridDrawer.cpp
         mazegenerator/DebugGridDrawer.hpp
-        MeshHandler.cpp
-        MeshHandler.hpp
         systems/ItemSystem.cpp
         systems/ItemSystem.hpp
         components/Inventory.hpp

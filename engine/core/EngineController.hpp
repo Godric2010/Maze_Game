@@ -41,8 +41,6 @@ namespace Engine::Core {
 
         void Quit() override;
 
-        Renderer::MeshHandle RegisterMesh(const Renderer::MeshAsset& mesh_asset) override;
-
         void RegisterInputMap(Input::InputMap map) override;
 
         void RegisterScene(const std::string& name, SceneManagement::SceneFactory scene_factory) override;

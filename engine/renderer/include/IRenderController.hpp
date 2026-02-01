@@ -4,11 +4,14 @@
 
 #pragma once
 #include "Datatypes.hpp"
+#include "Renderer/IRenderer.hpp"
 
-namespace Engine::Renderer {
-    class IRenderController {
+namespace Engine::Renderer
+{
+    class IRenderController : public IRenderer
+    {
     public:
-        virtual ~IRenderController() = default;
+        ~IRenderController() override = default;
 
         [[nodiscard]] virtual MeshHandle RegisterMesh(const MeshAsset& mesh) const =0;
 

@@ -1,41 +1,50 @@
 #include "SceneManager.hpp"
 
-namespace Engine::SceneManagement {
+namespace Engine::SceneManagement
+{
     SceneManager::SceneManager(IApplication& app,
                                Ecs::ISystemManager& system_manager, Input::IInput& input_manager,
+                               Renderer::IRenderer& renderer,
                                const float screen_width,
-                               const float screen_height) {
+                               const float screen_height)
+    {
         m_active_world = std::make_unique<Ecs::World>();
         m_world_adapter = std::make_unique<SceneWorld>(*m_active_world);
         m_context.emplace(SceneContext{
-                    .app = app,
-                    .scene_manager = *this,
-                    .world = *m_active_world,
-                    .game_world = *m_world_adapter,
-                    .system_manager = system_manager,
-                    .input = input_manager,
-                    .screen_width = screen_width,
-                    .screen_height = screen_height,
-                }
-                );
+                .app = app,
+                .scene_manager = *this,
+                .world = *m_active_world,
+                .game_world = *m_world_adapter,
+                .system_manager = system_manager,
+                .input = input_manager,
+                .renderer = renderer,
+                .screen_width = screen_width,
+                .screen_height = screen_height,
+            }
+        );
 
         m_registry = std::make_unique<SceneRegistry>();
     }
 
-    SceneManager::~SceneManager() {
-        if (m_current_scene) {
+    SceneManager::~SceneManager()
+    {
+        if (m_current_scene)
+        {
             m_current_scene->OnExit();
             m_current_scene.reset();
         }
         m_registry.reset();
     }
 
-    void SceneManager::RegisterScene(const std::string& name, const SceneFactory& scene_factory) const {
+    void SceneManager::RegisterScene(const std::string& name, const SceneFactory& scene_factory) const
+    {
         m_registry->RegisterScene(name, scene_factory);
     }
 
-    void SceneManager::LoadScene(const std::string& name, const SceneArgs& args) {
-        if (auto scene = m_registry->CreateScene(name, args)) {
+    void SceneManager::LoadScene(const std::string& name, const SceneArgs& args)
+    {
+        if (auto scene = m_registry->CreateScene(name, args))
+        {
             m_pending_scene = std::move(scene);
             return;
         }
@@ -43,17 +52,22 @@ namespace Engine::SceneManagement {
         throw std::runtime_error("Failed to load scene: " + name);
     }
 
-    void SceneManager::Update(const float delta_time) {
-        if (m_pending_scene) {
+    void SceneManager::Update(const float delta_time)
+    {
+        if (m_pending_scene)
+        {
             ApplyTransitionToPendingScene();
         }
-        if (m_current_scene) {
+        if (m_current_scene)
+        {
             m_current_scene->Update(delta_time);
         }
     }
 
-    void SceneManager::ApplyTransitionToPendingScene() {
-        if (m_current_scene) {
+    void SceneManager::ApplyTransitionToPendingScene()
+    {
+        if (m_current_scene)
+        {
             m_current_scene->OnExit();
             m_current_scene->UnloadScene();
             m_current_scene.reset();
@@ -73,6 +87,7 @@ namespace Engine::SceneManagement {
             .game_world = *m_world_adapter,
             .system_manager = old_context.system_manager,
             .input = old_context.input,
+            .renderer = old_context.renderer,
             .screen_width = old_context.screen_width,
             .screen_height = old_context.screen_height
         };

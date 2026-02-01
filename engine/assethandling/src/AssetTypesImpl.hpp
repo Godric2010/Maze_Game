@@ -60,10 +60,10 @@ namespace Engine::AssetHandling {
                                                const std::string& asset_name) {
             const auto mesh_content = file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
             if (!mesh_content.Ok()) {
-                throw std::runtime_error("Failed to load mesh asset" + asset_name);
+                throw std::runtime_error("Failed to load mesh asset " + asset_name);
             }
 
-            std::vector<MeshVertex> vertices;
+            std::vector<MeshVertexAsset> vertices;
             std::vector<uint32_t> indices;
             Mesh::MeshImporter::BuildMeshAssetFromObj(mesh_content.value, vertices, indices);
             auto mesh_asset = std::make_shared<MeshAsset>();

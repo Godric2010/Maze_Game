@@ -15,6 +15,8 @@ namespace Engine::Renderer {
 
         ~RenderController() override;
 
+        MeshHandle GetOrLoadMesh(const std::string& file_path) override;
+        
         [[nodiscard]] MeshHandle RegisterMesh(const MeshAsset& mesh) const override;
 
         void UnregisterMesh(const MeshHandle& handle) const override;
@@ -33,6 +35,7 @@ namespace Engine::Renderer {
 
     private:
         Environment::WindowContext m_window_context;
+        AssetHandling::AssetHandler* m_asset_handler;
         std::unique_ptr<RenderFramework::IRenderer> m_renderer;
         std::vector<UiDrawAsset> m_debug_draw_assets;
     };

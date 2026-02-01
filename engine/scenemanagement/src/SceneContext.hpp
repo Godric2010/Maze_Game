@@ -7,6 +7,7 @@
 #include "SystemManager.hpp"
 #include "SceneWorld.hpp"
 #include "Input/IInput.hpp"
+#include "Renderer/IRenderer.hpp"
 #include "Scene/ISceneManager.hpp"
 
 namespace Engine::SceneManagement {
@@ -17,6 +18,7 @@ namespace Engine::SceneManagement {
         SceneWorld& game_world;
         Ecs::ISystemManager& system_manager;
         Input::IInput& input;
+        Renderer::IRenderer& renderer;
         float screen_width;
         float screen_height;
     };

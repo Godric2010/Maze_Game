@@ -13,7 +13,6 @@ namespace Gameplay {
     };
 
     struct GameSceneSettings {
-        MeshHandler* mesh_handler;
         Difficulty difficulty;
     };
 
@@ -31,7 +30,6 @@ namespace Gameplay {
 
     private:
         std::unique_ptr<Mazegenerator::MazeBuilder> m_maze_builder;
-        MeshHandler* m_mesh_handler;
         Difficulty m_difficulty;
 
 

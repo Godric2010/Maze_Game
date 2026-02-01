@@ -1,9 +1,8 @@
 #pragma once
-#include <format>
 #include "DebugGridDrawer.hpp"
 #include "MazeAlgorithm.hpp"
 #include "SceneWorld.hpp"
-#include "../MeshHandler.hpp"
+#include "Renderer/Types.hpp"
 
 namespace Gameplay::Mazegenerator {
     class MazeBuilder {

@@ -1,5 +1,6 @@
 #include "MazeBuilder.hpp"
 
+#include <format>
 #include <ostream>
 
 #include "Collider.hpp"

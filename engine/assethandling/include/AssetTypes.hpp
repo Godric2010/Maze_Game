@@ -22,14 +22,14 @@ namespace Engine::AssetHandling {
         std::vector<uint8_t> bytes;
     };
 
-    struct MeshVertex {
+    struct MeshVertexAsset {
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 uv;
     };
 
     struct MeshAsset : Asset {
-        std::vector<MeshVertex> vertices;
+        std::vector<MeshVertexAsset> vertices;
         std::vector<uint32_t> indices;
     };
 }

@@ -12,6 +12,7 @@ add_library(Interface INTERFACE
         include/Ecs/ISystem.hpp
         include/Ecs/Types.hpp
         include/Renderer/Types.hpp
+        include/Renderer/IRenderer.hpp
 )
 
 target_link_libraries(Interface INTERFACE glm::glm)

@@ -10,12 +10,10 @@
 
 namespace Gameplay {
     GameEndScene::GameEndScene(const GameEndShowData game_end_show_data) {
-        m_mesh_handler = game_end_show_data.mesh_handler;
         m_time_to_completion = game_end_show_data.time_to_completion;
     }
 
     GameEndScene::~GameEndScene() {
-        m_mesh_handler = nullptr;
     }
 
     void GameEndScene::OnStart() {
@@ -34,7 +32,7 @@ namespace Gameplay {
                 auto button_clicked = std::any_cast<Engine::Commands::UI::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
                 if (button_id == m_back_to_main_menu_button_id) {
-                    SceneManager().LoadScene("MainMenu", Engine::SceneManagement::SceneArgs{.payload = m_mesh_handler});
+                    SceneManager().LoadScene("MainMenu", Engine::SceneManagement::SceneArgs{});
                 }
             }
         }

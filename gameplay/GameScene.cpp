@@ -17,13 +17,11 @@
 
 namespace Gameplay {
     GameScene::GameScene(const GameSceneSettings settings) {
-        m_mesh_handler = settings.mesh_handler;
         m_difficulty = settings.difficulty;
         m_is_paused = false;
     }
 
     GameScene::~GameScene() {
-        m_mesh_handler = nullptr;
         m_maze_builder.reset();
     }
 
@@ -54,7 +52,6 @@ namespace Gameplay {
                 SceneManager().LoadScene("GameEnd",
                                          Engine::SceneManagement::SceneArgs{
                                              .payload = GameEndShowData{
-                                                 .mesh_handler = m_mesh_handler,
                                                  .time_to_completion = m_time_passed,
                                              }
                                          }
@@ -67,7 +64,7 @@ namespace Gameplay {
                 if (button_id == 1) {
                     Resume();
                 } else if (button_id == 2) {
-                    SceneManager().LoadScene("MainMenu", Engine::SceneManagement::SceneArgs{.payload = m_mesh_handler});
+                    SceneManager().LoadScene("MainMenu", Engine::SceneManagement::SceneArgs{});
                 } else if (button_id == 3) {
                     Application().Quit();
                 }
@@ -80,10 +77,13 @@ namespace Gameplay {
     }
 
     void GameScene::CreateMaze() {
+        auto floor_tile = Renderer().GetOrLoadMesh("FloorTile.obj");
+        auto wall_tile = Renderer().GetOrLoadMesh("WallTile.obj");
+        auto key_mesh = Renderer().GetOrLoadMesh("Key.obj");
         m_maze_builder = std::make_unique<Mazegenerator::MazeBuilder>(&World(),
-                                                                      m_mesh_handler->GetFloorMesh(),
-                                                                      m_mesh_handler->GetWallMesh(),
-                                                                      m_mesh_handler->GetKeyMesh(),
+                                                                      floor_tile,
+                                                                      wall_tile,
+                                                                      key_mesh, 
                                                                       true
                 );
         int width = 0;

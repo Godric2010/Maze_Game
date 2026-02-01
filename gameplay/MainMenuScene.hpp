@@ -1,6 +1,5 @@
 #pragma once
 #include "IScene.hpp"
-#include "MeshHandler.hpp"
 #include "ui/RectTransform.hpp"
 
 namespace Gameplay {
@@ -11,7 +10,7 @@ namespace Gameplay {
 
     class MainMenuScene : public Engine::SceneManagement::IScene {
     public:
-        explicit MainMenuScene(MeshHandler *mesh_handler);
+        explicit MainMenuScene();
 
         ~MainMenuScene() override;
 
@@ -39,9 +38,6 @@ namespace Gameplay {
         glm::vec4 m_button_highlight_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.3f);
         glm::vec4 m_button_click_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.8f);
         glm::vec4 m_button_disabled_color = glm::vec4(0.0f, 0.0f, 0.0f, 0.1f);
-
-        //temp:
-        MeshHandler *m_mesh_handler;
 
         void SetupCamera() const;
 

@@ -6,18 +6,21 @@
 #include "Scene/ISceneManager.hpp"
 #include "Scene/SceneArgs.hpp"
 
-namespace Engine::SceneManagement {
-    class SceneManager : public ISceneManager {
+namespace Engine::SceneManagement
+{
+    class SceneManager : public ISceneManager
+    {
     public:
-        explicit SceneManager(IApplication &app,
-                              Ecs::ISystemManager &system_manager, Input::IInput &input_manager,
+        explicit SceneManager(IApplication& app,
+                              Ecs::ISystemManager& system_manager, Input::IInput& input_manager,
+                              Renderer::IRenderer& renderer,
                               float screen_width, float screen_height);
 
         ~SceneManager() override;
 
-        void RegisterScene(const std::string &name, const SceneFactory &scene_factory) const;
+        void RegisterScene(const std::string& name, const SceneFactory& scene_factory) const;
 
-        void LoadScene(const std::string &name, const SceneArgs &args) override;
+        void LoadScene(const std::string& name, const SceneArgs& args) override;
 
         void Update(float delta_time);
 

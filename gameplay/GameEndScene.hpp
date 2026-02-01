@@ -1,10 +1,8 @@
 #pragma once
 #include "IScene.hpp"
-#include "MeshHandler.hpp"
 
 namespace Gameplay {
     struct GameEndShowData {
-        MeshHandler *mesh_handler;
         float time_to_completion;
     };
 
@@ -21,7 +19,6 @@ namespace Gameplay {
         void OnExit() override;
 
     private:
-        MeshHandler *m_mesh_handler;
         float m_time_to_completion;
 
         const int m_back_to_main_menu_button_id = 1;
