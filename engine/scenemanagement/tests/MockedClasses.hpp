@@ -2,6 +2,7 @@
 #include <IApplication.hpp>
 #include <ISystemManager.hpp>
 #include <Input/IInput.hpp>
+#include <Renderer/IRenderer.hpp>
 
 class FakeApplication : public Engine::IApplication {
 public:
@@ -12,10 +13,6 @@ public:
     }
 
     void SetInitialScene(const std::string& name, const Engine::SceneManagement::SceneArgs& args) override {
-    }
-
-    Engine::Renderer::MeshHandle RegisterMesh(const Engine::Renderer::MeshAsset& mesh_asset) override {
-        return 0;
     }
 
     void RegisterInputMap(Engine::Input::InputMap map) override {
@@ -54,4 +51,13 @@ public:
 
     void DeregisterForSystemCommands(const std::string& subscriber_name) override {
     }
+};
+
+class FakeRenderer : public Engine::Renderer::IRenderer
+{
+    public:
+         Engine::Renderer::MeshHandle GetOrLoadMesh(const std::string& file_path) override
+         {
+             return 0;
+         }
 };

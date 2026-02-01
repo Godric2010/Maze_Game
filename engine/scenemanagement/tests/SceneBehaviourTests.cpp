@@ -74,12 +74,14 @@ TEST_CASE("SceneBehaviourTests - Scene Loading - World instance gets rebuild cle
     FakeApplication app{};
     FakeInput input{};
     FakeSystemManager system_manager{};
+    FakeRenderer renderer{};
     last_scene_instance_id = 0;
 
     auto scene_manager = SceneManager(
             app,
             system_manager,
             input,
+            renderer,
             1280,
             720
             );
@@ -124,10 +126,12 @@ TEST_CASE("ISceneTests - Initialized Scene has context") {
     FakeApplication app{};
     FakeInput input{};
     FakeSystemManager system_manager{};
+    FakeRenderer renderer{};
     auto scene_manager = SceneManager(
             app,
             system_manager,
             input,
+            renderer,
             1280,
             720
             );
@@ -141,6 +145,7 @@ TEST_CASE("ISceneTests - Initialized Scene has context") {
         .game_world = *world_adapter,
         .system_manager = system_manager,
         .input = input,
+        .renderer = renderer,
         .screen_width = 1280,
         .screen_height = 720,
     };

@@ -29,11 +29,14 @@ static Engine::SceneManagement::SceneManager BuildSceneManager() {
     FakeApplication app{};
     FakeInput input{};
     FakeSystemManager system_manager{};
+    FakeRenderer renderer{};
+    
 
     return Engine::SceneManagement::SceneManager(
             app,
             system_manager,
             input,
+            renderer,
             1280,
             720
             );
@@ -92,11 +95,13 @@ TEST_CASE("SceneManagerTests - Switch Scene but loaded two scenes before updatin
     FakeApplication app{};
     FakeInput input{};
     FakeSystemManager system_manager{};
+    FakeRenderer renderer{};
 
     auto scene_manager = Engine::SceneManagement::SceneManager(
             app,
             system_manager,
             input,
+            renderer,
             1280,
             720
             );
@@ -127,11 +132,13 @@ TEST_CASE("SceneManagerTests - Update but no scene is loaded") {
     FakeApplication app{};
     FakeInput input{};
     FakeSystemManager system_manager{};
+    FakeRenderer renderer{};
 
     auto scene_manager = Engine::SceneManagement::SceneManager(
             app,
             system_manager,
             input,
+            renderer,
             1280,
             720
             );
