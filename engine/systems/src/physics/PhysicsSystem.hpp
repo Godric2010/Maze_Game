@@ -19,10 +19,10 @@ namespace Engine::Systems::Physics {
 
         void Initialize() override;
 
-        void Run(float delta_time) override;
+        void Run(float fixed_delta_time) override;
 
     private:
-        const float m_epsilon = 1e-6f;
+        const float m_epsilon = 1e-12f;
 
         Transform::TransformCache* m_transform_cache = nullptr;
         std::unique_ptr<Engine::Physics::Collision::ColliderCache> m_collider_cache;

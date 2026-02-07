@@ -25,7 +25,9 @@ namespace Engine::Ecs {
 
         void RegisterSystems(World* world, Input::IInput* input) override;
 
-        void RunSystems(float delta_time) override;
+        void PreFixed(float delta_time) override;
+        void FixedUpdateSystems(float fixed_dt) override;
+        void UpdateSystems(float delta_time) override;
 
         void RegisterForSystemCommands(std::string subscriber_name,
                                        std::function<void(std::vector<std::any>)> command_callback) override;

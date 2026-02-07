@@ -59,9 +59,19 @@ namespace Engine::SceneManagement
         {
         }
 
+        void PreFixed(float delta_time) const
+        {
+            m_context->system_manager.PreFixed(delta_time);
+        }
+
+        void FixedUpdate(const float fixed_dt) const
+        {
+            m_context->system_manager.FixedUpdateSystems(fixed_dt);
+        }
+
         void Update(const float delta_time) const
         {
-            m_context->system_manager.RunSystems(delta_time);
+            m_context->system_manager.UpdateSystems(delta_time);
         }
 
         virtual void OnExit() = 0;

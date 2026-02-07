@@ -3,26 +3,31 @@
 #include <iostream>
 #include <ostream>
 
+#include "Rigidbody.hpp"
 #include "SystemWorld.hpp"
 #include "Transform.hpp"
 #include "../commands/PauseCommand.hpp"
 
-namespace Gameplay::Systems {
+namespace Gameplay::Systems
+{
     PlayerControllerSystem::PlayerControllerSystem() = default;
 
     PlayerControllerSystem::~PlayerControllerSystem() = default;
 
-    void PlayerControllerSystem::Initialize() {
+    void PlayerControllerSystem::Initialize()
+    {
     }
 
-    void PlayerControllerSystem::Run(const float delta_time) {
+    void PlayerControllerSystem::Run(const float delta_time)
+    {
         const auto input = Input()->GetInput();
         if (!input.IsMapActive("PlayerInputMap"))
             return;
 
         const auto player_entity = GameWorld()->GetEntityByName("Player");
 
-        if (input.HasAction("pause")) {
+        if (input.HasAction("pause"))
+        {
             std::cout << "Enabled pause!" << std::endl;
 
             const auto pause_command = Commands::PauseCommand(true);
@@ -35,9 +40,12 @@ namespace Gameplay::Systems {
 
     void PlayerControllerSystem::CalculateNewTransform(const Engine::Ecs::EntityId player_entity,
                                                        const Engine::Input::InputBuffer& input,
-                                                       const float delta_time) const {
+                                                       const float delta_time) const
+    {
         const auto transform = GameWorld()->GetComponent<Engine::Components::Transform>(player_entity);
-        if (transform == nullptr) {
+        const auto rigidbody = GameWorld()->GetComponent<Engine::Components::Rigidbody>(player_entity);
+        if (transform == nullptr || rigidbody == nullptr)
+        {
             return;
         }
 
@@ -62,20 +70,24 @@ namespace Gameplay::Systems {
         const auto right_vec = normalize(cross(forward_vec, glm::vec3(0, 1, 0)));
 
         auto camera_displacement = glm::vec3(0.0f);
-        if (input.HasAction("forward")) {
+        if (input.HasAction("forward"))
+        {
             camera_displacement.z -= 1;
         }
-        if (input.HasAction("backwards")) {
+        if (input.HasAction("backwards"))
+        {
             camera_displacement.z += 1;
         }
-        if (input.HasAction("left")) {
+        if (input.HasAction("left"))
+        {
             camera_displacement.x += 1;
         }
-        if (input.HasAction("right")) {
+        if (input.HasAction("right"))
+        {
             camera_displacement.x -= 1;
         }
-        const glm::vec3 pos_delta = right_vec * camera_displacement.x + forward_vec * camera_displacement.z;
-
-        transform->SetPosition(transform->GetPosition() + (pos_delta * m_movement_speed) * delta_time);
+        const glm::vec3 move_delta = right_vec * camera_displacement.x + forward_vec * camera_displacement.z;
+        const glm::vec3 desired_velocity = move_delta * m_movement_speed;
+        rigidbody->SetVelocity(desired_velocity);
     }
 } // namespace

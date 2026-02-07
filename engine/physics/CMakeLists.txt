@@ -21,6 +21,8 @@ add_library(Physics STATIC
         tests/TypeUtiliesTests.cpp
         include/math/TypeUtils.hpp
         include/collision/CollisionUtils.hpp
+        src/collision/BroadphaseBuilder.cpp
+        include/collision/BroadphaseBuilder.hpp
 )
 
 if (COMMAND enable_coverage)

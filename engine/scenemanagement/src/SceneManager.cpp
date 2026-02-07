@@ -52,12 +52,29 @@ namespace Engine::SceneManagement
         throw std::runtime_error("Failed to load scene: " + name);
     }
 
-    void SceneManager::Update(const float delta_time)
+    void SceneManager::PreFixed(float delta_time) 
     {
         if (m_pending_scene)
         {
             ApplyTransitionToPendingScene();
         }
+        
+        if (m_current_scene)
+        {
+            m_current_scene->PreFixed(delta_time);
+        }
+    }
+
+    void SceneManager::FixedUpdate(const float fixed_dt) const
+    {
+        if (m_current_scene)
+        {
+            m_current_scene->FixedUpdate(fixed_dt);
+        }
+    }
+
+    void SceneManager::Update(const float delta_time) const
+    {
         if (m_current_scene)
         {
             m_current_scene->Update(delta_time);

@@ -137,9 +137,11 @@ TEST_CASE("SystemManger::Register - Register different systems and check their e
     auto system_manager = new SystemManager(systems, nullptr, nullptr);
     system_manager->RegisterSystems(world, nullptr);
 
-    system_manager->RunSystems(0.0f);
+    system_manager->UpdateSystems(0.0f);
 
-    const std::vector<std::string> expected = {"A", "B", "C", "D", "E"};
+    // System A is not expected, since input is running in the pre-fixed loop
+    // System B is not expected, since Physics are updated in fixed update
+    const std::vector<std::string> expected = {"C", "D", "E"};
     REQUIRE(trace == expected);
 }
 
@@ -161,10 +163,10 @@ TEST_CASE("SystemManager - Push Commands from System to World") {
                                                   callback_called++;
                                               }
             );
-    system_manager->RunSystems(0.0f);
+    system_manager->UpdateSystems(0.0f);
     REQUIRE(callback_called == 1);
     system_manager->DeregisterForSystemCommands("TestSubscription");
-    system_manager->RunSystems(0.0f);
+    system_manager->UpdateSystems(0.0f);
     REQUIRE(callback_called == 1);
     delete system_manager;
 }
@@ -198,22 +200,22 @@ TEST_CASE("SystemManager - Receive Pysics Events in Systems") {
             );
     world->GetPhysicsEventBuffer()->EnqueueEvent(PhysicsEvent{PhysicsEventType::OnCollisionEnter, 0, 0});
     world->ApplyEngineEvents();
-    system_manager->RunSystems(0.0f);
+    system_manager->UpdateSystems(0.0f);
     REQUIRE(callback_value == "CollisionEnter");
 
     world->GetPhysicsEventBuffer()->EnqueueEvent(PhysicsEvent{PhysicsEventType::OnCollisionExit, 0, 0});
     world->ApplyEngineEvents();
-    system_manager->RunSystems(0.0f);
+    system_manager->UpdateSystems(0.0f);
     REQUIRE(callback_value == "CollisionExit");
 
     world->GetPhysicsEventBuffer()->EnqueueEvent(PhysicsEvent{PhysicsEventType::OnTriggerEnter, 0, 0});
     world->ApplyEngineEvents();
-    system_manager->RunSystems(0.0f);
+    system_manager->UpdateSystems(0.0f);
     REQUIRE(callback_value == "TriggerEnter");
 
     world->GetPhysicsEventBuffer()->EnqueueEvent(PhysicsEvent{PhysicsEventType::OnTriggerExit, 0, 0});
     world->ApplyEngineEvents();
-    system_manager->RunSystems(0.0f);
+    system_manager->UpdateSystems(0.0f);
     REQUIRE(callback_value == "TriggerExit");
 
     delete system_manager;

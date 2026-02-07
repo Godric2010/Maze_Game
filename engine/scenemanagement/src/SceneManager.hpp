@@ -22,7 +22,11 @@ namespace Engine::SceneManagement
 
         void LoadScene(const std::string& name, const SceneArgs& args) override;
 
-        void Update(float delta_time);
+        void PreFixed(float delta_time);
+
+        void FixedUpdate(float fixed_dt) const;
+
+        void Update(float delta_time) const;
 
     private:
         std::optional<SceneContext> m_context;

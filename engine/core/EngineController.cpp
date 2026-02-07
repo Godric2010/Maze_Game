@@ -65,16 +65,33 @@ namespace Engine::Core
 
     void EngineController::Update()
     {
-        auto last_time = std::chrono::high_resolution_clock::now();
-        const auto app_events = m_input_manager->GetAppEventSnapshot();
+        using clock = std::chrono::high_resolution_clock;
+        auto last_time = clock::now();
 
-        while (!app_events->is_closed && m_is_running)
+        constexpr float fixed_delta_time = 1.0f / 60.0f;
+        constexpr float max_frame_dt = 0.25f;
+        constexpr int max_steps_per_frame = 8;
+
+        float accumulator = 0.0f;
+
+        while (m_is_running)
         {
-            auto now = std::chrono::high_resolution_clock::now();
-            const float delta_time = std::chrono::duration_cast<std::chrono::duration<float>>(now - last_time).count();
+            const auto app_events = m_input_manager->GetAppEventSnapshot();
+            if (app_events->is_closed)
+            {
+                break;
+            }
+
+            const auto now = clock::now();
+            float frame_dt = std::chrono::duration_cast<std::chrono::duration<float>>(now - last_time).count();
             last_time = now;
 
-            m_fps_accumulator += delta_time;
+            if (frame_dt >= max_frame_dt)
+            {
+                frame_dt = max_frame_dt;
+            }
+
+            m_fps_accumulator += frame_dt;
             m_fps_frames++;
             if (m_fps_accumulator >= 1.0f)
             {
@@ -87,9 +104,25 @@ namespace Engine::Core
                                        m_services->GetService<Renderer::IRenderController>()->GetDrawCalls()
             );
 
+            accumulator += frame_dt;
+
+            m_scene_manager->PreFixed(frame_dt);
+            int steps = 0;
+            while (accumulator >= fixed_delta_time && steps < max_steps_per_frame)
+            {
+                m_scene_manager->FixedUpdate(fixed_delta_time);
+                accumulator -= fixed_delta_time;
+                ++steps;
+            }
+
+            if (steps == max_steps_per_frame)
+            {
+                accumulator = 0.0f;
+            }
+
             m_debug_console->PushToFrame();
             m_input_manager->UpdateInput();
-            m_scene_manager->Update(delta_time);
+            m_scene_manager->Update(frame_dt);
             m_window->SwapBuffers();
         }
     }

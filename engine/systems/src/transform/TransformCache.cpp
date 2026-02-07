@@ -42,8 +42,9 @@ namespace Engine::Systems::Transform {
             throw std::runtime_error("Transform cache does not exist for entity " + std::to_string(entity));
         }
 
-        const auto cache_val = m_transform_cache[entity];
-        return cache_val.last_version != transform->GetVersion();
+        const auto cache_val = m_transform_cache[entity].last_version;
+        const auto transform_version = transform->GetVersion();
+        return cache_val != transform_version;
     }
 
     void TransformCache::SetValue(const uint64_t entity, const Components::Transform* transform,
