@@ -1,4 +1,4 @@
-find_package(glad CONFIG REQUIRED)
+find_package(GLEW CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 add_library(Renderer STATIC
@@ -19,7 +19,7 @@ add_library(Renderer STATIC
         src/RenderControllerFactory.cpp
         include/RenderControllerFactory.hpp)
 
-target_link_libraries(Renderer PUBLIC Interface PRIVATE Environment AssetHandling glad::glad glm::glm spdlog::spdlog)
+target_link_libraries(Renderer PUBLIC Interface PRIVATE Environment AssetHandling GLEW::GLEW glm::glm spdlog::spdlog)
 
 target_include_directories(Renderer
         PUBLIC

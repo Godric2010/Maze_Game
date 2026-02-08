@@ -3,21 +3,26 @@
 #include <iostream>
 #include <ostream>
 
-namespace Engine::Environment {
-    SDLWindow::SDLWindow() {
+namespace Engine::Environment
+{
+    SDLWindow::SDLWindow()
+    {
         m_window = nullptr;
         m_context = {};
     };
 
     SDLWindow::~SDLWindow() = default;
 
-    void SDLWindow::Setup(WindowConfig config) {
-        if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    void SDLWindow::Setup(WindowConfig config)
+    {
+        if (SDL_Init(SDL_INIT_VIDEO) != 0)
+        {
             throw std::runtime_error("SDL_Init failed: " + std::string(SDL_GetError()));
         }
 
         uint32_t windowFlags = SDL_WINDOW_ALLOW_HIGHDPI;
-        switch (config.renderApi) {
+        switch (config.renderApi)
+        {
             case API::OpenGL:
                 windowFlags |= SDL_WINDOW_OPENGL;
                 SetupOpenGL();
@@ -36,19 +41,22 @@ namespace Engine::Environment {
                                     config.width,
                                     config.height,
                                     windowFlags);
-        if (m_window == nullptr) {
+        if (m_window == nullptr)
+        {
             throw std::runtime_error(SDL_GetError());
         }
 
         m_context.width = config.width;
         m_context.height = config.height;
         SDL_GL_GetDrawableSize(m_window, &m_context.drawableWidth, &m_context.drawableHeight);
-        switch (config.renderApi) {
+        switch (config.renderApi)
+        {
             case API::OpenGL:
                 m_context.openGLContext = OpenGLContext{
                     .windowHandle = m_window,
                     .context = SDL_GL_CreateContext(m_window),
                 };
+                SDL_GL_MakeCurrent(m_context.openGLContext.windowHandle, m_context.openGLContext.context);
                 SDL_GL_SetSwapInterval(0);
                 break;
             case API::Vulkan:
@@ -57,14 +65,17 @@ namespace Engine::Environment {
         }
     }
 
-    WindowContext &SDLWindow::GetWindowContext() {
+    WindowContext& SDLWindow::GetWindowContext()
+    {
         return m_context;
     }
 
-    bool SDLWindow::PollEvents_old() {
+    bool SDLWindow::PollEvents_old()
+    {
         SDL_Event event;
         SDL_PollEvent(&event);
-        switch (event.type) {
+        switch (event.type)
+        {
             case SDL_QUIT:
                 return false;
             default:
@@ -72,26 +83,32 @@ namespace Engine::Environment {
         }
     }
 
-    void SDLWindow::SwapBuffers() {
+    void SDLWindow::SwapBuffers()
+    {
         SDL_GL_SwapWindow(m_window);
     }
 
-    void SDLWindow::Shutdown() {
+    void SDLWindow::Shutdown()
+    {
         SDL_DestroyWindow(m_window);
     }
 
-    void SDLWindow::PollEvents(const std::function<void(const SDL_Event &)> &callback) {
+    void SDLWindow::PollEvents(const std::function<void(const SDL_Event&)>& callback)
+    {
         SDL_Event event;
         SDL_PollEvent(&event);
         callback(event);
     }
 
 
-    void SDLWindow::SetupOpenGL() {
+    void SDLWindow::SetupOpenGL()
+    {
         SDL_GL_ResetAttributes();
 
-        auto ok = [](int rc, const char *name) {
-            if (rc != 0) {
+        auto ok = [](int rc, const char* name)
+        {
+            if (rc != 0)
+            {
                 throw std::runtime_error(
                     std::string("SDL_GL_SetAttribute failed for") + name + ": " + std::string(SDL_GetError()));
             }
@@ -104,5 +121,7 @@ namespace Engine::Environment {
         ok(SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1), "Double buffering");
         ok(SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24), "Depth size");
         ok(SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8), "Stencil size");
+        ok(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1), "Multisample buffers");
+        ok(SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8), "Multisamples");
     }
 }

@@ -6,9 +6,11 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     OpenGlRenderer::OpenGlRenderer(const Environment::WindowContext& window_context,
                                    AssetHandling::AssetHandler* asset_handler)
     {
-        if (!gladLoadGLLoader(SDL_GL_GetProcAddress))
+        glewExperimental = GL_TRUE;
+        const GLenum rc = glewInit();
+        if (rc != GLEW_OK)
         {
-            throw std::runtime_error("Failed to initialize OpenGL context");
+            throw std::runtime_error("Failed to initialize GLEW");
         }
 
         m_window_size = {window_context.width, window_context.height};
@@ -45,6 +47,10 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         {
             glUniformBlockBinding(shader_program.value(), cam_block_index, camera_binding_point);
         }
+        glEnable(GL_MULTISAMPLE);
+        int samples = 0;
+        glGetIntegerv(GL_SAMPLES, &samples);
+        spdlog::info("MSAA samples: {}", samples);
     }
 
     void OpenGlRenderer::PrepareFrame(const CameraAsset& camera_asset)

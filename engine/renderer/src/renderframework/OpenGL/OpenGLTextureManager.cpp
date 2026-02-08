@@ -1,6 +1,7 @@
 #include "OpenGLTextureManager.hpp"
 
-#include <glad/glad.h>
+#include <iostream>
+#include <GL/glew.h>
 #include <ranges>
 #include <stdexcept>
 #include <string>
@@ -43,9 +44,18 @@ namespace Engine::Renderer::RenderFramework::OpenGl
                      texture_asset.pixels.data());
         glGenerateMipmap(GL_TEXTURE_2D);
 
-
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, 8);
+        if (GLEW_EXT_texture_filter_anisotropic)
+        {
+            float max_aniso = 0.0f;
+            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_aniso);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_aniso);
+            if (glGetError() != GL_NO_ERROR)
+            {
+                spdlog::warn("aniso error");
+            }
+        }
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.5f);
+        
         m_textures.emplace(texture_handle, texture);
         return texture_handle;
     }

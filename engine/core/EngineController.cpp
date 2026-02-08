@@ -65,7 +65,7 @@ namespace Engine::Core
 
     void EngineController::Update()
     {
-        using clock = std::chrono::high_resolution_clock;
+        using clock = std::chrono::steady_clock;
         auto last_time = clock::now();
 
         constexpr float fixed_delta_time = 1.0f / 60.0f;

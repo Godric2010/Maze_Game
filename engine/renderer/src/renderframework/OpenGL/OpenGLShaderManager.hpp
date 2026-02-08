@@ -1,7 +1,7 @@
 #pragma once
 #include <optional>
 #include <unordered_map>
-#include <glad/glad.h>
+#include <GL/glew.h>
 #include <spdlog/spdlog.h>
 
 #include "AssetHandler.hpp"
