@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 env:
-  VCPKG_COMMIT: 1d86fc5936d17f8fc77b17634627b746e2f7145a
+  VCPKG_COMMIT: 8f28427e139dc155faa17ce0055dd612019866ba
 
 jobs:
   build-test-linux:
@@ -34,19 +34,30 @@ jobs:
         with:
           cmakeVersion: 3.31.x
           ninjaVersion: latest
-          
+
       - name: Install Linux build deps (vcpkg prerequisites)
         shell: bash
         run: |
           sudo apt-get update -y
           sudo apt-get install -y \
-            build-essential ninja-build pkg-config \
-            autoconf automake libtool m4 \
-            libltdl-dev gettext \
-            perl python3 \
-            curl zip unzip tar \
-            git ca-certificates
-          
+          build-essential ninja-build pkg-config \
+          autoconf automake libtool m4 \
+          libltdl-dev gettext \
+          perl python3 \
+          curl zip unzip tar \
+          git ca-certificates
+
+      - name: Install Linux system deps (X11/Wayland/OpenGL/Audio)
+        shell: bash
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            xorg-dev \
+            libx11-dev libxext-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev \
+            libgl1-mesa-dev mesa-common-dev \
+            libwayland-dev wayland-protocols libxkbcommon-dev \
+            libasound2-dev libpulse-dev
+
       - name: Setup vcpkg (manifest + cache)
         uses: lukka/run-vcpkg@v11
         with:
@@ -67,7 +78,14 @@ jobs:
                 echo "----- $f -----"
                 tail -n 200 "$f" || true
               done
-      
+         
+      - name: Debug vcpkg install
+        if: failure()
+        shell: bash
+        run: |
+          vcpkg version || true
+          vcpkg install --debug --verbose || true
+
       - name: Configure (CMake, Ninja + Clang)
         shell: bash
         run: |
