@@ -4,7 +4,7 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/norm.hpp>
 #include <memory>
-#include <spdlog/spdlog.h>
+// #include <spdlog/spdlog.h>
 
 #include "Collider.hpp"
 #include "Rigidbody.hpp"

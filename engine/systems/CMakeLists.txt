@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.31)
 
 find_package(glm)
+find_package(spdlog CONFIG REQUIRED)
 
 add_library(Systems STATIC
         src/physics/PhysicsSystem.cpp
@@ -29,7 +30,7 @@ add_library(Systems STATIC
         include/CacheManagerFactory.hpp
 )
 
-target_link_libraries(Systems PUBLIC Components Renderer Text Physics glm::glm Input )
+target_link_libraries(Systems PUBLIC Components Renderer Text Physics spdlog::spdlog glm::glm Input)
 
 target_include_directories(Systems
         PUBLIC

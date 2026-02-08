@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.31)
 
 find_package(glm CONFIG REQUIRED)
+find_package(spdlog CONFIG)
 
 add_library(Physics STATIC
         include/math/Types.hpp
@@ -26,7 +27,7 @@ add_library(Physics STATIC
 )
 
 if (COMMAND enable_coverage)
-    message("Physics- Enable coverage")
+    message("Physics- Enable coverage") 
     enable_coverage(Physics)
 endif ()
 
@@ -36,7 +37,7 @@ target_include_directories(Physics
         $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(Physics PUBLIC Interface PRIVATE glm::glm)
+target_link_libraries(Physics PUBLIC Interface PRIVATE glm::glm spdlog::spdlog)
 
 if (BUILD_TESTING)
     include(testing)
