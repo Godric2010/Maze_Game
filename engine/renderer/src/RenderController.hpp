@@ -17,6 +17,8 @@ namespace Engine::Renderer {
 
         MeshHandle GetOrLoadMesh(const std::string& file_path) override;
         
+        TextureHandle GetOrLoadTexture(const std::string& file_path) override;
+        
         [[nodiscard]] MeshHandle RegisterMesh(const MeshAsset& mesh) const override;
 
         void UnregisterMesh(const MeshHandle& handle) const override;

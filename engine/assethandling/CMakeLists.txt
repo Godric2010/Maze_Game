@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.31)
 
 find_package(glm)
+find_package(lodepng)
 
 add_library(AssetHandling STATIC
         include/AssetHandler.hpp
@@ -9,9 +10,11 @@ add_library(AssetHandling STATIC
         src/AssetTypesImpl.hpp
         src/Mesh/MeshImporter.cpp
         src/Mesh/MeshImporter.hpp
+        src/Textures/TextureImporter.cpp
+        src/Textures/TextureImporter.hpp
 )
 
-target_link_libraries(AssetHandling PUBLIC Environment glm::glm)
+target_link_libraries(AssetHandling PUBLIC Environment glm::glm PRIVATE lodepng )
 
 target_include_directories(AssetHandling
         PUBLIC

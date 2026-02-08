@@ -84,4 +84,9 @@ public:
     {
         return 0;
     }
+    
+    Engine::Renderer::TextureHandle GetOrLoadTexture(const std::string& file_path) override
+    {
+        return 0;
+    }
 };

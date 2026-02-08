@@ -2,6 +2,7 @@
 // Created by Godri on 8/10/2025.
 //
 
+#include <spdlog/spdlog.h>
 #include "RenderController.hpp"
 
 #include "PrimitiveMeshes.hpp"
@@ -65,6 +66,29 @@ namespace Engine::Renderer
 
         const auto mesh_handle = m_renderer->AddMesh(engine_mesh_asset);
         return mesh_handle;
+    }
+
+    TextureHandle RenderController::GetOrLoadTexture(const std::string& file_path)
+    {
+        auto texture_asset = m_asset_handler->LoadAsset<AssetHandling::TextureAsset>(file_path);
+        TextureAsset render_texture_asset{};
+        render_texture_asset.width = texture_asset->width;
+        render_texture_asset.height = texture_asset->height;
+        render_texture_asset.pixels = texture_asset->bytes;
+        switch (texture_asset->format)
+        {
+            case AssetHandling::PixelFormat::RGB8:
+                render_texture_asset.format = PixelFormat::RGB8;
+                break;
+            case AssetHandling::PixelFormat::RGBA8:
+                render_texture_asset.format = PixelFormat::RGBA8;
+                break;
+            default:
+                throw std::runtime_error("Unknown pixel format");
+        }
+
+        const auto texture_handle = RegisterTexture(render_texture_asset);
+        return texture_handle;
     }
 
     MeshHandle RenderController::RegisterMesh(const MeshAsset& mesh) const

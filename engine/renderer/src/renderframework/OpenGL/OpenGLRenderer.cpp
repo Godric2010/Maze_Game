@@ -1,10 +1,13 @@
 #include "OpenGLRenderer.hpp"
 #include <vector>
 
-namespace Engine::Renderer::RenderFramework::OpenGl {
+namespace Engine::Renderer::RenderFramework::OpenGl
+{
     OpenGlRenderer::OpenGlRenderer(const Environment::WindowContext& window_context,
-                                   AssetHandling::AssetHandler* asset_handler) {
-        if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
+                                   AssetHandling::AssetHandler* asset_handler)
+    {
+        if (!gladLoadGLLoader(SDL_GL_GetProcAddress))
+        {
             throw std::runtime_error("Failed to initialize OpenGL context");
         }
 
@@ -20,7 +23,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
     OpenGlRenderer::~OpenGlRenderer() = default;
 
-    void OpenGlRenderer::Initialize() {
+    void OpenGlRenderer::Initialize()
+    {
         m_shader_manager->CompileShaders();
 
         glGenBuffers(1, &m_camera_ubo);
@@ -31,17 +35,20 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         glBindBufferBase(GL_UNIFORM_BUFFER, camera_binding_point, m_camera_ubo);
 
         const auto shader_program = m_shader_manager->GetShaderProgram("mesh_opaque");
-        if (!shader_program.has_value()) {
+        if (!shader_program.has_value())
+        {
             throw std::runtime_error("Shader program not found");
         }
 
         const GLuint cam_block_index = glGetUniformBlockIndex(shader_program.value(), "Camera");
-        if (cam_block_index != GL_INVALID_INDEX) {
+        if (cam_block_index != GL_INVALID_INDEX)
+        {
             glUniformBlockBinding(shader_program.value(), cam_block_index, camera_binding_point);
         }
     }
 
-    void OpenGlRenderer::PrepareFrame(const CameraAsset& camera_asset) {
+    void OpenGlRenderer::PrepareFrame(const CameraAsset& camera_asset)
+    {
         glBindBuffer(GL_UNIFORM_BUFFER, m_camera_ubo);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, static_cast<GLsizeiptr>(sizeof(CameraAsset)), &camera_asset);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -51,36 +58,62 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
     }
 
 
-    void OpenGlRenderer::DrawFrame(DrawAssets& draw_assets) {
+    void OpenGlRenderer::DrawFrame(DrawAssets& draw_assets)
+    {
         m_draw_calls = 0;
         // Draw meshes in first pass
-        std::vector<std::vector<const MeshDrawAsset*> > buckets(m_mesh_manager->Size());
-        for (const auto& draw_asset: draw_assets.mesh_draw_assets) {
+        std::vector<std::vector<const MeshDrawAsset*>> buckets(m_mesh_manager->Size());
+        for (const auto& draw_asset : draw_assets.mesh_draw_assets)
+        {
             buckets[draw_asset.mesh].push_back(&draw_asset);
         }
         glDisable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CW);
+
         const auto shader_program = m_shader_manager->GetShaderProgram("mesh_opaque");
-        if (!shader_program.has_value()) {
+        if (!shader_program.has_value())
+        {
             throw std::runtime_error("Shader program not found");
         }
         const GLint u_model = glGetUniformLocation(shader_program.value(), "u_Model");
         const GLint u_color = glGetUniformLocation(shader_program.value(), "u_Color");
+        const GLint u_texture = glGetUniformLocation(shader_program.value(), "u_Texture");
+        const GLint u_use_texture = glGetUniformLocation(shader_program.value(), "u_UseTexture");
         glUseProgram(shader_program.value());
 
-        for (MeshHandle h = 0; h < buckets.size(); ++h) {
+        for (MeshHandle h = 0; h < buckets.size(); ++h)
+        {
             const auto& list = buckets[h];
-            if (list.empty()) {
+            if (list.empty())
+            {
                 continue;
             }
 
             const auto& mesh = m_mesh_manager->GetMesh(h);
             glBindVertexArray(mesh.VAO);
 
-            for (const MeshDrawAsset* draw_asset: list) {
+            glUniform1i(u_texture, 0);
+            for (const MeshDrawAsset* draw_asset : list)
+            {
                 glUniformMatrix4fv(u_model, 1, GL_FALSE, glm::value_ptr(draw_asset->model));
                 glUniform4fv(u_color, 1, glm::value_ptr(draw_asset->color));
+
+                if (draw_asset->texture != 0)
+                {
+                    glUniform1i(u_use_texture, GL_TRUE);
+                    const auto& texture = m_texture_manager->GetTexture(draw_asset->texture);
+                    glActiveTexture(GL_TEXTURE0);
+                    glBindTexture(GL_TEXTURE_2D, texture.texture_id);
+                }
+                else
+                {
+                    glUniform1i(u_use_texture, GL_FALSE);
+                }
+
 
                 glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
                 m_draw_calls++;
@@ -96,20 +129,22 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         const auto ui_shader_program = m_shader_manager->GetShaderProgram("ui");
-        if (!shader_program.has_value()) {
+        if (!shader_program.has_value())
+        {
             throw std::runtime_error("Shader program not found");
         }
         glUseProgram(ui_shader_program.value());
 
         const GLint u_proj = glGetUniformLocation(ui_shader_program.value(), "u_Proj");
         const GLint u_ui_color = glGetUniformLocation(ui_shader_program.value(), "u_Color");
-        const GLint u_use_texture = glGetUniformLocation(ui_shader_program.value(), "u_UseTexture");
+        const GLint u_ui_use_texture = glGetUniformLocation(ui_shader_program.value(), "u_UseTexture");
         const GLint u_ui_texture = glGetUniformLocation(ui_shader_program.value(), "u_Texture");
 
         glUniform1i(u_ui_texture, 0);
 
         const glm::mat4 ortho = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.0f, 0.0f);
-        for (const auto& ui_draw_asset: draw_assets.ui_draw_assets) {
+        for (const auto& ui_draw_asset : draw_assets.ui_draw_assets)
+        {
             glm::mat4 proj = ortho * ui_draw_asset.model;
 
             const auto& mesh = m_mesh_manager->GetMesh(ui_draw_asset.mesh);
@@ -117,13 +152,16 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
             glUniformMatrix4fv(u_proj, 1, GL_FALSE, value_ptr(proj));
             glUniform4fv(u_ui_color, 1, glm::value_ptr(ui_draw_asset.color));
 
-            if (ui_draw_asset.texture != 0) {
-                glUniform1i(u_use_texture, GL_TRUE);
+            if (ui_draw_asset.texture != 0)
+            {
+                glUniform1i(u_ui_use_texture, GL_TRUE);
                 const auto& texture = m_texture_manager->GetTexture(ui_draw_asset.texture);
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, texture.texture_id);
-            } else {
-                glUniform1i(u_use_texture, GL_FALSE);
+            }
+            else
+            {
+                glUniform1i(u_ui_use_texture, GL_FALSE);
             }
 
             glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
@@ -133,23 +171,28 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         glUseProgram(0);
     }
 
-    MeshHandle OpenGlRenderer::AddMesh(const MeshAsset& mesh) {
+    MeshHandle OpenGlRenderer::AddMesh(const MeshAsset& mesh)
+    {
         return m_mesh_manager->AddMesh(mesh);
     }
 
-    void OpenGlRenderer::RemoveMesh(const MeshHandle& mesh_handle) {
+    void OpenGlRenderer::RemoveMesh(const MeshHandle& mesh_handle)
+    {
         m_mesh_manager->RemoveMesh(mesh_handle);
     }
 
-    TextureHandle OpenGlRenderer::AddTexture(const TextureAsset& texture) {
+    TextureHandle OpenGlRenderer::AddTexture(const TextureAsset& texture)
+    {
         return m_texture_manager->AddTexture(texture);
     }
 
-    void OpenGlRenderer::RemoveTexture(const TextureHandle& texture_handle) {
+    void OpenGlRenderer::RemoveTexture(const TextureHandle& texture_handle)
+    {
         m_texture_manager->RemoveTexture(texture_handle);
     }
 
-    void OpenGlRenderer::Shutdown() {
+    void OpenGlRenderer::Shutdown()
+    {
         m_shader_manager.reset();
         m_mesh_manager->Clear();
         m_texture_manager->Clear();

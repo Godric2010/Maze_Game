@@ -26,10 +26,18 @@ namespace Engine::Renderer
         std::vector<uint32_t> indices;
     };
 
+    enum class PixelFormat
+    {
+        R8,
+        RGB8,
+        RGBA8,
+    };
+
     struct TextureAsset
     {
-        float width;
-        float height;
+        uint32_t width;
+        uint32_t height;
+        PixelFormat format;
         std::vector<uint8_t> pixels;
     };
 }

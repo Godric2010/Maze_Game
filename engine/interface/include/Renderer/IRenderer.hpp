@@ -15,5 +15,7 @@ namespace Engine::Renderer
         virtual ~IRenderer() = default;
         
         virtual MeshHandle GetOrLoadMesh(const std::string& file_path) = 0;
+        
+        virtual TextureHandle GetOrLoadTexture(const std::string& file_path) = 0;
     };
 }

@@ -7,8 +7,9 @@
 #include "../renderer/include/Datatypes.hpp"
 
 namespace Engine::Components{
-    struct Mesh {
+    struct MeshRenderer {
         Renderer::MeshHandle mesh;
+        Renderer::TextureHandle texture;
         glm::vec4 color;
     };
 }

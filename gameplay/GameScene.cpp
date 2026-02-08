@@ -97,10 +97,12 @@ namespace Gameplay
         auto floor_tile = Renderer().GetOrLoadMesh("FloorTile.obj");
         auto wall_tile = Renderer().GetOrLoadMesh("WallTile.obj");
         auto key_mesh = Renderer().GetOrLoadMesh("Key.obj");
+        auto texture_test = Renderer().GetOrLoadTexture("test.png");
         m_maze_builder = std::make_unique<Mazegenerator::MazeBuilder>(&World(),
                                                                       floor_tile,
                                                                       wall_tile,
                                                                       key_mesh,
+                                                                      texture_test,
                                                                       true
         );
         int width = 0;
@@ -168,7 +170,7 @@ namespace Gameplay
                                       .SetAspectRatio(aspect_ratio)
                                       .SetFieldOfView(60)
                                       .SetNearClip(0.01f)
-                                      .SetFarClip(1000.0f);
+                                      .SetFarClip(100.0f);
 
         World().AddComponent<Engine::Components::Camera>(player, camera_component);
 

@@ -21,6 +21,7 @@ namespace Engine::Renderer {
         MeshHandle mesh;
         glm::mat4 model;
         glm::vec4 color;
+        TextureHandle texture;
     };
 
     struct UiDrawAsset {

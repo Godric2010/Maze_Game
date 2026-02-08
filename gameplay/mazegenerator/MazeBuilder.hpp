@@ -4,11 +4,14 @@
 #include "SceneWorld.hpp"
 #include "Renderer/Types.hpp"
 
-namespace Gameplay::Mazegenerator {
-    class MazeBuilder {
+namespace Gameplay::Mazegenerator
+{
+    class MazeBuilder
+    {
     public:
         MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Renderer::MeshHandle floor_mesh,
                     Engine::Renderer::MeshHandle wall_mesh, Engine::Renderer::MeshHandle key_mesh,
+                    Engine::Renderer::TextureHandle texture,
                     bool enable_debug_view);
 
         ~MazeBuilder() = default;
@@ -25,9 +28,10 @@ namespace Gameplay::Mazegenerator {
         Engine::Renderer::MeshHandle m_floor_mesh;
         Engine::Renderer::MeshHandle m_wall_mesh;
         Engine::Renderer::MeshHandle m_key_mesh;
+        Engine::Renderer::TextureHandle m_texture;
 
         void CreateCellFloorTile(
-                const CellIndex& cell_idx, const glm::vec4& tile_color) const;
+            const CellIndex& cell_idx, const glm::vec4& tile_color) const;
 
         void CreateWallFloorTile(const CellIndex& cell_idx,
                                  const glm::vec4& tile_color, const Direction& direction) const;

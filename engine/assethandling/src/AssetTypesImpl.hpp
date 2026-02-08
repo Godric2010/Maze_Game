@@ -8,6 +8,7 @@
 #include "IFileReader.hpp"
 #include "../include/AssetTypes.hpp"
 #include "Mesh/MeshImporter.hpp"
+#include "Textures/TextureImporter.hpp"
 
 namespace Engine::AssetHandling {
     template<typename T>
@@ -70,6 +71,23 @@ namespace Engine::AssetHandling {
             mesh_asset->vertices = vertices;
             mesh_asset->indices = indices;
             return mesh_asset;
+        }
+    };
+    
+    template<>
+    struct AssetTraits<TextureAsset>
+    {
+        inline static const std::string dir_name = std::string("textures");
+        static std::shared_ptr<TextureAsset> Load(Environment::Files::IFileReader* file_reader, const std::string& asset_name)
+        {
+            const auto texture_content = file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
+            if (!texture_content.Ok())
+            {
+                throw std::runtime_error("Failed to load texture asset " + asset_name);
+            }
+            auto texture_asset = std::make_shared<TextureAsset>();
+            Textures::TextureImporter::BuildTextureFromFile(*texture_asset, texture_content.value.data, asset_name);
+            return texture_asset;
         }
     };
 }
