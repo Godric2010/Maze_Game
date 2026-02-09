@@ -99,10 +99,12 @@ namespace Engine::Core
                 m_fps_accumulator = 0.0f;
                 m_fps_frames = 0;
                 m_debug_console->PushValue("FPS:", static_cast<size_t>(fps));
+                spdlog::info("FPS: {}", fps);
+
+                m_debug_console->PushValue("Draws:",
+                                           m_services->GetService<Renderer::IRenderController>()->GetDrawCalls()
+                );
             }
-            m_debug_console->PushValue("Draws:",
-                                       m_services->GetService<Renderer::IRenderController>()->GetDrawCalls()
-            );
 
             accumulator += frame_dt;
 
