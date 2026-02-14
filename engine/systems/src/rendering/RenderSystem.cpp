@@ -18,6 +18,7 @@ namespace Engine::Systems
     {
         const auto* render_controller = ServiceLocator()->GetService<Renderer::IRenderController>();
         m_render_controller = render_controller;
+        m_draw_assets = Renderer::DrawAssets{};
     }
 
     void RenderSystem::Run(float delta_time)
@@ -26,15 +27,12 @@ namespace Engine::Systems
         const auto camera_transform = EcsWorld()->GetComponent<Components::Transform>(cameraEntity);
         const auto camera_asset = CreateCameraAsset(cameraEntity, camera_transform);
 
-        const std::vector<Renderer::MeshDrawAsset> mesh_draw_assets = CreateDrawAssets();
-        const std::vector<Renderer::UiDrawAsset> ui_draw_assets = CreateUiDrawAssets();
-
-        Renderer::DrawAssets draw_assets{};
-        draw_assets.mesh_draw_assets = mesh_draw_assets;
-        draw_assets.ui_draw_assets = ui_draw_assets;
+        ClearDrawAssets();
+        FillMeshDrawAssets();
+        FillUiDrawAssets();
 
         m_render_controller->BeginFrame(camera_asset);
-        m_render_controller->SubmitFrame(draw_assets);
+        m_render_controller->SubmitFrame(m_draw_assets);
     }
 
     Renderer::CameraAsset RenderSystem::CreateCameraAsset(const Ecs::EntityId& camera_entity,
@@ -50,11 +48,17 @@ namespace Engine::Systems
         return camera_asset;
     }
 
-    std::vector<Renderer::MeshDrawAsset> RenderSystem::CreateDrawAssets() const
+    void RenderSystem::ClearDrawAssets()
+    {
+        m_draw_assets.mesh_draw_assets.clear();
+        m_draw_assets.ui_draw_assets.clear();
+    }
+
+    void RenderSystem::FillMeshDrawAssets()
     {
         const auto mesh_renderer_components = EcsWorld()->GetComponentsOfType<Components::MeshRenderer>();
-        auto draw_assets = std::vector<Renderer::MeshDrawAsset>(mesh_renderer_components.size());
-
+        auto& mesh_assets = m_draw_assets.mesh_draw_assets;
+        mesh_assets.reserve(mesh_renderer_components.size());
         for (size_t i = 0; i < mesh_renderer_components.size(); ++i)
         {
             const auto [mesh_renderer, meshEntity] = mesh_renderer_components[i];
@@ -65,15 +69,15 @@ namespace Engine::Systems
             mesh_draw_assets.texture = mesh_renderer->texture;
             mesh_draw_assets.color = mesh_renderer->color;
 
-            draw_assets[i] = mesh_draw_assets;
+            mesh_assets.emplace_back(mesh_draw_assets);
         }
-        return draw_assets;
     }
 
-    std::vector<Renderer::UiDrawAsset> RenderSystem::CreateUiDrawAssets() const
+    void RenderSystem::FillUiDrawAssets()
     {
         const auto rect_transforms = EcsWorld()->GetComponentsOfType<Components::UI::RectTransform>();
-        auto ui_draw_assets = std::vector<Renderer::UiDrawAsset>(rect_transforms.size());
+        auto& ui_draw_assets = m_draw_assets.ui_draw_assets;
+        ui_draw_assets.reserve(rect_transforms.size());
 
         for (size_t i = 0; i < rect_transforms.size(); ++i)
         {
@@ -88,6 +92,8 @@ namespace Engine::Systems
             {
                 ui_draw_asset.color = image_component->color;
                 ui_draw_asset.mesh = static_cast<Renderer::MeshHandle>(0);
+                ui_draw_assets.emplace_back(ui_draw_asset);
+                continue;
             }
 
             const auto button_component = EcsWorld()->GetComponent<Components::UI::Button>(entity);
@@ -95,6 +101,8 @@ namespace Engine::Systems
             {
                 ui_draw_asset.color = Cache()->GetUiCache()->GetButtonElement(entity).color;
                 ui_draw_asset.mesh = static_cast<Renderer::MeshHandle>(0);
+                ui_draw_assets.emplace_back(ui_draw_asset);
+                continue;
             }
 
             const auto text_component = EcsWorld()->GetComponent<Components::UI::Text>(entity);
@@ -107,11 +115,11 @@ namespace Engine::Systems
                 }
 
                 ui_draw_asset.color = glm::vec4(1, 1, 1, 1);
-                ui_draw_asset.mesh = Cache()->GetUiCache()->GetTextElement(entity).text_mesh.value();
-                ui_draw_asset.texture = Cache()->GetUiCache()->GetTextElement(entity).texture_handle.value();
+                ui_draw_asset.mesh = text_element.text_mesh.value();
+                ui_draw_asset.texture = text_element.texture_handle.value();
+                ui_draw_assets.emplace_back(ui_draw_asset);
+                continue;
             }
-
-            ui_draw_assets[i] = ui_draw_asset;
         }
 
         std::ranges::sort(ui_draw_assets,
@@ -120,7 +128,5 @@ namespace Engine::Systems
                               return a.layer < b.layer;
                           }
         );
-
-        return ui_draw_assets;
     }
 } // namespace

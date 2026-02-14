@@ -5,8 +5,10 @@
 
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])
 
-namespace Engine::Systems {
-    class RenderSystem : public Ecs::IEngineSystem {
+namespace Engine::Systems
+{
+    class RenderSystem : public Ecs::IEngineSystem
+    {
     public:
         RenderSystem();
 
@@ -18,12 +20,15 @@ namespace Engine::Systems {
 
     private:
         const Renderer::IRenderController* m_render_controller{};
+        Renderer::DrawAssets m_draw_assets;
 
         Renderer::CameraAsset CreateCameraAsset(const Ecs::EntityId& camera_entity,
                                                 const Components::Transform* camera_transform) const;
 
-        [[nodiscard]] std::vector<Renderer::MeshDrawAsset> CreateDrawAssets() const;
+        void ClearDrawAssets();
 
-        [[nodiscard]] std::vector<Renderer::UiDrawAsset> CreateUiDrawAssets() const;
+        [[nodiscard]] void FillMeshDrawAssets();
+
+        [[nodiscard]] void FillUiDrawAssets();
     };
 } // namespace
