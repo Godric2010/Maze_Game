@@ -74,10 +74,11 @@ namespace Engine::Core
 
         float accumulator = 0.0f;
 
+        auto last_mouse_delta = glm::vec2(0);
         while (m_is_running)
         {
             const auto app_events = m_input_manager->GetAppEventSnapshot();
-            if (app_events->is_closed)
+            if (app_events.is_closed)
             {
                 break;
             }
@@ -95,6 +96,10 @@ namespace Engine::Core
             m_fps_frames++;
             if (m_fps_accumulator >= 1.0f)
             {
+                spdlog::info("dt avg: {}, mouse delta last: {}, {}", m_fps_accumulator / m_fps_frames,
+                             last_mouse_delta.x, last_mouse_delta.y);
+
+
                 const auto fps = m_fps_frames / m_fps_accumulator;
                 m_fps_accumulator = 0.0f;
                 m_fps_frames = 0;
@@ -108,6 +113,8 @@ namespace Engine::Core
 
             accumulator += frame_dt;
 
+            m_input_manager->UpdateInput();
+            last_mouse_delta = m_input_manager->GetInput().mouse_delta;
             m_scene_manager->PreFixed(frame_dt);
             int steps = 0;
             while (accumulator >= fixed_delta_time && steps < max_steps_per_frame)
@@ -123,7 +130,6 @@ namespace Engine::Core
             }
 
             m_debug_console->PushToFrame();
-            m_input_manager->UpdateInput();
             m_scene_manager->Update(frame_dt);
             m_window->SwapBuffers();
         }

@@ -70,19 +70,6 @@ namespace Engine::Environment
         return m_context;
     }
 
-    bool SDLWindow::PollEvents_old()
-    {
-        SDL_Event event;
-        SDL_PollEvent(&event);
-        switch (event.type)
-        {
-            case SDL_QUIT:
-                return false;
-            default:
-                return true;
-        }
-    }
-
     void SDLWindow::SwapBuffers()
     {
         SDL_GL_SwapWindow(m_window);
@@ -96,8 +83,10 @@ namespace Engine::Environment
     void SDLWindow::PollEvents(const std::function<void(const SDL_Event&)>& callback)
     {
         SDL_Event event;
-        SDL_PollEvent(&event);
-        callback(event);
+        while (SDL_PollEvent(&event))
+        {
+            callback(event);
+        }
     }
 
 

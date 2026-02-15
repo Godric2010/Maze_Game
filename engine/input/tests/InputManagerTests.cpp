@@ -9,12 +9,9 @@
 using namespace Engine::Input;
 
 class FakeEnvInput : public Engine::Environment::IEnvInput {
-    bool m_faulty_snapshot = false;
 
 public:
-    explicit FakeEnvInput(const bool faulty_snapshot_enabled = false) {
-        m_faulty_snapshot = faulty_snapshot_enabled;
-    }
+    explicit FakeEnvInput() = default;
 
     void PrepareFrame() override {
     }
@@ -25,26 +22,22 @@ public:
     void ShowMouseCursor(bool visible) override {
     }
 
-    Engine::Environment::AppEventsSnapshot* GetAppEventSnapshot() override {
-        const auto app_snapshot = new Engine::Environment::AppEventsSnapshot{
+    Engine::Environment::AppEventsSnapshot GetAppEventSnapshot() override {
+        const auto app_snapshot = Engine::Environment::AppEventsSnapshot{
             .is_closed = false,
             .has_focus = true,
         };
         return app_snapshot;
     }
 
-    Engine::Environment::InputSnapshot* GetInputSnapshot() override {
-        if (m_faulty_snapshot) {
-            return nullptr;
-        }
-
+    Engine::Environment::InputSnapshot GetInputSnapshot() override {
         std::unordered_set keys_down = {Engine::Environment::Key::Space};
         std::unordered_set keys_up = {Engine::Environment::Key::A};
         std::unordered_set keys_held = {Engine::Environment::Key::Space};
         std::unordered_set mouse_buttons_down = {Engine::Environment::MouseButton::Left};
         std::unordered_set mouse_buttons_up = {Engine::Environment::MouseButton::Right};
         std::unordered_set mouse_buttons_held = {Engine::Environment::MouseButton::Left};
-        const auto input_snapshot = new Engine::Environment::InputSnapshot(glm::vec2(0.1, 0.3),
+        const auto input_snapshot = Engine::Environment::InputSnapshot(glm::vec2(0.1, 0.3),
                                                                            glm::vec2(400, 658),
                                                                            keys_down,
                                                                            keys_held,
@@ -171,17 +164,6 @@ TEST_CASE("InputManagerTests - Disable input map that was not active before") {
     REQUIRE_THROWS(input_manager->DisableInputMap("InputMap_A"));
 }
 
-TEST_CASE("InputManagerTests - Faulty Env Input") {
-    constexpr bool faulty_env_input = true;
-    auto fake_env_input = std::make_unique<FakeEnvInput>(faulty_env_input);
-    const auto input_manager = std::make_unique<InputManager>(std::move(fake_env_input));
-    const auto input_map_a = CreateInputMap("InputMap_A");
-    input_manager->AddInputMapping(input_map_a);
-    input_manager->EnableInputMap("InputMap_A");
-
-    REQUIRE_THROWS(input_manager->UpdateInput());
-}
-
 TEST_CASE("InputManagerTests - No active input map") {
     auto fake_env_input = std::make_unique<FakeEnvInput>();
     auto input_manager = std::make_unique<InputManager>(std::move(fake_env_input));
@@ -200,6 +182,6 @@ TEST_CASE("InputManagerTests - AppSnapshot") {
     const auto input_manager = std::make_unique<InputManager>(std::move(fake_env_input));
 
     const auto app_snapshot = input_manager->GetAppEventSnapshot();
-    REQUIRE(app_snapshot->has_focus);
-    REQUIRE_FALSE(app_snapshot->is_closed);
+    REQUIRE(app_snapshot.has_focus);
+    REQUIRE_FALSE(app_snapshot.is_closed);
 }

@@ -48,21 +48,27 @@ namespace Gameplay::Systems
         {
             return;
         }
+        const auto cam_rotation = transform->GetRotation();
+        if (!m_initialized)
+        {
+            m_pitch_target = cam_rotation.x;
+            m_yaw_target = cam_rotation.y;
+            m_initialized = true;
+        }
 
         // Calculate camera rotation
         const auto mouse_delta = input.mouse_delta;
-        const float yaw_delta = -mouse_delta.x * m_sensitivity;
-        const float pitch_delta = -mouse_delta.y * m_sensitivity;
+        m_yaw_target += -mouse_delta.x * m_sensitivity; 
+        m_pitch_target += -mouse_delta.y * m_sensitivity; 
+        m_pitch_target = glm::clamp(m_pitch_target, m_min_pitch, m_max_pitch);
 
-        const auto cam_rotation = transform->GetRotation();
-        const float pitch = glm::clamp(cam_rotation.x + pitch_delta, m_min_pitch, m_max_pitch);
-        const float yaw = cam_rotation.y + yaw_delta;
-        auto new_camera_rotation = glm::vec3(pitch, yaw, cam_rotation.z);
-
-        float smoothing = 5.0f;
+        float smoothing = 10.0f;
         float t = 1.0f - std::exp(-smoothing * delta_time);
-        new_camera_rotation = mix(cam_rotation, new_camera_rotation, t);
 
+        float pitch = glm::mix(cam_rotation.x, m_pitch_target, t);
+        float yaw = glm::mix(cam_rotation.y, m_yaw_target, t);
+
+        auto new_camera_rotation = glm::vec3(pitch, yaw, cam_rotation.z);
         transform->SetRotation(new_camera_rotation);
 
         // Calculate camera position

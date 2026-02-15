@@ -27,8 +27,8 @@ namespace Engine::Systems
 
         void ClearDrawAssets();
 
-        [[nodiscard]] void FillMeshDrawAssets();
+        void FillMeshDrawAssets();
 
-        [[nodiscard]] void FillUiDrawAssets();
+        void FillUiDrawAssets();
     };
 } // namespace

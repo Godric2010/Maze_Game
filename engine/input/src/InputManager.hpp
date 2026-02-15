@@ -15,7 +15,7 @@ namespace Engine::Input {
 
         void UpdateInput() override;
 
-        Environment::AppEventsSnapshot* GetAppEventSnapshot() override;
+        Environment::AppEventsSnapshot GetAppEventSnapshot() override;
 
         void AddInputMapping(const InputMap& input_map) override;
 

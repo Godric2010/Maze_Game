@@ -129,8 +129,8 @@ namespace Engine::Environment {
 
         virtual void ShowMouseCursor(bool visible) = 0;
 
-        virtual AppEventsSnapshot* GetAppEventSnapshot() = 0;
+        virtual AppEventsSnapshot GetAppEventSnapshot() = 0;
 
-        virtual InputSnapshot* GetInputSnapshot() = 0;
+        virtual InputSnapshot GetInputSnapshot() = 0;
     };
 }

@@ -90,11 +90,6 @@ namespace Engine::Environment {
         virtual WindowContext &GetWindowContext() = 0;
 
         /**
-         * Poll the events of this window for further processing
-         */
-        virtual bool PollEvents_old() = 0;
-
-        /**
          * Swap the window buffers
          */
         virtual void SwapBuffers() = 0;

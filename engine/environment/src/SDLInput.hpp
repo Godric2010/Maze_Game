@@ -15,9 +15,9 @@ namespace Engine::Environment {
 
         void ShowMouseCursor(bool visible) override;
 
-        AppEventsSnapshot* GetAppEventSnapshot() override;
+        AppEventsSnapshot GetAppEventSnapshot() override;
 
-        InputSnapshot* GetInputSnapshot() override;
+        InputSnapshot GetInputSnapshot() override;
 
         void PumpInput() override;
 
@@ -33,8 +33,9 @@ namespace Engine::Environment {
         std::unordered_set<MouseButton> m_buttons_down;
         std::unordered_set<MouseButton> m_buttons_up;
         std::unordered_set<MouseButton> m_buttons_held_pressed;
-        glm::vec2 m_current_mouse_pos;
-        glm::vec2 m_current_mouse_delta;
-        glm::vec2 m_last_mouse_pos{};
+        glm::vec2 m_current_mouse_pos{};
+        glm::vec2 m_current_mouse_delta{};
+        bool m_relative_mode = false;
+        bool m_ignore_mouse_delta = false;
     };
 } // namespace
