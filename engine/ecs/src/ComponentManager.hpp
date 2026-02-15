@@ -7,6 +7,7 @@
 #include <vector>
 #include <memory>
 #include <typeindex>
+#include <GL/glew.h>
 
 #include "../include/ComponentEventBus.hpp"
 #include "ComponentPool.hpp"
@@ -96,10 +97,14 @@ namespace Engine::Ecs {
         template<typename T>
         const TypedComponentPool<T> *GetPoolConst() const;
 
+        static ComponentTypeId NextComponentTypeId();
+        
+        template<class T>
+        static ComponentTypeId TypeId();
 
-        mutable std::unordered_map<ComponentTypeId, std::unique_ptr<IComponentPool> > m_pool;
+
+        std::vector<std::unique_ptr<IComponentPool>> m_pools;
         std::unordered_map<ComponentTypeId, ComponentMeta> m_component_meta;
-        std::unordered_map<std::type_index, ComponentTypeId> m_type_index_to_id;
     };
 } // ECS
 

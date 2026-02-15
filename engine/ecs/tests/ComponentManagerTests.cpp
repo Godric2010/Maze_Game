@@ -146,7 +146,7 @@ TEST_CASE_METHOD(ComponentManagerFixture,
                  "[ecs][fast]") {
     component_manager.RegisterType<TestClassA>();
     const auto component_type_id = component_manager.GetComponentTypeId<TestClassA>();
-    REQUIRE(component_type_id != 0);
+    REQUIRE(component_type_id == 0);
     const auto component_meta = component_manager.GetComponentMeta(component_type_id);
     REQUIRE(component_meta.size == sizeof(TestClassA));
 

@@ -1,7 +1,9 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include <stdexcept>
 #include "EntityManager.hpp"
+
 
 namespace Engine::Ecs {
     template<class T>
@@ -25,7 +27,7 @@ namespace Engine::Ecs {
     class TypedComponentPool final : public IComponentPool {
     public:
         explicit TypedComponentPool(std::size_t component_type_id) {
-            m_pool = new ComponentPool<T>(component_type_id);
+            m_pool = std::make_unique<ComponentPool<T>>(component_type_id);
         }
 
         T &Add(EntityId entity, T value) { return m_pool->Add(entity, value); }
@@ -46,7 +48,7 @@ namespace Engine::Ecs {
         [[nodiscard]] std::size_t Count() const { return m_pool->Count(); };
 
     private:
-        ComponentPool<T> *m_pool;
+        std::unique_ptr<ComponentPool<T>> m_pool;
     };
 
     template<class T>
