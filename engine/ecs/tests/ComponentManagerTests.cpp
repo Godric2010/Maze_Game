@@ -155,5 +155,4 @@ TEST_CASE_METHOD(ComponentManagerFixture,
     REQUIRE_NOTHROW(component_manager.AddById(entity_a, component_type_id, &test_class_a));
 
     REQUIRE_THROWS(component_manager.GetComponentTypeId<TestClassB>());
-
 }

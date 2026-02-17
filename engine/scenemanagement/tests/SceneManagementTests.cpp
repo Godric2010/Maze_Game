@@ -1,3 +1,7 @@
+#include <freetype/config/public-macros.h>
+
+#include "Collider.hpp"
+#include "MeshRenderer.hpp"
 #if __APPLE__
 #include <catch2/catch_test_macros.hpp>
 #else

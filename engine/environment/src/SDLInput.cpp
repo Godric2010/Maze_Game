@@ -38,14 +38,14 @@ namespace Engine::Environment
     {
         if (visible)
         {
-            SDL_SetRelativeMouseMode(SDL_FALSE);
+            // SDL_SetRelativeMouseMode(SDL_FALSE);
             m_relative_mode = false;
             SDL_ShowCursor(SDL_ENABLE);
         }
         else
         {
             SDL_ShowCursor(SDL_DISABLE);
-            SDL_SetRelativeMouseMode(SDL_TRUE);
+            // SDL_SetRelativeMouseMode(SDL_TRUE);
             m_relative_mode = true;
             m_ignore_mouse_delta = true;
         }

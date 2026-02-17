@@ -171,6 +171,7 @@ namespace Engine::Ecs
     {
         for (const auto& component_pool : m_pools)
         {
+            if (!component_pool) continue;
             if (!component_pool->Contains(entity))
             {
                 continue;
@@ -228,6 +229,7 @@ namespace Engine::Ecs
         std::vector<ComponentMeta> components;
         for (const auto& pool : m_pools)
         {
+            if (!pool) continue;
             if (!pool->Contains(entity))
             {
                 continue;
