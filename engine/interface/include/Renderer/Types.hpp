@@ -11,6 +11,7 @@ namespace Engine::Renderer
 {
     using MeshHandle = uint32_t;
     using TextureHandle = uint32_t;
+    using MaterialHandle = uint32_t;
 
 
     struct MeshVertex
@@ -39,5 +40,26 @@ namespace Engine::Renderer
         uint32_t height;
         PixelFormat format;
         std::vector<uint8_t> pixels;
+    };
+    
+    enum class MaterialType
+    {
+        Opaque,
+        UI,
+    };
+    
+    struct MaterialTexture{
+        TextureHandle texture;
+        glm::vec2 uv_scale;
+        glm::vec2 tiling;
+    };
+    
+    struct MaterialAsset
+    {
+        size_t shader_id;
+        MaterialType type;
+        MaterialTexture albedo_texture;
+        glm::vec4 albedo_color;
+        
     };
 }

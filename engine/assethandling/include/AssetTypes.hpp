@@ -52,4 +52,25 @@ namespace Engine::AssetHandling
         PixelFormat format;
         std::vector<uint8_t> bytes;
     };
+
+    enum class RenderState
+    {
+        Opaque,
+        UI,
+    };
+
+    struct MaterialTexture
+    {
+        std::string name;
+        glm::vec2 uv_scale;
+        glm::vec2 tiling;
+    };
+
+    struct MaterialAsset : Asset
+    {
+        std::string name;
+        std::string shader_name;
+        MaterialTexture albedo_texture;
+        glm::vec4 albedo_color;
+    };
 }
