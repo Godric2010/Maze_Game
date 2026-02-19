@@ -89,4 +89,9 @@ public:
     {
         return 0;
     }
+    
+    Engine::Renderer::MaterialHandle GetOrLoadMaterial(const std::string& file_path) override
+    {
+        return 0;
+    }
 };

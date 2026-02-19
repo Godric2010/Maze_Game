@@ -37,5 +37,8 @@
     "version>=" : "2021-12-04#1"
   }, {
     "name" : "glew"
+  }, {
+    "name" : "tomlplusplus",
+    "version>=" : "3.4.0#1"
   } ]
 }

@@ -4,6 +4,7 @@
 
 #pragma once
 #include <cstdint>
+#include <string>
 #include <vector>
 #include <glm/glm.hpp>
 
@@ -42,7 +43,7 @@ namespace Engine::Renderer
         std::vector<uint8_t> pixels;
     };
     
-    enum class MaterialType
+    enum class RenderType
     {
         Opaque,
         UI,
@@ -56,10 +57,10 @@ namespace Engine::Renderer
     
     struct MaterialAsset
     {
-        size_t shader_id;
-        MaterialType type;
+        std::string shader_name;
+        RenderType type;
         MaterialTexture albedo_texture;
-        glm::vec4 albedo_color;
+        glm::vec4 base_color;
         
     };
 }

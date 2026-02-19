@@ -98,6 +98,7 @@ namespace Gameplay
         auto wall_tile = Renderer().GetOrLoadMesh("WallTile.obj");
         auto key_mesh = Renderer().GetOrLoadMesh("Key.obj");
         auto texture_test = Renderer().GetOrLoadTexture("test.png");
+        auto material_test = Renderer().GetOrLoadMaterial("test.material");
         m_maze_builder = std::make_unique<Mazegenerator::MazeBuilder>(&World(),
                                                                       floor_tile,
                                                                       wall_tile,

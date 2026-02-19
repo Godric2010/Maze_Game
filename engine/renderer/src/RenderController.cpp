@@ -91,6 +91,27 @@ namespace Engine::Renderer
         return texture_handle;
     }
 
+    MaterialHandle RenderController::GetOrLoadMaterial(const std::string& file_path)
+    {
+        auto material_asset = m_asset_handler->LoadAsset<AssetHandling::MaterialAsset>(file_path);
+        MaterialAsset render_material_asset{};
+        render_material_asset.base_color = material_asset->base_color;
+        render_material_asset.shader_name = material_asset->shader_name;
+        render_material_asset.albedo_texture.texture = 0;
+        render_material_asset.albedo_texture.tiling = material_asset->albedo_texture.tiling;
+        render_material_asset.albedo_texture.uv_scale = material_asset->albedo_texture.uv_scale;
+        switch (material_asset->render_state)
+        {
+            case AssetHandling::RenderState::Opaque:
+                render_material_asset.type = RenderType::Opaque;
+                break;
+            case AssetHandling::RenderState::UI:
+                render_material_asset.type = RenderType::UI;
+                break;
+        }
+        return 0;
+    }
+
     MeshHandle RenderController::RegisterMesh(const MeshAsset& mesh) const
     {
         return m_renderer->AddMesh(mesh);

@@ -69,8 +69,9 @@ namespace Engine::AssetHandling
     struct MaterialAsset : Asset
     {
         std::string name;
+        RenderState render_state;
         std::string shader_name;
         MaterialTexture albedo_texture;
-        glm::vec4 albedo_color;
+        glm::vec4 base_color;
     };
 }

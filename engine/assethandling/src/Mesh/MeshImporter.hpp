@@ -11,8 +11,6 @@ namespace Engine::AssetHandling::Mesh
         static void BuildMeshAssetFromObj(const std::string& obj_string,
                                           std::vector<MeshVertexAsset>& vertices,
                                           std::vector<uint32_t>& indices);
-        static void ParseFace(std::istringstream line_stream);
-
     private:
         struct FaceVertexIndex
         {

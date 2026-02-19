@@ -7,6 +7,7 @@
 
 #include "IFileReader.hpp"
 #include "../include/AssetTypes.hpp"
+#include "Materials/MaterialImporter.hpp"
 #include "Mesh/MeshImporter.hpp"
 #include "Textures/TextureImporter.hpp"
 
@@ -88,6 +89,23 @@ namespace Engine::AssetHandling {
             auto texture_asset = std::make_shared<TextureAsset>();
             Textures::TextureImporter::BuildTextureFromFile(*texture_asset, texture_content.value.data, asset_name);
             return texture_asset;
+        }
+    };
+    
+    template<>
+    struct AssetTraits<MaterialAsset>
+    {
+        inline static const std::string dir_name = std::string("materials");
+        static std::shared_ptr<MaterialAsset> Load(Environment::Files::IFileReader* file_reader, const std::string& asset_name)
+        {
+            const auto toml_file_content = file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
+            if (!toml_file_content.Ok())
+            {
+                throw std::runtime_error("Failed to load material asset " + asset_name);
+            }
+            auto material = std::make_shared<MaterialAsset>();
+            Materials::MaterialImporter::BuildMaterialAssetFromFile(*material, toml_file_content.value);
+            return material;
         }
     };
 }
