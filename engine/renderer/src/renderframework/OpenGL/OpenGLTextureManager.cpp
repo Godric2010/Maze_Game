@@ -13,7 +13,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     OpenGLTextureManager::~OpenGLTextureManager() = default;
 
-    TextureHandle OpenGLTextureManager::AddTexture(const TextureAsset& texture_asset)
+    TextureHandle OpenGLTextureManager::AddTexture(const AssetHandling::TextureAsset& texture_asset)
     {
         TextureHandle texture_handle = m_texture_handle;
         ++m_texture_handle;
@@ -55,7 +55,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
             }
         }
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.5f);
-        
+
         m_textures.emplace(texture_handle, texture);
         return texture_handle;
     }

@@ -4,7 +4,9 @@
 
 #pragma once
 #include "Datatypes.hpp"
+#include <memory>
 #include "Renderer/IRenderer.hpp"
+#include "AssetTypes.hpp"
 
 namespace Engine::Renderer
 {
@@ -13,11 +15,11 @@ namespace Engine::Renderer
     public:
         ~IRenderController() override = default;
 
-        [[nodiscard]] virtual MeshHandle RegisterMesh(const MeshAsset& mesh) const =0;
+        [[nodiscard]] virtual MeshHandle RegisterMesh(const AssetHandling::MeshAsset& mesh) const =0;
 
         virtual void UnregisterMesh(const MeshHandle& handle) const = 0;
 
-        [[nodiscard]] virtual TextureHandle RegisterTexture(const TextureAsset& texture) const = 0;
+        [[nodiscard]] virtual TextureHandle RegisterTexture(const AssetHandling::TextureAsset& texture) const = 0;
 
         virtual void UnregisterTexture(const TextureHandle& handle) const = 0;
 

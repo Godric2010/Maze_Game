@@ -1,6 +1,8 @@
 #pragma once
+#include <memory>
 #include <unordered_map>
 
+#include "AssetTypes.hpp"
 #include "Datatypes.hpp"
 #include "OpenGLTexture.hpp"
 
@@ -11,7 +13,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         ~OpenGLTextureManager();
 
-        TextureHandle AddTexture(const TextureAsset &texture_asset);
+        TextureHandle AddTexture(const AssetHandling::TextureAsset &texture_asset);
 
         OpenGLTexture &GetTexture(const TextureHandle &texture_handle);
 

@@ -2,11 +2,13 @@
 
 #include <ranges>
 
-namespace Engine::Debug {
+namespace Engine::Debug
+{
     DebugConsole::DebugConsole(Text::TextController* text_controller, Renderer::IRenderController* render_controller,
                                const Environment::WindowContext& context,
                                const uint32_t column_width) : m_font_handle(0),
-                                                              m_texture_handle(0) {
+                                                              m_texture_handle(0)
+    {
         m_text_controller = text_controller;
         m_render_controller = render_controller;
         m_column_width = static_cast<float>(column_width);
@@ -17,7 +19,7 @@ namespace Engine::Debug {
         m_font_handle = font_handle;
 
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
-        Renderer::TextureAsset texture_asset{};
+        AssetHandling::TextureAsset texture_asset{};
         texture_asset.width = static_cast<float>(width);
         texture_asset.height = static_cast<float>(height);
         texture_asset.pixels = pixels;
@@ -25,7 +27,8 @@ namespace Engine::Debug {
         m_texture_handle = m_render_controller->RegisterTexture(texture_asset);
     }
 
-    DebugConsole::~DebugConsole() {
+    DebugConsole::~DebugConsole()
+    {
         m_text_controller = nullptr;
         m_render_controller = nullptr;
         m_column_width = 0;
@@ -35,8 +38,10 @@ namespace Engine::Debug {
         m_texture_handle = 0;
     }
 
-    void DebugConsole::PushValue(const std::string& label, const size_t value) {
-        if (m_label_id_map.contains(label)) {
+    void DebugConsole::PushValue(const std::string& label, const size_t value)
+    {
+        if (m_label_id_map.contains(label))
+        {
             const auto id = m_label_id_map[label];
             UpdateTextElements(id, std::to_string(value));
             return;
@@ -48,9 +53,11 @@ namespace Engine::Debug {
         m_text_elements.emplace(m_current_label_id, text_element);
     }
 
-    void DebugConsole::PushToFrame() {
+    void DebugConsole::PushToFrame()
+    {
         std::vector<Renderer::UiDrawAsset> draw_assets;
-        for (const auto& [id, text]: m_text_elements) {
+        for (const auto& [id, text] : m_text_elements)
+        {
             const uint8_t row = id;
             auto label_asset = CreateUiDrawAsset(0, row, text.label_mesh);
             auto content_asset = CreateUiDrawAsset(1, row, text.content_mesh);
@@ -61,13 +68,15 @@ namespace Engine::Debug {
         m_render_controller->SubmitDebugInfos(draw_assets);
     }
 
-    void DebugConsole::UpdateTextElements(const uint8_t id, const std::string& content) {
+    void DebugConsole::UpdateTextElements(const uint8_t id, const std::string& content)
+    {
         m_text_elements[id].content = content;
         m_text_elements[id].content_mesh = CreateTextMeshElement(content);
     }
 
     TextElement DebugConsole::CreateTextElement(const std::string& label,
-                                                const std::string& content) const {
+                                                const std::string& content) const
+    {
         TextElement text_element{};
         text_element.label = label;
         text_element.content = content;
@@ -78,22 +87,24 @@ namespace Engine::Debug {
         return text_element;
     }
 
-    TextMeshElement DebugConsole::CreateTextMeshElement(const std::string& text) const {
+    TextMeshElement DebugConsole::CreateTextMeshElement(const std::string& text) const
+    {
         const Text::TextMesh text_mesh = m_text_controller->BuildTextMesh(
-                m_font_handle,
-                text,
-                Text::TextAlignment::Left
-                );
+            m_font_handle,
+            text,
+            Text::TextAlignment::Left
+        );
 
-        std::vector<Renderer::MeshVertex> text_vertices;
-        for (auto& vertex: text_mesh.vertices) {
-            Renderer::MeshVertex mesh_vertex{};
+        std::vector<AssetHandling::MeshVertexAsset> text_vertices;
+        for (auto& vertex : text_mesh.vertices)
+        {
+            AssetHandling::MeshVertexAsset mesh_vertex{};
             mesh_vertex.position = glm::vec3(vertex.x, vertex.y, 0);
             mesh_vertex.uv = glm::vec2(vertex.u, vertex.v);
             text_vertices.push_back(mesh_vertex);
         }
 
-        Renderer::MeshAsset mesh_asset;
+        AssetHandling::MeshAsset mesh_asset;
         mesh_asset.vertices = text_vertices;
         mesh_asset.indices = text_mesh.indices;
 
@@ -107,7 +118,8 @@ namespace Engine::Debug {
     }
 
     Renderer::UiDrawAsset DebugConsole::CreateUiDrawAsset(const uint8_t col, const uint8_t row,
-                                                          const TextMeshElement text_mesh_element) const {
+                                                          const TextMeshElement text_mesh_element) const
+    {
         constexpr float height_offset = 30;
         constexpr float row_offset = 20;
         constexpr uint8_t max_columns = 2;

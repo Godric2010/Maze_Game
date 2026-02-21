@@ -11,7 +11,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
     OpenGlMeshManager::~OpenGlMeshManager() = default;
 
-    MeshHandle OpenGlMeshManager::AddMesh(const MeshAsset &mesh) {
+    MeshHandle OpenGlMeshManager::AddMesh(const AssetHandling::MeshAsset &mesh) {
         const MeshHandle handle = m_mesh_handle;
         m_mesh_handle++;
 
@@ -27,7 +27,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         // Bind vertex buffer
         glBindBuffer(GL_ARRAY_BUFFER, m.VBO);
-        const auto size = static_cast<GLsizeiptr>(m.numVertices * sizeof(MeshVertex));
+        const auto size = static_cast<GLsizeiptr>(m.numVertices * sizeof(AssetHandling::MeshVertexAsset));
         glBufferData(GL_ARRAY_BUFFER, size, mesh.vertices.data(), GL_STATIC_DRAW);
 
         // Bind index buffer
@@ -36,12 +36,12 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
                      mesh.indices.data(),GL_STATIC_DRAW);
 
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
-                              reinterpret_cast<void *>(offsetof(MeshVertex, position)));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(AssetHandling::MeshVertexAsset),
+                              reinterpret_cast<void *>(offsetof(AssetHandling::MeshVertexAsset, position)));
 
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(MeshVertex),
-                              reinterpret_cast<void *>(offsetof(MeshVertex, uv)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(AssetHandling::MeshVertexAsset),
+                              reinterpret_cast<void *>(offsetof(AssetHandling::MeshVertexAsset, uv)));
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);

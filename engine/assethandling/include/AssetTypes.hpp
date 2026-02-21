@@ -41,6 +41,7 @@ namespace Engine::AssetHandling
 
     enum class PixelFormat
     {
+        R8,
         RGB8,
         RGBA8,
     };
@@ -50,7 +51,7 @@ namespace Engine::AssetHandling
         uint32_t width;
         uint32_t height;
         PixelFormat format;
-        std::vector<uint8_t> bytes;
+        std::vector<uint8_t> pixels;
     };
 
     enum class RenderState

@@ -23,6 +23,6 @@ namespace Engine::AssetHandling::Textures
         texture_asset.width = static_cast<uint32_t>(texture_width);
         texture_asset.height = static_cast<uint32_t>(texture_height);
         texture_asset.format = PixelFormat::RGBA8;
-        texture_asset.bytes = std::move(pixels);
+        texture_asset.pixels = std::move(pixels);
     }
 } // namespace

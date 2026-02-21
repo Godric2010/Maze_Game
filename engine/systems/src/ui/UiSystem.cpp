@@ -156,10 +156,10 @@ namespace Engine::Systems
                                                                   text->GetText(),
                                                                   Text::TextAlignment::Left
                 );
-                Renderer::MeshAsset text_mesh_asset{};
+                AssetHandling::MeshAsset text_mesh_asset{};
                 for (const auto& vertex : text_mesh.vertices)
                 {
-                    Renderer::MeshVertex mesh_vertex{
+                    AssetHandling::MeshVertexAsset mesh_vertex{
                         .position = glm::vec3(vertex.x, vertex.y, 0),
                         .uv = glm::vec2(vertex.u, vertex.v),
                     };
@@ -187,10 +187,10 @@ namespace Engine::Systems
             return m_font_textures.at(font_handle);
         }
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
-        Renderer::TextureAsset texture_asset{};
+        AssetHandling::TextureAsset texture_asset{};
         texture_asset.width = width;
         texture_asset.height = height;
-        texture_asset.format = Renderer::PixelFormat::R8;
+        texture_asset.format = AssetHandling::PixelFormat::R8;
         texture_asset.pixels = pixels;
         const auto texture_handle = m_render_controller->RegisterTexture(texture_asset);
         m_font_textures[font_handle] = texture_handle;

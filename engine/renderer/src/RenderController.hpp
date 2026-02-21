@@ -21,11 +21,11 @@ namespace Engine::Renderer {
         
         MaterialHandle GetOrLoadMaterial(const std::string& file_path) override;
         
-        [[nodiscard]] MeshHandle RegisterMesh(const MeshAsset& mesh) const override;
+        [[nodiscard]] MeshHandle RegisterMesh(const AssetHandling::MeshAsset& mesh) const override;
 
         void UnregisterMesh(const MeshHandle& handle) const override;
 
-        [[nodiscard]] TextureHandle RegisterTexture(const TextureAsset& texture) const override;
+        [[nodiscard]] TextureHandle RegisterTexture(const AssetHandling::TextureAsset& texture) const override;
 
         void UnregisterTexture(const TextureHandle& handle) const override;
 

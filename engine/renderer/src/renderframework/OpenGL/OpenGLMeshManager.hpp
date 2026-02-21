@@ -1,5 +1,7 @@
 #pragma once
 #include <unordered_map>
+
+#include "AssetTypes.hpp"
 #include "Datatypes.hpp"
 #include "OpenGLMesh.hpp"
 
@@ -10,7 +12,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         ~OpenGlMeshManager();
 
-        MeshHandle AddMesh(const MeshAsset &mesh);
+        MeshHandle AddMesh(const AssetHandling::MeshAsset &mesh);
 
         OpenGLMesh &GetMesh(const MeshHandle &handle);
 

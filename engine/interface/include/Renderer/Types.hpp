@@ -5,7 +5,6 @@
 #pragma once
 #include <cstdint>
 #include <string>
-#include <vector>
 #include <glm/glm.hpp>
 
 namespace Engine::Renderer
@@ -13,54 +12,4 @@ namespace Engine::Renderer
     using MeshHandle = uint32_t;
     using TextureHandle = uint32_t;
     using MaterialHandle = uint32_t;
-
-
-    struct MeshVertex
-    {
-        glm::vec3 position;
-        glm::vec2 uv;
-        glm::vec3 normal;
-    };
-
-    struct MeshAsset
-    {
-        std::vector<MeshVertex> vertices;
-        std::vector<uint32_t> indices;
-    };
-
-    enum class PixelFormat
-    {
-        R8,
-        RGB8,
-        RGBA8,
-    };
-
-    struct TextureAsset
-    {
-        uint32_t width;
-        uint32_t height;
-        PixelFormat format;
-        std::vector<uint8_t> pixels;
-    };
-    
-    enum class RenderType
-    {
-        Opaque,
-        UI,
-    };
-    
-    struct MaterialTexture{
-        TextureHandle texture;
-        glm::vec2 uv_scale;
-        glm::vec2 tiling;
-    };
-    
-    struct MaterialAsset
-    {
-        std::string shader_name;
-        RenderType type;
-        MaterialTexture albedo_texture;
-        glm::vec4 base_color;
-        
-    };
 }

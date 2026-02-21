@@ -46,73 +46,26 @@ namespace Engine::Renderer
 
     MeshHandle RenderController::GetOrLoadMesh(const std::string& file_path)
     {
-        auto mesh_asset = m_asset_handler->LoadAsset<AssetHandling::MeshAsset>(file_path);
-        MeshAsset engine_mesh_asset{};
-        engine_mesh_asset.indices.reserve(mesh_asset.get()->indices.size());
-        engine_mesh_asset.vertices.reserve(mesh_asset.get()->vertices.size());
-
-        for (const auto& index : mesh_asset.get()->indices)
-        {
-            engine_mesh_asset.indices.push_back(index);
-        }
-        for (const auto& vertex : mesh_asset.get()->vertices)
-        {
-            engine_mesh_asset.vertices.push_back(MeshVertex{
-                .position = vertex.position,
-                .uv = vertex.uv,
-                .normal = vertex.normal,
-            });
-        }
-
-        const auto mesh_handle = m_renderer->AddMesh(engine_mesh_asset);
+        const auto mesh_asset = m_asset_handler->LoadAsset<AssetHandling::MeshAsset>(file_path);
+        const auto mesh_handle = m_renderer->AddMesh(*mesh_asset);
         return mesh_handle;
     }
 
     TextureHandle RenderController::GetOrLoadTexture(const std::string& file_path)
     {
-        auto texture_asset = m_asset_handler->LoadAsset<AssetHandling::TextureAsset>(file_path);
-        TextureAsset render_texture_asset{};
-        render_texture_asset.width = texture_asset->width;
-        render_texture_asset.height = texture_asset->height;
-        render_texture_asset.pixels = texture_asset->bytes;
-        switch (texture_asset->format)
-        {
-            case AssetHandling::PixelFormat::RGB8:
-                render_texture_asset.format = PixelFormat::RGB8;
-                break;
-            case AssetHandling::PixelFormat::RGBA8:
-                render_texture_asset.format = PixelFormat::RGBA8;
-                break;
-            default:
-                throw std::runtime_error("Unknown pixel format");
-        }
-
-        const auto texture_handle = RegisterTexture(render_texture_asset);
+        const auto texture_asset = m_asset_handler->LoadAsset<AssetHandling::TextureAsset>(file_path);
+        const auto texture_handle = RegisterTexture(*texture_asset);
         return texture_handle;
     }
 
     MaterialHandle RenderController::GetOrLoadMaterial(const std::string& file_path)
     {
         auto material_asset = m_asset_handler->LoadAsset<AssetHandling::MaterialAsset>(file_path);
-        MaterialAsset render_material_asset{};
-        render_material_asset.base_color = material_asset->base_color;
-        render_material_asset.shader_name = material_asset->shader_name;
-        render_material_asset.albedo_texture.texture = 0;
-        render_material_asset.albedo_texture.tiling = material_asset->albedo_texture.tiling;
-        render_material_asset.albedo_texture.uv_scale = material_asset->albedo_texture.uv_scale;
-        switch (material_asset->render_state)
-        {
-            case AssetHandling::RenderState::Opaque:
-                render_material_asset.type = RenderType::Opaque;
-                break;
-            case AssetHandling::RenderState::UI:
-                render_material_asset.type = RenderType::UI;
-                break;
-        }
+
         return 0;
     }
 
-    MeshHandle RenderController::RegisterMesh(const MeshAsset& mesh) const
+    MeshHandle RenderController::RegisterMesh(const AssetHandling::MeshAsset& mesh) const
     {
         return m_renderer->AddMesh(mesh);
     }
@@ -122,7 +75,7 @@ namespace Engine::Renderer
         m_renderer->RemoveMesh(handle);
     }
 
-    TextureHandle RenderController::RegisterTexture(const TextureAsset& texture) const
+    TextureHandle RenderController::RegisterTexture(const AssetHandling::TextureAsset& texture) const
     {
         return m_renderer->AddTexture(texture);
     }
