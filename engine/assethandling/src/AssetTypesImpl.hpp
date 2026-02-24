@@ -7,26 +7,34 @@
 
 #include "IFileReader.hpp"
 #include "../include/AssetTypes.hpp"
+#include "Assets/AssetHandleTypes.hpp"
 #include "Materials/MaterialImporter.hpp"
 #include "Mesh/MeshImporter.hpp"
 #include "Textures/TextureImporter.hpp"
 
-namespace Engine::AssetHandling {
-    template<typename T>
+namespace Engine::AssetHandling
+{
+    using namespace Assets;
+    template <typename T>
     struct AssetTraits;
 
-    template<>
-    struct AssetTraits<ShaderAsset> {
+    template <>
+    struct AssetTraits<ShaderAsset>
+    {
+        using Handle = ShaderHandle;
         inline static const std::string dir_name = std::string("shaders");
 
         static std::shared_ptr<ShaderAsset> Load(Environment::Files::IFileReader* file_reader,
-                                                 const std::string& asset_name) {
+                                                 const std::string& asset_name)
+        {
             const auto vertex_shader_content = file_reader->ReadTextFromFile(dir_name + "/" + asset_name + ".vert");
-            if (!vertex_shader_content.Ok()) {
+            if (!vertex_shader_content.Ok())
+            {
                 throw std::runtime_error("Failed to load vertex shader" + asset_name);
             }
             const auto fragment_shader_content = file_reader->ReadTextFromFile(dir_name + "/" + asset_name + ".frag");
-            if (!fragment_shader_content.Ok()) {
+            if (!fragment_shader_content.Ok())
+            {
                 throw std::runtime_error("Failed to load fragment shader" + asset_name);
             }
             auto shader_asset = std::make_shared<ShaderAsset>();
@@ -37,14 +45,18 @@ namespace Engine::AssetHandling {
         }
     };
 
-    template<>
-    struct AssetTraits<FontAsset> {
+    template <>
+    struct AssetTraits<FontAsset>
+    {
+        using Handle = FontHandle;
         inline static const std::string dir_name = std::string("fonts");
 
         static std::shared_ptr<FontAsset> Load(Environment::Files::IFileReader* file_reader,
-                                               const std::string& asset_name) {
+                                               const std::string& asset_name)
+        {
             const auto font_content = file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
-            if (!font_content.Ok()) {
+            if (!font_content.Ok())
+            {
                 throw std::runtime_error("Failed to load font asset" + asset_name);
             }
             const auto font_asset = std::make_shared<FontAsset>();
@@ -54,14 +66,18 @@ namespace Engine::AssetHandling {
         }
     };
 
-    template<>
-    struct AssetTraits<MeshAsset> {
+    template <>
+    struct AssetTraits<MeshAsset>
+    {
+        using Handle = MeshHandle;
         inline static const std::string dir_name = std::string("meshes");
 
         static std::shared_ptr<MeshAsset> Load(Environment::Files::IFileReader* file_reader,
-                                               const std::string& asset_name) {
+                                               const std::string& asset_name)
+        {
             const auto mesh_content = file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
-            if (!mesh_content.Ok()) {
+            if (!mesh_content.Ok())
+            {
                 throw std::runtime_error("Failed to load mesh asset " + asset_name);
             }
 
@@ -74,12 +90,15 @@ namespace Engine::AssetHandling {
             return mesh_asset;
         }
     };
-    
-    template<>
+
+    template <>
     struct AssetTraits<TextureAsset>
     {
+        using Handle = TextureHandle;
         inline static const std::string dir_name = std::string("textures");
-        static std::shared_ptr<TextureAsset> Load(Environment::Files::IFileReader* file_reader, const std::string& asset_name)
+
+        static std::shared_ptr<TextureAsset> Load(Environment::Files::IFileReader* file_reader,
+                                                  const std::string& asset_name)
         {
             const auto texture_content = file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
             if (!texture_content.Ok())
@@ -91,12 +110,15 @@ namespace Engine::AssetHandling {
             return texture_asset;
         }
     };
-    
-    template<>
+
+    template <>
     struct AssetTraits<MaterialAsset>
     {
+        using Handle = MaterialHandle;
         inline static const std::string dir_name = std::string("materials");
-        static std::shared_ptr<MaterialAsset> Load(Environment::Files::IFileReader* file_reader, const std::string& asset_name)
+
+        static std::shared_ptr<MaterialAsset> Load(Environment::Files::IFileReader* file_reader,
+                                                   const std::string& asset_name)
         {
             const auto toml_file_content = file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
             if (!toml_file_content.Ok())

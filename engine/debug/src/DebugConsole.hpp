@@ -4,23 +4,28 @@
 #include "TextController.hpp"
 #include "../include/IDebugConsole.hpp"
 
-namespace Engine::Debug {
-    struct TextMeshElement {
-        Renderer::MeshHandle mesh_handle;
+namespace Engine::Debug
+{
+    struct TextMeshElement
+    {
+        Assets::MeshHandle mesh_handle;
         float width;
         float height;
     };
 
-    struct TextElement {
+    struct TextElement
+    {
         std::string label;
         std::string content;
         TextMeshElement label_mesh;
         TextMeshElement content_mesh;
     };
 
-    class DebugConsole : public IDebugConsole {
+    class DebugConsole : public IDebugConsole
+    {
     public:
         DebugConsole(Text::TextController* text_controller, Renderer::IRenderController* render_controller,
+                     AssetHandling::AssetHandler* asset_handler,
                      const Environment::WindowContext& context, uint32_t column_width);
 
         ~DebugConsole() override;
@@ -32,6 +37,7 @@ namespace Engine::Debug {
     private:
         Text::TextController* m_text_controller;
         Renderer::IRenderController* m_render_controller;
+        AssetHandling::AssetHandler* m_asset_handler;
         float m_window_width;
         float m_window_height;
 
@@ -39,7 +45,7 @@ namespace Engine::Debug {
 
         const int m_font_size = 24;
         Text::FontHandle m_font_handle;
-        Renderer::TextureHandle m_texture_handle;
+        Assets::TextureHandle m_texture_handle;
 
         uint8_t m_current_label_id = 0;
         std::unordered_map<std::string, uint8_t> m_label_id_map;

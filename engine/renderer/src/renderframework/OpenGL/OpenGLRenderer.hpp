@@ -25,13 +25,13 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         void DrawFrame(DrawAssets& draw_assets) override;
 
-        MeshHandle AddMesh(const AssetHandling::MeshAsset& mesh) override;
+        void AddMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) override;
 
-        void RemoveMesh(const MeshHandle& mesh_handle) override;
+        void RemoveMesh(const Assets::MeshHandle& mesh_handle) override;
 
-        TextureHandle AddTexture(const AssetHandling::TextureAsset& texture) override;
+        void AddTexture(const AssetHandling::TextureAsset& texture, const Assets::TextureHandle& handle) override;
 
-        void RemoveTexture(const TextureHandle& texture_handle) override;
+        void RemoveTexture(const Assets::TextureHandle& texture_handle) override;
 
         uint32_t GetDrawCalls() override {
             return m_draw_calls;

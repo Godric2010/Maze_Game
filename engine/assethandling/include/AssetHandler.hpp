@@ -6,28 +6,53 @@
 #include <vector>
 #include "AssetTypes.hpp"
 
-namespace Engine::AssetHandling {
-    class AssetHandler {
+namespace Engine::AssetHandling
+{
+    template <typename T>
+    struct AssetTraits;
+
+    class AssetHandler
+    {
     public:
         AssetHandler();
 
         ~AssetHandler() = default;
 
-        template<AssetType T>
-        std::shared_ptr<T> LoadAsset(const std::string& asset_name);
+        template <AssetType T>
+        using HandleT = typename AssetTraits<T>::Handle;
+        
+        template <AssetType T>
+        HandleT<T> LoadAsset(const std::string& asset_name);
+        
+        template <AssetType T>
+        HandleT<T> RegisterAsset(std::shared_ptr<T> asset);
+        
+        template <AssetType T>
+        std::shared_ptr<T> GetAsset(HandleT<T> handle) const;
 
-        template<AssetType T>
+        template <AssetType T>
         std::shared_ptr<T> LoadAssetWithoutCaching(const std::string& asset_name);
 
-        template<AssetType T>
-        std::vector<std::shared_ptr<T> > GetAllAssetsOfType();
+        template <AssetType T>
+        std::vector<HandleT<T>> GetAllAssetHandlesOfType();
 
     private:
         std::unique_ptr<Environment::Files::IFileReader> m_file_reader;
 
-        template<AssetType T>
-        static std::unordered_map<std::string, std::shared_ptr<T> > &Cache() {
-            static std::unordered_map<std::string, std::shared_ptr<T> > cache;
+        template <typename T>
+        struct AssetCache
+        {
+            using Handle = typename AssetTraits<T>::Handle;
+            
+            std::unordered_map<Handle, std::shared_ptr<T>> by_id;
+            std::unordered_map<std::string, Handle> id_by_name;
+            size_t next_id = 1;
+        };
+
+        template <AssetType T>
+        static AssetCache<T>& Cache()
+        {
+            static AssetCache<T> cache;
             return cache;
         }
     };

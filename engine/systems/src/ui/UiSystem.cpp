@@ -25,6 +25,7 @@ namespace Engine::Systems
         m_ui_cache = Cache()->GetUiCache();
         m_text_controller = ServiceLocator()->GetService<Text::TextController>();
         m_render_controller = ServiceLocator()->GetService<Renderer::IRenderController>();
+        m_asset_handler = ServiceLocator()->GetService<AssetHandling::AssetHandler>();
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Button>(
             [this](const Ecs::EntityId entity, const Components::UI::Button& _)
@@ -156,19 +157,23 @@ namespace Engine::Systems
                                                                   text->GetText(),
                                                                   Text::TextAlignment::Left
                 );
-                AssetHandling::MeshAsset text_mesh_asset{};
+
+                auto text_mesh_asset = std::make_shared<AssetHandling::MeshAsset>();
                 for (const auto& vertex : text_mesh.vertices)
                 {
                     AssetHandling::MeshVertexAsset mesh_vertex{
                         .position = glm::vec3(vertex.x, vertex.y, 0),
                         .uv = glm::vec2(vertex.u, vertex.v),
                     };
-                    text_mesh_asset.vertices.emplace_back(mesh_vertex);
+                    text_mesh_asset->vertices.emplace_back(mesh_vertex);
                 }
 
 
-                text_mesh_asset.indices = text_mesh.indices;
-                const auto mesh_handle = m_render_controller->RegisterMesh(text_mesh_asset);
+                text_mesh_asset->indices = text_mesh.indices;
+
+                auto mesh_handle = m_asset_handler->RegisterAsset(text_mesh_asset);
+                auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
+                m_render_controller->RegisterMesh(*asset, mesh_handle);
 
                 text_cache_value.text_mesh = mesh_handle;
                 text_cache_value.last_text_version = text->GetTextVersion();
@@ -180,20 +185,23 @@ namespace Engine::Systems
         }
     }
 
-    Renderer::TextureHandle UiSystem::GetOrCreateTextureHandleFromFont(const Text::FontHandle font_handle)
+    Assets::TextureHandle UiSystem::GetOrCreateTextureHandleFromFont(const Text::FontHandle font_handle)
     {
         if (m_font_textures.contains(font_handle))
         {
             return m_font_textures.at(font_handle);
         }
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
-        AssetHandling::TextureAsset texture_asset{};
-        texture_asset.width = width;
-        texture_asset.height = height;
-        texture_asset.format = AssetHandling::PixelFormat::R8;
-        texture_asset.pixels = pixels;
-        const auto texture_handle = m_render_controller->RegisterTexture(texture_asset);
+        auto texture_asset = std::make_shared<AssetHandling::TextureAsset>();
+        texture_asset->width = width;
+        texture_asset->height = height;
+        texture_asset->format = AssetHandling::PixelFormat::R8;
+        texture_asset->pixels = pixels;
+
+        auto texture_handle = m_asset_handler->RegisterAsset(texture_asset);
+        auto asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(texture_handle);
         m_font_textures[font_handle] = texture_handle;
+        m_render_controller->RegisterTexture(*asset, texture_handle);
         return texture_handle;
     }
 } // namespace

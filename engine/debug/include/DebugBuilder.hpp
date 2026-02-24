@@ -8,10 +8,13 @@
 #include "IDebugConsole.hpp"
 #include "../src/DebugConsole.hpp"
 
-namespace Engine::Debug {
+namespace Engine::Debug
+{
     static std::unique_ptr<IDebugConsole> CreateDebugConsole(Text::TextController* text,
                                                              Renderer::IRenderController* render,
-                                                             Environment::WindowContext& ctx, uint32_t col_width) {
-        return std::make_unique<DebugConsole>(text, render, ctx, col_width);
+                                                             AssetHandling::AssetHandler* asset_handler,
+                                                             Environment::WindowContext& ctx, uint32_t col_width)
+    {
+        return std::make_unique<DebugConsole>(text, render, asset_handler, ctx, col_width);
     }
 }

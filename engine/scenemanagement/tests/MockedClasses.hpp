@@ -53,10 +53,9 @@ public:
     void RegisterSystems(Engine::Ecs::World* world, Engine::Input::IInput* input) override
     {
     }
-    
+
     void PreFixed(float delta_time) override
     {
-        
     }
 
     void FixedUpdateSystems(float fixed_dt) override
@@ -80,18 +79,18 @@ public:
 class FakeRenderer : public Engine::Renderer::IRenderer
 {
 public:
-    Engine::Renderer::MeshHandle GetOrLoadMesh(const std::string& file_path) override
+    Engine::Assets::MeshHandle GetOrLoadMesh(const std::string& file_path) override
     {
-        return 0;
+        return Engine::Assets::MeshHandle();
     }
-    
-    Engine::Renderer::TextureHandle GetOrLoadTexture(const std::string& file_path) override
+
+    Engine::Assets::TextureHandle GetOrLoadTexture(const std::string& file_path) override
     {
-        return 0;
+        return Engine::Assets::TextureHandle();
     }
-    
-    Engine::Renderer::MaterialHandle GetOrLoadMaterial(const std::string& file_path) override
+
+    Engine::Assets::MaterialHandle GetOrLoadMaterial(const std::string& file_path) override
     {
-        return 0;
+        return Engine::Assets::MaterialHandle();
     }
 };

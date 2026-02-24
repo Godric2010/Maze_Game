@@ -91,7 +91,7 @@ namespace Engine::Systems
             if (image_component != nullptr)
             {
                 ui_draw_asset.color = image_component->color;
-                ui_draw_asset.mesh = static_cast<Renderer::MeshHandle>(0);
+                ui_draw_asset.mesh = m_render_controller->GetUIMeshHandle();
                 ui_draw_assets.emplace_back(ui_draw_asset);
                 continue;
             }
@@ -100,7 +100,7 @@ namespace Engine::Systems
             if (button_component != nullptr)
             {
                 ui_draw_asset.color = Cache()->GetUiCache()->GetButtonElement(entity).color;
-                ui_draw_asset.mesh = static_cast<Renderer::MeshHandle>(0);
+                ui_draw_asset.mesh = m_render_controller->GetUIMeshHandle();
                 ui_draw_assets.emplace_back(ui_draw_asset);
                 continue;
             }

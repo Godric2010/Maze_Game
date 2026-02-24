@@ -5,12 +5,14 @@
 namespace Engine::Debug
 {
     DebugConsole::DebugConsole(Text::TextController* text_controller, Renderer::IRenderController* render_controller,
+                               AssetHandling::AssetHandler* asset_handler,
                                const Environment::WindowContext& context,
                                const uint32_t column_width) : m_font_handle(0),
                                                               m_texture_handle(0)
     {
         m_text_controller = text_controller;
         m_render_controller = render_controller;
+        m_asset_handler = asset_handler;
         m_column_width = static_cast<float>(column_width);
         m_window_width = static_cast<float>(context.width);
         m_window_height = static_cast<float>(context.height);
@@ -19,12 +21,14 @@ namespace Engine::Debug
         m_font_handle = font_handle;
 
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
-        AssetHandling::TextureAsset texture_asset{};
-        texture_asset.width = static_cast<float>(width);
-        texture_asset.height = static_cast<float>(height);
-        texture_asset.pixels = pixels;
+        auto texture_asset = std::make_shared<AssetHandling::TextureAsset>();
+        texture_asset->width = width;
+        texture_asset->height = height;
+        texture_asset->pixels = pixels;
 
-        m_texture_handle = m_render_controller->RegisterTexture(texture_asset);
+        m_texture_handle = m_asset_handler->RegisterAsset(texture_asset);
+        auto asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(m_texture_handle);
+        m_render_controller->RegisterTexture(*asset, m_texture_handle);
     }
 
     DebugConsole::~DebugConsole()
@@ -35,7 +39,6 @@ namespace Engine::Debug
         m_window_width = 0;
         m_window_height = 0;
         m_font_handle = 0;
-        m_texture_handle = 0;
     }
 
     void DebugConsole::PushValue(const std::string& label, const size_t value)
@@ -104,14 +107,16 @@ namespace Engine::Debug
             text_vertices.push_back(mesh_vertex);
         }
 
-        AssetHandling::MeshAsset mesh_asset;
-        mesh_asset.vertices = text_vertices;
-        mesh_asset.indices = text_mesh.indices;
+        auto mesh_asset = std::make_shared<AssetHandling::MeshAsset>();
+        mesh_asset->vertices = text_vertices;
+        mesh_asset->indices = text_mesh.indices;
 
-        const auto mesh = m_render_controller->RegisterMesh(mesh_asset);
+        auto handle = m_asset_handler->RegisterAsset(mesh_asset);
+        auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(handle);
+        m_render_controller->RegisterMesh(*asset, handle);
 
         TextMeshElement text_mesh_element{};
-        text_mesh_element.mesh_handle = mesh;
+        text_mesh_element.mesh_handle = handle;
         text_mesh_element.width = text_mesh.dimensions_width;
         text_mesh_element.height = text_mesh.dimensions_height;
         return text_mesh_element;

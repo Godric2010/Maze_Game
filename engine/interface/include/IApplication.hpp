@@ -4,7 +4,6 @@
 
 #pragma once
 #include "Scene/SceneArgs.hpp"
-#include "Renderer/Types.hpp"
 #include "Input/InputTypes.hpp"
 
 namespace Engine {

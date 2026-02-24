@@ -11,8 +11,8 @@ add_library(Interface INTERFACE
         include/Scene/ISceneManager.hpp
         include/Ecs/ISystem.hpp
         include/Ecs/Types.hpp
-        include/Renderer/Types.hpp
         include/Renderer/IRenderer.hpp
+        include/Assets/AssetHandleTypes.hpp
 )
 
 target_link_libraries(Interface INTERFACE glm::glm)

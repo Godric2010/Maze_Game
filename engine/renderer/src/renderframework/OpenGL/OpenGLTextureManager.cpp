@@ -13,11 +13,9 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     OpenGLTextureManager::~OpenGLTextureManager() = default;
 
-    TextureHandle OpenGLTextureManager::AddTexture(const AssetHandling::TextureAsset& texture_asset)
+    void OpenGLTextureManager::AddTexture(const AssetHandling::TextureAsset& texture_asset,
+                                          Assets::TextureHandle texture_handle)
     {
-        TextureHandle texture_handle = m_texture_handle;
-        ++m_texture_handle;
-
         OpenGLTexture texture{};
         texture.width = static_cast<GLint>(texture_asset.width);
         texture.height = static_cast<GLint>(texture_asset.height);
@@ -57,20 +55,19 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.5f);
 
         m_textures.emplace(texture_handle, texture);
-        return texture_handle;
     }
 
-    OpenGLTexture& OpenGLTextureManager::GetTexture(const TextureHandle& texture_handle)
+    OpenGLTexture& OpenGLTextureManager::GetTexture(const Assets::TextureHandle& texture_handle)
     {
         const auto it = m_textures.find(texture_handle);
         if (it != m_textures.end())
         {
             return it->second;
         }
-        throw std::runtime_error("No such texture handle: " + std::to_string(texture_handle));
+        throw std::runtime_error("No such texture handle: "); // + std::to_string(texture_handle));
     }
 
-    void OpenGLTextureManager::RemoveTexture(const TextureHandle& texture_handle)
+    void OpenGLTextureManager::RemoveTexture(const Assets::TextureHandle& texture_handle)
     {
         const auto gl_texture = m_textures.find(texture_handle);
         if (gl_texture != m_textures.end())
@@ -79,7 +76,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
             m_textures.erase(texture_handle);
             return;
         }
-        throw std::runtime_error("No such texture handle: " + std::to_string(texture_handle));
+        throw std::runtime_error("No such texture handle: "); // + std::to_string(texture_handle));
     }
 
     void OpenGLTextureManager::Clear()

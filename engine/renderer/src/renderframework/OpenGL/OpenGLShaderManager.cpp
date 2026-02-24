@@ -17,9 +17,10 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
     }
 
     void OpenGlShaderManager::CompileShaders() {
-        const auto shader_assets = m_asset_handler->GetAllAssetsOfType<AssetHandling::ShaderAsset>();
+        const auto shader_handles = m_asset_handler->GetAllAssetHandlesOfType<AssetHandling::ShaderAsset>();
 
-        for (const auto& shader_asset: shader_assets) {
+        for (auto& shader_handle: shader_handles) {
+            auto shader_asset = m_asset_handler->GetAsset<AssetHandling::ShaderAsset>(shader_handle);
             const std::string shader_name = shader_asset->name;
             const char* v_src = shader_asset->vertex_content.c_str();
             const char* f_src = shader_asset->fragment_content.c_str();

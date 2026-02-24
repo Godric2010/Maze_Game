@@ -4,16 +4,14 @@
 #include <GL/glew.h>
 
 namespace Engine::Renderer::RenderFramework::OpenGl {
-    OpenGlMeshManager::OpenGlMeshManager() {
-        m_mesh_handle = 0;
+    OpenGlMeshManager::OpenGlMeshManager()
+    {
         m_meshes.clear();
     }
 
     OpenGlMeshManager::~OpenGlMeshManager() = default;
 
-    MeshHandle OpenGlMeshManager::AddMesh(const AssetHandling::MeshAsset &mesh) {
-        const MeshHandle handle = m_mesh_handle;
-        m_mesh_handle++;
+    void OpenGlMeshManager::AddMesh(const AssetHandling::MeshAsset &mesh, const Assets::MeshHandle handle) {
 
         OpenGLMesh m = {};
         m.numVertices = mesh.vertices.size();
@@ -46,10 +44,9 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
         m_meshes[handle] = m;
-        return handle;
     }
 
-    OpenGLMesh &OpenGlMeshManager::GetMesh(const MeshHandle &handle) {
+    OpenGLMesh &OpenGlMeshManager::GetMesh(const Assets::MeshHandle &handle) {
         return m_meshes[handle];
     }
 
@@ -58,7 +55,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
     }
 
 
-    void OpenGlMeshManager::RemoveMesh(const MeshHandle &handle) {
+    void OpenGlMeshManager::RemoveMesh(const Assets::MeshHandle &handle) {
         m_meshes.erase(handle);
     }
 

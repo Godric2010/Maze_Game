@@ -17,7 +17,7 @@ add_library(AssetHandling STATIC
         src/Materials/MaterialImporter.hpp
 )
 
-target_link_libraries(AssetHandling PUBLIC Environment glm::glm PRIVATE lodepng tomlplusplus::tomlplusplus)
+target_link_libraries(AssetHandling PUBLIC Interface Environment glm::glm PRIVATE lodepng tomlplusplus::tomlplusplus)
 
 target_include_directories(AssetHandling
         PUBLIC

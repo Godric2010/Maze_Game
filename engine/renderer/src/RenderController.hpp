@@ -7,33 +7,38 @@
 #include "../include/IRenderController.hpp"
 #include "renderframework/Renderer.hpp"
 
-namespace Engine::Renderer {
-    class RenderController : public IRenderController {
+namespace Engine::Renderer
+{
+    class RenderController : public IRenderController
+    {
     public:
         explicit RenderController(const Environment::WindowContext& window_context,
                                   AssetHandling::AssetHandler* asset_handler);
 
         ~RenderController() override;
 
-        MeshHandle GetOrLoadMesh(const std::string& file_path) override;
-        
-        TextureHandle GetOrLoadTexture(const std::string& file_path) override;
-        
-        MaterialHandle GetOrLoadMaterial(const std::string& file_path) override;
-        
-        [[nodiscard]] MeshHandle RegisterMesh(const AssetHandling::MeshAsset& mesh) const override;
+        Assets::MeshHandle GetOrLoadMesh(const std::string& file_path) override;
 
-        void UnregisterMesh(const MeshHandle& handle) const override;
+        Assets::TextureHandle GetOrLoadTexture(const std::string& file_path) override;
 
-        [[nodiscard]] TextureHandle RegisterTexture(const AssetHandling::TextureAsset& texture) const override;
+        Assets::MaterialHandle GetOrLoadMaterial(const std::string& file_path) override;
 
-        void UnregisterTexture(const TextureHandle& handle) const override;
+        void RegisterMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) const override;
+
+        void UnregisterMesh(const Assets::MeshHandle& handle) const override;
+
+        void RegisterTexture(const AssetHandling::TextureAsset& texture,
+                             const Assets::TextureHandle& handle) const override;
+
+        void UnregisterTexture(const Assets::TextureHandle& handle) const override;
 
         void BeginFrame(const CameraAsset& camera_asset) const override;
 
         void SubmitFrame(DrawAssets& draw_assets) const override;
 
         void SubmitDebugInfos(const std::vector<UiDrawAsset>& debug_draw_assets) override;
+        
+        Assets::MeshHandle GetUIMeshHandle() const override;
 
         [[nodiscard]] uint32_t GetDrawCalls() const override;
 
@@ -42,5 +47,6 @@ namespace Engine::Renderer {
         AssetHandling::AssetHandler* m_asset_handler;
         std::unique_ptr<RenderFramework::IRenderer> m_renderer;
         std::vector<UiDrawAsset> m_debug_draw_assets;
+        Assets::MeshHandle m_ui_mesh_handle;
     };
 }

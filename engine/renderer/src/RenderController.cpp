@@ -17,6 +17,7 @@ namespace Engine::Renderer
         m_window_context = window_context;
         m_asset_handler = asset_handler;
 
+        
         m_asset_handler->LoadAsset<AssetHandling::ShaderAsset>("mesh_opaque");
         m_asset_handler->LoadAsset<AssetHandling::ShaderAsset>("ui");
 
@@ -34,7 +35,10 @@ namespace Engine::Renderer
                 throw std::runtime_error("Metal renderer not supported (yet)");
         }
         m_renderer->Initialize();
-        m_renderer->AddMesh(CreateUiPrimitive());
+
+        m_ui_mesh_handle = m_asset_handler->RegisterAsset(CreateUiPrimitive());
+        const auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(m_ui_mesh_handle);
+        m_renderer->AddMesh(*asset, m_ui_mesh_handle);
     }
 
     RenderController::~RenderController()
@@ -44,43 +48,46 @@ namespace Engine::Renderer
         m_renderer.reset();
     }
 
-    MeshHandle RenderController::GetOrLoadMesh(const std::string& file_path)
+    Assets::MeshHandle RenderController::GetOrLoadMesh(const std::string& file_path)
     {
-        const auto mesh_asset = m_asset_handler->LoadAsset<AssetHandling::MeshAsset>(file_path);
-        const auto mesh_handle = m_renderer->AddMesh(*mesh_asset);
+        const auto mesh_handle = m_asset_handler->LoadAsset<AssetHandling::MeshAsset>(file_path);
+        const auto mesh_asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
+        m_renderer->AddMesh(*mesh_asset, mesh_handle);
         return mesh_handle;
     }
 
-    TextureHandle RenderController::GetOrLoadTexture(const std::string& file_path)
+    Assets::TextureHandle RenderController::GetOrLoadTexture(const std::string& file_path)
     {
-        const auto texture_asset = m_asset_handler->LoadAsset<AssetHandling::TextureAsset>(file_path);
-        const auto texture_handle = RegisterTexture(*texture_asset);
+        const auto texture_handle = m_asset_handler->LoadAsset<AssetHandling::TextureAsset>(file_path);
+        const auto texture_asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(texture_handle);
+        RegisterTexture(*texture_asset, texture_handle);
         return texture_handle;
     }
 
-    MaterialHandle RenderController::GetOrLoadMaterial(const std::string& file_path)
+    Assets::MaterialHandle RenderController::GetOrLoadMaterial(const std::string& file_path)
     {
         auto material_asset = m_asset_handler->LoadAsset<AssetHandling::MaterialAsset>(file_path);
 
-        return 0;
+        return Assets::MaterialHandle(0);
     }
 
-    MeshHandle RenderController::RegisterMesh(const AssetHandling::MeshAsset& mesh) const
+    void RenderController::RegisterMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) const
     {
-        return m_renderer->AddMesh(mesh);
+        return m_renderer->AddMesh(mesh, handle);
     }
 
-    void RenderController::UnregisterMesh(const MeshHandle& handle) const
+    void RenderController::UnregisterMesh(const Assets::MeshHandle& handle) const
     {
         m_renderer->RemoveMesh(handle);
     }
 
-    TextureHandle RenderController::RegisterTexture(const AssetHandling::TextureAsset& texture) const
+    void RenderController::RegisterTexture(const AssetHandling::TextureAsset& texture,
+                                           const Assets::TextureHandle& handle) const
     {
-        return m_renderer->AddTexture(texture);
+        return m_renderer->AddTexture(texture, handle);
     }
 
-    void RenderController::UnregisterTexture(const TextureHandle& handle) const
+    void RenderController::UnregisterTexture(const Assets::TextureHandle& handle) const
     {
         m_renderer->RemoveTexture(handle);
     }
@@ -103,6 +110,11 @@ namespace Engine::Renderer
     {
         m_debug_draw_assets.clear();
         m_debug_draw_assets = debug_draw_assets;
+    }
+
+    Assets::MeshHandle RenderController::GetUIMeshHandle() const
+    {
+        return m_ui_mesh_handle;
     }
 
     uint32_t RenderController::GetDrawCalls() const

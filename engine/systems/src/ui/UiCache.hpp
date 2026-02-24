@@ -13,8 +13,8 @@ namespace Engine::Systems::UI {
             uint64_t last_font_version;
             std::pair<float, float> text_dimensions;
             std::optional<Text::FontHandle> font_handle;
-            std::optional<Renderer::MeshHandle> text_mesh;
-            std::optional<Renderer::TextureHandle> texture_handle;
+            std::optional<Assets::MeshHandle> text_mesh;
+            std::optional<Assets::TextureHandle> texture_handle;
         };
 
         struct ButtonElement {

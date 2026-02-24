@@ -12,10 +12,10 @@
 namespace Gameplay::Mazegenerator
 {
     MazeBuilder::MazeBuilder(Engine::SceneManagement::SceneWorld* game_world,
-                             const Engine::Renderer::MeshHandle floor_mesh,
-                             const Engine::Renderer::MeshHandle wall_mesh,
-                             const Engine::Renderer::MeshHandle key_mesh,
-                             const Engine::Renderer::TextureHandle texture,
+                             const Engine::Assets::MeshHandle floor_mesh,
+                             const Engine::Assets::MeshHandle wall_mesh,
+                             const Engine::Assets::MeshHandle key_mesh,
+                             const Engine::Assets::TextureHandle texture,
                              const bool enable_debug_view) : m_maze()
     {
         m_game_world = game_world;
@@ -189,13 +189,13 @@ namespace Gameplay::Mazegenerator
                 color_shift.b = 1.0f;
                 break;
         }
-        
+
         const auto mesh_component = Engine::Components::MeshRenderer{
             .mesh = m_wall_mesh,
             .texture = m_texture,
             .color = tile_color + color_shift,
         };
-        
+
         m_game_world->AddComponent(entity, mesh_component);
         const auto position = glm::vec3(cell_idx.x, 0.5f, cell_idx.y) + shift_vector;
         const auto rotation = glm::vec3(0.0f, 0.0f, 0.0f) + rotation_shift;

@@ -1,4 +1,6 @@
 #include "OpenGLRenderer.hpp"
+
+#include <ranges>
 #include <vector>
 
 namespace Engine::Renderer::RenderFramework::OpenGl
@@ -68,10 +70,12 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     {
         m_draw_calls = 0;
         // Draw meshes in first pass
-        std::vector<std::vector<const MeshDrawAsset*>> buckets(m_mesh_manager->Size());
+        std::unordered_map<Assets::MeshHandle, std::vector<const MeshDrawAsset*>> buckets(m_mesh_manager->Size());
+        // std::vector<std::vector<const MeshDrawAsset*>> buckets(m_mesh_manager->Size());
         for (const auto& draw_asset : draw_assets.mesh_draw_assets)
         {
             buckets[draw_asset.mesh].push_back(&draw_asset);
+            // buckets[draw_asset.mesh.value].push_back(&draw_asset);
         }
         glDisable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
@@ -91,15 +95,15 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         const GLint u_use_texture = glGetUniformLocation(shader_program.value(), "u_UseTexture");
         glUseProgram(shader_program.value());
 
-        for (MeshHandle h = 0; h < buckets.size(); ++h)
+        for (auto [handle, meshes] : buckets )
         {
-            const auto& list = buckets[h];
+            const auto& list = meshes;
             if (list.empty())
             {
                 continue;
             }
 
-            const auto& mesh = m_mesh_manager->GetMesh(h);
+            const auto& mesh = m_mesh_manager->GetMesh(handle);
             glBindVertexArray(mesh.VAO);
 
             glUniform1i(u_texture, 0);
@@ -108,7 +112,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
                 glUniformMatrix4fv(u_model, 1, GL_FALSE, glm::value_ptr(draw_asset->model));
                 glUniform4fv(u_color, 1, glm::value_ptr(draw_asset->color));
 
-                if (draw_asset->texture != 0)
+                if (draw_asset->texture)
                 {
                     glUniform1i(u_use_texture, GL_TRUE);
                     const auto& texture = m_texture_manager->GetTexture(draw_asset->texture);
@@ -158,7 +162,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
             glUniformMatrix4fv(u_proj, 1, GL_FALSE, value_ptr(proj));
             glUniform4fv(u_ui_color, 1, glm::value_ptr(ui_draw_asset.color));
 
-            if (ui_draw_asset.texture != 0)
+            if (ui_draw_asset.texture)
             {
                 glUniform1i(u_ui_use_texture, GL_TRUE);
                 const auto& texture = m_texture_manager->GetTexture(ui_draw_asset.texture);
@@ -177,22 +181,22 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glUseProgram(0);
     }
 
-    MeshHandle OpenGlRenderer::AddMesh(const AssetHandling::MeshAsset& mesh)
+    void OpenGlRenderer::AddMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle)
     {
-        return m_mesh_manager->AddMesh(mesh);
+        return m_mesh_manager->AddMesh(mesh, handle);
     }
 
-    void OpenGlRenderer::RemoveMesh(const MeshHandle& mesh_handle)
+    void OpenGlRenderer::RemoveMesh(const Assets::MeshHandle& mesh_handle)
     {
         m_mesh_manager->RemoveMesh(mesh_handle);
     }
 
-    TextureHandle OpenGlRenderer::AddTexture(const AssetHandling::TextureAsset& texture)
+    void OpenGlRenderer::AddTexture(const AssetHandling::TextureAsset& texture, const Assets::TextureHandle& handle)
     {
-        return m_texture_manager->AddTexture(texture);
+        return m_texture_manager->AddTexture(texture, handle);
     }
 
-    void OpenGlRenderer::RemoveTexture(const TextureHandle& texture_handle)
+    void OpenGlRenderer::RemoveTexture(const Assets::TextureHandle& texture_handle)
     {
         m_texture_manager->RemoveTexture(texture_handle);
     }

@@ -6,10 +6,12 @@
 #include <glm/glm.hpp>
 #include "../renderer/include/Datatypes.hpp"
 
-namespace Engine::Components{
-    struct MeshRenderer {
-        Renderer::MeshHandle mesh;
-        Renderer::TextureHandle texture;
+namespace Engine::Components
+{
+    struct MeshRenderer
+    {
+        Assets::MeshHandle mesh;
+        Assets::TextureHandle texture;
         glm::vec4 color;
     };
 }

@@ -32,22 +32,22 @@ namespace Engine::Renderer::RenderFramework
         /**
          * Add a mesh to the renderer to display it
          */
-        virtual MeshHandle AddMesh(const AssetHandling::MeshAsset& mesh) = 0;
+        virtual void AddMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) = 0;
 
         /**
          * Remove a mesh from the renderer to free its resources.
          */
-        virtual void RemoveMesh(const MeshHandle& mesh_handle) = 0;
+        virtual void RemoveMesh(const Assets::MeshHandle& mesh_handle) = 0;
 
         /*
          * Add a texture to the renderer to use it for objects.
          */
-        virtual TextureHandle AddTexture(const AssetHandling::TextureAsset &texture) = 0;
+        virtual void AddTexture(const AssetHandling::TextureAsset &texture, const Assets::TextureHandle& handle) = 0;
 
         /*
          * Remove a texture from the renderer to free its resources.
          */
-        virtual void RemoveTexture(const TextureHandle& texture_handle) = 0;
+        virtual void RemoveTexture(const Assets::TextureHandle& texture_handle) = 0;
 
         virtual uint32_t GetDrawCalls() = 0;
 

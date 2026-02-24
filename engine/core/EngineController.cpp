@@ -31,20 +31,23 @@ namespace Engine::Core
             .windowMode = Environment::WindowMode::Window
         };
         m_window->Setup(config);
-        m_asset_handler = std::make_unique<AssetHandling::AssetHandler>();
+        auto asset_handler = std::make_unique<AssetHandling::AssetHandler>();
+        m_services->RegisterService(std::move(asset_handler));
+        auto asset_handler_service = m_services->GetService<AssetHandling::AssetHandler>();
 
         m_input_manager = Input::InputManagerBuilder::CreateInputManager(m_window.get());
 
         auto render_controller = Renderer::RenderControllerFactory::CreateRenderController(
             m_window->GetWindowContext(),
-            m_asset_handler.get());
+            asset_handler_service);
         m_services->RegisterService(std::move(render_controller));
 
-        auto text_controller = std::make_unique<Text::TextController>(m_asset_handler.get());
+        auto text_controller = std::make_unique<Text::TextController>(asset_handler_service);
         m_services->RegisterService(std::move(text_controller));
 
         m_debug_console = Debug::CreateDebugConsole(m_services->TryGetService<Text::TextController>(),
                                                     m_services->GetService<Renderer::IRenderController>(),
+                                                    m_services->GetService<AssetHandling::AssetHandler>(),
                                                     m_window->GetWindowContext(),
                                                     90
         );

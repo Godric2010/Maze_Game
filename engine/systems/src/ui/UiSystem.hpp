@@ -27,7 +27,8 @@ namespace Engine::Systems {
         UI::UiCache* m_ui_cache = nullptr;
         Text::TextController* m_text_controller = nullptr;
         Renderer::IRenderController* m_render_controller = nullptr;
-        std::unordered_map<Text::FontHandle, Renderer::TextureHandle> m_font_textures;
+        AssetHandling::AssetHandler* m_asset_handler = nullptr;
+        std::unordered_map<Text::FontHandle, Assets::TextureHandle> m_font_textures;
 
         bool IsMouseOverElement(glm::vec2 mouse_pos, const Ecs::EntityId& rect_entity) const;
 
@@ -35,6 +36,6 @@ namespace Engine::Systems {
 
         void HandleTextLabels();
 
-        Renderer::TextureHandle GetOrCreateTextureHandleFromFont(Text::FontHandle font_handle);
+        Assets::TextureHandle GetOrCreateTextureHandleFromFont(Text::FontHandle font_handle);
     };
 } // namespace

@@ -12,18 +12,17 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         ~OpenGlMeshManager();
 
-        MeshHandle AddMesh(const AssetHandling::MeshAsset &mesh);
+        void AddMesh(const AssetHandling::MeshAsset &mesh, Assets::MeshHandle handle);
 
-        OpenGLMesh &GetMesh(const MeshHandle &handle);
+        OpenGLMesh &GetMesh(const Assets::MeshHandle &handle);
 
         [[nodiscard]] uint32_t Size() const;
 
-        void RemoveMesh(const MeshHandle &handle);
+        void RemoveMesh(const Assets::MeshHandle &handle);
 
         void Clear();
 
     private:
-        MeshHandle m_mesh_handle;
-        std::unordered_map<MeshHandle, OpenGLMesh> m_meshes;
+        std::unordered_map<Assets::MeshHandle, OpenGLMesh> m_meshes{};
     };
 } // namespace

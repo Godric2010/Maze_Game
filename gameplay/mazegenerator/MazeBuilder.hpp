@@ -2,16 +2,17 @@
 #include "DebugGridDrawer.hpp"
 #include "MazeAlgorithm.hpp"
 #include "SceneWorld.hpp"
-#include "Renderer/Types.hpp"
+#include "Assets/AssetHandleTypes.hpp"
+#include <glm/glm.hpp>
 
 namespace Gameplay::Mazegenerator
 {
     class MazeBuilder
     {
     public:
-        MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Renderer::MeshHandle floor_mesh,
-                    Engine::Renderer::MeshHandle wall_mesh, Engine::Renderer::MeshHandle key_mesh,
-                    Engine::Renderer::TextureHandle texture,
+        MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Assets::MeshHandle floor_mesh,
+                    Engine::Assets::MeshHandle wall_mesh, Engine::Assets::MeshHandle key_mesh,
+                    Engine::Assets::TextureHandle texture,
                     bool enable_debug_view);
 
         ~MazeBuilder() = default;
@@ -25,10 +26,10 @@ namespace Gameplay::Mazegenerator
         std::unique_ptr<MazeAlgorithm> m_maze_algorithm;
         std::unique_ptr<DebugGridDrawer> m_debug_grid_drawer;
         Maze m_maze;
-        Engine::Renderer::MeshHandle m_floor_mesh;
-        Engine::Renderer::MeshHandle m_wall_mesh;
-        Engine::Renderer::MeshHandle m_key_mesh;
-        Engine::Renderer::TextureHandle m_texture;
+        Engine::Assets::MeshHandle m_floor_mesh;
+        Engine::Assets::MeshHandle m_wall_mesh;
+        Engine::Assets::MeshHandle m_key_mesh;
+        Engine::Assets::TextureHandle m_texture;
 
         void CreateCellFloorTile(
             const CellIndex& cell_idx, const glm::vec4& tile_color) const;

@@ -6,33 +6,37 @@
 #include <vector>
 #include <glm/fwd.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "Renderer/Types.hpp"
+#include "Assets/AssetHandleTypes.hpp"
 
-namespace Engine::Renderer {
-
-    struct CameraAsset {
+namespace Engine::Renderer
+{
+    struct CameraAsset
+    {
         glm::mat4 view;
         glm::mat4 projection;
         glm::vec4 camera_position;
     };
 
 
-    struct MeshDrawAsset {
-        MeshHandle mesh;
+    struct MeshDrawAsset
+    {
+        Assets::MeshHandle mesh;
         glm::mat4 model;
         glm::vec4 color;
-        TextureHandle texture;
+        Assets::TextureHandle texture;
     };
 
-    struct UiDrawAsset {
+    struct UiDrawAsset
+    {
         glm::mat4 model;
-        MeshHandle mesh;
-        TextureHandle texture;
+        Assets::MeshHandle mesh;
+        Assets::TextureHandle texture;
         float layer;
         glm::vec4 color;
     };
 
-    struct DrawAssets {
+    struct DrawAssets
+    {
         std::vector<MeshDrawAsset> mesh_draw_assets;
         std::vector<UiDrawAsset> ui_draw_assets;
     };

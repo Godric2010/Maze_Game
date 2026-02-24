@@ -5,7 +5,7 @@
 #pragma once
 #include <string>
 
-#include "Types.hpp"
+#include "Assets/AssetHandleTypes.hpp"
 
 namespace Engine::Renderer
 {
@@ -13,11 +13,11 @@ namespace Engine::Renderer
     {
     public:
         virtual ~IRenderer() = default;
-        
-        virtual MeshHandle GetOrLoadMesh(const std::string& file_path) = 0;
-        
-        virtual TextureHandle GetOrLoadTexture(const std::string& file_path) = 0;
-        
-        virtual MaterialHandle GetOrLoadMaterial(const std::string& file_path) = 0;
+
+        virtual Assets::MeshHandle GetOrLoadMesh(const std::string& file_path) = 0;
+
+        virtual Assets::TextureHandle GetOrLoadTexture(const std::string& file_path) = 0;
+
+        virtual Assets::MaterialHandle GetOrLoadMaterial(const std::string& file_path) = 0;
     };
 }

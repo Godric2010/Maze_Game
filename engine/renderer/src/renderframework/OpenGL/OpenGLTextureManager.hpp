@@ -13,16 +13,15 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         ~OpenGLTextureManager();
 
-        TextureHandle AddTexture(const AssetHandling::TextureAsset &texture_asset);
+        void AddTexture(const AssetHandling::TextureAsset &texture_asset, Assets::TextureHandle texture_handle);
 
-        OpenGLTexture &GetTexture(const TextureHandle &texture_handle);
+        OpenGLTexture &GetTexture(const Assets::TextureHandle &texture_handle);
 
-        void RemoveTexture(const TextureHandle &texture_handle);
+        void RemoveTexture(const Assets::TextureHandle &texture_handle);
 
         void Clear();
 
     private:
-        TextureHandle m_texture_handle = 1;
-        std::unordered_map<TextureHandle, OpenGLTexture> m_textures;
+        std::unordered_map<Assets::TextureHandle, OpenGLTexture> m_textures;
     };
 } // namespace
