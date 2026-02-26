@@ -22,8 +22,10 @@ namespace Engine::Renderer::RenderFramework::Materials
         const auto asset = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(material_handle);
         const auto shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>(asset->shader_name);
 
+        const auto texture_handle = m_asset_handler->LoadAsset<AssetHandling::TextureAsset>(asset->albedo_texture.name);
+
         const MaterialTextureRef albedo_texture{
-            .texture = m_asset_handler->GetHandleFromName<AssetHandling::TextureAsset>(asset->albedo_texture.name),
+            .texture = texture_handle,
             .uv_scale = asset->albedo_texture.uv_scale,
             .tiling = asset->albedo_texture.tiling,
         };
@@ -41,12 +43,12 @@ namespace Engine::Renderer::RenderFramework::Materials
     {
         m_material_map.erase(material);
     }
-    
+
     void MaterialLibrary::Clear()
     {
         m_material_map.clear();
     }
-    
+
     Material& MaterialLibrary::Get(const Assets::MaterialHandle material)
     {
         if (m_material_map.contains(material))

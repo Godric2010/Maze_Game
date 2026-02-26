@@ -73,11 +73,9 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_draw_calls = 0;
         // Draw meshes in first pass
         std::unordered_map<Assets::MeshHandle, std::vector<const MeshDrawAsset*>> buckets(m_mesh_manager->Size());
-        // std::vector<std::vector<const MeshDrawAsset*>> buckets(m_mesh_manager->Size());
         for (const auto& draw_asset : draw_assets.mesh_draw_assets)
         {
-            buckets[draw_asset.mesh].push_back(&draw_asset);
-            // buckets[draw_asset.mesh.value].push_back(&draw_asset);
+            buckets[draw_asset.Mesh].push_back(&draw_asset);
         }
         glDisable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
@@ -111,13 +109,15 @@ namespace Engine::Renderer::RenderFramework::OpenGl
             glUniform1i(u_texture, 0);
             for (const MeshDrawAsset* draw_asset : list)
             {
-                glUniformMatrix4fv(u_model, 1, GL_FALSE, glm::value_ptr(draw_asset->model));
-                glUniform4fv(u_color, 1, glm::value_ptr(draw_asset->color));
+                const auto& material = m_material_library->Get(draw_asset->Material);
 
-                if (draw_asset->texture)
+                glUniformMatrix4fv(u_model, 1, GL_FALSE, value_ptr(draw_asset->Model));
+                glUniform4fv(u_color, 1, value_ptr(material.base_color));
+
+                if (material.albedo_texture.texture)
                 {
                     glUniform1i(u_use_texture, GL_TRUE);
-                    const auto& texture = m_texture_manager->GetTexture(draw_asset->texture);
+                    const auto& texture = m_texture_manager->GetTexture(material.albedo_texture.texture);
                     glActiveTexture(GL_TEXTURE0);
                     glBindTexture(GL_TEXTURE_2D, texture.texture_id);
                 }

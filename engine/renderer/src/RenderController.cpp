@@ -70,6 +70,14 @@ namespace Engine::Renderer
     {
         const auto material_handle = m_asset_handler->LoadAsset<AssetHandling::MaterialAsset>(file_path);
         m_renderer->GetMaterialLibrary()->Add(material_handle);
+        auto material = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(material_handle);
+        const auto albedo_texture_handle = m_asset_handler->LoadAsset<AssetHandling::TextureAsset>(
+            material->albedo_texture.name);
+        if (albedo_texture_handle)
+        {
+            const auto albedo_texture = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(albedo_texture_handle);
+            RegisterTexture(*albedo_texture, albedo_texture_handle);
+        }
         return material_handle;
     }
 

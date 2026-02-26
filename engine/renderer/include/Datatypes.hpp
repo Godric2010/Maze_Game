@@ -20,11 +20,9 @@ namespace Engine::Renderer
 
     struct MeshDrawAsset
     {
-        Assets::MeshHandle mesh;
-        Assets::MaterialHandle material;
-        glm::mat4 model;
-        glm::vec4 color;
-        Assets::TextureHandle texture;
+        Assets::MeshHandle Mesh;
+        Assets::MaterialHandle Material;
+        glm::mat4 Model;
     };
 
     struct UiDrawAsset

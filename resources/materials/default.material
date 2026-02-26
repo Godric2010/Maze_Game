@@ -1,5 +1,5 @@
 [material]
-name = "test"
+name = "default"
 render_type = "opaque"
 shader = "mesh_opaque"
 

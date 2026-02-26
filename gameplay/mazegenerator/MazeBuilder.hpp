@@ -4,16 +4,14 @@
 #include "SceneWorld.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 #include <glm/glm.hpp>
+#include "Renderer/IRenderer.hpp"
 
 namespace Gameplay::Mazegenerator
 {
     class MazeBuilder
     {
     public:
-        MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Assets::MeshHandle floor_mesh,
-                    Engine::Assets::MeshHandle wall_mesh, Engine::Assets::MeshHandle key_mesh,
-                    Engine::Assets::TextureHandle texture,
-                    Engine::Assets::MaterialHandle material,
+        MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Renderer::IRenderer* renderer,
                     bool enable_debug_view);
 
         ~MazeBuilder() = default;
@@ -24,22 +22,26 @@ namespace Gameplay::Mazegenerator
 
     private:
         Engine::SceneManagement::SceneWorld* m_game_world;
+        Engine::Renderer::IRenderer* m_renderer;
         std::unique_ptr<MazeAlgorithm> m_maze_algorithm;
         std::unique_ptr<DebugGridDrawer> m_debug_grid_drawer;
         Maze m_maze;
         Engine::Assets::MeshHandle m_floor_mesh;
         Engine::Assets::MeshHandle m_wall_mesh;
         Engine::Assets::MeshHandle m_key_mesh;
-        Engine::Assets::TextureHandle m_texture;
-        Engine::Assets::MaterialHandle m_material;
+        Engine::Assets::MaterialHandle m_default_material;
+        Engine::Assets::MaterialHandle m_key_material;
+        Engine::Assets::MaterialHandle m_start_material;
+        Engine::Assets::MaterialHandle m_exit_material;
+        Engine::Assets::MaterialHandle m_wall_material;
 
         void CreateCellFloorTile(
-            const CellIndex& cell_idx, const glm::vec4& tile_color) const;
+            const CellIndex& cell_idx, Engine::Assets::MaterialHandle material) const;
 
-        void CreateWallFloorTile(const CellIndex& cell_idx,
-                                 const glm::vec4& tile_color, const Direction& direction) const;
+        void CreateWallTile(const CellIndex& cell_idx,
+                                 const Direction& direction) const;
 
-        [[nodiscard]] glm::vec4 DetermineFloorColorForCell(const CellIndex& cell_idx) const;
+        [[nodiscard]] Engine::Assets::MaterialHandle DetermineFloorMaterialForCell(const CellIndex& cell_idx) const;
 
         void CreateCellObjects() const;
 

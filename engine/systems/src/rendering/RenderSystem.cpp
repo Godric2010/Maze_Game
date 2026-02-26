@@ -64,11 +64,9 @@ namespace Engine::Systems
             const auto [mesh_renderer, meshEntity] = mesh_renderer_components[i];
 
             Renderer::MeshDrawAsset mesh_draw_assets{};
-            mesh_draw_assets.mesh = mesh_renderer->mesh;
-            mesh_draw_assets.material = mesh_renderer->material;
-            mesh_draw_assets.model = Cache()->GetTransformCache()->GetTransformValue(meshEntity).transform_matrix;
-            mesh_draw_assets.texture = mesh_renderer->texture;
-            mesh_draw_assets.color = mesh_renderer->color;
+            mesh_draw_assets.Mesh = mesh_renderer->Mesh;
+            mesh_draw_assets.Material = mesh_renderer->Material;
+            mesh_draw_assets.Model = Cache()->GetTransformCache()->GetTransformValue(meshEntity).transform_matrix;
 
             mesh_assets.emplace_back(mesh_draw_assets);
         }

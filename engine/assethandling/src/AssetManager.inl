@@ -12,6 +12,12 @@ namespace Engine::AssetHandling
     template <AssetType T>
     typename AssetHandler::HandleT<T> AssetHandler::LoadAsset(const std::string& asset_name)
     {
+        if (asset_name.empty())
+        {
+            typename AssetTraits<T>::Handle handle{0};
+            return handle;
+        }
+
         auto& cache = Cache<T>();
 
         if (auto it = cache.id_by_name.find(asset_name); it != cache.id_by_name.end())

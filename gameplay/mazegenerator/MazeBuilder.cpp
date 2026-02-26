@@ -1,7 +1,6 @@
 #include "MazeBuilder.hpp"
 
 #include <format>
-#include <ostream>
 
 #include "Collider.hpp"
 #include "MeshRenderer.hpp"
@@ -12,24 +11,24 @@
 namespace Gameplay::Mazegenerator
 {
     MazeBuilder::MazeBuilder(Engine::SceneManagement::SceneWorld* game_world,
-                             const Engine::Assets::MeshHandle floor_mesh,
-                             const Engine::Assets::MeshHandle wall_mesh,
-                             const Engine::Assets::MeshHandle key_mesh,
-                             const Engine::Assets::TextureHandle texture,
-                             const Engine::Assets::MaterialHandle material,
+                             Engine::Renderer::IRenderer* renderer,
                              const bool enable_debug_view) : m_maze()
     {
         m_game_world = game_world;
+        m_renderer = renderer;
         if (enable_debug_view)
         {
             m_debug_grid_drawer = std::make_unique<DebugGridDrawer>();
         }
 
-        m_floor_mesh = floor_mesh;
-        m_wall_mesh = wall_mesh;
-        m_key_mesh = key_mesh;
-        m_texture = texture;
-        m_material = material;
+        m_floor_mesh = m_renderer->GetOrLoadMesh("FloorTile.obj");
+        m_wall_mesh = m_renderer->GetOrLoadMesh("WallTile.obj");
+        m_key_mesh = m_renderer->GetOrLoadMesh("Key.obj");
+        m_default_material = m_renderer->GetOrLoadMaterial("default.material");
+        m_key_material = m_renderer->GetOrLoadMaterial("key.material");
+        m_start_material = m_renderer->GetOrLoadMaterial("start_tile.material");
+        m_exit_material = m_renderer->GetOrLoadMaterial("exit_tile.material");
+        m_wall_material = m_renderer->GetOrLoadMaterial("wall.material");
     }
 
     void MazeBuilder::BuildMaze(int width, int height, int seed)
@@ -66,9 +65,8 @@ namespace Gameplay::Mazegenerator
     {
         const auto entity = m_game_world->CreateEntity("KeyItem");
         const auto mesh_component = Engine::Components::MeshRenderer{
-            .mesh = m_key_mesh,
-            .material = m_material,
-            .color = {0.3, 1.0, 1.0, 1.0},
+            .Mesh = m_key_mesh,
+            .Material = m_key_material,
         };
         m_game_world->AddComponent(entity, mesh_component);
         const auto position = glm::vec3(cell_index.x, 0.5f, cell_index.y);
@@ -119,39 +117,35 @@ namespace Gameplay::Mazegenerator
 
     void MazeBuilder::CreateMazeCell(const Cell& cell) const
     {
-        const auto floor_tile_color = DetermineFloorColorForCell(cell.cell_index);
-        CreateCellFloorTile(cell.cell_index, floor_tile_color);
-
-        constexpr auto wall_tile_color = glm::vec4{0.8f, 0.8f, 0.8f, 1.0f};
+        const auto tile_material = DetermineFloorMaterialForCell(cell.cell_index);
+        CreateCellFloorTile(cell.cell_index, tile_material);
 
         if (cell.HasWall(Front))
         {
-            CreateWallFloorTile(cell.cell_index, wall_tile_color, Front);
+            CreateWallTile(cell.cell_index, Front);
         }
         if (cell.HasWall(Back))
         {
-            CreateWallFloorTile(cell.cell_index, wall_tile_color, Back);
+            CreateWallTile(cell.cell_index, Back);
         }
         if (cell.HasWall(Left))
         {
-            CreateWallFloorTile(cell.cell_index, wall_tile_color, Left);
+            CreateWallTile(cell.cell_index, Left);
         }
         if (cell.HasWall(Right))
         {
-            CreateWallFloorTile(cell.cell_index, wall_tile_color, Right);
+            CreateWallTile(cell.cell_index, Right);
         }
     }
 
     void MazeBuilder::CreateCellFloorTile(
         const CellIndex& cell_idx,
-        const glm::vec4& tile_color) const
+        Engine::Assets::MaterialHandle material) const
     {
         const auto entity = m_game_world->CreateEntity(std::format("FloorTile [{}|{}]", cell_idx.x, cell_idx.y));
         const auto mesh_component = Engine::Components::MeshRenderer{
-            .mesh = m_floor_mesh,
-            .material = m_material,
-            .texture = m_texture,
-            .color = tile_color,
+            .Mesh = m_floor_mesh,
+            .Material = material,
         };
         m_game_world->AddComponent(entity, mesh_component);
         const auto position = glm::vec3(cell_idx.x, 0.0f, cell_idx.y);
@@ -162,14 +156,13 @@ namespace Gameplay::Mazegenerator
         m_game_world->AddComponent(entity, transform_component);
     }
 
-    void MazeBuilder::CreateWallFloorTile(const CellIndex& cell_idx, const glm::vec4& tile_color,
+    void MazeBuilder::CreateWallTile(const CellIndex& cell_idx,
                                           const Direction& direction) const
     {
         const auto entity = m_game_world->CreateEntity(
             std::format("WallTile [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))
         );
 
-        auto color_shift = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
         auto shift_vector = glm::vec3(0.0f);
         auto rotation_shift = glm::vec3(0.0f);
         switch (direction)
@@ -177,7 +170,6 @@ namespace Gameplay::Mazegenerator
             case Back:
                 shift_vector = glm::vec3(0.0f, 0.0f, -0.5f);
                 rotation_shift = glm::vec3(0.0f, 180.0f, 0.0f);
-                color_shift.r = 1.0f;
                 break;
             case Front:
                 shift_vector = glm::vec3(0.0f, 0.0f, 0.5f);
@@ -185,20 +177,16 @@ namespace Gameplay::Mazegenerator
             case Left:
                 shift_vector = glm::vec3(-0.5f, 0.0f, 0.0f);
                 rotation_shift = glm::vec3(0.0f, -90.0f, 0.0f);
-                color_shift.g = 1.0f;
                 break;
             case Right:
                 shift_vector = glm::vec3(0.5f, 0.0f, 0.0f);
                 rotation_shift = glm::vec3(0.0f, 90.0f, 0.0f);
-                color_shift.b = 1.0f;
                 break;
         }
 
         const auto mesh_component = Engine::Components::MeshRenderer{
-            .mesh = m_wall_mesh,
-            .material = m_material,
-            .texture = m_texture,
-            .color = tile_color + color_shift,
+            .Mesh = m_wall_mesh,
+            .Material = m_wall_material,
         };
 
         m_game_world->AddComponent(entity, mesh_component);
@@ -218,21 +206,21 @@ namespace Gameplay::Mazegenerator
         m_game_world->AddComponent(entity, collider);
     }
 
-    glm::vec4 MazeBuilder::DetermineFloorColorForCell(const CellIndex& cell_idx) const
+    Engine::Assets::MaterialHandle MazeBuilder::DetermineFloorMaterialForCell(const CellIndex& cell_idx) const
     {
-        auto floor_color = glm::vec4{1.0f, 1.0f, 1.0f, 1.0f};
+        auto material = m_default_material;
         if (cell_idx == m_maze.entrance_cell)
         {
-            floor_color = glm::vec4{0.0f, 0.0f, 1.0f, 1.0f};
+            material = m_start_material;
         }
         if (cell_idx == m_maze.exit_cell)
         {
-            floor_color = glm::vec4{0.0f, 1.0f, 0.0f, 1.0f};
+            material = m_exit_material;
         }
-        if (cell_idx == m_maze.key_cell)
-        {
-            floor_color = glm::vec4{1.0f, 1.0f, 0.0f, 1.0f};
-        }
-        return floor_color;
+        // if (cell_idx == m_maze.key_cell)
+        // {
+        //     material = glm::vec4{1.0f, 1.0f, 0.0f, 1.0f};
+        // }
+        return material;
     }
 } // namespace
