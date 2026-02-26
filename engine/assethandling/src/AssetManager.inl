@@ -73,4 +73,11 @@ namespace Engine::AssetHandling
 
         return result;
     }
+
+    template <AssetType T>
+    AssetHandler::HandleT<T> AssetHandler::GetHandleFromName(const std::string& asset_name)
+    {
+        auto& cache = Cache<T>();
+        return cache.id_by_name[asset_name];
+    }
 } // namespace

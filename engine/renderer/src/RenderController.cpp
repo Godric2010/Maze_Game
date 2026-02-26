@@ -17,16 +17,18 @@ namespace Engine::Renderer
         m_window_context = window_context;
         m_asset_handler = asset_handler;
 
-        
+
         m_asset_handler->LoadAsset<AssetHandling::ShaderAsset>("mesh_opaque");
         m_asset_handler->LoadAsset<AssetHandling::ShaderAsset>("ui");
 
+        auto material_library = std::make_unique<RenderFramework::Materials::MaterialLibrary>(asset_handler);
         switch (window_context.renderApi)
         {
             case Environment::API::OpenGL:
                 m_renderer = std::make_unique<RenderFramework::OpenGl::OpenGlRenderer>(
                     m_window_context,
-                    m_asset_handler
+                    m_asset_handler,
+                    std::move(material_library)
                 );
                 break;
             case Environment::API::Vulkan:
@@ -66,9 +68,9 @@ namespace Engine::Renderer
 
     Assets::MaterialHandle RenderController::GetOrLoadMaterial(const std::string& file_path)
     {
-        auto material_asset = m_asset_handler->LoadAsset<AssetHandling::MaterialAsset>(file_path);
-
-        return Assets::MaterialHandle(0);
+        const auto material_handle = m_asset_handler->LoadAsset<AssetHandling::MaterialAsset>(file_path);
+        m_renderer->GetMaterialLibrary()->Add(material_handle);
+        return material_handle;
     }
 
     void RenderController::RegisterMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) const

@@ -6,7 +6,9 @@
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
     OpenGlRenderer::OpenGlRenderer(const Environment::WindowContext& window_context,
-                                   AssetHandling::AssetHandler* asset_handler)
+                                   AssetHandling::AssetHandler* asset_handler,
+                                   std::unique_ptr<Materials::MaterialLibrary> material_library) : IRenderer(
+        std::move(material_library))
     {
         glewExperimental = GL_TRUE;
         const GLenum rc = glewInit();
@@ -95,7 +97,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         const GLint u_use_texture = glGetUniformLocation(shader_program.value(), "u_UseTexture");
         glUseProgram(shader_program.value());
 
-        for (auto [handle, meshes] : buckets )
+        for (auto [handle, meshes] : buckets)
         {
             const auto& list = meshes;
             if (list.empty())

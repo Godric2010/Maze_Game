@@ -13,6 +13,7 @@ namespace Gameplay::Mazegenerator
         MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Assets::MeshHandle floor_mesh,
                     Engine::Assets::MeshHandle wall_mesh, Engine::Assets::MeshHandle key_mesh,
                     Engine::Assets::TextureHandle texture,
+                    Engine::Assets::MaterialHandle material,
                     bool enable_debug_view);
 
         ~MazeBuilder() = default;
@@ -30,6 +31,7 @@ namespace Gameplay::Mazegenerator
         Engine::Assets::MeshHandle m_wall_mesh;
         Engine::Assets::MeshHandle m_key_mesh;
         Engine::Assets::TextureHandle m_texture;
+        Engine::Assets::MaterialHandle m_material;
 
         void CreateCellFloorTile(
             const CellIndex& cell_idx, const glm::vec4& tile_color) const;

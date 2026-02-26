@@ -11,6 +11,7 @@ namespace Engine::Components
     struct MeshRenderer
     {
         Assets::MeshHandle mesh;
+        Assets::MaterialHandle material;
         Assets::TextureHandle texture;
         glm::vec4 color;
     };

@@ -17,7 +17,10 @@ add_library(Renderer STATIC
         src/renderframework/OpenGL/OpenGLTexture.hpp
         include/IRenderController.hpp
         src/RenderControllerFactory.cpp
-        include/RenderControllerFactory.hpp)
+        include/RenderControllerFactory.hpp
+        src/renderframework/materials/MaterialLibrary.cpp
+        src/renderframework/materials/MaterialLibrary.hpp
+        src/renderframework/materials/Material.hpp)
 
 target_link_libraries(Renderer PUBLIC Interface PRIVATE Environment AssetHandling GLEW::GLEW glm::glm spdlog::spdlog)
 

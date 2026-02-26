@@ -3,8 +3,8 @@
 
 #include "AssetHandler.hpp"
 #include "Window.hpp"
-#include "../include/Datatypes.hpp"
-#include "../include/IRenderController.hpp"
+#include "Datatypes.hpp"
+#include "IRenderController.hpp"
 #include "renderframework/Renderer.hpp"
 
 namespace Engine::Renderer

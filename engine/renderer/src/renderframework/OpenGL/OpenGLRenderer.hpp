@@ -15,7 +15,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
     class OpenGlRenderer final : public IRenderer {
     public:
         explicit OpenGlRenderer(const Environment::WindowContext& window_context,
-                                AssetHandling::AssetHandler* asset_handler);
+                                AssetHandling::AssetHandler* asset_handler,
+                                std::unique_ptr<Materials::MaterialLibrary> material_library);
 
         ~OpenGlRenderer() override;
 

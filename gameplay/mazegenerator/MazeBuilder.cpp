@@ -16,6 +16,7 @@ namespace Gameplay::Mazegenerator
                              const Engine::Assets::MeshHandle wall_mesh,
                              const Engine::Assets::MeshHandle key_mesh,
                              const Engine::Assets::TextureHandle texture,
+                             const Engine::Assets::MaterialHandle material,
                              const bool enable_debug_view) : m_maze()
     {
         m_game_world = game_world;
@@ -28,6 +29,7 @@ namespace Gameplay::Mazegenerator
         m_wall_mesh = wall_mesh;
         m_key_mesh = key_mesh;
         m_texture = texture;
+        m_material = material;
     }
 
     void MazeBuilder::BuildMaze(int width, int height, int seed)
@@ -65,6 +67,7 @@ namespace Gameplay::Mazegenerator
         const auto entity = m_game_world->CreateEntity("KeyItem");
         const auto mesh_component = Engine::Components::MeshRenderer{
             .mesh = m_key_mesh,
+            .material = m_material,
             .color = {0.3, 1.0, 1.0, 1.0},
         };
         m_game_world->AddComponent(entity, mesh_component);
@@ -146,6 +149,7 @@ namespace Gameplay::Mazegenerator
         const auto entity = m_game_world->CreateEntity(std::format("FloorTile [{}|{}]", cell_idx.x, cell_idx.y));
         const auto mesh_component = Engine::Components::MeshRenderer{
             .mesh = m_floor_mesh,
+            .material = m_material,
             .texture = m_texture,
             .color = tile_color,
         };
@@ -192,6 +196,7 @@ namespace Gameplay::Mazegenerator
 
         const auto mesh_component = Engine::Components::MeshRenderer{
             .mesh = m_wall_mesh,
+            .material = m_material,
             .texture = m_texture,
             .color = tile_color + color_shift,
         };

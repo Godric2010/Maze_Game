@@ -35,6 +35,9 @@ namespace Engine::AssetHandling
 
         template <AssetType T>
         std::vector<HandleT<T>> GetAllAssetHandlesOfType();
+        
+        template <AssetType T>
+        HandleT<T> GetHandleFromName(const std::string& asset_name);
 
     private:
         std::unique_ptr<Environment::Files::IFileReader> m_file_reader;

@@ -104,6 +104,7 @@ namespace Gameplay
                                                                       wall_tile,
                                                                       key_mesh,
                                                                       texture_test,
+                                                                      material_test,
                                                                       true
         );
         int width = 0;
