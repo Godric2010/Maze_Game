@@ -72,67 +72,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     {
         m_draw_calls = 0;
         // Draw meshes in first pass
-        std::unordered_map<Assets::MeshHandle, std::vector<const MeshDrawAsset*>> buckets(m_mesh_manager->Size());
-        for (const auto& draw_asset : draw_assets.mesh_draw_assets)
-        {
-            buckets[draw_asset.Mesh].push_back(&draw_asset);
-        }
-        glDisable(GL_BLEND);
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        glFrontFace(GL_CW);
+        RenderOpaquePass(draw_assets.mesh_draw_assets);
 
-        const auto shader_program = m_shader_manager->GetShaderProgram("mesh_opaque");
-        if (!shader_program.has_value())
-        {
-            throw std::runtime_error("Shader program not found");
-        }
-        const GLint u_model = glGetUniformLocation(shader_program.value(), "u_Model");
-        const GLint u_color = glGetUniformLocation(shader_program.value(), "u_Color");
-        const GLint u_texture = glGetUniformLocation(shader_program.value(), "u_Texture");
-        const GLint u_use_texture = glGetUniformLocation(shader_program.value(), "u_UseTexture");
-        glUseProgram(shader_program.value());
-
-        for (auto [handle, meshes] : buckets)
-        {
-            const auto& list = meshes;
-            if (list.empty())
-            {
-                continue;
-            }
-
-            const auto& mesh = m_mesh_manager->GetMesh(handle);
-            glBindVertexArray(mesh.VAO);
-
-            glUniform1i(u_texture, 0);
-            for (const MeshDrawAsset* draw_asset : list)
-            {
-                const auto& material = m_material_library->Get(draw_asset->Material);
-
-                glUniformMatrix4fv(u_model, 1, GL_FALSE, value_ptr(draw_asset->Model));
-                glUniform4fv(u_color, 1, value_ptr(material.base_color));
-
-                if (material.albedo_texture.texture)
-                {
-                    glUniform1i(u_use_texture, GL_TRUE);
-                    const auto& texture = m_texture_manager->GetTexture(material.albedo_texture.texture);
-                    glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, texture.texture_id);
-                }
-                else
-                {
-                    glUniform1i(u_use_texture, GL_FALSE);
-                }
-
-
-                glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
-                m_draw_calls++;
-            }
-        }
-        glBindVertexArray(0);
-        glUseProgram(0);
 
         // Render UI Elements
         glDisable(GL_DEPTH_TEST);
@@ -141,7 +82,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         const auto ui_shader_program = m_shader_manager->GetShaderProgram("ui");
-        if (!shader_program.has_value())
+        if (!ui_shader_program.has_value())
         {
             throw std::runtime_error("Shader program not found");
         }
@@ -209,4 +150,90 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_mesh_manager->Clear();
         m_texture_manager->Clear();
     }
-} // namespace
+
+    void OpenGlRenderer::RenderOpaquePass(const std::vector<MeshDrawAsset>& mesh_draw_assets)
+    {
+        glDisable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CW);
+
+        std::unordered_map<Assets::MaterialHandle, std::vector<const MeshDrawAsset*>> material_buckets(
+            mesh_draw_assets.size());
+        for (const auto& draw_asset : mesh_draw_assets)
+        {
+            material_buckets[draw_asset.Material].push_back(&draw_asset);
+        }
+
+        for (const auto& [mat_handle, draw_assets] : material_buckets)
+        {
+            if (draw_assets.empty())
+            {
+                continue;
+            }
+
+            const auto& material = m_material_library->Get(mat_handle);
+            GLint model_bind = 0;
+            BindMaterial(material, model_bind);
+            BindMeshes(draw_assets, model_bind);
+        }
+
+        glBindVertexArray(0);
+        glUseProgram(0);
+    }
+
+    void OpenGlRenderer::BindMaterial(const Materials::Material& material, GLint& model_bind) const
+    {
+        //TODO: Use Material shader handle here
+        const auto shader_program = m_shader_manager->GetShaderProgram("mesh_opaque");
+        if (!shader_program.has_value())
+        {
+            throw std::runtime_error("Shader program not found");
+        }
+
+        model_bind = glGetUniformLocation(shader_program.value(), "u_Model");
+        const GLint u_color = glGetUniformLocation(shader_program.value(), "u_Color");
+        const GLint u_texture = glGetUniformLocation(shader_program.value(), "u_Texture");
+        const GLint u_use_texture = glGetUniformLocation(shader_program.value(), "u_UseTexture");
+        glUseProgram(shader_program.value());
+
+        glUniform4fv(u_color, 1, value_ptr(material.base_color));
+
+        glUniform1i(u_texture, 0);
+        if (material.albedo_texture.texture)
+        {
+            glUniform1i(u_use_texture, GL_TRUE);
+            const auto& texture = m_texture_manager->GetTexture(material.albedo_texture.texture);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture.texture_id);
+        }
+        else
+        {
+            glUniform1i(u_use_texture, GL_FALSE);
+        }
+    }
+
+    void OpenGlRenderer::BindMeshes(const std::vector<const MeshDrawAsset*>& meshes, const GLint& model_bind)
+    {
+        std::unordered_map<Assets::MeshHandle, std::vector<const MeshDrawAsset*>> mesh_buckets(meshes.size());
+        for (const auto& mesh : meshes)
+        {
+            mesh_buckets[mesh->Mesh].push_back(mesh);
+        }
+
+        for (auto& [mesh_handle, assets] : mesh_buckets)
+        {
+            const auto& mesh = m_mesh_manager->GetMesh(mesh_handle);
+            glBindVertexArray(mesh.VAO);
+
+            for (const auto& asset : assets)
+            {
+                glUniformMatrix4fv(model_bind, 1, GL_FALSE, value_ptr(asset->Model));
+                glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
+                m_draw_calls++;
+            }
+        }
+    } // namespace
+}

@@ -11,8 +11,10 @@
 #include "OpenGLShaderManager.hpp"
 #include "OpenGLTextureManager.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGl {
-    class OpenGlRenderer final : public IRenderer {
+namespace Engine::Renderer::RenderFramework::OpenGl
+{
+    class OpenGlRenderer final : public IRenderer
+    {
     public:
         explicit OpenGlRenderer(const Environment::WindowContext& window_context,
                                 AssetHandling::AssetHandler* asset_handler,
@@ -34,7 +36,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         void RemoveTexture(const Assets::TextureHandle& texture_handle) override;
 
-        uint32_t GetDrawCalls() override {
+        uint32_t GetDrawCalls() override
+        {
             return m_draw_calls;
         }
 
@@ -52,5 +55,9 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         glm::vec2 m_window_size{};
         uint32_t m_draw_calls = 0;
+
+        void RenderOpaquePass(const std::vector<MeshDrawAsset>& mesh_draw_assets);
+        void BindMaterial(const Materials::Material& material, GLint& model_bind) const;
+        void BindMeshes(const std::vector<const MeshDrawAsset*>& meshes, const GLint& model_bind);
     };
 } // namespace
