@@ -15,11 +15,11 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         void CompileShaders();
 
-        std::optional<GLuint> GetShaderProgram(const std::string& shader_name) const;
+        std::optional<GLuint> GetShaderProgram(const Assets::ShaderHandle& shader_handle) const;
 
     private:
         AssetHandling::AssetHandler* m_asset_handler;
-        std::unordered_map<std::string, GLuint> m_shader_program_map;
+        std::unordered_map<Assets::ShaderHandle, GLuint> m_shader_program_map;
 
 
         static GLuint CompileShader(GLenum type, std::string_view source, std::string_view debug_name);

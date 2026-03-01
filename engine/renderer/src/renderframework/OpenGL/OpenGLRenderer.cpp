@@ -22,6 +22,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_shader_manager = std::make_unique<OpenGlShaderManager>(asset_handler);
         m_mesh_manager = std::make_unique<OpenGlMeshManager>();
         m_texture_manager = std::make_unique<OpenGLTextureManager>();
+        m_asset_handler = asset_handler;
 
         m_camera_asset = {};
         m_camera_ubo = 0;
@@ -40,7 +41,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
         glBindBufferBase(GL_UNIFORM_BUFFER, camera_binding_point, m_camera_ubo);
 
-        const auto shader_program = m_shader_manager->GetShaderProgram("mesh_opaque");
+        const auto shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("mesh_opaque");
+        const auto shader_program = m_shader_manager->GetShaderProgram(shader_handle);
         if (!shader_program.has_value())
         {
             throw std::runtime_error("Shader program not found");
@@ -81,7 +83,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        const auto ui_shader_program = m_shader_manager->GetShaderProgram("ui");
+        auto shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
+        const auto ui_shader_program = m_shader_manager->GetShaderProgram(shader_handle);
         if (!ui_shader_program.has_value())
         {
             throw std::runtime_error("Shader program not found");
@@ -186,8 +189,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     void OpenGlRenderer::BindMaterial(const Materials::Material& material, GLint& model_bind) const
     {
-        //TODO: Use Material shader handle here
-        const auto shader_program = m_shader_manager->GetShaderProgram("mesh_opaque");
+        const auto shader_program = m_shader_manager->GetShaderProgram(material.shader);
         if (!shader_program.has_value())
         {
             throw std::runtime_error("Shader program not found");

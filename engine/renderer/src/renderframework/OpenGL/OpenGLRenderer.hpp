@@ -52,6 +52,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         std::unique_ptr<OpenGlShaderManager> m_shader_manager;
         std::unique_ptr<OpenGlMeshManager> m_mesh_manager;
         std::unique_ptr<OpenGLTextureManager> m_texture_manager;
+        AssetHandling::AssetHandler* m_asset_handler;
 
         glm::vec2 m_window_size{};
         uint32_t m_draw_calls = 0;

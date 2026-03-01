@@ -3,23 +3,29 @@
 #include <ranges>
 
 
-namespace Engine::Renderer::RenderFramework::OpenGl {
-    OpenGlShaderManager::OpenGlShaderManager(AssetHandling::AssetHandler* asset_handler) {
+namespace Engine::Renderer::RenderFramework::OpenGl
+{
+    OpenGlShaderManager::OpenGlShaderManager(AssetHandling::AssetHandler* asset_handler)
+    {
         m_asset_handler = asset_handler;
     }
 
-    OpenGlShaderManager::~OpenGlShaderManager() {
-        for (const auto shader: m_shader_program_map | std::views::values) {
+    OpenGlShaderManager::~OpenGlShaderManager()
+    {
+        for (const auto shader : m_shader_program_map | std::views::values)
+        {
             glDeleteShader(shader);
         }
 
         m_asset_handler = nullptr;
     }
 
-    void OpenGlShaderManager::CompileShaders() {
+    void OpenGlShaderManager::CompileShaders()
+    {
         const auto shader_handles = m_asset_handler->GetAllAssetHandlesOfType<AssetHandling::ShaderAsset>();
 
-        for (auto& shader_handle: shader_handles) {
+        for (auto& shader_handle : shader_handles)
+        {
             auto shader_asset = m_asset_handler->GetAsset<AssetHandling::ShaderAsset>(shader_handle);
             const std::string shader_name = shader_asset->name;
             const char* v_src = shader_asset->vertex_content.c_str();
@@ -30,19 +36,22 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
             const auto shader_program = LinkShaderProgram(vertex_shader, fragment_shader, shader_name);
 
-            m_shader_program_map.emplace(shader_name, shader_program);
+            m_shader_program_map.emplace(shader_handle, shader_program);
         }
     }
 
-    std::optional<GLuint> OpenGlShaderManager::GetShaderProgram(const std::string& shader_name) const {
-        if (!m_shader_program_map.contains(shader_name)) {
+    std::optional<GLuint> OpenGlShaderManager::GetShaderProgram(const Assets::ShaderHandle& shader_handle) const
+    {
+        if (!m_shader_program_map.contains(shader_handle))
+        {
             return std::nullopt;
         }
-        return m_shader_program_map.at(shader_name);
+        return m_shader_program_map.at(shader_handle);
     }
 
     GLuint OpenGlShaderManager::CompileShader(const GLenum type, const std::string_view source,
-                                              const std::string_view debug_name) {
+                                              const std::string_view debug_name)
+    {
         const GLuint shader = glCreateShader(type);
         const char* ptr = source.data();
         const auto length = static_cast<GLint>(source.size());
@@ -52,7 +61,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         GLint status = GL_FALSE;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 
-        if (status != GL_TRUE) {
+        if (status != GL_TRUE)
+        {
             GLint log_length = 0;
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_length);
             const std::string log(log_length > 1 ? log_length - 1 : 0, '\0');
@@ -66,7 +76,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
     }
 
     GLuint OpenGlShaderManager::LinkShaderProgram(const GLuint vertex_shader, const GLuint fragment_shader,
-                                                  const std::string_view debug_name) {
+                                                  const std::string_view debug_name)
+    {
         const GLuint program = glCreateProgram();
         glAttachShader(program, vertex_shader);
         glAttachShader(program, fragment_shader);
@@ -75,11 +86,13 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         GLint status = GL_FALSE;
         glGetProgramiv(program, GL_LINK_STATUS, &status);
 
-        if (status != GL_TRUE) {
+        if (status != GL_TRUE)
+        {
             GLint log_length = 0;
             glGetProgramiv(program, GL_INFO_LOG_LENGTH, &log_length);
             std::string log(log_length > 1 ? log_length - 1 : 0, '\0');
-            if (log_length > 1) {
+            if (log_length > 1)
+            {
                 glGetProgramInfoLog(program, log_length, nullptr, reinterpret_cast<GLchar*>(log.data()));
             }
             spdlog::error("[Program Link] {} failed: \n{}", std::string(debug_name).c_str(), log.c_str());
@@ -96,11 +109,13 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         return program;
     }
 
-    void OpenGlShaderManager::LogSourceWithLineNumbers(const std::string_view source) {
+    void OpenGlShaderManager::LogSourceWithLineNumbers(const std::string_view source)
+    {
         std::istringstream iss{std::string(source)};
         std::string line;
         int line_number = 1;
-        while (std::getline(iss, line)) {
+        while (std::getline(iss, line))
+        {
             spdlog::info("{:4d}: {}", line_number++, line);
         }
     }
