@@ -5,6 +5,17 @@
 
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
+    static auto MakeDrawAssetSortKey(const MeshDrawAsset& mda)
+    {
+        return std::tuple{
+            static_cast<uint8_t>(mda.RenderState),
+            mda.RenderQueueIndex,
+            mda.Material.value,
+            mda.Mesh.value,
+            mda.Entity,
+        };
+    }
+
     OpenGlRenderer::OpenGlRenderer(const Environment::WindowContext& window_context,
                                    AssetHandling::AssetHandler* asset_handler,
                                    std::unique_ptr<Materials::MaterialLibrary> material_library) : IRenderer(
@@ -73,6 +84,9 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     void OpenGlRenderer::DrawFrame(DrawAssets& draw_assets)
     {
         m_draw_calls = 0;
+
+        SortDrawAssets(draw_assets.mesh_draw_assets);
+
         // Draw meshes in first pass
         RenderOpaquePass(draw_assets.mesh_draw_assets);
 
@@ -91,7 +105,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         }
         glUseProgram(ui_shader_program.value());
 
-        const GLint u_proj = glGetUniformLocation(ui_shader_program.value(), "u_Proj");
+        const GLint u_proj = glGetUniformLocation(ui_shader_program.value(), "u_Model");
         const GLint u_ui_color = glGetUniformLocation(ui_shader_program.value(), "u_Color");
         const GLint u_ui_use_texture = glGetUniformLocation(ui_shader_program.value(), "u_UseTexture");
         const GLint u_ui_texture = glGetUniformLocation(ui_shader_program.value(), "u_Texture");
@@ -154,8 +168,25 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_texture_manager->Clear();
     }
 
+    void OpenGlRenderer::SortDrawAssets(std::vector<MeshDrawAsset>& mesh_draw_assets)
+    {
+        std::sort(mesh_draw_assets.begin(), mesh_draw_assets.end(),
+                  [](const MeshDrawAsset& a, const MeshDrawAsset& b)
+                  {
+                      const auto key_a = MakeDrawAssetSortKey(a);
+                      const auto key_b = MakeDrawAssetSortKey(b);
+                      return key_a < key_b;
+                  }
+        );
+    }
+
     void OpenGlRenderer::RenderOpaquePass(const std::vector<MeshDrawAsset>& mesh_draw_assets)
     {
+        if (mesh_draw_assets.empty())
+        {
+            return;
+        }
+
         glDisable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
         glDepthFunc(GL_LESS);
@@ -163,24 +194,30 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glCullFace(GL_BACK);
         glFrontFace(GL_CW);
 
-        std::unordered_map<Assets::MaterialHandle, std::vector<const MeshDrawAsset*>> material_buckets(
-            mesh_draw_assets.size());
-        for (const auto& draw_asset : mesh_draw_assets)
-        {
-            material_buckets[draw_asset.Material].push_back(&draw_asset);
-        }
+        auto last_material = Assets::MaterialHandle{0};
+        auto last_mesh = Assets::MeshHandle{0};
 
-        for (const auto& [mat_handle, draw_assets] : material_buckets)
+        GLint model_bind = 0;
+        GLsizei mesh_index_count = 0;
+        for (const auto& mesh_draw_asset : mesh_draw_assets)
         {
-            if (draw_assets.empty())
+            if (mesh_draw_asset.Material != last_material)
             {
-                continue;
+                const auto& material = m_material_library->Get(mesh_draw_asset.Material);
+                BindMaterial(material, model_bind);
+                last_material = mesh_draw_asset.Material;
             }
 
-            const auto& material = m_material_library->Get(mat_handle);
-            GLint model_bind = 0;
-            BindMaterial(material, model_bind);
-            BindMeshes(draw_assets, model_bind);
+            if (mesh_draw_asset.Mesh != last_mesh)
+            {
+                const auto& mesh = m_mesh_manager->GetMesh(mesh_draw_asset.Mesh);
+                BindMesh(mesh, mesh_index_count);
+                last_mesh = mesh_draw_asset.Mesh;
+            }
+
+            glUniformMatrix4fv(model_bind, 1, GL_FALSE, glm::value_ptr(mesh_draw_asset.Model));
+            glDrawElements(GL_TRIANGLES, mesh_index_count, GL_UNSIGNED_INT, nullptr);
+            m_draw_calls++;
         }
 
         glBindVertexArray(0);
@@ -217,25 +254,9 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         }
     }
 
-    void OpenGlRenderer::BindMeshes(const std::vector<const MeshDrawAsset*>& meshes, const GLint& model_bind)
+    void OpenGlRenderer::BindMesh(const OpenGLMesh& mesh, GLsizei& mesh_indices_count) const
     {
-        std::unordered_map<Assets::MeshHandle, std::vector<const MeshDrawAsset*>> mesh_buckets(meshes.size());
-        for (const auto& mesh : meshes)
-        {
-            mesh_buckets[mesh->Mesh].push_back(mesh);
-        }
-
-        for (auto& [mesh_handle, assets] : mesh_buckets)
-        {
-            const auto& mesh = m_mesh_manager->GetMesh(mesh_handle);
-            glBindVertexArray(mesh.VAO);
-
-            for (const auto& asset : assets)
-            {
-                glUniformMatrix4fv(model_bind, 1, GL_FALSE, value_ptr(asset->Model));
-                glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
-                m_draw_calls++;
-            }
-        }
+        glBindVertexArray(mesh.VAO);
+        mesh_indices_count = static_cast<GLsizei>(mesh.numIndices);
     } // namespace
 }

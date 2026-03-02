@@ -56,9 +56,11 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
         glm::vec2 m_window_size{};
         uint32_t m_draw_calls = 0;
-
+        
+        static void SortDrawAssets(std::vector<MeshDrawAsset>& mesh_draw_assets);
+        
         void RenderOpaquePass(const std::vector<MeshDrawAsset>& mesh_draw_assets);
         void BindMaterial(const Materials::Material& material, GLint& model_bind) const;
-        void BindMeshes(const std::vector<const MeshDrawAsset*>& meshes, const GLint& model_bind);
+        void BindMesh(const OpenGLMesh& mesh, GLsizei& mesh_indices_count) const;
     };
 } // namespace

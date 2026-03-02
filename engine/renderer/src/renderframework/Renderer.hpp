@@ -63,7 +63,7 @@ namespace Engine::Renderer::RenderFramework
          */
         virtual void Shutdown() = 0;
 
-        Materials::MaterialLibrary* GetMaterialLibrary() const
+        [[nodiscard]] Materials::MaterialLibrary* GetMaterialLibrary() const
         {
             return m_material_library.get();
         }

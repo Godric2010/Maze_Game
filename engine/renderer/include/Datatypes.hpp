@@ -6,7 +6,10 @@
 #include <vector>
 #include <glm/fwd.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
+#include "Ecs/Types.hpp"
 
 namespace Engine::Renderer
 {
@@ -20,6 +23,9 @@ namespace Engine::Renderer
 
     struct MeshDrawAsset
     {
+        Ecs::EntityId Entity;
+        AssetHandling::RenderState RenderState;
+        size_t RenderQueueIndex;
         Assets::MeshHandle Mesh;
         Assets::MaterialHandle Material;
         glm::mat4 Model;

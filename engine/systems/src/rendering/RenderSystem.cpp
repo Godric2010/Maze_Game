@@ -18,6 +18,23 @@ namespace Engine::Systems
     {
         const auto* render_controller = ServiceLocator()->GetService<Renderer::IRenderController>();
         m_render_controller = render_controller;
+
+        const auto* asset_handler = ServiceLocator()->GetService<AssetHandling::AssetHandler>();
+        m_asset_handler = asset_handler;
+
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::MeshRenderer>(
+            [this](const Ecs::EntityId entity, const Components::MeshRenderer& mesh_renderer)
+            {
+                this->RegisterDrawAssets(entity, mesh_renderer);
+            });
+
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::MeshRenderer>(
+            [this](const Ecs::EntityId entity)
+            {
+                this->m_draw_asset_map.erase(entity);
+            }
+        );
+
         m_draw_assets = Renderer::DrawAssets{};
     }
 
@@ -51,24 +68,17 @@ namespace Engine::Systems
     void RenderSystem::ClearDrawAssets()
     {
         m_draw_assets.mesh_draw_assets.clear();
+        m_draw_assets.mesh_draw_assets.reserve(m_draw_asset_map.size());
+
         m_draw_assets.ui_draw_assets.clear();
     }
 
     void RenderSystem::FillMeshDrawAssets()
     {
-        const auto mesh_renderer_components = EcsWorld()->GetComponentsOfType<Components::MeshRenderer>();
-        auto& mesh_assets = m_draw_assets.mesh_draw_assets;
-        mesh_assets.reserve(mesh_renderer_components.size());
-        for (size_t i = 0; i < mesh_renderer_components.size(); ++i)
+        for (auto [entity, mesh_draw_asset] : m_draw_asset_map)
         {
-            const auto [mesh_renderer, meshEntity] = mesh_renderer_components[i];
-
-            Renderer::MeshDrawAsset mesh_draw_assets{};
-            mesh_draw_assets.Mesh = mesh_renderer->Mesh;
-            mesh_draw_assets.Material = mesh_renderer->Material;
-            mesh_draw_assets.Model = Cache()->GetTransformCache()->GetTransformValue(meshEntity).transform_matrix;
-
-            mesh_assets.emplace_back(mesh_draw_assets);
+            mesh_draw_asset.Model = Cache()->GetTransformCache()->GetTransformValue(entity).transform_matrix;
+            m_draw_assets.mesh_draw_assets.emplace_back(mesh_draw_asset);
         }
     }
 
@@ -127,5 +137,24 @@ namespace Engine::Systems
                               return a.layer < b.layer;
                           }
         );
+    }
+
+    void RenderSystem::RegisterDrawAssets(const Ecs::EntityId& entity, const Components::MeshRenderer& mesh_renderer)
+    {
+        const auto material = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(mesh_renderer.Material);
+        if (material == nullptr)
+        {
+            throw std::runtime_error("[RenderSystem] Material not found");
+        }
+
+        const Renderer::MeshDrawAsset mesh_draw_assets{
+            .Entity = entity,
+            .RenderState = material->render_state,
+            .RenderQueueIndex = 0,
+            .Mesh = mesh_renderer.Mesh,
+            .Material = mesh_renderer.Material,
+        };
+
+        m_draw_asset_map[entity] = mesh_draw_assets;
     }
 } // namespace

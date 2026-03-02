@@ -3,6 +3,8 @@
 #include <IEngineSystem.hpp>
 #include <Transform.hpp>
 
+#include "MeshRenderer.hpp"
+
 ECS_SYSTEM(RenderSystem, Render, [ENGINE])
 
 namespace Engine::Systems
@@ -20,7 +22,9 @@ namespace Engine::Systems
 
     private:
         const Renderer::IRenderController* m_render_controller{};
+        const AssetHandling::AssetHandler* m_asset_handler{};
         Renderer::DrawAssets m_draw_assets;
+        std::unordered_map<Ecs::EntityId, Renderer::MeshDrawAsset> m_draw_asset_map;
 
         Renderer::CameraAsset CreateCameraAsset(const Ecs::EntityId& camera_entity,
                                                 const Components::Transform* camera_transform) const;
@@ -30,5 +34,7 @@ namespace Engine::Systems
         void FillMeshDrawAssets();
 
         void FillUiDrawAssets();
+
+        void RegisterDrawAssets(const Ecs::EntityId& entity, const Components::MeshRenderer& mesh_renderer);
     };
 } // namespace
