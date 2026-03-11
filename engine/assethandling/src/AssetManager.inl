@@ -25,7 +25,12 @@ namespace Engine::AssetHandling
             return it->second;
         }
 
-        auto asset = AssetTraits<T>::Load(m_file_reader.get(), asset_name);
+        AssetLoadContext context{
+            .file_reader = m_file_reader.get(),
+            .asset_handler = this,
+        };
+
+        auto asset = AssetTraits<T>::Load(context, asset_name);
 
         typename AssetTraits<T>::Handle handle{cache.next_id++};
         cache.id_by_name.emplace(asset_name, handle);
@@ -62,7 +67,11 @@ namespace Engine::AssetHandling
     template <AssetType T>
     std::shared_ptr<T> AssetHandler::LoadAssetWithoutCaching(const std::string& asset_name)
     {
-        return AssetTraits<T>::Load(m_file_reader.get(), asset_name);
+        AssetLoadContext context{
+            .file_reader = m_file_reader.get(),
+            .asset_handler = this,
+        };
+        return AssetTraits<T>::Load(context, asset_name);
     }
 
     template <AssetType T>

@@ -3,6 +3,8 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+#include "Assets/AssetHandleTypes.hpp"
+
 namespace Engine::AssetHandling
 {
     struct Asset
@@ -62,7 +64,7 @@ namespace Engine::AssetHandling
 
     struct MaterialTexture
     {
-        std::string name;
+        Assets::TextureHandle texture;
         glm::vec2 uv_scale;
         glm::vec2 tiling;
     };
@@ -71,7 +73,8 @@ namespace Engine::AssetHandling
     {
         std::string name;
         RenderState render_state;
-        std::string shader_name;
+        size_t render_queue_index;
+        Assets::ShaderHandle shader_handle;
         MaterialTexture albedo_texture;
         glm::vec4 base_color;
     };

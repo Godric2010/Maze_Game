@@ -24,15 +24,15 @@ namespace Engine::AssetHandling
         using Handle = ShaderHandle;
         inline static const std::string dir_name = std::string("shaders");
 
-        static std::shared_ptr<ShaderAsset> Load(Environment::Files::IFileReader* file_reader,
+        static std::shared_ptr<ShaderAsset> Load(AssetLoadContext context,
                                                  const std::string& asset_name)
         {
-            const auto vertex_shader_content = file_reader->ReadTextFromFile(dir_name + "/" + asset_name + ".vert");
+            const auto vertex_shader_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name + ".vert");
             if (!vertex_shader_content.Ok())
             {
                 throw std::runtime_error("Failed to load vertex shader" + asset_name);
             }
-            const auto fragment_shader_content = file_reader->ReadTextFromFile(dir_name + "/" + asset_name + ".frag");
+            const auto fragment_shader_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name + ".frag");
             if (!fragment_shader_content.Ok())
             {
                 throw std::runtime_error("Failed to load fragment shader" + asset_name);
@@ -51,10 +51,10 @@ namespace Engine::AssetHandling
         using Handle = FontHandle;
         inline static const std::string dir_name = std::string("fonts");
 
-        static std::shared_ptr<FontAsset> Load(Environment::Files::IFileReader* file_reader,
+        static std::shared_ptr<FontAsset> Load(AssetLoadContext context,
                                                const std::string& asset_name)
         {
-            const auto font_content = file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
+            const auto font_content = context.file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
             if (!font_content.Ok())
             {
                 throw std::runtime_error("Failed to load font asset" + asset_name);
@@ -72,10 +72,10 @@ namespace Engine::AssetHandling
         using Handle = MeshHandle;
         inline static const std::string dir_name = std::string("meshes");
 
-        static std::shared_ptr<MeshAsset> Load(Environment::Files::IFileReader* file_reader,
+        static std::shared_ptr<MeshAsset> Load(AssetLoadContext context,
                                                const std::string& asset_name)
         {
-            const auto mesh_content = file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
+            const auto mesh_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
             if (!mesh_content.Ok())
             {
                 throw std::runtime_error("Failed to load mesh asset " + asset_name);
@@ -97,10 +97,10 @@ namespace Engine::AssetHandling
         using Handle = TextureHandle;
         inline static const std::string dir_name = std::string("textures");
 
-        static std::shared_ptr<TextureAsset> Load(Environment::Files::IFileReader* file_reader,
+        static std::shared_ptr<TextureAsset> Load(AssetLoadContext context,
                                                   const std::string& asset_name)
         {
-            const auto texture_content = file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
+            const auto texture_content = context.file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
             if (!texture_content.Ok())
             {
                 throw std::runtime_error("Failed to load texture asset " + asset_name);
@@ -117,16 +117,28 @@ namespace Engine::AssetHandling
         using Handle = MaterialHandle;
         inline static const std::string dir_name = std::string("materials");
 
-        static std::shared_ptr<MaterialAsset> Load(Environment::Files::IFileReader* file_reader,
+        static std::shared_ptr<MaterialAsset> Load(AssetLoadContext context,
                                                    const std::string& asset_name)
         {
-            const auto toml_file_content = file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
+            const auto toml_file_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
             if (!toml_file_content.Ok())
             {
                 throw std::runtime_error("Failed to load material asset " + asset_name);
             }
+            Materials::MaterialFileData material_file_data{};
+            Materials::MaterialImporter::ExtractMaterialFileData(material_file_data, toml_file_content.value);
+
             auto material = std::make_shared<MaterialAsset>();
-            Materials::MaterialImporter::BuildMaterialAssetFromFile(*material, toml_file_content.value);
+            material->name = material_file_data.name;
+            material->render_state = material_file_data.render_state;
+            material->render_queue_index = material_file_data.render_queue_index;
+            material->shader_handle = context.asset_handler->LoadAsset<ShaderAsset>(material_file_data.shader_name); 
+            material->base_color = material_file_data.base_color;
+            material->albedo_texture.texture = context.asset_handler->LoadAsset<TextureAsset>(material_file_data.albedo_texture.name);
+            material->albedo_texture.tiling = material_file_data.albedo_texture.tiling;
+            material->albedo_texture.uv_scale = material_file_data.albedo_texture.uv_scale;
+
+
             return material;
         }
     };

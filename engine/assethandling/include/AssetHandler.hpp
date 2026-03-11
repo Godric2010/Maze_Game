@@ -11,6 +11,8 @@ namespace Engine::AssetHandling
     template <typename T>
     struct AssetTraits;
 
+    struct AssetLoadContext;
+
     class AssetHandler
     {
     public:
@@ -20,13 +22,13 @@ namespace Engine::AssetHandling
 
         template <AssetType T>
         using HandleT = typename AssetTraits<T>::Handle;
-        
+
         template <AssetType T>
         HandleT<T> LoadAsset(const std::string& asset_name);
-        
+
         template <AssetType T>
         HandleT<T> RegisterAsset(std::shared_ptr<T> asset);
-        
+
         template <AssetType T>
         std::shared_ptr<T> GetAsset(HandleT<T> handle) const;
 
@@ -35,7 +37,7 @@ namespace Engine::AssetHandling
 
         template <AssetType T>
         std::vector<HandleT<T>> GetAllAssetHandlesOfType();
-        
+
         template <AssetType T>
         HandleT<T> GetHandleFromName(const std::string& asset_name);
 
@@ -46,7 +48,7 @@ namespace Engine::AssetHandling
         struct AssetCache
         {
             using Handle = typename AssetTraits<T>::Handle;
-            
+
             std::unordered_map<Handle, std::shared_ptr<T>> by_id;
             std::unordered_map<std::string, Handle> id_by_name;
             size_t next_id = 1;
@@ -58,6 +60,12 @@ namespace Engine::AssetHandling
             static AssetCache<T> cache;
             return cache;
         }
+    };
+
+    struct AssetLoadContext
+    {
+        Environment::Files::IFileReader* file_reader;
+        AssetHandler* asset_handler;
     };
 } // namespace
 #include "../src/AssetManager.inl"

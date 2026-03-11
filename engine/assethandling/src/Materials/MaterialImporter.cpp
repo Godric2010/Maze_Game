@@ -21,7 +21,7 @@ namespace Engine::AssetHandling::Materials
 
     const std::string BaseColor = "base";
 
-    void MaterialImporter::BuildMaterialAssetFromFile(MaterialAsset& material_asset, const std::string& file_content)
+    void MaterialImporter::ExtractMaterialFileData(MaterialFileData& material_asset, const std::string& file_content)
     {
         toml::table toml_content;
         try
@@ -37,7 +37,7 @@ namespace Engine::AssetHandling::Materials
         ReadColorProperties(material_asset, toml_content);
     }
 
-    void MaterialImporter::ReadMaterialProperties(MaterialAsset& material_asset, const toml::table& content_table)
+    void MaterialImporter::ReadMaterialProperties(MaterialFileData& material_asset, const toml::table& content_table)
     {
         const auto category = content_table[MaterialCategory];
         material_asset.name = ReadFieldAsString(category, MaterialAssetName);
@@ -45,7 +45,8 @@ namespace Engine::AssetHandling::Materials
         material_asset.shader_name = ReadFieldAsString(category, ShaderName);
     }
 
-    void MaterialImporter::ReadTextureProperties(MaterialTexture& material_texture, const toml::table& content_table,
+    void MaterialImporter::ReadTextureProperties(MaterialTextureFileData& material_texture,
+                                                 const toml::table& content_table,
                                                  const std::string& texture_type)
     {
         if (const auto tex_table = content_table[TextureCategory][texture_type].as_table())
@@ -56,7 +57,7 @@ namespace Engine::AssetHandling::Materials
         }
     }
 
-    void MaterialImporter::ReadColorProperties(MaterialAsset& material_asset, const toml::table& content_table)
+    void MaterialImporter::ReadColorProperties(MaterialFileData& material_asset, const toml::table& content_table)
     {
         const auto category = content_table[ColorCategory];
         material_asset.base_color = ReadFieldAsVec4(category, BaseColor);
