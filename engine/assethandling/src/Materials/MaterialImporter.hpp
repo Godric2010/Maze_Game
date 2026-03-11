@@ -39,6 +39,7 @@ namespace Engine::AssetHandling::Materials
         static void ReadColorProperties(MaterialFileData& material_asset, const toml::table& content_table);
 
         static std::string ReadFieldAsString(toml::node_view<const toml::node> node, const std::string& field_name);
+        static int ReadFieldAsInt(toml::node_view<const toml::node> node, const std::string& field_name);
         static glm::vec2 ReadFieldAsVec2(toml::node_view<const toml::node> node, const std::string& field_name);
         static glm::vec4 ReadFieldAsVec4(toml::node_view<const toml::node> node, const std::string& field_name);
         static RenderState ReadFieldAsRenderState(toml::node_view<const toml::node> node,

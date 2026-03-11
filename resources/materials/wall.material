@@ -1,6 +1,7 @@
 [material]
 name = "wall"
 render_type = "opaque"
+render_queue = 1
 shader = "mesh_opaque"
 
 [textures.albedo]

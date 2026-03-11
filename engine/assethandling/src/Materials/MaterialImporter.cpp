@@ -11,6 +11,7 @@ namespace Engine::AssetHandling::Materials
 
     const std::string MaterialAssetName = "name";
     const std::string RenderType = "render_type";
+    const std::string RenderQueue = "render_queue";
     const std::string ShaderName = "shader";
 
     const std::string Albedo = "albedo";
@@ -42,6 +43,7 @@ namespace Engine::AssetHandling::Materials
         const auto category = content_table[MaterialCategory];
         material_asset.name = ReadFieldAsString(category, MaterialAssetName);
         material_asset.render_state = ReadFieldAsRenderState(category, RenderType);
+        material_asset.render_queue_index = ReadFieldAsInt(category, RenderQueue);
         material_asset.shader_name = ReadFieldAsString(category, ShaderName);
     }
 
@@ -72,6 +74,16 @@ namespace Engine::AssetHandling::Materials
         }
         throw std::runtime_error("Unknown field name for string conversion: " + field_name);
     }
+
+    int MaterialImporter::ReadFieldAsInt(toml::node_view<const toml::node> node, const std::string& field_name)
+    {
+        if (const auto value = node[field_name].value<int>())
+        {
+            return *value;
+        }
+        throw std::runtime_error("Unknown field name for int conversion: " + field_name);
+    }
+
 
     glm::vec2 MaterialImporter::ReadFieldAsVec2(toml::node_view<const toml::node> node, const std::string& field_name)
     {
