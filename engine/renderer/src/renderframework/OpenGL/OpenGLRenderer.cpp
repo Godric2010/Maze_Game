@@ -2,6 +2,7 @@
 
 #include <ranges>
 #include <vector>
+#include <algorithm>
 
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
