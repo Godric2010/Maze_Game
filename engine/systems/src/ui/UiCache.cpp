@@ -7,18 +7,18 @@ namespace Engine::Systems::UI {
 
     UiCache::~UiCache() = default;
 
-    void UiCache::RegisterTextElement(uint64_t entity) {
+    void UiCache::RegisterTextElement(uint64_t entity, TextElement text_element) {
         if (m_text_cache.contains(entity)) {
             throw std::runtime_error("UI Cache::Text entity already registered");
         }
-        m_text_cache.emplace(entity, TextElement{});
+        m_text_cache.emplace(entity, text_element);
     }
 
     void UiCache::RegisterColorElement(uint64_t entity, ColorElement color_element) {
-        if (m_button_cache.contains(entity)) {
+        if (m_color_element_cache.contains(entity)) {
             throw std::runtime_error("UI Cache::Button entity already registered");
         }
-        m_button_cache.emplace(entity, color_element);
+        m_color_element_cache.emplace(entity, color_element);
     }
 
     void UiCache::DeregisterTextElement(const uint64_t entity) {
@@ -30,8 +30,8 @@ namespace Engine::Systems::UI {
     }
 
     void UiCache::DeregisterColorElement(const uint64_t entity) {
-        if (m_button_cache.contains(entity)) {
-            m_button_cache.erase(entity);
+        if (m_color_element_cache.contains(entity)) {
+            m_color_element_cache.erase(entity);
             return;
         }
         throw std::runtime_error("UI Cache::ButtonEntity was not registered");
@@ -46,8 +46,8 @@ namespace Engine::Systems::UI {
     }
 
     void UiCache::SetColorElementValue(const uint64_t entity, ColorElement color_element) {
-        if (m_button_cache.contains(entity)) {
-            m_button_cache[entity] = color_element;
+        if (m_color_element_cache.contains(entity)) {
+            m_color_element_cache[entity] = color_element;
             return;
         }
         throw std::runtime_error("UI Cache::ButtonElementValue was not registered");
@@ -61,8 +61,8 @@ namespace Engine::Systems::UI {
     }
 
     UiCache::ColorElement &UiCache::GetColorElement(const uint64_t entity) {
-        if (m_button_cache.contains(entity)) {
-            return m_button_cache[entity];
+        if (m_color_element_cache.contains(entity)) {
+            return m_color_element_cache[entity];
         }
         throw std::runtime_error("UI Cache::ButtonElement was not registered");
     }

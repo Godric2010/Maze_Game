@@ -3,7 +3,6 @@
 #include <unordered_map>
 
 #include "TextController.hpp"
-#include "../../../renderer/include/Datatypes.hpp"
 
 namespace Engine::Systems::UI {
     class UiCache {
@@ -13,8 +12,9 @@ namespace Engine::Systems::UI {
             uint64_t last_font_version;
             std::pair<float, float> text_dimensions;
             std::optional<Text::FontHandle> font_handle;
-            std::optional<Assets::MeshHandle> text_mesh;
             std::optional<Assets::TextureHandle> texture_handle;
+            Assets::MaterialHandle material_handle;
+            Assets::MeshHandle mesh_handle;
         };
 
         struct ColorElement {
@@ -27,7 +27,7 @@ namespace Engine::Systems::UI {
 
         ~UiCache();
 
-        void RegisterTextElement(uint64_t entity);
+        void RegisterTextElement(uint64_t entity, TextElement text_element);
 
         void RegisterColorElement(uint64_t entity, ColorElement color_element);
 
@@ -45,6 +45,6 @@ namespace Engine::Systems::UI {
 
     private:
         std::unordered_map<uint32_t, TextElement> m_text_cache;
-        std::unordered_map<uint32_t, ColorElement> m_button_cache;
+        std::unordered_map<uint32_t, ColorElement> m_color_element_cache;
     };
 } // namespace

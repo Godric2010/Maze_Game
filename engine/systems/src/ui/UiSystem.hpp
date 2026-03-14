@@ -8,6 +8,7 @@
 #include <IRenderController.hpp>
 #include <TextController.hpp>
 #include "../CacheManager.hpp"
+#include "ui/Text.hpp"
 
 namespace Engine::Systems {
     ECS_SYSTEM(UiSystem, Ui, [ENGINE])
@@ -32,7 +33,7 @@ namespace Engine::Systems {
 
         void RegisterColorElement(Ecs::EntityId entity, glm::vec4 color);
         
-        void RegisterTextElement();
+        void RegisterTextElement(Ecs::EntityId entity) const;
         
         Assets::MaterialHandle RegisterNewUiMaterial() const;
         
@@ -41,6 +42,8 @@ namespace Engine::Systems {
         void HandleButtons(const Input::InputBuffer& input) const;
 
         void HandleTextLabels();
+        
+        void BuildNewTextMesh(Ecs::EntityId entity, UI::UiCache::TextElement text_element, const Components::UI::Text* text) const;
 
         Assets::TextureHandle GetOrCreateTextureHandleFromFont(Text::FontHandle font_handle);
     };
