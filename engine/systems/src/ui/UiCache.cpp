@@ -7,21 +7,21 @@ namespace Engine::Systems::UI {
 
     UiCache::~UiCache() = default;
 
-    void UiCache::RegisterTextEntity(uint64_t entity) {
+    void UiCache::RegisterTextElement(uint64_t entity) {
         if (m_text_cache.contains(entity)) {
             throw std::runtime_error("UI Cache::Text entity already registered");
         }
         m_text_cache.emplace(entity, TextElement{});
     }
 
-    void UiCache::RegisterButtonEntity(uint64_t entity) {
+    void UiCache::RegisterColorElement(uint64_t entity, ColorElement color_element) {
         if (m_button_cache.contains(entity)) {
             throw std::runtime_error("UI Cache::Button entity already registered");
         }
-        m_button_cache.emplace(entity, ButtonElement{});
+        m_button_cache.emplace(entity, color_element);
     }
 
-    void UiCache::DeregisterTextEntity(const uint64_t entity) {
+    void UiCache::DeregisterTextElement(const uint64_t entity) {
         if (m_text_cache.contains(entity)) {
             m_text_cache.erase(entity);
             return;
@@ -29,7 +29,7 @@ namespace Engine::Systems::UI {
         throw std::runtime_error("UI Cache::TextEntity was not registered");
     }
 
-    void UiCache::DeregisterButtonEntity(const uint64_t entity) {
+    void UiCache::DeregisterColorElement(const uint64_t entity) {
         if (m_button_cache.contains(entity)) {
             m_button_cache.erase(entity);
             return;
@@ -45,9 +45,9 @@ namespace Engine::Systems::UI {
         throw std::runtime_error("UI Cache::TextElementValue was not registered");
     }
 
-    void UiCache::SetButtonElementValue(const uint64_t entity, const ButtonElement button_element) {
+    void UiCache::SetColorElementValue(const uint64_t entity, ColorElement color_element) {
         if (m_button_cache.contains(entity)) {
-            m_button_cache[entity] = button_element;
+            m_button_cache[entity] = color_element;
             return;
         }
         throw std::runtime_error("UI Cache::ButtonElementValue was not registered");
@@ -60,7 +60,7 @@ namespace Engine::Systems::UI {
         throw std::runtime_error("UI Cache::TextElement was not registered");
     }
 
-    UiCache::ButtonElement &UiCache::GetButtonElement(const uint64_t entity) {
+    UiCache::ColorElement &UiCache::GetColorElement(const uint64_t entity) {
         if (m_button_cache.contains(entity)) {
             return m_button_cache[entity];
         }

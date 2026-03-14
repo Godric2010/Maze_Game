@@ -3,8 +3,8 @@
 #include <TextController.hpp>
 #include <ui/Button.hpp>
 #include <ui/Text.hpp>
-#include "../../../core/ServiceLocator.hpp"
 #include "Commands/UI/ButtonClickedCommand.hpp"
+#include "ui/Image.hpp"
 
 
 namespace Engine::Systems
@@ -28,15 +28,18 @@ namespace Engine::Systems
         m_asset_handler = ServiceLocator()->GetService<AssetHandling::AssetHandler>();
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Button>(
-            [this](const Ecs::EntityId entity, const Components::UI::Button& _)
+            [this](const Ecs::EntityId entity, const Components::UI::Button& button)
             {
-                if (this->m_ui_cache == nullptr)
-                {
-                    throw std::runtime_error("UiSystem: Cache is null");
-                }
-                this->m_ui_cache->RegisterButtonEntity(entity);
+                this->RegisterColorElement(entity, button.default_color);
             }
         );
+
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Image>(
+            [this](const Ecs::EntityId entity, const Components::UI::Image& image)
+            {
+                this->RegisterColorElement(entity, image.color);
+            });
+
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Text>(
             [this](const Ecs::EntityId entity, const Components::UI::Text& _)
             {
@@ -44,21 +47,59 @@ namespace Engine::Systems
                 {
                     throw std::runtime_error("UiSystem: Cache is null");
                 }
-                this->m_ui_cache->RegisterTextEntity(entity);
+                this->m_ui_cache->RegisterTextElement(entity);
             }
         );
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Button>(
             [this](const Ecs::EntityId entity)
             {
-                this->m_ui_cache->DeregisterButtonEntity(entity);
+                this->m_ui_cache->DeregisterColorElement(entity);
             }
         );
+
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Image>(
+            [this](const Ecs::EntityId entity)
+            {
+                this->m_ui_cache->DeregisterColorElement(entity);
+            }
+        );
+
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Text>(
             [this](const Ecs::EntityId entity)
             {
-                this->m_ui_cache->DeregisterTextEntity(entity);
+                this->m_ui_cache->DeregisterTextElement(entity);
             }
         );
+    }
+
+    void UiSystem::RegisterColorElement(Ecs::EntityId entity, glm::vec4 color)
+    {
+        if (this->m_ui_cache == nullptr)
+        {
+            throw std::runtime_error("UiSystem: Cache is null");
+        }
+
+        UI::UiCache::ColorElement color_element{};
+        color_element.color = color;
+        color_element.mesh_handle = m_render_controller->GetUIMeshHandle();
+        color_element.material_handle = RegisterNewUiMaterial();
+
+        m_ui_cache->RegisterColorElement(entity, color_element);
+    }
+
+    Assets::MaterialHandle UiSystem::RegisterNewUiMaterial() const
+    {
+        auto material_asset = std::make_shared<AssetHandling::MaterialAsset>();
+        material_asset->name = std::string("UiMaterial");
+        material_asset->render_state = AssetHandling::RenderState::UI;
+        material_asset->render_queue_index = 0;
+        material_asset->shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
+        material_asset->albedo_texture = AssetHandling::MaterialTexture{};
+        material_asset->base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        
+        const auto handle = m_asset_handler->RegisterAsset(material_asset);
+        m_render_controller->RegisterMaterial(handle);
+        return handle;
     }
 
     void UiSystem::Run(float delta_time)
@@ -72,6 +113,7 @@ namespace Engine::Systems
         }
         HandleButtons(input);
     }
+
 
     bool UiSystem::IsMouseOverElement(const glm::vec2 mouse_pos, const Ecs::EntityId& rect_entity) const
     {
@@ -91,11 +133,11 @@ namespace Engine::Systems
         auto buttons_with_entities = EcsWorld()->GetComponentsOfType<Components::UI::Button>();
         for (auto [button, entity] : buttons_with_entities)
         {
-            UI::UiCache::ButtonElement cached_button{};
+            UI::UiCache::ColorElement cached_button = m_ui_cache->GetColorElement(entity);
             if (!button->enabled)
             {
                 cached_button.color = button->disabled_color;
-                m_ui_cache->SetButtonElementValue(entity, cached_button);
+                m_ui_cache->SetColorElementValue(entity, cached_button);
                 continue;
             }
 
@@ -114,7 +156,7 @@ namespace Engine::Systems
                     EcsWorld()->PushCommand(command);
                 }
             }
-            m_ui_cache->SetButtonElementValue(entity, cached_button);
+            m_ui_cache->SetColorElementValue(entity, cached_button);
         }
     }
 

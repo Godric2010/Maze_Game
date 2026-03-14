@@ -30,6 +30,12 @@ namespace Engine::Systems {
         AssetHandling::AssetHandler* m_asset_handler = nullptr;
         std::unordered_map<Text::FontHandle, Assets::TextureHandle> m_font_textures;
 
+        void RegisterColorElement(Ecs::EntityId entity, glm::vec4 color);
+        
+        void RegisterTextElement();
+        
+        Assets::MaterialHandle RegisterNewUiMaterial() const;
+        
         bool IsMouseOverElement(glm::vec2 mouse_pos, const Ecs::EntityId& rect_entity) const;
 
         void HandleButtons(const Input::InputBuffer& input) const;

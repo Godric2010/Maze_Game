@@ -24,6 +24,10 @@ namespace Engine::Renderer
 
         virtual void UnregisterTexture(const Assets::TextureHandle& handle) const = 0;
 
+        virtual void RegisterMaterial(const Assets::MaterialHandle& material_handle) const = 0;
+
+        virtual void UnregisterMaterial(const Assets::MaterialHandle& material_handle) const = 0;
+
         virtual void BeginFrame(const CameraAsset& camera_asset) const = 0;
 
         virtual void SubmitFrame(DrawAssets& draw_assets) const = 0;

@@ -99,8 +99,9 @@ namespace Engine::Systems
             const auto image_component = EcsWorld()->GetComponent<Components::UI::Image>(entity);
             if (image_component != nullptr)
             {
-                ui_draw_asset.color = image_component->color;
-                ui_draw_asset.mesh = m_render_controller->GetUIMeshHandle();
+                auto color_element = Cache()->GetUiCache()->GetColorElement(entity);
+                ui_draw_asset.color = color_element.color;
+                ui_draw_asset.mesh = color_element.mesh_handle;
                 ui_draw_assets.emplace_back(ui_draw_asset);
                 continue;
             }
@@ -108,8 +109,9 @@ namespace Engine::Systems
             const auto button_component = EcsWorld()->GetComponent<Components::UI::Button>(entity);
             if (button_component != nullptr)
             {
-                ui_draw_asset.color = Cache()->GetUiCache()->GetButtonElement(entity).color;
-                ui_draw_asset.mesh = m_render_controller->GetUIMeshHandle();
+                auto color_element = Cache()->GetUiCache()->GetColorElement(entity);
+                ui_draw_asset.color = color_element.color;
+                ui_draw_asset.mesh = color_element.mesh_handle;
                 ui_draw_assets.emplace_back(ui_draw_asset);
                 continue;
             }

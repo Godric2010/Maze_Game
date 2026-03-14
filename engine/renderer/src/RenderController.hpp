@@ -32,12 +32,16 @@ namespace Engine::Renderer
 
         void UnregisterTexture(const Assets::TextureHandle& handle) const override;
 
+        void RegisterMaterial(const AssetHandling::MaterialHandle& material_handle) const override;
+
+        void UnregisterMaterial(const AssetHandling::MaterialHandle& material_handle) const override;
+
         void BeginFrame(const CameraAsset& camera_asset) const override;
 
         void SubmitFrame(DrawAssets& draw_assets) const override;
 
         void SubmitDebugInfos(const std::vector<UiDrawAsset>& debug_draw_assets) override;
-        
+
         Assets::MeshHandle GetUIMeshHandle() const override;
 
         [[nodiscard]] uint32_t GetDrawCalls() const override;

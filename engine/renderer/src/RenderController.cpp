@@ -101,6 +101,16 @@ namespace Engine::Renderer
         m_renderer->RemoveTexture(handle);
     }
 
+    void RenderController::RegisterMaterial(const AssetHandling::MaterialHandle& material_handle) const
+    {
+       m_renderer->GetMaterialLibrary()->Add(material_handle); 
+    }
+    
+    void RenderController::UnregisterMaterial(const Assets::MaterialHandle& material_handle) const
+    {
+        m_renderer->GetMaterialLibrary()->Remove(material_handle);
+    }
+
     void RenderController::BeginFrame(const CameraAsset& camera_asset) const
     {
         m_renderer->PrepareFrame(camera_asset);
