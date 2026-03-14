@@ -111,12 +111,24 @@ namespace Engine::Debug
         mesh_asset->vertices = text_vertices;
         mesh_asset->indices = text_mesh.indices;
 
-        auto handle = m_asset_handler->RegisterAsset(mesh_asset);
-        auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(handle);
-        m_render_controller->RegisterMesh(*asset, handle);
+        auto mesh_handle = m_asset_handler->RegisterAsset(mesh_asset);
+        auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
+        m_render_controller->RegisterMesh(*asset, mesh_handle);
+        
+        auto material_asset = std::make_shared<AssetHandling::MaterialAsset>();
+        material_asset->render_state = AssetHandling::RenderState::UI,
+        material_asset->render_queue_index = 99;
+        material_asset->shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
+        material_asset->base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        material_asset->albedo_texture = AssetHandling::MaterialTexture{};
+        material_asset->albedo_texture.texture = m_texture_handle;
+        
+        auto material_handle = m_asset_handler->RegisterAsset(material_asset);
+        m_render_controller->RegisterMaterial(material_handle);
 
         TextMeshElement text_mesh_element{};
-        text_mesh_element.mesh_handle = handle;
+        text_mesh_element.mesh_handle = mesh_handle;
+        text_mesh_element.material_handle = material_handle;
         text_mesh_element.width = text_mesh.dimensions_width;
         text_mesh_element.height = text_mesh.dimensions_height;
         return text_mesh_element;
@@ -139,7 +151,7 @@ namespace Engine::Debug
         const Renderer::UiDrawAsset draw_asset{
             .model = model_mat,
             .mesh = text_mesh_element.mesh_handle,
-            .texture = m_texture_handle,
+            .material = text_mesh_element.material_handle,
             .layer = sizeof(uint8_t) - 1,
             .color = glm::vec4(1, 0, 1, 1.0),
         };

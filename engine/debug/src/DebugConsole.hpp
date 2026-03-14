@@ -9,6 +9,7 @@ namespace Engine::Debug
     struct TextMeshElement
     {
         Assets::MeshHandle mesh_handle;
+        Assets::MaterialHandle material_handle;
         float width;
         float height;
     };

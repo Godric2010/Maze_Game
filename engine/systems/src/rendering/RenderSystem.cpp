@@ -102,6 +102,7 @@ namespace Engine::Systems
                 auto color_element = Cache()->GetUiCache()->GetColorElement(entity);
                 ui_draw_asset.color = color_element.color;
                 ui_draw_asset.mesh = color_element.mesh_handle;
+                ui_draw_asset.material = color_element.material_handle;
                 ui_draw_assets.emplace_back(ui_draw_asset);
                 continue;
             }
@@ -112,6 +113,7 @@ namespace Engine::Systems
                 auto color_element = Cache()->GetUiCache()->GetColorElement(entity);
                 ui_draw_asset.color = color_element.color;
                 ui_draw_asset.mesh = color_element.mesh_handle;
+                ui_draw_asset.material = color_element.material_handle;
                 ui_draw_assets.emplace_back(ui_draw_asset);
                 continue;
             }
@@ -120,14 +122,14 @@ namespace Engine::Systems
             if (text_component != nullptr)
             {
                 auto text_element = Cache()->GetUiCache()->GetTextElement(entity);
-                if (!text_element.texture_handle.has_value() || !text_element.mesh_handle)
+                if (!text_element.material_handle || !text_element.mesh_handle)
                 {
                     continue;
                 }
 
                 ui_draw_asset.color = glm::vec4(1, 1, 1, 1);
                 ui_draw_asset.mesh = text_element.mesh_handle;
-                ui_draw_asset.texture = text_element.texture_handle.value();
+                ui_draw_asset.material = text_element.material_handle;
                 ui_draw_assets.emplace_back(ui_draw_asset);
                 continue;
             }

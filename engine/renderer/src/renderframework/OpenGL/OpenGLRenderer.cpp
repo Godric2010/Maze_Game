@@ -119,14 +119,15 @@ namespace Engine::Renderer::RenderFramework::OpenGl
             glm::mat4 proj = ortho * ui_draw_asset.model;
 
             const auto& mesh = m_mesh_manager->GetMesh(ui_draw_asset.mesh);
+            const auto& material = m_material_library->Get(ui_draw_asset.material);
             glBindVertexArray(mesh.VAO);
             glUniformMatrix4fv(u_proj, 1, GL_FALSE, value_ptr(proj));
             glUniform4fv(u_ui_color, 1, glm::value_ptr(ui_draw_asset.color));
 
-            if (ui_draw_asset.texture)
+            if (material.albedo_texture.texture)
             {
                 glUniform1i(u_ui_use_texture, GL_TRUE);
-                const auto& texture = m_texture_manager->GetTexture(ui_draw_asset.texture);
+                const auto& texture = m_texture_manager->GetTexture(material.albedo_texture.texture);
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, texture.texture_id);
             }

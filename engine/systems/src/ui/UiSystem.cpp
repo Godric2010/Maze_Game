@@ -184,20 +184,23 @@ namespace Engine::Systems
                     text->GetFontName(),
                     text->GetFontSize()
                 );
-
-                if (new_atlas_created && text_cache_value.texture_handle.has_value())
+                const auto material_asset = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(
+                    text_cache_value.material_handle);
+                if (new_atlas_created && material_asset->albedo_texture.texture)
                 {
-                    m_render_controller->UnregisterTexture(text_cache_value.texture_handle.value());
+                    m_render_controller->UnregisterTexture(material_asset->albedo_texture.texture);
                 }
 
                 text_cache_value.font_handle = font_handle;
                 text_cache_value.last_font_version = text->GetFontVersion();
 
-                const auto material_asset = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(text_cache_value.material_handle);
+
                 const auto font_texture_handle = GetOrCreateTextureHandleFromFont(font_handle);
                 material_asset->albedo_texture.texture = font_texture_handle;
-                text_cache_value.texture_handle = font_texture_handle;
-                
+                m_render_controller->UnregisterMaterial(text_cache_value.material_handle);
+                m_render_controller->RegisterMaterial(text_cache_value.material_handle);
+
+
                 m_ui_cache->SetTextElementValue(entity, text_cache_value);
             }
 
@@ -223,7 +226,7 @@ namespace Engine::Systems
                                                           text->GetText(),
                                                           Text::TextAlignment::Left
         );
-        
+
         auto text_mesh_asset = std::make_shared<AssetHandling::MeshAsset>();
         for (const auto& vertex : text_mesh.vertices)
         {
@@ -233,18 +236,18 @@ namespace Engine::Systems
             };
             text_mesh_asset->vertices.emplace_back(mesh_vertex);
         }
-        
-        
+
+
         text_mesh_asset->indices = text_mesh.indices;
-        
+
         auto mesh_handle = m_asset_handler->RegisterAsset(text_mesh_asset);
         auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
         m_render_controller->RegisterMesh(*asset, mesh_handle);
-        
+
         text_element.mesh_handle = mesh_handle;
         text_element.last_text_version = text->GetTextVersion();
         m_ui_cache->SetTextElementValue(entity, text_element);
-        
+
         const auto rect_transform = EcsWorld()->GetComponent<Components::UI::RectTransform>(entity);
         rect_transform->SetSize(glm::vec2(text_mesh.dimensions_width, text_mesh.dimensions_height));
     }

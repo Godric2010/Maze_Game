@@ -36,7 +36,6 @@ namespace Engine::Renderer
         glm::mat4 model;
         Assets::MeshHandle mesh;
         Assets::MaterialHandle material;
-        Assets::TextureHandle texture;
         float layer;
         glm::vec4 color;
     };
