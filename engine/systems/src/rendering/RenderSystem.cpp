@@ -93,16 +93,16 @@ namespace Engine::Systems
             const auto [rect_transform, entity] = rect_transforms[i];
             auto rect_transform_cache_value = Cache()->GetTransformCache()->GetRectTransformValue(entity);
             Renderer::UiDrawAsset ui_draw_asset{};
-            ui_draw_asset.model = rect_transform_cache_value.global_matrix;
-            ui_draw_asset.layer = rect_transform_cache_value.layer;
+            ui_draw_asset.Model = rect_transform_cache_value.global_matrix;
+            ui_draw_asset.RenderQueueIndex = rect_transform_cache_value.layer;
 
             const auto image_component = EcsWorld()->GetComponent<Components::UI::Image>(entity);
             if (image_component != nullptr)
             {
                 auto color_element = Cache()->GetUiCache()->GetColorElement(entity);
                 ui_draw_asset.color = color_element.color;
-                ui_draw_asset.mesh = color_element.mesh_handle;
-                ui_draw_asset.material = color_element.material_handle;
+                ui_draw_asset.Mesh = color_element.mesh_handle;
+                ui_draw_asset.Material = color_element.material_handle;
                 ui_draw_assets.emplace_back(ui_draw_asset);
                 continue;
             }
@@ -112,8 +112,8 @@ namespace Engine::Systems
             {
                 auto color_element = Cache()->GetUiCache()->GetColorElement(entity);
                 ui_draw_asset.color = color_element.color;
-                ui_draw_asset.mesh = color_element.mesh_handle;
-                ui_draw_asset.material = color_element.material_handle;
+                ui_draw_asset.Mesh = color_element.mesh_handle;
+                ui_draw_asset.Material = color_element.material_handle;
                 ui_draw_assets.emplace_back(ui_draw_asset);
                 continue;
             }
@@ -128,8 +128,8 @@ namespace Engine::Systems
                 }
 
                 ui_draw_asset.color = glm::vec4(1, 1, 1, 1);
-                ui_draw_asset.mesh = text_element.mesh_handle;
-                ui_draw_asset.material = text_element.material_handle;
+                ui_draw_asset.Mesh = text_element.mesh_handle;
+                ui_draw_asset.Material = text_element.material_handle;
                 ui_draw_assets.emplace_back(ui_draw_asset);
                 continue;
             }
@@ -138,7 +138,7 @@ namespace Engine::Systems
         std::ranges::sort(ui_draw_assets,
                           [](auto& a, auto& b)
                           {
-                              return a.layer < b.layer;
+                              return a.RenderQueueIndex < b.RenderQueueIndex;
                           }
         );
     }

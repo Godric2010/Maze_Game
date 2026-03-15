@@ -25,6 +25,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         void Initialize() override;
 
         void PrepareFrame(const CameraAsset& camera_asset) override;
+        void RenderUIPass(const std::vector<UiDrawAsset>& draw_assets);
 
         void DrawFrame(DrawAssets& draw_assets) override;
 
@@ -60,7 +61,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         static void SortDrawAssets(std::vector<MeshDrawAsset>& mesh_draw_assets);
         
         void RenderOpaquePass(const std::vector<MeshDrawAsset>& mesh_draw_assets);
-        void BindMaterial(const Materials::Material& material, GLint& model_bind) const;
+        void BindMaterial(const Materials::Material& material, GLint& model_bind, GLint& color_bind) const;
         void BindMesh(const OpenGLMesh& mesh, GLsizei& mesh_indices_count) const;
     };
 } // namespace

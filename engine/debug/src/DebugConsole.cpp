@@ -149,10 +149,10 @@ namespace Engine::Debug
         model_mat = glm::scale(model_mat, glm::vec3(text_mesh_element.width, text_mesh_element.height, 1.0f));
 
         const Renderer::UiDrawAsset draw_asset{
-            .model = model_mat,
-            .mesh = text_mesh_element.mesh_handle,
-            .material = text_mesh_element.material_handle,
-            .layer = sizeof(uint8_t) - 1,
+            .Model = model_mat,
+            .Mesh = text_mesh_element.mesh_handle,
+            .Material = text_mesh_element.material_handle,
+            .RenderQueueIndex = sizeof(uint8_t) - 1,
             .color = glm::vec4(1, 0, 1, 1.0),
         };
 

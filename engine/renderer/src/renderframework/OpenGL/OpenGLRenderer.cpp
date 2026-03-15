@@ -91,56 +91,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         // Draw meshes in first pass
         RenderOpaquePass(draw_assets.mesh_draw_assets);
 
-
         // Render UI Elements
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        auto shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
-        const auto ui_shader_program = m_shader_manager->GetShaderProgram(shader_handle);
-        if (!ui_shader_program.has_value())
-        {
-            throw std::runtime_error("Shader program not found");
-        }
-        glUseProgram(ui_shader_program.value());
-
-        const GLint u_proj = glGetUniformLocation(ui_shader_program.value(), "u_Model");
-        const GLint u_ui_color = glGetUniformLocation(ui_shader_program.value(), "u_Color");
-        const GLint u_ui_use_texture = glGetUniformLocation(ui_shader_program.value(), "u_UseTexture");
-        const GLint u_ui_texture = glGetUniformLocation(ui_shader_program.value(), "u_Texture");
-
-        glUniform1i(u_ui_texture, 0);
-
-        const glm::mat4 ortho = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.0f, 0.0f);
-        for (const auto& ui_draw_asset : draw_assets.ui_draw_assets)
-        {
-            glm::mat4 proj = ortho * ui_draw_asset.model;
-
-            const auto& mesh = m_mesh_manager->GetMesh(ui_draw_asset.mesh);
-            const auto& material = m_material_library->Get(ui_draw_asset.material);
-            glBindVertexArray(mesh.VAO);
-            glUniformMatrix4fv(u_proj, 1, GL_FALSE, value_ptr(proj));
-            glUniform4fv(u_ui_color, 1, glm::value_ptr(ui_draw_asset.color));
-
-            if (material.albedo_texture.texture)
-            {
-                glUniform1i(u_ui_use_texture, GL_TRUE);
-                const auto& texture = m_texture_manager->GetTexture(material.albedo_texture.texture);
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, texture.texture_id);
-            }
-            else
-            {
-                glUniform1i(u_ui_use_texture, GL_FALSE);
-            }
-
-            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(mesh.numIndices), GL_UNSIGNED_INT, nullptr);
-            m_draw_calls++;
-        }
-        glBindVertexArray(0);
-        glUseProgram(0);
+        RenderUIPass(draw_assets.ui_draw_assets);
     }
 
     void OpenGlRenderer::AddMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle)
@@ -200,13 +152,15 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         auto last_mesh = Assets::MeshHandle{0};
 
         GLint model_bind = 0;
+        GLint color_bind = 0;
         GLsizei mesh_index_count = 0;
         for (const auto& mesh_draw_asset : mesh_draw_assets)
         {
             if (mesh_draw_asset.Material != last_material)
             {
                 const auto& material = m_material_library->Get(mesh_draw_asset.Material);
-                BindMaterial(material, model_bind);
+                BindMaterial(material, model_bind, color_bind);
+                glUniform4fv(color_bind, 1, value_ptr(material.base_color));
                 last_material = mesh_draw_asset.Material;
             }
 
@@ -226,7 +180,46 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glUseProgram(0);
     }
 
-    void OpenGlRenderer::BindMaterial(const Materials::Material& material, GLint& model_bind) const
+    void OpenGlRenderer::RenderUIPass(const std::vector<UiDrawAsset>& draw_assets)
+    {
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        auto last_material = Assets::MaterialHandle{0};
+        auto last_mesh = Assets::MeshHandle{0};
+
+        GLint model_bind = 0;
+        GLint color_bind = 0;
+        GLsizei mesh_index_count = 0;
+        const glm::mat4 ortho = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.0f, 0.0f);
+        for (const auto& draw_asset : draw_assets)
+        {
+            if (draw_asset.Material != last_material)
+            {
+                const auto& material = m_material_library->Get(draw_asset.Material);
+                BindMaterial(material, model_bind, color_bind);
+
+                last_material = draw_asset.Material;
+            }
+            glUniform4fv(color_bind, 1, glm::value_ptr(draw_asset.color));
+            if (draw_asset.Mesh != last_mesh)
+            {
+                const auto& mesh = m_mesh_manager->GetMesh(draw_asset.Mesh);
+                BindMesh(mesh, mesh_index_count);
+                last_mesh = draw_asset.Mesh;
+            }
+            glm::mat4 proj = ortho * draw_asset.Model;
+            glUniformMatrix4fv(model_bind, 1, GL_FALSE, value_ptr(proj));
+            glDrawElements(GL_TRIANGLES, mesh_index_count, GL_UNSIGNED_INT, nullptr);
+            m_draw_calls++;
+        }
+        glBindVertexArray(0);
+        glUseProgram(0);
+    }
+
+    void OpenGlRenderer::BindMaterial(const Materials::Material& material, GLint& model_bind, GLint& color_bind) const
     {
         const auto shader_program = m_shader_manager->GetShaderProgram(material.shader);
         if (!shader_program.has_value())
@@ -235,12 +228,11 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         }
 
         model_bind = glGetUniformLocation(shader_program.value(), "u_Model");
-        const GLint u_color = glGetUniformLocation(shader_program.value(), "u_Color");
+        color_bind = glGetUniformLocation(shader_program.value(), "u_Color");
         const GLint u_texture = glGetUniformLocation(shader_program.value(), "u_Texture");
         const GLint u_use_texture = glGetUniformLocation(shader_program.value(), "u_UseTexture");
         glUseProgram(shader_program.value());
 
-        glUniform4fv(u_color, 1, value_ptr(material.base_color));
 
         glUniform1i(u_texture, 0);
         if (material.albedo_texture.texture)
