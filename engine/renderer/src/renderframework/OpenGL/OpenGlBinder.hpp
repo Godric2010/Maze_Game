@@ -28,9 +28,10 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
         static void BindOpaquePassParameters();
         static void BindUiPassParameters();
-        ShaderBindings BindShader(GLuint shader);
+        ShaderBindings BindShaderFields(GLuint shader);
         void BindColor(ShaderBindings shader_bindings, glm::vec4 color);
         void BindAlbedoTexture(ShaderBindings shader_bindings, GLuint texture);
+        void BindShader() const;
         GLsizei BindMesh(OpenGLMesh mesh);
         void BindMatrix(ShaderBindings shader_bindings, glm::mat4 proj_matrix);
 

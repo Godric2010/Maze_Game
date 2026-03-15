@@ -26,9 +26,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         void Initialize() override;
 
         void PrepareFrame(const CameraAsset& camera_asset) override;
-        void RenderUIPass(const std::vector<UiDrawAsset>& draw_assets);
 
-        void DrawFrame(DrawAssets& draw_assets) override;
+        void DrawFrame(std::vector<DrawAsset>& draw_assets) override;
 
         void AddMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) override;
 
@@ -46,6 +45,16 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         void Shutdown() override;
 
     private:
+        struct Context
+        {
+            AssetHandling::RenderState RenderPass;
+            Assets::MaterialHandle Material;
+            ShaderBindings ShaderFields;
+            Assets::MeshHandle Mesh;
+            GLsizei MeshIndicesCount;
+            glm::mat4 ProjectionMatrix;
+        };
+
         CameraAsset m_camera_asset{};
 
         GLuint m_camera_ubo;
@@ -56,16 +65,18 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         std::unique_ptr<OpenGlMeshManager> m_mesh_manager;
         std::unique_ptr<OpenGLTextureManager> m_texture_manager;
         AssetHandling::AssetHandler* m_asset_handler;
-        ShaderBindings m_current_shader_bindings{};
+
+        Context m_context{};
 
         glm::vec2 m_window_size{};
         uint32_t m_draw_calls = 0;
 
-        static void SortDrawAssets(std::vector<MeshDrawAsset>& mesh_draw_assets);
+        static void SortDrawAssets(std::vector<DrawAsset>& mesh_draw_assets);
 
-        void RenderOpaquePass(const std::vector<MeshDrawAsset>& mesh_draw_assets);
-        void BindMaterial(const Materials::Material& material) ;
-        static void BindMesh(const OpenGLMesh& mesh, GLsizei& mesh_indices_count);
+        void BindRenderPass(const AssetHandling::RenderState& render_state);
+        void BindMaterial(const Assets::MaterialHandle& material);
+        void BindMesh(const Assets::MeshHandle& mesh_handle);
         void BindShaders(const Assets::ShaderHandle& shader);
+        void DrawElement(const glm::mat4& model_matrix);
     };
 } // namespace

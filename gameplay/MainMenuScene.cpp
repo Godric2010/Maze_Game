@@ -157,7 +157,7 @@ namespace Gameplay {
 
         auto position = glm::vec2(0.0f, -100.0f);
         CreateMenuButton("StartGameButton", m_start_game_button, position, "Start", m_background_entity);
-
+        
         position = glm::vec2(0.0f, 100.0f);
         CreateMenuButton("QuitGameButton", m_quit_button, position, "Quit", m_background_entity);
     }

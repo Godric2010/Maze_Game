@@ -20,8 +20,7 @@ namespace Engine::Renderer
         glm::vec4 camera_position;
     };
 
-
-    struct MeshDrawAsset
+    struct DrawAsset
     {
         Ecs::EntityId Entity;
         AssetHandling::RenderState RenderState;
@@ -29,20 +28,6 @@ namespace Engine::Renderer
         Assets::MeshHandle Mesh;
         Assets::MaterialHandle Material;
         glm::mat4 Model;
-    };
-
-    struct UiDrawAsset
-    {
-        glm::mat4 Model;
-        Assets::MeshHandle Mesh;
-        Assets::MaterialHandle Material;
-        size_t RenderQueueIndex;
-        glm::vec4 color;
-    };
-
-    struct DrawAssets
-    {
-        std::vector<MeshDrawAsset> mesh_draw_assets;
-        std::vector<UiDrawAsset> ui_draw_assets;
+        glm::vec4 Color;
     };
 }

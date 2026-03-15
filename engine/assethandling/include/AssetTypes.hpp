@@ -39,6 +39,11 @@ namespace Engine::AssetHandling
     {
         std::vector<MeshVertexAsset> vertices;
         std::vector<uint32_t> indices;
+
+        bool IsValid() const
+        {
+            return vertices.size() >= 3 && indices.size() >= 3;
+        }
     };
 
     enum class PixelFormat

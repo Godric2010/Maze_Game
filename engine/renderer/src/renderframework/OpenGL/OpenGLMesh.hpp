@@ -4,12 +4,19 @@
 
 #pragma once
 
-namespace Engine::Renderer::RenderFramework::OpenGl {
-    struct OpenGLMesh {
+namespace Engine::Renderer::RenderFramework::OpenGl
+{
+    struct OpenGLMesh
+    {
         unsigned int VAO;
         unsigned int VBO;
         unsigned int EBO;
         uint32_t numVertices;
         uint32_t numIndices;
+
+        bool IsValid() const
+        {
+            return numVertices >= 3 && numIndices >= 3;
+        }
     };
 }

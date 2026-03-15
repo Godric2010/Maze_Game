@@ -1,9 +1,9 @@
 #include "OpenGlBinder.hpp"
 
+
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
     OpenGlBinder::OpenGlBinder() = default;
-
     OpenGlBinder::~OpenGlBinder() = default;
 
     void OpenGlBinder::BindOpaquePassParameters()
@@ -18,13 +18,15 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     void OpenGlBinder::BindUiPassParameters()
     {
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
         glEnable(GL_BLEND);
+        glDisable(GL_DEPTH_TEST);
+        glDepthFunc(GL_NEVER);
+        glDisable(GL_CULL_FACE);
+
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    ShaderBindings OpenGlBinder::BindShader(GLuint shader)
+    ShaderBindings OpenGlBinder::BindShaderFields(GLuint shader)
     {
         if (std::get<0>(m_bound_shader) != shader)
         {
@@ -35,8 +37,6 @@ namespace Engine::Renderer::RenderFramework::OpenGl
             shader_bindings.use_texture_bind = glGetUniformLocation(shader, "u_UseTexture");
             m_bound_shader = std::make_tuple(shader, shader_bindings);
         }
-
-        glUseProgram(shader);
         return std::get<1>(m_bound_shader);
     }
 
@@ -51,7 +51,6 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         {
             return;
         }
-
         if (texture == 0)
         {
             glUniform1i(shader_bindings.use_texture_bind, GL_FALSE);
@@ -62,8 +61,12 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         }
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
-
         m_bound_albedo_texture = texture;
+    }
+
+    void OpenGlBinder::BindShader() const
+    {
+        glUseProgram(std::get<0>(m_bound_shader));
     }
 
     GLsizei OpenGlBinder::BindMesh(OpenGLMesh mesh)

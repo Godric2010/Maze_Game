@@ -34,7 +34,7 @@ namespace Engine::Renderer::RenderFramework
         /**
          * Call to render to the screen
          */
-        virtual void DrawFrame(DrawAssets& draw_assets) = 0;
+        virtual void DrawFrame(std::vector<DrawAsset>& draw_assets) = 0;
 
         /**
          * Add a mesh to the renderer to display it

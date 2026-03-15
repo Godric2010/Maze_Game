@@ -30,9 +30,9 @@ namespace Engine::Renderer
 
         virtual void BeginFrame(const CameraAsset& camera_asset) const = 0;
 
-        virtual void SubmitFrame(DrawAssets& draw_assets) const = 0;
+        virtual void SubmitFrame(std::vector<DrawAsset>& draw_assets) const = 0;
 
-        virtual void SubmitDebugInfos(const std::vector<UiDrawAsset>& debug_draw_assets) = 0;
+        virtual void SubmitDebugInfos(const std::vector<DrawAsset>& debug_draw_assets) = 0;
 
         virtual Assets::MeshHandle GetUIMeshHandle() const = 0;
 

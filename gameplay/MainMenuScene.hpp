@@ -34,7 +34,7 @@ namespace Gameplay {
 
         MenuState m_menu_state = MenuState::Main;
 
-        glm::vec4 m_button_default_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+        glm::vec4 m_button_default_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.1f);
         glm::vec4 m_button_highlight_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.3f);
         glm::vec4 m_button_click_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.8f);
         glm::vec4 m_button_disabled_color = glm::vec4(0.0f, 0.0f, 0.0f, 0.1f);

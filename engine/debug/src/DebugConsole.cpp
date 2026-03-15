@@ -58,7 +58,7 @@ namespace Engine::Debug
 
     void DebugConsole::PushToFrame()
     {
-        std::vector<Renderer::UiDrawAsset> draw_assets;
+        std::vector<Renderer::DrawAsset> draw_assets;
         for (const auto& [id, text] : m_text_elements)
         {
             const uint8_t row = id;
@@ -114,15 +114,15 @@ namespace Engine::Debug
         auto mesh_handle = m_asset_handler->RegisterAsset(mesh_asset);
         auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
         m_render_controller->RegisterMesh(*asset, mesh_handle);
-        
+
         auto material_asset = std::make_shared<AssetHandling::MaterialAsset>();
         material_asset->render_state = AssetHandling::RenderState::UI,
-        material_asset->render_queue_index = 99;
+            material_asset->render_queue_index = 99;
         material_asset->shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
         material_asset->base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         material_asset->albedo_texture = AssetHandling::MaterialTexture{};
         material_asset->albedo_texture.texture = m_texture_handle;
-        
+
         auto material_handle = m_asset_handler->RegisterAsset(material_asset);
         m_render_controller->RegisterMaterial(material_handle);
 
@@ -134,8 +134,8 @@ namespace Engine::Debug
         return text_mesh_element;
     }
 
-    Renderer::UiDrawAsset DebugConsole::CreateUiDrawAsset(const uint8_t col, const uint8_t row,
-                                                          const TextMeshElement text_mesh_element) const
+    Renderer::DrawAsset DebugConsole::CreateUiDrawAsset(const uint8_t col, const uint8_t row,
+                                                        const TextMeshElement text_mesh_element) const
     {
         constexpr float height_offset = 30;
         constexpr float row_offset = 20;
@@ -148,13 +148,12 @@ namespace Engine::Debug
         model_mat = glm::translate(model_mat, glm::vec3(pos_x, pos_y, 0.0f));
         model_mat = glm::scale(model_mat, glm::vec3(text_mesh_element.width, text_mesh_element.height, 1.0f));
 
-        const Renderer::UiDrawAsset draw_asset{
-            .Model = model_mat,
-            .Mesh = text_mesh_element.mesh_handle,
-            .Material = text_mesh_element.material_handle,
-            .RenderQueueIndex = sizeof(uint8_t) - 1,
-            .color = glm::vec4(1, 0, 1, 1.0),
-        };
+        Renderer::DrawAsset draw_asset{};
+        draw_asset.Model = model_mat;
+        draw_asset.Mesh = text_mesh_element.mesh_handle;
+        draw_asset.Material = text_mesh_element.material_handle;
+        draw_asset.RenderQueueIndex = sizeof(uint8_t) - 1;
+        draw_asset.Color = glm::vec4(1, 0, 1, 1.0);
 
         return draw_asset;
     }

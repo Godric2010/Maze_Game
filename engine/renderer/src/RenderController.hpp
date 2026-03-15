@@ -38,9 +38,9 @@ namespace Engine::Renderer
 
         void BeginFrame(const CameraAsset& camera_asset) const override;
 
-        void SubmitFrame(DrawAssets& draw_assets) const override;
+        void SubmitFrame(std::vector<DrawAsset>& draw_assets) const override;
 
-        void SubmitDebugInfos(const std::vector<UiDrawAsset>& debug_draw_assets) override;
+        void SubmitDebugInfos(const std::vector<DrawAsset>& debug_draw_assets) override;
 
         Assets::MeshHandle GetUIMeshHandle() const override;
 
@@ -50,7 +50,7 @@ namespace Engine::Renderer
         Environment::WindowContext m_window_context;
         AssetHandling::AssetHandler* m_asset_handler;
         std::unique_ptr<RenderFramework::IRenderer> m_renderer;
-        std::vector<UiDrawAsset> m_debug_draw_assets;
+        std::vector<DrawAsset> m_debug_draw_assets;
         Assets::MeshHandle m_ui_mesh_handle;
     };
 }
