@@ -31,6 +31,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
         m_window_size = {window_context.width, window_context.height};
         glViewport(0, 0, window_context.drawableWidth, window_context.drawableHeight);
+        m_bind_cache = std::make_unique<OpenGlBinder>();
         m_shader_manager = std::make_unique<OpenGlShaderManager>(asset_handler);
         m_mesh_manager = std::make_unique<OpenGlMeshManager>();
         m_texture_manager = std::make_unique<OpenGLTextureManager>();
@@ -141,37 +142,27 @@ namespace Engine::Renderer::RenderFramework::OpenGl
             return;
         }
 
-        glDisable(GL_BLEND);
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LESS);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        glFrontFace(GL_CW);
+        OpenGlBinder::BindOpaquePassParameters();
 
         auto last_material = Assets::MaterialHandle{0};
         auto last_mesh = Assets::MeshHandle{0};
 
-        GLint model_bind = 0;
-        GLint color_bind = 0;
         GLsizei mesh_index_count = 0;
         for (const auto& mesh_draw_asset : mesh_draw_assets)
         {
             if (mesh_draw_asset.Material != last_material)
             {
                 const auto& material = m_material_library->Get(mesh_draw_asset.Material);
-                BindMaterial(material, model_bind, color_bind);
-                glUniform4fv(color_bind, 1, value_ptr(material.base_color));
+                BindMaterial(material);
+                m_bind_cache->BindColor(m_current_shader_bindings, material.base_color);
                 last_material = mesh_draw_asset.Material;
             }
 
-            if (mesh_draw_asset.Mesh != last_mesh)
-            {
-                const auto& mesh = m_mesh_manager->GetMesh(mesh_draw_asset.Mesh);
-                BindMesh(mesh, mesh_index_count);
-                last_mesh = mesh_draw_asset.Mesh;
-            }
 
-            glUniformMatrix4fv(model_bind, 1, GL_FALSE, glm::value_ptr(mesh_draw_asset.Model));
+            const auto& mesh = m_mesh_manager->GetMesh(mesh_draw_asset.Mesh);
+            mesh_index_count = m_bind_cache->BindMesh(mesh);
+
+            m_bind_cache->BindMatrix(m_current_shader_bindings, mesh_draw_asset.Model);
             glDrawElements(GL_TRIANGLES, mesh_index_count, GL_UNSIGNED_INT, nullptr);
             m_draw_calls++;
         }
@@ -182,16 +173,12 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     void OpenGlRenderer::RenderUIPass(const std::vector<UiDrawAsset>& draw_assets)
     {
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_CULL_FACE);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        OpenGlBinder::BindUiPassParameters();
 
         auto last_material = Assets::MaterialHandle{0};
         auto last_mesh = Assets::MeshHandle{0};
 
-        GLint model_bind = 0;
-        GLint color_bind = 0;
+
         GLsizei mesh_index_count = 0;
         const glm::mat4 ortho = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.0f, 0.0f);
         for (const auto& draw_asset : draw_assets)
@@ -199,19 +186,16 @@ namespace Engine::Renderer::RenderFramework::OpenGl
             if (draw_asset.Material != last_material)
             {
                 const auto& material = m_material_library->Get(draw_asset.Material);
-                BindMaterial(material, model_bind, color_bind);
+                BindMaterial(material);
 
                 last_material = draw_asset.Material;
             }
-            glUniform4fv(color_bind, 1, glm::value_ptr(draw_asset.color));
-            if (draw_asset.Mesh != last_mesh)
-            {
-                const auto& mesh = m_mesh_manager->GetMesh(draw_asset.Mesh);
-                BindMesh(mesh, mesh_index_count);
-                last_mesh = draw_asset.Mesh;
-            }
+            m_bind_cache->BindColor(m_current_shader_bindings, draw_asset.color);
+
+            const auto& mesh = m_mesh_manager->GetMesh(draw_asset.Mesh);
+            mesh_index_count = m_bind_cache->BindMesh(mesh);
             glm::mat4 proj = ortho * draw_asset.Model;
-            glUniformMatrix4fv(model_bind, 1, GL_FALSE, value_ptr(proj));
+            m_bind_cache->BindMatrix(m_current_shader_bindings, proj);
             glDrawElements(GL_TRIANGLES, mesh_index_count, GL_UNSIGNED_INT, nullptr);
             m_draw_calls++;
         }
@@ -219,38 +203,32 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glUseProgram(0);
     }
 
-    void OpenGlRenderer::BindMaterial(const Materials::Material& material, GLint& model_bind, GLint& color_bind) const
+    void OpenGlRenderer::BindMaterial(const Materials::Material& material)
     {
-        const auto shader_program = m_shader_manager->GetShaderProgram(material.shader);
+        BindShaders(material.shader);
+
+        GLuint texture = 0;
+        if (material.albedo_texture.texture)
+        {
+            const auto& texture_ref = m_texture_manager->GetTexture(material.albedo_texture.texture);
+            texture = texture_ref.texture_id;
+        }
+        m_bind_cache->BindAlbedoTexture(m_current_shader_bindings, texture);
+    }
+
+    void OpenGlRenderer::BindMesh(const OpenGLMesh& mesh, GLsizei& mesh_indices_count)
+    {
+        glBindVertexArray(mesh.VAO);
+        mesh_indices_count = static_cast<GLsizei>(mesh.numIndices);
+    }
+
+    void OpenGlRenderer::BindShaders(const Assets::ShaderHandle& shader)
+    {
+        const auto shader_program = m_shader_manager->GetShaderProgram(shader);
         if (!shader_program.has_value())
         {
             throw std::runtime_error("Shader program not found");
         }
-
-        model_bind = glGetUniformLocation(shader_program.value(), "u_Model");
-        color_bind = glGetUniformLocation(shader_program.value(), "u_Color");
-        const GLint u_texture = glGetUniformLocation(shader_program.value(), "u_Texture");
-        const GLint u_use_texture = glGetUniformLocation(shader_program.value(), "u_UseTexture");
-        glUseProgram(shader_program.value());
-
-
-        glUniform1i(u_texture, 0);
-        if (material.albedo_texture.texture)
-        {
-            glUniform1i(u_use_texture, GL_TRUE);
-            const auto& texture = m_texture_manager->GetTexture(material.albedo_texture.texture);
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture.texture_id);
-        }
-        else
-        {
-            glUniform1i(u_use_texture, GL_FALSE);
-        }
+        m_current_shader_bindings = m_bind_cache->BindShader(shader_program.value());
     }
-
-    void OpenGlRenderer::BindMesh(const OpenGLMesh& mesh, GLsizei& mesh_indices_count) const
-    {
-        glBindVertexArray(mesh.VAO);
-        mesh_indices_count = static_cast<GLsizei>(mesh.numIndices);
-    } // namespace
 }

@@ -7,6 +7,8 @@
 #include <stdexcept>
 #include <string>
 
+#include "AssetTypes.hpp"
+
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
     struct GLUploadFormat

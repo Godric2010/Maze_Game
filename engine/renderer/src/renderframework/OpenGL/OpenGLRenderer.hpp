@@ -7,6 +7,7 @@
 #include "../Renderer.hpp"
 
 #include "AssetHandler.hpp"
+#include "OpenGlBinder.hpp"
 #include "OpenGLMeshManager.hpp"
 #include "OpenGLShaderManager.hpp"
 #include "OpenGLTextureManager.hpp"
@@ -50,18 +51,21 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         GLuint m_camera_ubo;
         static constexpr GLuint camera_binding_point = 0;
 
+        std::unique_ptr<OpenGlBinder> m_bind_cache;
         std::unique_ptr<OpenGlShaderManager> m_shader_manager;
         std::unique_ptr<OpenGlMeshManager> m_mesh_manager;
         std::unique_ptr<OpenGLTextureManager> m_texture_manager;
         AssetHandling::AssetHandler* m_asset_handler;
+        ShaderBindings m_current_shader_bindings{};
 
         glm::vec2 m_window_size{};
         uint32_t m_draw_calls = 0;
-        
+
         static void SortDrawAssets(std::vector<MeshDrawAsset>& mesh_draw_assets);
-        
+
         void RenderOpaquePass(const std::vector<MeshDrawAsset>& mesh_draw_assets);
-        void BindMaterial(const Materials::Material& material, GLint& model_bind, GLint& color_bind) const;
-        void BindMesh(const OpenGLMesh& mesh, GLsizei& mesh_indices_count) const;
+        void BindMaterial(const Materials::Material& material) ;
+        static void BindMesh(const OpenGLMesh& mesh, GLsizei& mesh_indices_count);
+        void BindShaders(const Assets::ShaderHandle& shader);
     };
 } // namespace

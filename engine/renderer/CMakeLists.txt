@@ -20,7 +20,9 @@ add_library(Renderer STATIC
         include/RenderControllerFactory.hpp
         src/renderframework/materials/MaterialLibrary.cpp
         src/renderframework/materials/MaterialLibrary.hpp
-        src/renderframework/materials/Material.hpp)
+        src/renderframework/materials/Material.hpp
+        src/renderframework/OpenGL/OpenGlBinder.cpp
+        src/renderframework/OpenGL/OpenGlBinder.hpp)
 
 target_link_libraries(Renderer PUBLIC Interface PRIVATE Environment AssetHandling GLEW::GLEW glm::glm spdlog::spdlog)
 
