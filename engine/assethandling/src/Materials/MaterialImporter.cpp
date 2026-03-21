@@ -87,30 +87,70 @@ namespace Engine::AssetHandling::Materials
 
     glm::vec2 MaterialImporter::ReadFieldAsVec2(toml::node_view<const toml::node> node, const std::string& field_name)
     {
-        if (const auto vector2 = node[field_name].as_array())
+        const auto array = node[field_name].as_array();
+        if (!array)
         {
-            glm::vec2 vec;
-            vec.x = *vector2->get(0)->value<float>();
-            vec.y = *vector2->get(1)->value<float>();
-            return vec;
+            throw std::runtime_error("Field is not a vec2 array: " + field_name);
         }
 
-        throw std::runtime_error("Unknown field name for vec2 conversion: " + field_name);
+        if (array->size() != 2)
+        {
+            throw std::runtime_error("Field does not contain two elements as required for a vec2: " + field_name);
+        }
+
+        const auto* x_node = array->get(0);
+        const auto* y_node = array->get(1);
+
+        if (!x_node || !y_node)
+        {
+            throw std::runtime_error("Field contains null elements for vec2 conversion: " + field_name);
+        }
+
+        const auto x = x_node->value<float>();
+        const auto y = y_node->value<float>();
+
+        if (!x || !y)
+        {
+            throw std::runtime_error("Field contains non-float element for vec2: " + field_name);
+        }
+
+        return glm::vec2(x.value(), y.value());
     }
 
     glm::vec4 MaterialImporter::ReadFieldAsVec4(toml::node_view<const toml::node> node, const std::string& field_name)
     {
-        if (const auto vector4 = node[field_name].as_array())
+        const auto array = node[field_name].as_array();
+        if (!array)
         {
-            glm::vec4 vec;
-            vec.x = *vector4->get(0)->value<float>();
-            vec.y = *vector4->get(1)->value<float>();
-            vec.z = *vector4->get(2)->value<float>();
-            vec.w = *vector4->get(3)->value<float>();
-            return vec;
+            throw std::runtime_error("Field is not a vec4 array: " + field_name);
         }
 
-        throw std::runtime_error("Unknown field name for vec4 conversion: " + field_name);
+        if (array->size() != 4)
+        {
+            throw std::runtime_error("Field does not contain four elements as required for a vec4: " + field_name);
+        }
+
+        const auto* x_node = array->get(0);
+        const auto* y_node = array->get(1);
+        const auto* z_node = array->get(2);
+        const auto* w_node = array->get(3);
+
+        if (!x_node || !y_node || !z_node || !w_node)
+        {
+            throw std::runtime_error("Field contains null elements for vec4 conversion: " + field_name);
+        }
+
+        const auto x = x_node->value<float>();
+        const auto y = y_node->value<float>();
+        const auto z = z_node->value<float>();
+        const auto w = w_node->value<float>();
+
+        if (!x || !y || !z || !w)
+        {
+            throw std::runtime_error("Field contains non-float element for vec2: " + field_name);
+        }
+
+        return glm::vec4(x.value(), y.value(), z.value(), w.value());
     }
 
     RenderState MaterialImporter::ReadFieldAsRenderState(toml::node_view<const toml::node> node,
