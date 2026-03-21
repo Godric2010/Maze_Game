@@ -189,13 +189,21 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_BOT }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           REF_NAME: ${{ github.ref_name }}
-          MACOS: ${{ steps.junit_macos.outputs.overall_status }}
+          MACOS_RESULT: ${{ needs.build-test-macos.result }}
           COV: ${{ steps.cov.outputs.pct }}
         shell: bash
         run: |
           set -euo pipefail
+          case "${MACOS_RESULT}" in
+            success) MACOS="✅" ;;
+            failure) MACOS="❌" ;;
+            cancelled) MACOS="🚫" ;;
+            skipped) MACOS="⏭️" ;;
+            *) MACOS="❓" ;;
+          esac
+          
           CONTENT="**CI Results** (${REF_NAME})
-                  macOS: ${MACOS:-❓}
+                  macOS: ${MACOS}
                   Coverage (macOS): ${COV:-n/a}
                   RUN: ${RUN_URL}"
           

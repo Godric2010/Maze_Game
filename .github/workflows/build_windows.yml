@@ -114,15 +114,24 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_BOT }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           REF_NAME: ${{ github.ref_name }}
-          WINDOWS: ${{ steps.junit_windows.outputs.overall_status }}
+          WINDOWS_RESULT: ${{ needs.build-test-windows.result }}
         shell: bash
         run: |
           set -euo pipefail
+          
+          case "${WINDOWS_RESULT}" in
+            success) WINDOWS="✅" ;;
+            failure) WINDOWS="🔴" ;;
+            cancelled) WINDOWS="✖️" ;;
+            skipped) WINDOWS="⏭️" ;;
+            *) WINDOWS="❓" ;;
+          
           CONTENT="**CI Results** (${REF_NAME})
-                  Windows: ${WINDOWS:-❓}
+                  Windows: ${WINDOWS}
                   RUN: ${RUN_URL}"
           
           curl -sS -X POST \
               -H "Content-Type: application/json" \
               -d "$(jq -n --arg c "$CONTENT" '{content:$c}')" \
               "${DISCORD_WEBHOOK_URL}"
+          

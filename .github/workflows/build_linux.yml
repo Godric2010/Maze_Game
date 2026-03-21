@@ -78,7 +78,7 @@ jobs:
                 echo "----- $f -----"
                 tail -n 200 "$f" || true
               done
-         
+
       - name: Debug vcpkg install
         if: failure()
         shell: bash
@@ -166,12 +166,20 @@ jobs:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_BOT }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           REF_NAME: ${{ github.ref_name }}
-          LINUX: ${{ steps.junit_linux.outputs.overall_status }}
+          LINUX_RESULT: ${{ needs.build-test-linux.result }}
         shell: bash
         run: |
           set -euo pipefail
+          case "${LINUX_RESULT}" in
+            success) LINUX="✅" ;;
+            failure) LINUX="❌" ;;
+            cancelled) LINUX="🚫" ;;
+            skipped) LINUX="⏭️" ;;
+            *) LINUX="❓" ;;
+          esac
+          
           CONTENT="**CI Results** (${REF_NAME})
-                  Linux: ${LINUX:-❓}
+                  Linux: ${LINUX}
                   RUN: ${RUN_URL}"
 
           curl -sS -X POST \
