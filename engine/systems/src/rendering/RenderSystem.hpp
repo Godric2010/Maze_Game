@@ -26,6 +26,7 @@ namespace Engine::Systems
         std::vector<Renderer::DrawAsset> m_draw_assets;
         std::unordered_map<Ecs::EntityId, Renderer::DrawAsset> m_draw_asset_map;
         std::unordered_map<Ecs::EntityId, Renderer::DrawAsset> m_ui_draw_asset_map;
+        std::unordered_map<Ecs::EntityId, Renderer::DrawAsset> m_ui_text_asset_map;
 
         Renderer::CameraAsset CreateCameraAsset(const Ecs::EntityId& camera_entity,
                                                 const Components::Transform* camera_transform) const;
@@ -33,6 +34,7 @@ namespace Engine::Systems
         void ClearDrawAssets();
 
         void FillMeshDrawAssets();
+        bool IsDrawAssetValid(const Renderer::DrawAsset& ui_draw_asset) const;
 
         void FillUiDrawAssets();
 

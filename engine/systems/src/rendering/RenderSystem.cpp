@@ -57,7 +57,7 @@ namespace Engine::Systems
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Text>(
             [this](const Ecs::EntityId entity)
             {
-                this->m_ui_draw_asset_map.erase(entity);
+                this->m_ui_text_asset_map.erase(entity);
             });
         m_draw_assets = std::vector<Renderer::DrawAsset>();
     }
@@ -88,7 +88,7 @@ namespace Engine::Systems
     void RenderSystem::ClearDrawAssets()
     {
         m_draw_assets.clear();
-        m_draw_assets.reserve(m_draw_asset_map.size() + m_ui_draw_asset_map.size());
+        m_draw_assets.reserve(m_draw_asset_map.size() + m_ui_draw_asset_map.size() + m_ui_text_asset_map.size());
     }
 
     void RenderSystem::FillMeshDrawAssets()
@@ -105,26 +105,40 @@ namespace Engine::Systems
         }
     }
 
+
     void RenderSystem::FillUiDrawAssets()
     {
-        auto transform_cache = Cache()->GetTransformCache();
+        const auto transform_cache = Cache()->GetTransformCache();
+        const auto ui_cache = Cache()->GetUiCache();
         for (auto [entity, ui_draw_asset] : m_ui_draw_asset_map)
         {
-            if (!ui_draw_asset.Material || !ui_draw_asset.Mesh)
-            {
-                continue;
-            }
-            
-            if (!m_asset_handler->GetAsset<AssetHandling::MeshAsset>(ui_draw_asset.Mesh)->IsValid())
+            if (!IsDrawAssetValid(ui_draw_asset))
             {
                 continue;
             }
 
-            auto rect_transform = transform_cache->GetRectTransformValue(entity);
+            const auto rect_transform = transform_cache->GetRectTransformValue(entity);
             ui_draw_asset.Model = rect_transform.global_matrix;
             ui_draw_asset.RenderQueueIndex = rect_transform.layer;
+
+            ui_draw_asset.Color = ui_cache->GetColorElement(entity).color;
             m_draw_assets.push_back(ui_draw_asset);
         }
+        
+        for (auto [entity, ui_draw_asset] : m_ui_text_asset_map)
+        {
+            if (!IsDrawAssetValid(ui_draw_asset))
+            {
+                continue;
+            }
+
+            const auto rect_transform = transform_cache->GetRectTransformValue(entity);
+            ui_draw_asset.Model = rect_transform.global_matrix;
+            ui_draw_asset.RenderQueueIndex = rect_transform.layer;
+
+            m_draw_assets.push_back(ui_draw_asset);
+        }
+        
     }
 
     void RenderSystem::RegisterDrawAssets(const Ecs::EntityId& entity, const Components::MeshRenderer& mesh_renderer)
@@ -166,6 +180,20 @@ namespace Engine::Systems
         draw_asset.Color = glm::vec4(1, 1, 1, 1);
         draw_asset.Mesh = text_element.mesh_handle;
         draw_asset.Material = text_element.material_handle;
-        m_ui_draw_asset_map[entity] = draw_asset;
+        m_ui_text_asset_map[entity] = draw_asset;
+    }
+
+    bool RenderSystem::IsDrawAssetValid(const Renderer::DrawAsset& ui_draw_asset) const
+    {
+        if (!ui_draw_asset.Material || !ui_draw_asset.Mesh)
+        {
+            return false;
+        }
+
+        if (!m_asset_handler->GetAsset<AssetHandling::MeshAsset>(ui_draw_asset.Mesh)->IsValid())
+        {
+            return false;
+        }
+        return true;
     }
 } // namespace

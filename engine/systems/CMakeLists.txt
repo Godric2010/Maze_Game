@@ -16,8 +16,6 @@ add_library(Systems STATIC
         src/rendering/RenderSystem.hpp
         src/transform/TransformSystem.cpp
         src/transform/TransformSystem.hpp
-        src/ui/UiSystem.cpp
-        src/ui/UiSystem.hpp
         src/transform/TransformCache.cpp
         src/transform/TransformCache.hpp
         src/CacheManager.hpp
@@ -27,7 +25,13 @@ add_library(Systems STATIC
         src/ui/UiCache.hpp
         include/ICacheManager.hpp
         src/CacheManagerFactory.cpp
-        include/CacheManagerFactory.hpp
+        include/CacheManagerFactory.hpp 
+        src/ui/UiImageSystem.cpp
+        src/ui/UiImageSystem.hpp
+        src/ui/UiTextSystem.cpp
+        src/ui/UiTextSystem.hpp
+        src/ui/UiButtonSystem.cpp
+        src/ui/UiButtonSystem.hpp
 )
 
 target_link_libraries(Systems PUBLIC Components Renderer Text Physics spdlog::spdlog glm::glm Input)
