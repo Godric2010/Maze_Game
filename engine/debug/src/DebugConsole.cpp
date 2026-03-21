@@ -62,8 +62,8 @@ namespace Engine::Debug
         for (const auto& [id, text] : m_text_elements)
         {
             const uint8_t row = id;
-            auto label_asset = CreateUiDrawAsset(0, row, text.label_mesh);
-            auto content_asset = CreateUiDrawAsset(1, row, text.content_mesh);
+            auto label_asset = CreateUiDrawAsset(0, row, text.label_mesh, 2);
+            auto content_asset = CreateUiDrawAsset(1, row, text.content_mesh, 1);
             draw_assets.push_back(label_asset);
             draw_assets.push_back(content_asset);
         }
@@ -135,7 +135,8 @@ namespace Engine::Debug
     }
 
     Renderer::DrawAsset DebugConsole::CreateUiDrawAsset(const uint8_t col, const uint8_t row,
-                                                        const TextMeshElement text_mesh_element) const
+                                                        const TextMeshElement& text_mesh_element, 
+                                                        const uint8_t queue_index) const
     {
         constexpr float height_offset = 30;
         constexpr float row_offset = 20;
@@ -149,10 +150,11 @@ namespace Engine::Debug
         model_mat = glm::scale(model_mat, glm::vec3(text_mesh_element.width, text_mesh_element.height, 1.0f));
 
         Renderer::DrawAsset draw_asset{};
+        draw_asset.RenderState = AssetHandling::RenderState::UI;
         draw_asset.Model = model_mat;
         draw_asset.Mesh = text_mesh_element.mesh_handle;
         draw_asset.Material = text_mesh_element.material_handle;
-        draw_asset.RenderQueueIndex = sizeof(uint8_t) - 1;
+        draw_asset.RenderQueueIndex = 1000  - queue_index;
         draw_asset.Color = glm::vec4(1, 0, 1, 1.0);
 
         return draw_asset;

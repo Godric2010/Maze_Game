@@ -84,7 +84,6 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         {
             BindRenderPass(draw_asset.RenderState);
             BindMaterial(draw_asset.Material);
-            // m_bind_cache->BindShader();
             m_bind_cache->BindColor(m_context.ShaderFields, draw_asset.Color);
             BindMesh(draw_asset.Mesh);
             DrawElement(draw_asset.Model);

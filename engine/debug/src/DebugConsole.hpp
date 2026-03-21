@@ -59,6 +59,6 @@ namespace Engine::Debug
 
         [[nodiscard]] TextMeshElement CreateTextMeshElement(const std::string& text) const;
 
-        Renderer::DrawAsset CreateUiDrawAsset(uint8_t col, uint8_t row, TextMeshElement text_mesh_element) const;
+        Renderer::DrawAsset CreateUiDrawAsset(uint8_t col, uint8_t row, const TextMeshElement& text_mesh_element, uint8_t queue_index) const;
     };
 } // namespace
