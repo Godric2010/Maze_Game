@@ -1,5 +1,6 @@
 include_guard(GLOBAL)
 
+option(TEST_JUNIT_REPORTS "Write Catch2 JUnit XML reports" OFF)
 function(add_catch2_tests)
     # Usage:
     # add_catch2_tests(
@@ -38,24 +39,29 @@ function(add_catch2_tests)
 
     include(Catch)
 
-    if(COMMAND enable_coverage)
-        if(TARGET ${APP_TARGET})
+    if (COMMAND enable_coverage)
+        if (TARGET ${APP_TARGET})
             enable_coverage(${APP_TARGET})
         endif ()
     endif ()
 
-    set(_JUNIT_DIR "${CMAKE_BINARY_DIR}/junit")
-
-    file(MAKE_DIRECTORY "${_JUNIT_DIR}")
-
-    catch_discover_tests(${APP_TARGET}
+    set(_discover_args
             TEST_PREFIX "${APP_PREFIX}"
-            EXTRA_ARGS ${_EXTRA_ARGS}
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-            REPORTER junit
-            OUTPUT_DIR "${_JUNIT_DIR}"
-            OUTPUT_PREFIX "${TARGET_NAME}-"
-            OUTPUT_SUFFIX ".xml"
-
+            EXTRA_ARGS --reporter console
     )
+
+    if (TEST_JUNIT_REPORTS)
+        set(_JUNIT_DIR "${CMAKE_BINARY_DIR}/junit")
+        file(MAKE_DIRECTORY "${_JUNIT_DIR}")
+
+        list(APPEND _discover_args
+                REPORTER junit
+                OUTPUT_DIR "${_JUNIT_DIR}"
+                OUTPUT_PREFIX "${APP_TARGET}"
+                OUTPUT_SUFFIX ".xml"
+        )
+    endif ()
+
+    catch_discover_tests(${APP_TARGET} ${_discover_args})
 endfunction()

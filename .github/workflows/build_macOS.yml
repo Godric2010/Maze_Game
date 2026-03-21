@@ -44,7 +44,8 @@ jobs:
           cmake -S . -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} \
             -DCMAKE_TOOLCHAIN_FILE="${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" \
-            -DENABLE_COVERAGE=ON
+            -DENABLE_COVERAGE=ON \
+            -DTEST_JUNIT_REPORTS=ON
 
       - name: Build
         shell: bash
