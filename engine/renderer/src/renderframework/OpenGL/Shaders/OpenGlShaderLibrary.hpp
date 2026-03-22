@@ -5,13 +5,21 @@
 #include <spdlog/spdlog.h>
 
 #include "AssetHandler.hpp"
+#include "../../IShaderLibrary.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGl {
-    class OpenGlShaderManager {
+namespace Engine::Renderer::RenderFramework::OpenGl
+{
+    class OpenGlShaderLibrary : public Rendering::RenderFramework::IShaderLibrary
+    {
     public:
-        OpenGlShaderManager(AssetHandling::AssetHandler* asset_handler);
+        OpenGlShaderLibrary(AssetHandling::AssetHandler* asset_handler);
 
-        ~OpenGlShaderManager();
+        ~OpenGlShaderLibrary() override;
+
+        void CompileShaders(
+            const std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<AssetHandling::ShaderAsset>>>& shaders) override;
+
+        void ClearShaders() override;
 
         void CompileShaders();
 
@@ -19,7 +27,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
     private:
         AssetHandling::AssetHandler* m_asset_handler;
-        std::unordered_map<Assets::ShaderHandle, GLuint> m_shader_program_map;
+        std::unordered_map<size_t, GLuint> m_shader_program_map;
 
 
         static GLuint CompileShader(GLenum type, std::string_view source, std::string_view debug_name);

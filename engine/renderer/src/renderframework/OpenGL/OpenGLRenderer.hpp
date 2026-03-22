@@ -9,7 +9,7 @@
 #include "AssetHandler.hpp"
 #include "OpenGlBinder.hpp"
 #include "Meshes/OpenGlMeshLibrary.hpp"
-#include "OpenGLShaderManager.hpp"
+#include "Shaders/OpenGlShaderLibrary.hpp"
 #include "Textures/OpenGLTextureLibrary.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl
@@ -61,7 +61,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         static constexpr GLuint camera_binding_point = 0;
 
         std::unique_ptr<OpenGlBinder> m_bind_cache;
-        std::unique_ptr<OpenGlShaderManager> m_shader_manager;
+        std::unique_ptr<OpenGlShaderLibrary> m_shader_manager;
         std::unique_ptr<OpenGlMeshLibrary> m_mesh_manager;
         std::unique_ptr<OpenGLTextureLibrary> m_texture_manager;
         AssetHandling::AssetHandler* m_asset_handler;

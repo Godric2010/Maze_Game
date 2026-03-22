@@ -32,7 +32,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_window_size = {window_context.width, window_context.height};
         glViewport(0, 0, window_context.drawableWidth, window_context.drawableHeight);
         m_bind_cache = std::make_unique<OpenGlBinder>();
-        m_shader_manager = std::make_unique<OpenGlShaderManager>(asset_handler);
+        m_shader_manager = std::make_unique<OpenGlShaderLibrary>(asset_handler);
         m_mesh_manager = std::make_unique<OpenGlMeshLibrary>();
         m_texture_manager = std::make_unique<OpenGLTextureLibrary>();
         m_asset_handler = asset_handler;
@@ -44,7 +44,18 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     void OpenGlRenderer::Initialize()
     {
-        m_shader_manager->CompileShaders();
+        const auto shader_handles = m_asset_handler->GetAllAssetHandlesOfType<AssetHandling::ShaderAsset>();
+        std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<AssetHandling::ShaderAsset>>> shaders;
+        shaders.reserve(shader_handles.size());
+        for (int i = 0; i < shader_handles.size(); ++i)
+        {
+            const auto shader_handle = shader_handles[i];
+            const auto asset = m_asset_handler->GetAsset<AssetHandling::ShaderAsset>(shader_handle);
+            const auto tuple = std::make_tuple(shader_handle, asset);
+            shaders.push_back(tuple);
+        }
+
+        m_shader_manager->CompileShaders(shaders);
         glGenBuffers(1, &m_camera_ubo);
         glBindBuffer(GL_UNIFORM_BUFFER, m_camera_ubo);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraAsset), nullptr, GL_DYNAMIC_DRAW);
@@ -114,9 +125,10 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     void OpenGlRenderer::Shutdown()
     {
-        m_shader_manager.reset();
         m_mesh_manager->ClearMeshes();
         m_texture_manager->ClearTextures();
+        m_shader_manager->ClearShaders();
+        m_shader_manager.reset();
     }
 
     void OpenGlRenderer::SortDrawAssets(std::vector<DrawAsset>& mesh_draw_assets)

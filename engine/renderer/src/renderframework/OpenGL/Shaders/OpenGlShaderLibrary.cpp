@@ -1,26 +1,49 @@
-#include "OpenGLShaderManager.hpp"
+#include "OpenGlShaderLibrary.hpp"
 
 #include <ranges>
 
 
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
-    OpenGlShaderManager::OpenGlShaderManager(AssetHandling::AssetHandler* asset_handler)
+    OpenGlShaderLibrary::OpenGlShaderLibrary(AssetHandling::AssetHandler* asset_handler)
     {
         m_asset_handler = asset_handler;
     }
 
-    OpenGlShaderManager::~OpenGlShaderManager()
+    OpenGlShaderLibrary::~OpenGlShaderLibrary()
+    {
+        m_asset_handler = nullptr;
+    }
+
+    void OpenGlShaderLibrary::CompileShaders(
+        const std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<AssetHandling::ShaderAsset>>>& shaders)
+    {
+        for (auto& shader_with_handle : shaders)
+        {
+            const Assets::ShaderHandle& shader_handle = std::get<0>(shader_with_handle);
+            auto shader_asset = std::get<1>(shader_with_handle);
+            const std::string& shader_name = shader_asset->name;
+            const char* v_src = shader_asset->vertex_content.c_str();
+            const char* f_src = shader_asset->fragment_content.c_str();
+
+            const auto vertex_shader = CompileShader(GL_VERTEX_SHADER, v_src, shader_name + ".vertexShader");
+            const auto fragment_shader = CompileShader(GL_FRAGMENT_SHADER, f_src, shader_name + ".fragmentShader");
+
+            const auto shader_program = LinkShaderProgram(vertex_shader, fragment_shader, shader_name);
+
+            m_shader_program_map.emplace(shader_handle.value, shader_program);
+        }
+    }
+
+    void OpenGlShaderLibrary::ClearShaders()
     {
         for (const auto shader : m_shader_program_map | std::views::values)
         {
             glDeleteShader(shader);
         }
-
-        m_asset_handler = nullptr;
     }
 
-    void OpenGlShaderManager::CompileShaders()
+    void OpenGlShaderLibrary::CompileShaders()
     {
         const auto shader_handles = m_asset_handler->GetAllAssetHandlesOfType<AssetHandling::ShaderAsset>();
 
@@ -36,20 +59,20 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
             const auto shader_program = LinkShaderProgram(vertex_shader, fragment_shader, shader_name);
 
-            m_shader_program_map.emplace(shader_handle, shader_program);
+            m_shader_program_map.emplace(shader_handle.value, shader_program);
         }
     }
 
-    std::optional<GLuint> OpenGlShaderManager::GetShaderProgram(const Assets::ShaderHandle& shader_handle) const
+    std::optional<GLuint> OpenGlShaderLibrary::GetShaderProgram(const Assets::ShaderHandle& shader_handle) const
     {
-        if (!m_shader_program_map.contains(shader_handle))
+        if (!m_shader_program_map.contains(shader_handle.value))
         {
             return std::nullopt;
         }
-        return m_shader_program_map.at(shader_handle);
+        return m_shader_program_map.at(shader_handle.value);
     }
 
-    GLuint OpenGlShaderManager::CompileShader(const GLenum type, const std::string_view source,
+    GLuint OpenGlShaderLibrary::CompileShader(const GLenum type, const std::string_view source,
                                               const std::string_view debug_name)
     {
         const GLuint shader = glCreateShader(type);
@@ -75,7 +98,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         return shader;
     }
 
-    GLuint OpenGlShaderManager::LinkShaderProgram(const GLuint vertex_shader, const GLuint fragment_shader,
+    GLuint OpenGlShaderLibrary::LinkShaderProgram(const GLuint vertex_shader, const GLuint fragment_shader,
                                                   const std::string_view debug_name)
     {
         const GLuint program = glCreateProgram();
@@ -109,7 +132,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         return program;
     }
 
-    void OpenGlShaderManager::LogSourceWithLineNumbers(const std::string_view source)
+    void OpenGlShaderLibrary::LogSourceWithLineNumbers(const std::string_view source)
     {
         std::istringstream iss{std::string(source)};
         std::string line;
