@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.31)
 find_package(glm)
 find_package(lodepng)
 find_package(tomlplusplus CONFIG REQUIRED)
+find_package(fmt CONFIG REQUIRED)
 
 add_library(AssetHandling STATIC
         include/AssetHandler.hpp
@@ -17,7 +18,7 @@ add_library(AssetHandling STATIC
         src/Materials/MaterialImporter.hpp
 )
 
-target_link_libraries(AssetHandling PUBLIC Interface Environment glm::glm PRIVATE lodepng tomlplusplus::tomlplusplus)
+target_link_libraries(AssetHandling PUBLIC Interface Environment glm::glm PRIVATE lodepng tomlplusplus::tomlplusplus fmt::fmt)
 
 target_include_directories(AssetHandling
         PUBLIC

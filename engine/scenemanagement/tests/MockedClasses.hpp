@@ -2,7 +2,8 @@
 #include <IApplication.hpp>
 #include <ISystemManager.hpp>
 #include <Input/IInput.hpp>
-#include <Renderer/IRenderer.hpp>
+
+#include "Assets/IAssetLibrary.hpp"
 
 class FakeApplication : public Engine::IApplication
 {
@@ -76,21 +77,48 @@ public:
     }
 };
 
-class FakeRenderer : public Engine::Renderer::IRenderer
+class FakeAssetLibrary : public Engine::Assets::IAssetLibrary
 {
 public:
-    Engine::Assets::MeshHandle GetOrLoadMesh(const std::string& file_path) override
+    ~FakeAssetLibrary() override = default;
+
+    Engine::Assets::MeshHandle LoadMesh(const std::string& name) override
     {
-        return Engine::Assets::MeshHandle();
+        return {};
     }
 
-    Engine::Assets::TextureHandle GetOrLoadTexture(const std::string& file_path) override
+    Engine::Assets::MaterialHandle LoadMaterial(const std::string& name) override
     {
-        return Engine::Assets::TextureHandle();
+        return {};
     }
 
-    Engine::Assets::MaterialHandle GetOrLoadMaterial(const std::string& file_path) override
+    Engine::Assets::TextureHandle LoadTexture(const std::string& name) override
     {
-        return Engine::Assets::MaterialHandle();
+        return {};
+    }
+
+    std::optional<Engine::Assets::FontHandle> FindFont(const std::string& name) override
+    {
+        return {};
+    }
+
+    std::optional<Engine::Assets::MaterialHandle> FindMaterial(const std::string& name) override
+    {
+        return {};
+    }
+
+    std::optional<Engine::Assets::MeshHandle> FindMesh(const std::string& name) override
+    {
+        return {};
+    }
+
+    std::optional<Engine::Assets::TextureHandle> FindTexture(const std::string& name) override
+    {
+        return {};
+    }
+
+    std::optional<Engine::Assets::ShaderHandle> FindShader(const std::string& name) override
+    {
+        return {};
     }
 };
