@@ -4,7 +4,7 @@ namespace Engine::SceneManagement
 {
     SceneManager::SceneManager(IApplication& app,
                                Ecs::ISystemManager& system_manager, Input::IInput& input_manager,
-                               Renderer::IRenderer& renderer,
+                               Renderer::IRenderer& renderer, Assets::IAssetLibrary& asset_library,
                                const float screen_width,
                                const float screen_height)
     {
@@ -13,6 +13,7 @@ namespace Engine::SceneManagement
         m_context.emplace(SceneContext{
                 .app = app,
                 .scene_manager = *this,
+                .asset_library = asset_library,
                 .world = *m_active_world,
                 .game_world = *m_world_adapter,
                 .system_manager = system_manager,
@@ -52,13 +53,13 @@ namespace Engine::SceneManagement
         throw std::runtime_error("Failed to load scene: " + name);
     }
 
-    void SceneManager::PreFixed(float delta_time) 
+    void SceneManager::PreFixed(float delta_time)
     {
         if (m_pending_scene)
         {
             ApplyTransitionToPendingScene();
         }
-        
+
         if (m_current_scene)
         {
             m_current_scene->PreFixed(delta_time);
@@ -100,6 +101,7 @@ namespace Engine::SceneManagement
         auto new_context = SceneContext{\
             .app = old_context.app,
             .scene_manager = *this,
+            .asset_library = old_context.asset_library,
             .world = *m_active_world,
             .game_world = *m_world_adapter,
             .system_manager = old_context.system_manager,

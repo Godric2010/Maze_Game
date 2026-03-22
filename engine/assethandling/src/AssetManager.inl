@@ -9,6 +9,46 @@ namespace Engine::AssetHandling
         m_file_reader = Environment::EnvironmentBuilder::CreateFileReader();
     }
 
+    inline MeshHandle AssetHandler::LoadMesh(const std::string& mesh_name)
+    {
+        return LoadAsset<MeshAsset>(mesh_name);
+    }
+
+    inline MaterialHandle AssetHandler::LoadMaterial(const std::string& name)
+    {
+        return LoadAsset<MaterialAsset>(name);
+    }
+
+    inline TextureHandle AssetHandler::LoadTexture(const std::string& texture_name)
+    {
+        return LoadAsset<TextureAsset>(texture_name);
+    }
+
+    inline std::optional<MeshHandle> AssetHandler::FindMesh(const std::string& mesh_name)
+    {
+        return FindAsset<MeshAsset>(mesh_name);
+    }
+
+    inline std::optional<MaterialHandle> AssetHandler::FindMaterial(const std::string& material_name)
+    {
+        return FindAsset<MaterialAsset>(material_name);
+    }
+
+    inline std::optional<TextureHandle> AssetHandler::FindTexture(const std::string& texture_name)
+    {
+        return FindAsset<TextureAsset>(texture_name);
+    }
+
+    inline std::optional<FontHandle> AssetHandler::FindFont(const std::string& font_name)
+    {
+        return FindAsset<FontAsset>(font_name);
+    }
+
+    inline std::optional<ShaderHandle> AssetHandler::FindShader(const std::string& shader_name)
+    {
+        return FindAsset<ShaderAsset>(shader_name);
+    }
+
     template <AssetType T>
     typename AssetHandler::HandleT<T> AssetHandler::LoadAsset(const std::string& asset_name)
     {
@@ -94,5 +134,20 @@ namespace Engine::AssetHandling
     {
         auto& cache = Cache<T>();
         return cache.id_by_name[asset_name];
+    }
+
+    template <AssetType T>
+    std::optional<AssetHandler::HandleT<T>> AssetHandler::FindAsset(const std::string& asset_name)
+    {
+        if (asset_name.empty())
+        {
+            return std::nullopt;
+        }
+        auto& cache = Cache<T>();
+        if (cache.id_by_name.find(asset_name) != cache.id_by_name.end())
+        {
+            return cache.id_by_name[asset_name];
+        }
+        return std::nullopt;
     }
 } // namespace

@@ -13,7 +13,7 @@ namespace Engine::SceneManagement
     public:
         explicit SceneManager(IApplication& app,
                               Ecs::ISystemManager& system_manager, Input::IInput& input_manager,
-                              Renderer::IRenderer& renderer,
+                              Renderer::IRenderer& renderer, Assets::IAssetLibrary& asset_library,
                               float screen_width, float screen_height);
 
         ~SceneManager() override;

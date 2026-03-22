@@ -1,4 +1,4 @@
- #include "EngineController.hpp"
+#include "EngineController.hpp"
 
 #include "CacheManagerFactory.hpp"
 #include "DebugBuilder.hpp"
@@ -61,6 +61,8 @@ namespace Engine::Core
                                                                           *m_input_manager,
                                                                           reinterpret_cast<Renderer::IRenderer&>(*
                                                                               renderer),
+                                                                          reinterpret_cast<Assets::IAssetLibrary&>(*
+                                                                              asset_handler_service),
                                                                           static_cast<float>(window_context.width),
                                                                           static_cast<float>(window_context.height)
         );

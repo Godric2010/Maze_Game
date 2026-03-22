@@ -169,7 +169,7 @@ namespace Engine::Renderer
                 m_material_library->AddMaterial(draw_asset.Material, *material_asset);
 
                 auto albedo_texture_handle = material_asset->albedo_texture.texture;
-                if (!m_texture_library->HasTexture(albedo_texture_handle))
+                if (albedo_texture_handle && !m_texture_library->HasTexture(albedo_texture_handle))
                 {
                     auto texture_asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(albedo_texture_handle);
                     m_texture_library->AddTexture(albedo_texture_handle, *texture_asset);

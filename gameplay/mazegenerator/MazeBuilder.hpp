@@ -4,6 +4,8 @@
 #include "SceneWorld.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 #include <glm/glm.hpp>
+
+#include "Assets/IAssetLibrary.hpp"
 #include "Renderer/IRenderer.hpp"
 
 namespace Gameplay::Mazegenerator
@@ -11,7 +13,7 @@ namespace Gameplay::Mazegenerator
     class MazeBuilder
     {
     public:
-        MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Renderer::IRenderer* renderer,
+        MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Assets::IAssetLibrary* renderer,
                     bool enable_debug_view);
 
         ~MazeBuilder() = default;
@@ -22,7 +24,7 @@ namespace Gameplay::Mazegenerator
 
     private:
         Engine::SceneManagement::SceneWorld* m_game_world;
-        Engine::Renderer::IRenderer* m_renderer;
+        Engine::Assets::IAssetLibrary* m_assets;
         std::unique_ptr<MazeAlgorithm> m_maze_algorithm;
         std::unique_ptr<DebugGridDrawer> m_debug_grid_drawer;
         Maze m_maze;

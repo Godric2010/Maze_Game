@@ -13,6 +13,7 @@ add_library(Interface INTERFACE
         include/Ecs/Types.hpp
         include/Renderer/IRenderer.hpp
         include/Assets/AssetHandleTypes.hpp
+        include/Assets/IAssetLibrary.hpp
 )
 
 target_link_libraries(Interface INTERFACE glm::glm)

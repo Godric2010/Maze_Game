@@ -131,6 +131,15 @@ namespace Engine::SceneManagement
             return m_context->renderer;
         }
 
+        [[nodiscard]] Assets::IAssetLibrary& Assets() const
+        {
+            if (m_context == nullptr)
+            {
+                throw SceneRuntimeException();
+            }
+            return m_context->asset_library;
+        }
+
         [[nodiscard]] ScreenInfo Screen() const
         {
             return ScreenInfo{

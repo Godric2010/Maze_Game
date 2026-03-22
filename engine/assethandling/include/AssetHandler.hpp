@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include "AssetTypes.hpp"
+#include "Assets/IAssetLibrary.hpp"
 
 namespace Engine::AssetHandling
 {
@@ -13,12 +14,22 @@ namespace Engine::AssetHandling
 
     struct AssetLoadContext;
 
-    class AssetHandler
+    class AssetHandler : public Assets::IAssetLibrary
     {
     public:
         AssetHandler();
 
-        ~AssetHandler() = default;
+        ~AssetHandler() override = default;
+
+        Assets::MeshHandle LoadMesh(const std::string& mesh_name) override;
+        Assets::MaterialHandle LoadMaterial(const std::string& name) override;
+        Assets::TextureHandle LoadTexture(const std::string& texture_name) override;
+
+        std::optional<Assets::MeshHandle> FindMesh(const std::string& mesh_name) override;
+        std::optional<Assets::MaterialHandle> FindMaterial(const std::string& material_name) override;
+        std::optional<Assets::TextureHandle> FindTexture(const std::string& texture_name) override;
+        std::optional<Assets::FontHandle> FindFont(const std::string& font_name) override;
+        std::optional<Assets::ShaderHandle> FindShader(const std::string& shader_name) override;
 
         template <AssetType T>
         using HandleT = typename AssetTraits<T>::Handle;
@@ -42,6 +53,8 @@ namespace Engine::AssetHandling
         HandleT<T> GetHandleFromName(const std::string& asset_name);
 
     private:
+        template <AssetType T>
+        std::optional<HandleT<T>> FindAsset(const std::string& asset_name);
         std::unique_ptr<Environment::Files::IFileReader> m_file_reader;
 
         template <typename T>

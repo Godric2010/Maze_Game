@@ -96,7 +96,7 @@ namespace Gameplay
     {
       
         m_maze_builder = std::make_unique<Mazegenerator::MazeBuilder>(&World(),
-                                                                      &Renderer(),
+                                                                      &Assets(),
                                                                       true
         );
         int width = 0;

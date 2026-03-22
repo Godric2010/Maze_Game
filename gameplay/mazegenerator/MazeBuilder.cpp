@@ -7,28 +7,29 @@
 #include "Transform.hpp"
 #include "../components/Exit.hpp"
 #include "../components/KeyItem.hpp"
+#include "Assets/IAssetLibrary.hpp"
 
 namespace Gameplay::Mazegenerator
 {
     MazeBuilder::MazeBuilder(Engine::SceneManagement::SceneWorld* game_world,
-                             Engine::Renderer::IRenderer* renderer,
+                             Engine::Assets::IAssetLibrary* renderer,
                              const bool enable_debug_view) : m_maze()
     {
         m_game_world = game_world;
-        m_renderer = renderer;
+        m_assets = renderer;
         if (enable_debug_view)
         {
             m_debug_grid_drawer = std::make_unique<DebugGridDrawer>();
         }
 
-        m_floor_mesh = m_renderer->GetOrLoadMesh("FloorTile.obj");
-        m_wall_mesh = m_renderer->GetOrLoadMesh("WallTile.obj");
-        m_key_mesh = m_renderer->GetOrLoadMesh("Key.obj");
-        m_default_material = m_renderer->GetOrLoadMaterial("default.material");
-        m_key_material = m_renderer->GetOrLoadMaterial("key.material");
-        m_start_material = m_renderer->GetOrLoadMaterial("start_tile.material");
-        m_exit_material = m_renderer->GetOrLoadMaterial("exit_tile.material");
-        m_wall_material = m_renderer->GetOrLoadMaterial("wall.material");
+        m_floor_mesh = m_assets->LoadMesh("FloorTile.obj");
+        m_wall_mesh = m_assets->LoadMesh("WallTile.obj");
+        m_key_mesh = m_assets->LoadMesh("Key.obj");
+        m_default_material = m_assets->LoadMaterial("default.material");
+        m_key_material = m_assets->LoadMaterial("key.material");
+        m_start_material = m_assets->LoadMaterial("start_tile.material");
+        m_exit_material = m_assets->LoadMaterial("exit_tile.material");
+        m_wall_material = m_assets->LoadMaterial("wall.material");
     }
 
     void MazeBuilder::BuildMaze(int width, int height, int seed)
@@ -157,7 +158,7 @@ namespace Gameplay::Mazegenerator
     }
 
     void MazeBuilder::CreateWallTile(const CellIndex& cell_idx,
-                                          const Direction& direction) const
+                                     const Direction& direction) const
     {
         const auto entity = m_game_world->CreateEntity(
             std::format("WallTile [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))

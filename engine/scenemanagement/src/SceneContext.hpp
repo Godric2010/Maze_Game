@@ -14,6 +14,7 @@ namespace Engine::SceneManagement {
     struct SceneContext {
         IApplication& app;
         ISceneManager& scene_manager;
+        Assets::IAssetLibrary& asset_library;
         Ecs::World& world;
         SceneWorld& game_world;
         Ecs::ISystemManager& system_manager;
