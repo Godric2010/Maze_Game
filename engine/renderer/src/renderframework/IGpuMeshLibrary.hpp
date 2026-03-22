@@ -1,0 +1,24 @@
+//
+// Created by sebastian on 22.03.26.
+//
+
+#pragma once
+#include "AssetTypes.hpp"
+#include "Assets/AssetHandleTypes.hpp"
+
+namespace Engine::Renderer::RenderFramework
+{
+    class IGpuMeshLibrary
+    {
+    public:
+        virtual ~IGpuMeshLibrary() = default;
+
+        virtual void AddMesh(const Assets::MeshHandle& mesh_handle, const AssetHandling::MeshAsset& mesh_asset) = 0;
+
+        virtual void RemoveMesh(const Assets::MeshHandle& mesh_handle) = 0;
+        
+        [[nodiscard]] virtual bool HasMesh(const Assets::MeshHandle& mesh_handle) const = 0;
+        
+        virtual void ClearMeshes() = 0;
+    };
+}

@@ -1,18 +1,18 @@
-#include "OpenGLMeshManager.hpp"
+#include "OpenGlMeshLibrary.hpp"
 
 #include <ranges>
 #include <GL/glew.h>
 
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
-    OpenGlMeshManager::OpenGlMeshManager()
+    OpenGlMeshLibrary::OpenGlMeshLibrary()
     {
         m_meshes.clear();
     }
 
-    OpenGlMeshManager::~OpenGlMeshManager() = default;
+    OpenGlMeshLibrary::~OpenGlMeshLibrary() = default;
 
-    void OpenGlMeshManager::AddMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle handle)
+    void OpenGlMeshLibrary::AddMesh(const Assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh)
     {
         OpenGLMesh m = {};
         m.numVertices = mesh.vertices.size();
@@ -53,23 +53,28 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_meshes[handle] = m;
     }
 
-    OpenGLMesh& OpenGlMeshManager::GetMesh(const Assets::MeshHandle& handle)
+    OpenGLMesh& OpenGlMeshLibrary::GetMesh(const Assets::MeshHandle& handle)
     {
         return m_meshes[handle];
     }
 
-    uint32_t OpenGlMeshManager::Size() const
+    uint32_t OpenGlMeshLibrary::Size() const
     {
         return m_meshes.size();
     }
 
 
-    void OpenGlMeshManager::RemoveMesh(const Assets::MeshHandle& handle)
+    void OpenGlMeshLibrary::RemoveMesh(const Assets::MeshHandle& handle)
     {
         m_meshes.erase(handle);
     }
 
-    void OpenGlMeshManager::Clear()
+    bool OpenGlMeshLibrary::HasMesh(const Assets::MeshHandle& handle) const
+    {
+        return m_meshes.contains(handle);
+    }
+
+    void OpenGlMeshLibrary::ClearMeshes()
     {
         for (auto& val : m_meshes | std::views::values)
         {

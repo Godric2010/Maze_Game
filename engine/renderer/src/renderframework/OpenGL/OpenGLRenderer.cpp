@@ -33,7 +33,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glViewport(0, 0, window_context.drawableWidth, window_context.drawableHeight);
         m_bind_cache = std::make_unique<OpenGlBinder>();
         m_shader_manager = std::make_unique<OpenGlShaderManager>(asset_handler);
-        m_mesh_manager = std::make_unique<OpenGlMeshManager>();
+        m_mesh_manager = std::make_unique<OpenGlMeshLibrary>();
         m_texture_manager = std::make_unique<OpenGLTextureManager>();
         m_asset_handler = asset_handler;
         m_camera_asset = {};
@@ -94,7 +94,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     void OpenGlRenderer::AddMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle)
     {
-        return m_mesh_manager->AddMesh(mesh, handle);
+        return m_mesh_manager->AddMesh(handle, mesh);
     }
 
     void OpenGlRenderer::RemoveMesh(const Assets::MeshHandle& mesh_handle)
@@ -115,7 +115,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     void OpenGlRenderer::Shutdown()
     {
         m_shader_manager.reset();
-        m_mesh_manager->Clear();
+        m_mesh_manager->ClearMeshes();
         m_texture_manager->Clear();
     }
 

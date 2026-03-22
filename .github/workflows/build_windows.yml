@@ -125,6 +125,7 @@ jobs:
             cancelled) WINDOWS="✖️" ;;
             skipped) WINDOWS="⏭️" ;;
             *) WINDOWS="❓" ;;
+          esac
           
           CONTENT="**CI Results** (${REF_NAME})
                   Windows: ${WINDOWS}

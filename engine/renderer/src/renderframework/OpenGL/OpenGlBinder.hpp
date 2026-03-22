@@ -7,7 +7,7 @@
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "OpenGLMesh.hpp"
+#include "Meshes/OpenGLMesh.hpp"
 
 
 namespace Engine::Renderer::RenderFramework::OpenGl

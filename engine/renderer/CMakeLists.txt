@@ -6,9 +6,9 @@ add_library(Renderer STATIC
         src/renderframework/Renderer.hpp
         src/renderframework/OpenGL/OpenGLRenderer.cpp
         include/Datatypes.hpp
-        src/renderframework/OpenGL/OpenGLMesh.hpp
-        src/renderframework/OpenGL/OpenGLMeshManager.cpp
-        src/renderframework/OpenGL/OpenGLMeshManager.hpp
+        src/renderframework/OpenGL/Meshes/OpenGLMesh.hpp
+        src/renderframework/OpenGL/Meshes/OpenGLMeshManager.cpp
+        src/renderframework/OpenGL/Meshes/OpenGLMeshManager.hpp
         src/renderframework/OpenGL/OpenGLShaderManager.cpp
         src/renderframework/OpenGL/OpenGLShaderManager.hpp
         src/PrimitiveMeshes.hpp
@@ -22,7 +22,8 @@ add_library(Renderer STATIC
         src/renderframework/materials/MaterialLibrary.hpp
         src/renderframework/materials/Material.hpp
         src/renderframework/OpenGL/OpenGlBinder.cpp
-        src/renderframework/OpenGL/OpenGlBinder.hpp)
+        src/renderframework/OpenGL/OpenGlBinder.hpp
+        src/renderframework/IGpuMeshLibrary.hpp)
 
 target_link_libraries(Renderer PUBLIC Interface PRIVATE Environment AssetHandling GLEW::GLEW glm::glm spdlog::spdlog)
 
