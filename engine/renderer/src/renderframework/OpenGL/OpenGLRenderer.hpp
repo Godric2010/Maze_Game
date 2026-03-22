@@ -10,7 +10,7 @@
 #include "OpenGlBinder.hpp"
 #include "Meshes/OpenGlMeshLibrary.hpp"
 #include "OpenGLShaderManager.hpp"
-#include "OpenGLTextureManager.hpp"
+#include "Textures/OpenGLTextureLibrary.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
@@ -63,7 +63,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         std::unique_ptr<OpenGlBinder> m_bind_cache;
         std::unique_ptr<OpenGlShaderManager> m_shader_manager;
         std::unique_ptr<OpenGlMeshLibrary> m_mesh_manager;
-        std::unique_ptr<OpenGLTextureManager> m_texture_manager;
+        std::unique_ptr<OpenGLTextureLibrary> m_texture_manager;
         AssetHandling::AssetHandler* m_asset_handler;
 
         Context m_context{};

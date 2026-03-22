@@ -1,20 +1,18 @@
-#include "OpenGLTextureManager.hpp"
+#include "OpenGLTextureLibrary.hpp"
 
-#include <iostream>
 #include <GL/glew.h>
 #include <ranges>
 #include <stdexcept>
-#include <string>
 #include <spdlog/spdlog.h>
 
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
-    OpenGLTextureManager::OpenGLTextureManager() = default;
+    OpenGLTextureLibrary::OpenGLTextureLibrary() = default;
 
-    OpenGLTextureManager::~OpenGLTextureManager() = default;
+    OpenGLTextureLibrary::~OpenGLTextureLibrary() = default;
 
-    void OpenGLTextureManager::AddTexture(const AssetHandling::TextureAsset& texture_asset,
-                                          Assets::TextureHandle texture_handle)
+    void OpenGLTextureLibrary::AddTexture(const Assets::TextureHandle& texture_handle,
+                                          const AssetHandling::TextureAsset& texture_asset)
     {
         OpenGLTexture texture{};
         texture.width = static_cast<GLint>(texture_asset.width);
@@ -57,7 +55,12 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_textures.emplace(texture_handle, texture);
     }
 
-    OpenGLTexture& OpenGLTextureManager::GetTexture(const Assets::TextureHandle& texture_handle)
+    bool OpenGLTextureLibrary::HasTexture(const Assets::TextureHandle& texture_handle) const
+    {
+        return m_textures.contains(texture_handle);
+    }
+
+    OpenGLTexture& OpenGLTextureLibrary::GetTexture(const Assets::TextureHandle& texture_handle)
     {
         const auto it = m_textures.find(texture_handle);
         if (it != m_textures.end())
@@ -67,7 +70,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         throw std::runtime_error("No such texture handle: "); // + std::to_string(texture_handle));
     }
 
-    void OpenGLTextureManager::RemoveTexture(const Assets::TextureHandle& texture_handle)
+    void OpenGLTextureLibrary::RemoveTexture(const Assets::TextureHandle& texture_handle)
     {
         const auto gl_texture = m_textures.find(texture_handle);
         if (gl_texture != m_textures.end())
@@ -79,7 +82,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         throw std::runtime_error("No such texture handle: "); // + std::to_string(texture_handle));
     }
 
-    void OpenGLTextureManager::Clear()
+    void OpenGLTextureLibrary::ClearTextures()
     {
         for (auto& val : m_textures | std::views::values)
         {

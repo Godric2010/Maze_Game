@@ -34,7 +34,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_bind_cache = std::make_unique<OpenGlBinder>();
         m_shader_manager = std::make_unique<OpenGlShaderManager>(asset_handler);
         m_mesh_manager = std::make_unique<OpenGlMeshLibrary>();
-        m_texture_manager = std::make_unique<OpenGLTextureManager>();
+        m_texture_manager = std::make_unique<OpenGLTextureLibrary>();
         m_asset_handler = asset_handler;
         m_camera_asset = {};
         m_camera_ubo = 0;
@@ -104,7 +104,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     void OpenGlRenderer::AddTexture(const AssetHandling::TextureAsset& texture, const Assets::TextureHandle& handle)
     {
-        return m_texture_manager->AddTexture(texture, handle);
+        return m_texture_manager->AddTexture(handle, texture);
     }
 
     void OpenGlRenderer::RemoveTexture(const Assets::TextureHandle& texture_handle)
@@ -116,7 +116,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     {
         m_shader_manager.reset();
         m_mesh_manager->ClearMeshes();
-        m_texture_manager->Clear();
+        m_texture_manager->ClearTextures();
     }
 
     void OpenGlRenderer::SortDrawAssets(std::vector<DrawAsset>& mesh_draw_assets)
