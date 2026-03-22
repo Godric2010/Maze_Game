@@ -62,37 +62,6 @@ namespace Engine::Renderer
         m_renderer.reset();
     }
 
-    Assets::MeshHandle RenderController::GetOrLoadMesh(const std::string& file_path)
-    {
-        const auto mesh_handle = m_asset_handler->LoadAsset<AssetHandling::MeshAsset>(file_path);
-        const auto mesh_asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
-        m_renderer->AddMesh(*mesh_asset, mesh_handle);
-        return mesh_handle;
-    }
-
-    Assets::TextureHandle RenderController::GetOrLoadTexture(const std::string& file_path)
-    {
-        const auto texture_handle = m_asset_handler->LoadAsset<AssetHandling::TextureAsset>(file_path);
-        const auto texture_asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(texture_handle);
-        RegisterTexture(*texture_asset, texture_handle);
-        return texture_handle;
-    }
-
-    Assets::MaterialHandle RenderController::GetOrLoadMaterial(const std::string& file_path)
-    {
-        const auto material_handle = m_asset_handler->LoadAsset<AssetHandling::MaterialAsset>(file_path);
-        auto material = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(material_handle);
-        m_material_library->AddMaterial(material_handle, *material);
-
-        const auto albedo_texture_handle = material->albedo_texture.texture;
-        if (albedo_texture_handle)
-        {
-            const auto albedo_texture = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(albedo_texture_handle);
-            RegisterTexture(*albedo_texture, albedo_texture_handle);
-        }
-        return material_handle;
-    }
-
     void RenderController::RegisterMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) const
     {
         return m_renderer->AddMesh(mesh, handle);

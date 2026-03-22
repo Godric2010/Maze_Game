@@ -72,7 +72,6 @@ namespace Engine::Systems
         material_asset->base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         const auto handle = m_asset_handler->RegisterAsset(material_asset);
-        m_render_controller->RegisterMaterial(handle);
         return handle;
     }
 

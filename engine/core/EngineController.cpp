@@ -59,8 +59,6 @@ namespace Engine::Core
         m_scene_manager = std::make_unique<SceneManagement::SceneManager>(*this,
                                                                           *m_system_manager,
                                                                           *m_input_manager,
-                                                                          reinterpret_cast<Renderer::IRenderer&>(*
-                                                                              renderer),
                                                                           reinterpret_cast<Assets::IAssetLibrary&>(*
                                                                               asset_handler_service),
                                                                           static_cast<float>(window_context.width),

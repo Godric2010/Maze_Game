@@ -4,7 +4,7 @@ namespace Engine::SceneManagement
 {
     SceneManager::SceneManager(IApplication& app,
                                Ecs::ISystemManager& system_manager, Input::IInput& input_manager,
-                               Renderer::IRenderer& renderer, Assets::IAssetLibrary& asset_library,
+                               Assets::IAssetLibrary& asset_library,
                                const float screen_width,
                                const float screen_height)
     {
@@ -18,7 +18,6 @@ namespace Engine::SceneManagement
                 .game_world = *m_world_adapter,
                 .system_manager = system_manager,
                 .input = input_manager,
-                .renderer = renderer,
                 .screen_width = screen_width,
                 .screen_height = screen_height,
             }
@@ -106,7 +105,6 @@ namespace Engine::SceneManagement
             .game_world = *m_world_adapter,
             .system_manager = old_context.system_manager,
             .input = old_context.input,
-            .renderer = old_context.renderer,
             .screen_width = old_context.screen_width,
             .screen_height = old_context.screen_height
         };

@@ -6,7 +6,6 @@
 #include <glm/glm.hpp>
 
 #include "Assets/IAssetLibrary.hpp"
-#include "Renderer/IRenderer.hpp"
 
 namespace Gameplay::Mazegenerator
 {

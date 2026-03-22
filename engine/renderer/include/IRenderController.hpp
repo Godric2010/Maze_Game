@@ -5,15 +5,14 @@
 #pragma once
 #include "Datatypes.hpp"
 #include <memory>
-#include "Renderer/IRenderer.hpp"
 #include "AssetTypes.hpp"
 
 namespace Engine::Renderer
 {
-    class IRenderController : public IRenderer
+    class IRenderController 
     {
     public:
-        ~IRenderController() override = default;
+        virtual ~IRenderController() = default;
 
         virtual void RegisterMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) const =0;
 

@@ -21,12 +21,6 @@ namespace Engine::Renderer
 
         ~RenderController() override;
 
-        Assets::MeshHandle GetOrLoadMesh(const std::string& file_path) override;
-
-        Assets::TextureHandle GetOrLoadTexture(const std::string& file_path) override;
-
-        Assets::MaterialHandle GetOrLoadMaterial(const std::string& file_path) override;
-
         void RegisterMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) const override;
 
         void UnregisterMesh(const Assets::MeshHandle& handle) const override;

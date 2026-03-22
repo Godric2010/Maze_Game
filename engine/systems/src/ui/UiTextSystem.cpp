@@ -51,7 +51,6 @@ namespace Engine::Systems
         const auto text_mesh_asset = std::make_shared<AssetHandling::MeshAsset>();
         const auto mesh_handle = m_asset_handler->RegisterAsset(text_mesh_asset);
         auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
-        m_render_controller->RegisterMesh(*asset, mesh_handle);
 
         UiCache::TextElement text_element{};
         text_element.mesh_handle = mesh_handle;
@@ -71,7 +70,6 @@ namespace Engine::Systems
         material_asset->base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         const auto handle = m_asset_handler->RegisterAsset(material_asset);
-        m_render_controller->RegisterMaterial(handle);
         return handle;
     }
 
@@ -146,7 +144,6 @@ namespace Engine::Systems
             text_mesh_asset->vertices.emplace_back(mesh_vertex);
         }
         text_mesh_asset->indices = text_mesh.indices;
-        m_render_controller->RegisterMesh(*text_mesh_asset, text_element.mesh_handle);
 
         text_element.last_text_version = text->GetTextVersion();
         m_ui_cache->SetTextElementValue(entity, text_element);

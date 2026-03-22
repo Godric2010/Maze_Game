@@ -122,15 +122,6 @@ namespace Engine::SceneManagement
             return m_context->scene_manager;
         }
 
-        [[nodiscard]] Renderer::IRenderer& Renderer() const
-        {
-            if (m_context == nullptr)
-            {
-                throw SceneRuntimeException();
-            }
-            return m_context->renderer;
-        }
-
         [[nodiscard]] Assets::IAssetLibrary& Assets() const
         {
             if (m_context == nullptr)

@@ -28,7 +28,7 @@ namespace Engine::Debug
 
         m_texture_handle = m_asset_handler->RegisterAsset(texture_asset);
         auto asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(m_texture_handle);
-        m_render_controller->RegisterTexture(*asset, m_texture_handle);
+        // m_render_controller->RegisterTexture(*asset, m_texture_handle);
     }
 
     DebugConsole::~DebugConsole()
@@ -113,7 +113,6 @@ namespace Engine::Debug
 
         auto mesh_handle = m_asset_handler->RegisterAsset(mesh_asset);
         auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
-        m_render_controller->RegisterMesh(*asset, mesh_handle);
 
         auto material_asset = std::make_shared<AssetHandling::MaterialAsset>();
         material_asset->render_state = AssetHandling::RenderState::UI,
@@ -124,7 +123,6 @@ namespace Engine::Debug
         material_asset->albedo_texture.texture = m_texture_handle;
 
         auto material_handle = m_asset_handler->RegisterAsset(material_asset);
-        m_render_controller->RegisterMaterial(material_handle);
 
         TextMeshElement text_mesh_element{};
         text_mesh_element.mesh_handle = mesh_handle;
