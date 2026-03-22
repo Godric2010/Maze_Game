@@ -6,7 +6,7 @@
 #include "AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 
-namespace Engine::Renderer::RenderFramework::Materials
+namespace Engine::Renderer::RenderFramework::OpenGl
 {
     struct MaterialTextureRef
     {
@@ -15,7 +15,7 @@ namespace Engine::Renderer::RenderFramework::Materials
         glm::vec2 tiling;
     };
 
-    struct Material
+    struct OpenGlMaterial
     {
         AssetHandling::RenderState render_state;
         Assets::ShaderHandle shader;

@@ -1,9 +1,6 @@
 #pragma once
 #include "../include/Datatypes.hpp"
 #include "AssetTypes.hpp"
-#include <memory>
-
-#include "materials/MaterialLibrary.hpp"
 
 namespace Engine::Renderer::RenderFramework
 {
@@ -14,10 +11,6 @@ namespace Engine::Renderer::RenderFramework
     class IRenderer
     {
     public:
-        IRenderer(std::unique_ptr<Materials::MaterialLibrary> material_library)
-        {
-            m_material_library = std::move(material_library);
-        }
 
         virtual ~IRenderer() = default;
 
@@ -63,12 +56,5 @@ namespace Engine::Renderer::RenderFramework
          */
         virtual void Shutdown() = 0;
 
-        [[nodiscard]] Materials::MaterialLibrary* GetMaterialLibrary() const
-        {
-            return m_material_library.get();
-        }
-
-    protected:
-        std::unique_ptr<Materials::MaterialLibrary> m_material_library;
     };
 } // namespace

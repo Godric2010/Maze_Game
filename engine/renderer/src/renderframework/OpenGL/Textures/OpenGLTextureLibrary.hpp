@@ -3,11 +3,11 @@
 
 #include "AssetTypes.hpp"
 #include "OpenGLTexture.hpp"
-#include "../../IGpuTextureLibrary.hpp"
+#include "../../../resources/IGpuTextureLibrary.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
-    class OpenGLTextureLibrary : public IGpuTextureLibrary
+    class OpenGLTextureLibrary : public Resources::IGpuTextureLibrary
     {
     public:
         OpenGLTextureLibrary();

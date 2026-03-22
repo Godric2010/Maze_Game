@@ -8,7 +8,7 @@
 #include "AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 
-namespace Engine::Rendering::RenderFramework
+namespace Engine::Renderer::Resources
 {
     class IShaderLibrary
     {

@@ -5,7 +5,11 @@
 #include "Window.hpp"
 #include "Datatypes.hpp"
 #include "IRenderController.hpp"
+#include "resources/IGpuMeshLibrary.hpp"
+#include "resources/IGpuTextureLibrary.hpp"
+#include "resources/IShaderLibrary.hpp"
 #include "renderframework/Renderer.hpp"
+#include "resources/IGpuMaterialLibrary.hpp"
 
 namespace Engine::Renderer
 {
@@ -36,11 +40,9 @@ namespace Engine::Renderer
 
         void UnregisterMaterial(const AssetHandling::MaterialHandle& material_handle) const override;
 
-        void BeginFrame(const CameraAsset& camera_asset) const override;
-
-        void SubmitFrame(std::vector<DrawAsset>& draw_assets) const override;
-
         void SubmitDebugInfos(const std::vector<DrawAsset>& debug_draw_assets) override;
+        
+        void RenderFrame(const CameraAsset& camera_asset, std::vector<DrawAsset> draw_assets) const override;
 
         Assets::MeshHandle GetUIMeshHandle() const override;
 
@@ -52,5 +54,12 @@ namespace Engine::Renderer
         std::unique_ptr<RenderFramework::IRenderer> m_renderer;
         std::vector<DrawAsset> m_debug_draw_assets;
         Assets::MeshHandle m_ui_mesh_handle;
+        
+        std::shared_ptr<Resources::IGpuMaterialLibrary> m_material_library;
+        std::shared_ptr<Resources::IGpuMeshLibrary> m_mesh_library;
+        std::shared_ptr<Resources::IGpuTextureLibrary> m_texture_library;
+        std::shared_ptr<Resources::IShaderLibrary> m_shader_library;
+        
+        void PrepareGpuResources(const std::vector<DrawAsset>& draw_assets) const;
     };
 }

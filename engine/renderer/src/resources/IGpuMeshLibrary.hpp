@@ -6,7 +6,7 @@
 #include "AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 
-namespace Engine::Renderer::RenderFramework
+namespace Engine::Renderer::Resources
 {
     class IGpuMeshLibrary
     {

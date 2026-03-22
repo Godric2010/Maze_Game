@@ -8,6 +8,7 @@
 
 #include "AssetHandler.hpp"
 #include "OpenGlBinder.hpp"
+#include "materials/OpenGlMaterialLibrary.hpp"
 #include "Meshes/OpenGlMeshLibrary.hpp"
 #include "Shaders/OpenGlShaderLibrary.hpp"
 #include "Textures/OpenGLTextureLibrary.hpp"
@@ -19,7 +20,10 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     public:
         explicit OpenGlRenderer(const Environment::WindowContext& window_context,
                                 AssetHandling::AssetHandler* asset_handler,
-                                std::unique_ptr<Materials::MaterialLibrary> material_library);
+                                const std::shared_ptr<OpenGlMaterialLibrary>& material_library,
+                                const std::shared_ptr<OpenGlShaderLibrary>& shader_library,
+                                const std::shared_ptr<OpenGlMeshLibrary>& mesh_library,
+                                const std::shared_ptr<OpenGLTextureLibrary>& texture_library);
 
         ~OpenGlRenderer() override;
 
@@ -59,11 +63,12 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
         GLuint m_camera_ubo;
         static constexpr GLuint camera_binding_point = 0;
-
         std::unique_ptr<OpenGlBinder> m_bind_cache;
-        std::unique_ptr<OpenGlShaderLibrary> m_shader_manager;
-        std::unique_ptr<OpenGlMeshLibrary> m_mesh_manager;
-        std::unique_ptr<OpenGLTextureLibrary> m_texture_manager;
+
+        std::shared_ptr<OpenGlMaterialLibrary> m_material_library;
+        std::shared_ptr<OpenGlShaderLibrary> m_shader_manager;
+        std::shared_ptr<OpenGlMeshLibrary> m_mesh_manager;
+        std::shared_ptr<OpenGLTextureLibrary> m_texture_manager;
         AssetHandling::AssetHandler* m_asset_handler;
 
         Context m_context{};

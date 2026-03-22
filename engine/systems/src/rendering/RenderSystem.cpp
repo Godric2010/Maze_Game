@@ -70,8 +70,7 @@ namespace Engine::Systems
         ClearDrawAssets();
         FillMeshDrawAssets();
         FillUiDrawAssets();
-        m_render_controller->BeginFrame(camera_asset);
-        m_render_controller->SubmitFrame(m_draw_assets);
+        m_render_controller->RenderFrame(camera_asset, m_draw_assets);
     }
 
     Renderer::CameraAsset RenderSystem::CreateCameraAsset(const Ecs::EntityId& camera_entity,

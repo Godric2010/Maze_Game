@@ -5,11 +5,11 @@
 #include <spdlog/spdlog.h>
 
 #include "AssetHandler.hpp"
-#include "../../IShaderLibrary.hpp"
+#include "../../../resources/IShaderLibrary.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
-    class OpenGlShaderLibrary : public Rendering::RenderFramework::IShaderLibrary
+    class OpenGlShaderLibrary : public Resources::IShaderLibrary
     {
     public:
         OpenGlShaderLibrary(AssetHandling::AssetHandler* asset_handler);

@@ -19,9 +19,10 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     OpenGlRenderer::OpenGlRenderer(const Environment::WindowContext& window_context,
                                    AssetHandling::AssetHandler* asset_handler,
-                                   std::unique_ptr<Materials::MaterialLibrary> material_library)
-        :
-        IRenderer(std::move(material_library))
+                                   const std::shared_ptr<OpenGlMaterialLibrary>& material_library,
+                                   const std::shared_ptr<OpenGlShaderLibrary>& shader_library,
+                                   const std::shared_ptr<OpenGlMeshLibrary>& mesh_library,
+                                   const std::shared_ptr<OpenGLTextureLibrary>& texture_library)
     {
         glewExperimental = GL_TRUE;
         const GLenum rc = glewInit();
@@ -32,9 +33,10 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_window_size = {window_context.width, window_context.height};
         glViewport(0, 0, window_context.drawableWidth, window_context.drawableHeight);
         m_bind_cache = std::make_unique<OpenGlBinder>();
-        m_shader_manager = std::make_unique<OpenGlShaderLibrary>(asset_handler);
-        m_mesh_manager = std::make_unique<OpenGlMeshLibrary>();
-        m_texture_manager = std::make_unique<OpenGLTextureLibrary>();
+        m_material_library = material_library;
+        m_shader_manager = shader_library;
+        m_mesh_manager = mesh_library;
+        m_texture_manager = texture_library;
         m_asset_handler = asset_handler;
         m_camera_asset = {};
         m_camera_ubo = 0;
@@ -129,6 +131,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_texture_manager->ClearTextures();
         m_shader_manager->ClearShaders();
         m_shader_manager.reset();
+        m_material_library->ClearMaterials();
     }
 
     void OpenGlRenderer::SortDrawAssets(std::vector<DrawAsset>& mesh_draw_assets)

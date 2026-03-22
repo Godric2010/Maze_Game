@@ -21,16 +21,28 @@ namespace Engine::Renderer
         m_asset_handler->LoadAsset<AssetHandling::ShaderAsset>("mesh_opaque");
         m_asset_handler->LoadAsset<AssetHandling::ShaderAsset>("ui");
 
-        auto material_library = std::make_unique<RenderFramework::Materials::MaterialLibrary>(asset_handler);
         switch (window_context.renderApi)
         {
             case Environment::API::OpenGL:
-                m_renderer = std::make_unique<RenderFramework::OpenGl::OpenGlRenderer>(
-                    m_window_context,
-                    m_asset_handler,
-                    std::move(material_library)
-                );
-                break;
+                {
+                    auto material_library = std::make_shared<RenderFramework::OpenGl::OpenGlMaterialLibrary>();
+                    auto mesh_library = std::make_shared<RenderFramework::OpenGl::OpenGlMeshLibrary>();
+                    auto texture_library = std::make_shared<RenderFramework::OpenGl::OpenGLTextureLibrary>();
+                    auto shader_library = std::make_shared<RenderFramework::OpenGl::OpenGlShaderLibrary>(asset_handler);
+                    m_renderer = std::make_unique<RenderFramework::OpenGl::OpenGlRenderer>(
+                        m_window_context,
+                        m_asset_handler,
+                        material_library,
+                        shader_library,
+                        mesh_library,
+                        texture_library
+                    );
+                    m_material_library = material_library;
+                    m_shader_library = shader_library;
+                    m_mesh_library = mesh_library;
+                    m_texture_library = texture_library;
+                    break;
+                }
             case Environment::API::Vulkan:
                 throw std::runtime_error("Vulkan renderer not supported (yet)");
             case Environment::API::Metal:
@@ -69,8 +81,9 @@ namespace Engine::Renderer
     Assets::MaterialHandle RenderController::GetOrLoadMaterial(const std::string& file_path)
     {
         const auto material_handle = m_asset_handler->LoadAsset<AssetHandling::MaterialAsset>(file_path);
-        m_renderer->GetMaterialLibrary()->Add(material_handle);
         auto material = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(material_handle);
+        m_material_library->AddMaterial(material_handle, *material);
+
         const auto albedo_texture_handle = material->albedo_texture.texture;
         if (albedo_texture_handle)
         {
@@ -103,32 +116,31 @@ namespace Engine::Renderer
 
     void RenderController::RegisterMaterial(const AssetHandling::MaterialHandle& material_handle) const
     {
-       m_renderer->GetMaterialLibrary()->Add(material_handle); 
+        auto material = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(material_handle);
+        m_material_library->AddMaterial(material_handle, *material);
     }
-    
+
     void RenderController::UnregisterMaterial(const Assets::MaterialHandle& material_handle) const
     {
-        m_renderer->GetMaterialLibrary()->Remove(material_handle);
-    }
-
-    void RenderController::BeginFrame(const CameraAsset& camera_asset) const
-    {
-        m_renderer->PrepareFrame(camera_asset);
-    }
-
-    void RenderController::SubmitFrame(std::vector<DrawAsset>& draw_assets) const
-    {
-        for (auto& debug_draw_asset : m_debug_draw_assets)
-        {
-            draw_assets.push_back(debug_draw_asset);
-        }
-        m_renderer->DrawFrame(draw_assets);
+        m_material_library->RemoveMaterial(material_handle);
     }
 
     void RenderController::SubmitDebugInfos(const std::vector<DrawAsset>& debug_draw_assets)
     {
         m_debug_draw_assets.clear();
         m_debug_draw_assets = debug_draw_assets;
+    }
+
+    void RenderController::RenderFrame(const CameraAsset& camera_asset, std::vector<DrawAsset> draw_assets) const
+    {
+        for (auto& debug_draw_asset : m_debug_draw_assets)
+        {
+            draw_assets.push_back(debug_draw_asset);
+        }
+
+        PrepareGpuResources(draw_assets);
+        m_renderer->PrepareFrame(camera_asset);
+        m_renderer->DrawFrame(draw_assets);
     }
 
     Assets::MeshHandle RenderController::GetUIMeshHandle() const
@@ -139,5 +151,30 @@ namespace Engine::Renderer
     uint32_t RenderController::GetDrawCalls() const
     {
         return m_renderer->GetDrawCalls();
+    }
+
+    void RenderController::PrepareGpuResources(const std::vector<DrawAsset>& draw_assets) const
+    {
+        for (const auto& draw_asset : draw_assets)
+        {
+            if (!m_mesh_library->HasMesh(draw_asset.Mesh))
+            {
+                auto mesh_asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(draw_asset.Mesh);
+                m_mesh_library->AddMesh(draw_asset.Mesh, *mesh_asset);
+            }
+
+            if (!m_material_library->HasMaterial(draw_asset.Material))
+            {
+                auto material_asset = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(draw_asset.Material);
+                m_material_library->AddMaterial(draw_asset.Material, *material_asset);
+
+                auto albedo_texture_handle = material_asset->albedo_texture.texture;
+                if (!m_texture_library->HasTexture(albedo_texture_handle))
+                {
+                    auto texture_asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(albedo_texture_handle);
+                    m_texture_library->AddTexture(albedo_texture_handle, *texture_asset);
+                }
+            }
+        }
     }
 }

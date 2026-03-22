@@ -4,11 +4,11 @@
 #include "AssetTypes.hpp"
 #include "Datatypes.hpp"
 #include "OpenGLMesh.hpp"
-#include "../../IGpuMeshLibrary.hpp"
+#include "../../../resources/IGpuMeshLibrary.hpp"
 
 namespace Engine::Renderer::RenderFramework::OpenGl
 {
-    class OpenGlMeshLibrary : public IGpuMeshLibrary
+    class OpenGlMeshLibrary : public Resources::IGpuMeshLibrary
     {
     public:
         OpenGlMeshLibrary();
