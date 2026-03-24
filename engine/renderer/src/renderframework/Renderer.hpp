@@ -29,16 +29,6 @@ namespace Engine::Renderer::RenderFramework
          */
         virtual void DrawFrame(std::vector<DrawAsset>& draw_assets) = 0;
 
-        /**
-         * Add a mesh to the renderer to display it
-         */
-        virtual void AddMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) = 0;
-
-        /**
-         * Remove a mesh from the renderer to free its resources.
-         */
-        virtual void RemoveMesh(const Assets::MeshHandle& mesh_handle) = 0;
-
         /*
          * Add a texture to the renderer to use it for objects.
          */

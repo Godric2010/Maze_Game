@@ -21,10 +21,6 @@ namespace Engine::Renderer
 
         ~RenderController() override;
 
-        void RegisterMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) const override;
-
-        void UnregisterMesh(const Assets::MeshHandle& handle) const override;
-
         void RegisterTexture(const AssetHandling::TextureAsset& texture,
                              const Assets::TextureHandle& handle) const override;
 

@@ -121,10 +121,6 @@ namespace Engine::Systems
     void UiTextSystem::BuildNewTextMesh(Ecs::EntityId entity, UI::UiCache::TextElement text_element,
                                         const Components::UI::Text* text) const
     {
-        if (text_element.mesh_handle != Assets::MeshHandle{})
-        {
-            m_render_controller->UnregisterMesh(text_element.mesh_handle);
-        }
         if (!text_element.font_handle.has_value())
         {
             return;

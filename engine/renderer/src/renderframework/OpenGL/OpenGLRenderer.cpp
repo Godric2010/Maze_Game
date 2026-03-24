@@ -105,16 +105,6 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glUseProgram(0);
     }
 
-    void OpenGlRenderer::AddMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle)
-    {
-        return m_mesh_manager->AddMesh(handle, mesh);
-    }
-
-    void OpenGlRenderer::RemoveMesh(const Assets::MeshHandle& mesh_handle)
-    {
-        m_mesh_manager->RemoveMesh(mesh_handle);
-    }
-
     void OpenGlRenderer::AddTexture(const AssetHandling::TextureAsset& texture, const Assets::TextureHandle& handle)
     {
         return m_texture_manager->AddTexture(handle, texture);

@@ -14,10 +14,6 @@ namespace Engine::Renderer
     public:
         virtual ~IRenderController() = default;
 
-        virtual void RegisterMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) const =0;
-
-        virtual void UnregisterMesh(const Assets::MeshHandle& handle) const = 0;
-
         virtual void RegisterTexture(const AssetHandling::TextureAsset& texture,
                                      const Assets::TextureHandle& handle) const = 0;
 

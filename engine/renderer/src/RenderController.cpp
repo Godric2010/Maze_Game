@@ -51,8 +51,6 @@ namespace Engine::Renderer
         m_renderer->Initialize();
 
         m_ui_mesh_handle = m_asset_handler->RegisterAsset(CreateUiPrimitive());
-        const auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(m_ui_mesh_handle);
-        m_renderer->AddMesh(*asset, m_ui_mesh_handle);
     }
 
     RenderController::~RenderController()
@@ -62,15 +60,6 @@ namespace Engine::Renderer
         m_renderer.reset();
     }
 
-    void RenderController::RegisterMesh(const AssetHandling::MeshAsset& mesh, const Assets::MeshHandle& handle) const
-    {
-        return m_renderer->AddMesh(mesh, handle);
-    }
-
-    void RenderController::UnregisterMesh(const Assets::MeshHandle& handle) const
-    {
-        m_renderer->RemoveMesh(handle);
-    }
 
     void RenderController::RegisterTexture(const AssetHandling::TextureAsset& texture,
                                            const Assets::TextureHandle& handle) const
