@@ -24,6 +24,11 @@ namespace Engine::AssetHandling
         return LoadAsset<TextureAsset>(texture_name);
     }
 
+    inline ShaderHandle AssetHandler::LoadShader(const std::string& shader_name)
+    {
+        return LoadAsset<ShaderAsset>(shader_name);
+    }
+
     inline std::optional<MeshHandle> AssetHandler::FindMesh(const std::string& mesh_name)
     {
         return FindAsset<MeshAsset>(mesh_name);
@@ -49,8 +54,25 @@ namespace Engine::AssetHandling
         return FindAsset<ShaderAsset>(shader_name);
     }
 
+    inline void AssetHandler::UpdateMaterial(const MaterialHandle handle,
+                                             const std::function<void(MaterialAsset&)>& updater)
+    {
+        UpdateAsset<MaterialAsset>(handle, updater);
+    }
+
+    inline void AssetHandler::UpdateTexture(const TextureHandle handle,
+                                            const std::function<void(TextureAsset&)>& updater)
+    {
+        UpdateAsset<TextureAsset>(handle, updater);
+    }
+
+    inline void AssetHandler::UpdateMesh(const MeshHandle handle, const std::function<void(MeshAsset&)>& updater)
+    {
+        UpdateAsset<MeshAsset>(handle, updater);
+    }
+
     template <AssetType T>
-    typename AssetHandler::HandleT<T> AssetHandler::LoadAsset(const std::string& asset_name)
+    AssetHandler::HandleT<T> AssetHandler::LoadAsset(const std::string& asset_name)
     {
         if (asset_name.empty())
         {
@@ -74,7 +96,11 @@ namespace Engine::AssetHandling
 
         typename AssetTraits<T>::Handle handle{cache.next_id++};
         cache.id_by_name.emplace(asset_name, handle);
-        cache.by_id.emplace(handle, std::move(asset));
+        cache.by_id.emplace(handle, AssetRecord<T>{
+                                .asset = std::move(asset),
+                                .revision = 1,
+                                .is_valid = true,
+                            });
 
         return handle;
     }
@@ -84,12 +110,16 @@ namespace Engine::AssetHandling
     {
         auto& cache = Cache<T>();
         typename AssetTraits<T>::Handle handle{cache.next_id++};
-        cache.by_id.emplace(handle, std::move(asset));
+        cache.by_id.emplace(handle, AssetRecord<T>{
+                                .asset = std::move(asset),
+                                .revision = 1,
+                                .is_valid = true,
+                            });
         return handle;
     }
 
     template <AssetType T>
-    std::shared_ptr<T> AssetHandler::GetAsset(HandleT<T> handle) const
+    std::shared_ptr<const T> AssetHandler::GetAsset(HandleT<T> handle) const
     {
         auto& cache = Cache<T>();
         if (!handle)
@@ -98,10 +128,26 @@ namespace Engine::AssetHandling
         }
         if (auto it = cache.by_id.find(handle); it != cache.by_id.end())
         {
-            return it->second;
+            return it->second.asset;
         }
 
         throw std::invalid_argument("No asset found for handle");
+    }
+
+    template <AssetType T>
+    uint32_t AssetHandler::GetAssetRevision(HandleT<T> handle) const
+    {
+        const auto& cache = Cache<T>();
+        if (!handle)
+        {
+            throw std::invalid_argument("Handle is invalid!");
+        }
+        auto it = cache.by_id.find(handle);
+        if (it == cache.by_id.end())
+        {
+            throw std::invalid_argument("No asset found for handle");
+        }
+        return it->second.revision;
     }
 
     template <AssetType T>
@@ -115,7 +161,7 @@ namespace Engine::AssetHandling
     }
 
     template <AssetType T>
-    std::vector<typename AssetHandler::HandleT<T>> AssetHandler::GetAllAssetHandlesOfType()
+    std::vector<AssetHandler::HandleT<T>> AssetHandler::GetAllAssetHandlesOfType()
     {
         auto& cache = Cache<T>();
         std::vector<HandleT<T>> result;
@@ -133,7 +179,11 @@ namespace Engine::AssetHandling
     AssetHandler::HandleT<T> AssetHandler::GetHandleFromName(const std::string& asset_name)
     {
         auto& cache = Cache<T>();
-        return cache.id_by_name[asset_name];
+        if (auto it = cache.id_by_name.find(asset_name); it != cache.id_by_name.end())
+        {
+            return it->second;
+        }
+        throw std::invalid_argument("No asset found for handle");
     }
 
     template <AssetType T>
@@ -144,10 +194,29 @@ namespace Engine::AssetHandling
             return std::nullopt;
         }
         auto& cache = Cache<T>();
-        if (cache.id_by_name.find(asset_name) != cache.id_by_name.end())
+        if (auto it = cache.id_by_name.find(asset_name); it != cache.id_by_name.end())
         {
-            return cache.id_by_name[asset_name];
+            return it->second;
         }
         return std::nullopt;
+    }
+
+    template <AssetType T, typename Fn>
+    void AssetHandler::UpdateAsset(HandleT<T> handle, Fn&& updater)
+    {
+        auto& cache = Cache<T>();
+        if (!handle)
+        {
+            throw std::invalid_argument("Handle is invalid!");
+        }
+
+        auto it = cache.by_id.find(handle);
+        if (it == cache.by_id.end())
+        {
+            throw std::invalid_argument("No asset found for handle");
+        }
+
+        updater(*it->second.asset);
+        ++it->second.revision;
     }
 } // namespace

@@ -132,9 +132,9 @@ namespace Engine::AssetHandling
             material->name = material_file_data.name;
             material->render_state = material_file_data.render_state;
             material->render_queue_index = material_file_data.render_queue_index;
-            material->shader_handle = context.asset_handler->LoadAsset<ShaderAsset>(material_file_data.shader_name); 
+            material->shader_handle = context.asset_handler->LoadShader(material_file_data.shader_name); 
             material->base_color = material_file_data.base_color;
-            material->albedo_texture.texture = context.asset_handler->LoadAsset<TextureAsset>(material_file_data.albedo_texture.name);
+            material->albedo_texture.texture = context.asset_handler->LoadTexture(material_file_data.albedo_texture.name);
             material->albedo_texture.tiling = material_file_data.albedo_texture.tiling;
             material->albedo_texture.uv_scale = material_file_data.albedo_texture.uv_scale;
 

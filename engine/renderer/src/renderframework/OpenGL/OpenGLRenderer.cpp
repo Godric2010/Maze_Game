@@ -47,7 +47,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     void OpenGlRenderer::Initialize()
     {
         const auto shader_handles = m_asset_handler->GetAllAssetHandlesOfType<AssetHandling::ShaderAsset>();
-        std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<AssetHandling::ShaderAsset>>> shaders;
+        std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset>>> shaders;
         shaders.reserve(shader_handles.size());
         for (int i = 0; i < shader_handles.size(); ++i)
         {
@@ -103,16 +103,6 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         }
         glBindVertexArray(0);
         glUseProgram(0);
-    }
-
-    void OpenGlRenderer::AddTexture(const AssetHandling::TextureAsset& texture, const Assets::TextureHandle& handle)
-    {
-        return m_texture_manager->AddTexture(handle, texture);
-    }
-
-    void OpenGlRenderer::RemoveTexture(const Assets::TextureHandle& texture_handle)
-    {
-        m_texture_manager->RemoveTexture(texture_handle);
     }
 
     void OpenGlRenderer::Shutdown()

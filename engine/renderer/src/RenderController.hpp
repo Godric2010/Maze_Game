@@ -21,15 +21,6 @@ namespace Engine::Renderer
 
         ~RenderController() override;
 
-        void RegisterTexture(const AssetHandling::TextureAsset& texture,
-                             const Assets::TextureHandle& handle) const override;
-
-        void UnregisterTexture(const Assets::TextureHandle& handle) const override;
-
-        void RegisterMaterial(const AssetHandling::MaterialHandle& material_handle) const override;
-
-        void UnregisterMaterial(const AssetHandling::MaterialHandle& material_handle) const override;
-
         void SubmitDebugInfos(const std::vector<DrawAsset>& debug_draw_assets) override;
         
         void RenderFrame(const CameraAsset& camera_asset, std::vector<DrawAsset> draw_assets) const override;
@@ -37,6 +28,9 @@ namespace Engine::Renderer
         Assets::MeshHandle GetUIMeshHandle() const override;
 
         [[nodiscard]] uint32_t GetDrawCalls() const override;
+        void PrepareMaterialsForGpu(const Assets::MaterialHandle& handle) const;
+        void PrepareMeshesForGpu(const Assets::MeshHandle& mesh_handle) const;
+        void PrepareTexturesForGpu(Assets::TextureHandle handle) const;
 
     private:
         Environment::WindowContext m_window_context;

@@ -12,7 +12,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     OpenGLTextureLibrary::~OpenGLTextureLibrary() = default;
 
     void OpenGLTextureLibrary::AddTexture(const Assets::TextureHandle& texture_handle,
-                                          const AssetHandling::TextureAsset& texture_asset)
+                                          const AssetHandling::TextureAsset& texture_asset, const uint32_t revision)
     {
         OpenGLTexture texture{};
         texture.width = static_cast<GLint>(texture_asset.width);
@@ -53,11 +53,21 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0.5f);
 
         m_textures.emplace(texture_handle, texture);
+        m_texture_revisions[texture_handle] = revision;
     }
 
     bool OpenGLTextureLibrary::HasTexture(const Assets::TextureHandle& texture_handle) const
     {
         return m_textures.contains(texture_handle);
+    }
+
+    uint32_t OpenGLTextureLibrary::GetTextureRevision(const Assets::TextureHandle& texture_handle) const
+    {
+        if (const auto it = m_texture_revisions.find(texture_handle); it != m_texture_revisions.end())
+        {
+            return it->second;
+        }
+        throw std::runtime_error("No texture handle found in texture revisions map");
     }
 
     OpenGLTexture& OpenGLTextureLibrary::GetTexture(const Assets::TextureHandle& texture_handle)
@@ -77,6 +87,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         {
             glDeleteTextures(1, &gl_texture->second.texture_id);
             m_textures.erase(texture_handle);
+            m_texture_revisions.erase(texture_handle);
             return;
         }
         throw std::runtime_error("No such texture handle: "); // + std::to_string(texture_handle));

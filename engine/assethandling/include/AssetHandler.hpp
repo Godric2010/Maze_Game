@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <functional>
 #include "AssetTypes.hpp"
 #include "Assets/IAssetLibrary.hpp"
 
@@ -24,6 +25,7 @@ namespace Engine::AssetHandling
         Assets::MeshHandle LoadMesh(const std::string& mesh_name) override;
         Assets::MaterialHandle LoadMaterial(const std::string& name) override;
         Assets::TextureHandle LoadTexture(const std::string& texture_name) override;
+        Assets::ShaderHandle LoadShader(const std::string& shader_name);
 
         std::optional<Assets::MeshHandle> FindMesh(const std::string& mesh_name) override;
         std::optional<Assets::MaterialHandle> FindMaterial(const std::string& material_name) override;
@@ -31,17 +33,21 @@ namespace Engine::AssetHandling
         std::optional<Assets::FontHandle> FindFont(const std::string& font_name) override;
         std::optional<Assets::ShaderHandle> FindShader(const std::string& shader_name) override;
 
-        template <AssetType T>
-        using HandleT = typename AssetTraits<T>::Handle;
+        void UpdateMaterial(Assets::MaterialHandle handle, const std::function<void(MaterialAsset&)>& updater);
+        void UpdateTexture(Assets::TextureHandle handle, const std::function<void(TextureAsset&)>& updater);
+        void UpdateMesh(Assets::MeshHandle handle, const std::function<void(MeshAsset&)>& updater);
 
         template <AssetType T>
-        HandleT<T> LoadAsset(const std::string& asset_name);
+        using HandleT = typename AssetTraits<T>::Handle;
 
         template <AssetType T>
         HandleT<T> RegisterAsset(std::shared_ptr<T> asset);
 
         template <AssetType T>
-        std::shared_ptr<T> GetAsset(HandleT<T> handle) const;
+        std::shared_ptr<const T> GetAsset(HandleT<T> handle) const;
+        
+        template <AssetType T>
+        uint32_t GetAssetRevision(HandleT<T> handle) const;
 
         template <AssetType T>
         std::shared_ptr<T> LoadAssetWithoutCaching(const std::string& asset_name);
@@ -54,15 +60,30 @@ namespace Engine::AssetHandling
 
     private:
         template <AssetType T>
+        HandleT<T> LoadAsset(const std::string& asset_name);
+
+        template <AssetType T>
         std::optional<HandleT<T>> FindAsset(const std::string& asset_name);
+
+        template <AssetType T, typename Fn>
+        void UpdateAsset(HandleT<T> handle, Fn&& updater);
+
         std::unique_ptr<Environment::Files::IFileReader> m_file_reader;
+
+        template <AssetType T>
+        struct AssetRecord
+        {
+            std::shared_ptr<T> asset;
+            uint32_t revision = 1;
+            bool is_valid = true;
+        };
 
         template <typename T>
         struct AssetCache
         {
             using Handle = typename AssetTraits<T>::Handle;
 
-            std::unordered_map<Handle, std::shared_ptr<T>> by_id;
+            std::unordered_map<Handle, AssetRecord<T>> by_id;
             std::unordered_map<std::string, Handle> id_by_name;
             size_t next_id = 1;
         };

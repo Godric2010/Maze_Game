@@ -18,8 +18,8 @@ namespace Engine::Renderer
         m_asset_handler = asset_handler;
 
 
-        m_asset_handler->LoadAsset<AssetHandling::ShaderAsset>("mesh_opaque");
-        m_asset_handler->LoadAsset<AssetHandling::ShaderAsset>("ui");
+        m_asset_handler->LoadShader("mesh_opaque");
+        m_asset_handler->LoadShader("ui");
 
         switch (window_context.renderApi)
         {
@@ -60,29 +60,6 @@ namespace Engine::Renderer
         m_renderer.reset();
     }
 
-
-    void RenderController::RegisterTexture(const AssetHandling::TextureAsset& texture,
-                                           const Assets::TextureHandle& handle) const
-    {
-        return m_renderer->AddTexture(texture, handle);
-    }
-
-    void RenderController::UnregisterTexture(const Assets::TextureHandle& handle) const
-    {
-        m_renderer->RemoveTexture(handle);
-    }
-
-    void RenderController::RegisterMaterial(const AssetHandling::MaterialHandle& material_handle) const
-    {
-        auto material = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(material_handle);
-        m_material_library->AddMaterial(material_handle, *material);
-    }
-
-    void RenderController::UnregisterMaterial(const Assets::MaterialHandle& material_handle) const
-    {
-        m_material_library->RemoveMaterial(material_handle);
-    }
-
     void RenderController::SubmitDebugInfos(const std::vector<DrawAsset>& debug_draw_assets)
     {
         m_debug_draw_assets.clear();
@@ -111,28 +88,69 @@ namespace Engine::Renderer
         return m_renderer->GetDrawCalls();
     }
 
+
     void RenderController::PrepareGpuResources(const std::vector<DrawAsset>& draw_assets) const
     {
         for (const auto& draw_asset : draw_assets)
         {
-            if (!m_mesh_library->HasMesh(draw_asset.Mesh))
-            {
-                auto mesh_asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(draw_asset.Mesh);
-                m_mesh_library->AddMesh(draw_asset.Mesh, *mesh_asset);
-            }
+            PrepareMeshesForGpu(draw_asset.Mesh);
+            PrepareMaterialsForGpu(draw_asset.Material);
+        }
+    }
 
-            if (!m_material_library->HasMaterial(draw_asset.Material))
-            {
-                auto material_asset = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(draw_asset.Material);
-                m_material_library->AddMaterial(draw_asset.Material, *material_asset);
+    void RenderController::PrepareMeshesForGpu(const Assets::MeshHandle& mesh_handle) const
+    {
+        const auto mesh_revision = m_asset_handler->GetAssetRevision<AssetHandling::MeshAsset>(mesh_handle);
+        if (!m_mesh_library->HasMesh(mesh_handle))
+        {
+            const auto mesh_asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
+            m_mesh_library->AddMesh(mesh_handle, *mesh_asset, mesh_revision);
+        }
+        else if (m_mesh_library->GetMeshRevision(mesh_handle) != mesh_revision)
+        {
+            const auto mesh_asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
+            m_mesh_library->RemoveMesh(mesh_handle);
+            m_mesh_library->AddMesh(mesh_handle, *mesh_asset, mesh_revision);
+        }
+    }
 
-                auto albedo_texture_handle = material_asset->albedo_texture.texture;
-                if (albedo_texture_handle && !m_texture_library->HasTexture(albedo_texture_handle))
-                {
-                    auto texture_asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(albedo_texture_handle);
-                    m_texture_library->AddTexture(albedo_texture_handle, *texture_asset);
-                }
-            }
+
+    void RenderController::PrepareMaterialsForGpu(const Assets::MaterialHandle& handle) const
+    {
+        const auto material_revision = m_asset_handler->GetAssetRevision<AssetHandling::MaterialAsset>(handle);
+        const auto material_asset = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(handle);
+        if (!m_material_library->HasMaterial(handle))
+        {
+            m_material_library->AddMaterial(handle, *material_asset, material_revision);
+        }
+        else if (m_material_library->GetMaterialRevision(handle) != material_revision)
+        {
+            m_material_library->RemoveMaterial(handle);
+            m_material_library->AddMaterial(handle, *material_asset, material_revision);
+        }
+
+        const auto albedo_texture_handle = material_asset->albedo_texture.texture;
+        if (!albedo_texture_handle)
+        {
+            return;
+        }
+
+        PrepareTexturesForGpu(albedo_texture_handle);
+    }
+
+    void RenderController::PrepareTexturesForGpu(const Assets::TextureHandle handle) const
+    {
+        const auto texture_revision = m_asset_handler->GetAssetRevision<AssetHandling::TextureAsset>(handle);
+        if (!m_texture_library->HasTexture(handle))
+        {
+            const auto texture_asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(handle);
+            m_texture_library->AddTexture(handle, *texture_asset, texture_revision);
+        }
+        else if (m_texture_library->GetTextureRevision(handle) != texture_revision)
+        {
+            m_texture_library->RemoveTexture(handle);
+            const auto texture_asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(handle);
+            m_texture_library->AddTexture(handle, *texture_asset, texture_revision);
         }
     }
 }

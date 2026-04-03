@@ -16,7 +16,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     }
 
     void OpenGlShaderLibrary::CompileShaders(
-        const std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<AssetHandling::ShaderAsset>>>& shaders)
+        const std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset>>>& shaders)
     {
         for (auto& shader_with_handle : shaders)
         {

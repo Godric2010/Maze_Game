@@ -15,11 +15,13 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
         ~OpenGlMeshLibrary() override;
 
-        void AddMesh(const Assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh) override;
+        void AddMesh(const Assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh, uint32_t revision) override;
 
         void RemoveMesh(const Assets::MeshHandle& handle) override;
 
         bool HasMesh(const Assets::MeshHandle& handle) const override;
+        
+        uint32_t GetMeshRevision(const Assets::MeshHandle& handle) const override;
         
         void ClearMeshes() override;
         
@@ -29,5 +31,6 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     private:
         std::unordered_map<Assets::MeshHandle, OpenGLMesh> m_meshes{};
+        std::unordered_map<Assets::MeshHandle, uint32_t> m_mesh_revisions;
     };
 } // namespace

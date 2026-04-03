@@ -17,7 +17,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         ~OpenGlShaderLibrary() override;
 
         void CompileShaders(
-            const std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<AssetHandling::ShaderAsset>>>& shaders) override;
+            const std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset>>>& shaders) override;
 
         void ClearShaders() override;
 

@@ -12,7 +12,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     OpenGlMeshLibrary::~OpenGlMeshLibrary() = default;
 
-    void OpenGlMeshLibrary::AddMesh(const Assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh)
+    void OpenGlMeshLibrary::AddMesh(const Assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh, const uint32_t revision)
     {
         OpenGLMesh m = {};
         m.numVertices = mesh.vertices.size();
@@ -51,6 +51,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
         m_meshes[handle] = m;
+        m_mesh_revisions[handle] = revision;
     }
 
     OpenGLMesh& OpenGlMeshLibrary::GetMesh(const Assets::MeshHandle& handle)
@@ -67,11 +68,21 @@ namespace Engine::Renderer::RenderFramework::OpenGl
     void OpenGlMeshLibrary::RemoveMesh(const Assets::MeshHandle& handle)
     {
         m_meshes.erase(handle);
+        m_mesh_revisions.erase(handle);
     }
 
     bool OpenGlMeshLibrary::HasMesh(const Assets::MeshHandle& handle) const
     {
         return m_meshes.contains(handle);
+    }
+
+    uint32_t OpenGlMeshLibrary::GetMeshRevision(const Assets::MeshHandle& handle) const
+    {
+        if (const auto it = m_mesh_revisions.find(handle); it != m_mesh_revisions.end())
+        {
+            return it->second;
+        }
+        throw std::invalid_argument("No mesh handle found in mesh revisions map.");
     }
 
     void OpenGlMeshLibrary::ClearMeshes()
