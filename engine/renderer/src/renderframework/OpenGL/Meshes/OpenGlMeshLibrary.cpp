@@ -1,5 +1,6 @@
 #include "OpenGlMeshLibrary.hpp"
 
+#include <stdexcept>
 #include <ranges>
 #include <GL/glew.h>
 
@@ -12,7 +13,8 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
     OpenGlMeshLibrary::~OpenGlMeshLibrary() = default;
 
-    void OpenGlMeshLibrary::AddMesh(const Assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh, const uint32_t revision)
+    void OpenGlMeshLibrary::AddMesh(const Assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh,
+                                    const uint32_t revision)
     {
         OpenGLMesh m = {};
         m.numVertices = mesh.vertices.size();
