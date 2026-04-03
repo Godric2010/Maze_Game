@@ -97,7 +97,7 @@ namespace Engine::AssetHandling
         typename AssetTraits<T>::Handle handle{cache.next_id++};
         cache.id_by_name.emplace(asset_name, handle);
         cache.by_id.emplace(handle, AssetRecord<T>{
-                                .asset = std::move(asset),
+                                .asset = std::make_shared<T>(std::move(asset)),
                                 .revision = 1,
                                 .is_valid = true,
                             });
@@ -106,12 +106,12 @@ namespace Engine::AssetHandling
     }
 
     template <AssetType T>
-    AssetHandler::HandleT<T> AssetHandler::RegisterAsset(std::shared_ptr<T> asset)
+    AssetHandler::HandleT<T> AssetHandler::RegisterAsset(T asset)
     {
         auto& cache = Cache<T>();
         typename AssetTraits<T>::Handle handle{cache.next_id++};
         cache.by_id.emplace(handle, AssetRecord<T>{
-                                .asset = std::move(asset),
+                                .asset = std::make_shared<T>(std::move(asset)),
                                 .revision = 1,
                                 .is_valid = true,
                             });
@@ -151,7 +151,7 @@ namespace Engine::AssetHandling
     }
 
     template <AssetType T>
-    std::shared_ptr<T> AssetHandler::LoadAssetWithoutCaching(const std::string& asset_name)
+    T AssetHandler::LoadAssetWithoutCaching(const std::string& asset_name)
     {
         AssetLoadContext context{
             .file_reader = m_file_reader.get(),

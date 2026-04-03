@@ -24,18 +24,18 @@ namespace Engine::Systems
         m_asset_handler = ServiceLocator()->GetService<AssetHandling::AssetHandler>();
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Image>(
-            [this](const Ecs::EntityId entity, const Components::UI::Image& image)
-            {
-                this->RegisterImageElement(entity, image.color);
-            });
+             [this](const Ecs::EntityId entity, const Components::UI::Image& image)
+             {
+                 this->RegisterImageElement(entity, image.color);
+             });
 
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Image>(
-            [this](const Ecs::EntityId entity)
-            {
-                this->m_ui_cache->DeregisterColorElement(entity);
-            }
-        );
+             [this](const Ecs::EntityId entity)
+             {
+                 this->m_ui_cache->DeregisterColorElement(entity);
+             }
+            );
     }
 
     void UiImageSystem::RegisterImageElement(const Ecs::EntityId entity, const glm::vec4 color) const
@@ -55,13 +55,13 @@ namespace Engine::Systems
 
     Assets::MaterialHandle UiImageSystem::RegisterNewUiMaterial() const
     {
-        const auto material_asset = std::make_shared<AssetHandling::MaterialAsset>();
-        material_asset->name = std::string("UiMaterial");
-        material_asset->render_state = AssetHandling::RenderState::UI;
-        material_asset->render_queue_index = 0;
-        material_asset->shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
-        material_asset->albedo_texture = AssetHandling::MaterialTexture{};
-        material_asset->base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        auto material_asset = AssetHandling::MaterialAsset();
+        material_asset.name = std::string("UiMaterial");
+        material_asset.render_state = AssetHandling::RenderState::UI;
+        material_asset.render_queue_index = 0;
+        material_asset.shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
+        material_asset.albedo_texture = AssetHandling::MaterialTexture{};
+        material_asset.base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         const auto handle = m_asset_handler->RegisterAsset(material_asset);
         return handle;

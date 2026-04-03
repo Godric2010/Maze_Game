@@ -21,10 +21,10 @@ namespace Engine::Debug
         m_font_handle = font_handle;
 
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
-        auto texture_asset = std::make_shared<AssetHandling::TextureAsset>();
-        texture_asset->width = width;
-        texture_asset->height = height;
-        texture_asset->pixels = pixels;
+        auto texture_asset = AssetHandling::TextureAsset();
+        texture_asset.width = width;
+        texture_asset.height = height;
+        texture_asset.pixels = pixels;
 
         m_texture_handle = m_asset_handler->RegisterAsset(texture_asset);
         auto asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(m_texture_handle);
@@ -93,10 +93,10 @@ namespace Engine::Debug
     TextMeshElement DebugConsole::CreateTextMeshElement(const std::string& text) const
     {
         const Text::TextMesh text_mesh = m_text_controller->BuildTextMesh(
-            m_font_handle,
-            text,
-            Text::TextAlignment::Left
-        );
+                                                                          m_font_handle,
+                                                                          text,
+                                                                          Text::TextAlignment::Left
+                                                                         );
 
         std::vector<AssetHandling::MeshVertexAsset> text_vertices;
         for (auto& vertex : text_mesh.vertices)
@@ -107,20 +107,20 @@ namespace Engine::Debug
             text_vertices.push_back(mesh_vertex);
         }
 
-        auto mesh_asset = std::make_shared<AssetHandling::MeshAsset>();
-        mesh_asset->vertices = text_vertices;
-        mesh_asset->indices = text_mesh.indices;
+        auto mesh_asset = AssetHandling::MeshAsset();
+        mesh_asset.vertices = text_vertices;
+        mesh_asset.indices = text_mesh.indices;
 
         auto mesh_handle = m_asset_handler->RegisterAsset(mesh_asset);
         auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
 
-        auto material_asset = std::make_shared<AssetHandling::MaterialAsset>();
-        material_asset->render_state = AssetHandling::RenderState::UI,
-            material_asset->render_queue_index = 99;
-        material_asset->shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
-        material_asset->base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        material_asset->albedo_texture = AssetHandling::MaterialTexture{};
-        material_asset->albedo_texture.texture = m_texture_handle;
+        auto material_asset = AssetHandling::MaterialAsset();
+        material_asset.render_state = AssetHandling::RenderState::UI;
+        material_asset.render_queue_index = 99;
+        material_asset.shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
+        material_asset.base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        material_asset.albedo_texture = AssetHandling::MaterialTexture{};
+        material_asset.albedo_texture.texture = m_texture_handle;
 
         auto material_handle = m_asset_handler->RegisterAsset(material_asset);
 
@@ -133,7 +133,7 @@ namespace Engine::Debug
     }
 
     Renderer::DrawAsset DebugConsole::CreateUiDrawAsset(const uint8_t col, const uint8_t row,
-                                                        const TextMeshElement& text_mesh_element, 
+                                                        const TextMeshElement& text_mesh_element,
                                                         const uint8_t queue_index) const
     {
         constexpr float height_offset = 30;
@@ -152,7 +152,7 @@ namespace Engine::Debug
         draw_asset.Model = model_mat;
         draw_asset.Mesh = text_mesh_element.mesh_handle;
         draw_asset.Material = text_mesh_element.material_handle;
-        draw_asset.RenderQueueIndex = 1000  - queue_index;
+        draw_asset.RenderQueueIndex = 1000 - queue_index;
         draw_asset.Color = glm::vec4(1, 0, 1, 1.0);
 
         return draw_asset;

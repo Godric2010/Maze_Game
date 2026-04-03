@@ -43,7 +43,7 @@ namespace Engine::Systems
             throw std::runtime_error("UiSystem: Cache is null");
         }
 
-        const auto text_mesh_asset = std::make_shared<AssetHandling::MeshAsset>();
+        const auto text_mesh_asset = AssetHandling::MeshAsset();
         const auto mesh_handle = m_asset_handler->RegisterAsset(text_mesh_asset);
         auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
 
@@ -56,13 +56,13 @@ namespace Engine::Systems
 
     Assets::MaterialHandle UiTextSystem::RegisterNewUiMaterial() const
     {
-        const auto material_asset = std::make_shared<AssetHandling::MaterialAsset>();
-        material_asset->name = std::string("UiTextMaterial");
-        material_asset->render_state = AssetHandling::RenderState::UI;
-        material_asset->render_queue_index = 0;
-        material_asset->shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
-        material_asset->albedo_texture = AssetHandling::MaterialTexture{};
-        material_asset->base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        auto material_asset = AssetHandling::MaterialAsset();
+        material_asset.name = std::string("UiTextMaterial");
+        material_asset.render_state = AssetHandling::RenderState::UI;
+        material_asset.render_queue_index = 0;
+        material_asset.shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
+        material_asset.albedo_texture = AssetHandling::MaterialTexture{};
+        material_asset.base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         const auto handle = m_asset_handler->RegisterAsset(material_asset);
         return handle;
@@ -159,11 +159,11 @@ namespace Engine::Systems
     void UiTextSystem::RegisterTextureHandleFromFont(Text::FontHandle font_handle)
     {
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
-        auto texture_asset = std::make_shared<AssetHandling::TextureAsset>();
-        texture_asset->width = width;
-        texture_asset->height = height;
-        texture_asset->format = AssetHandling::PixelFormat::R8;
-        texture_asset->pixels = pixels;
+        auto texture_asset = AssetHandling::TextureAsset();
+        texture_asset.width = width;
+        texture_asset.height = height;
+        texture_asset.format = AssetHandling::PixelFormat::R8;
+        texture_asset.pixels = pixels;
 
         auto texture_handle = m_asset_handler->RegisterAsset(texture_asset);
         auto asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(texture_handle);

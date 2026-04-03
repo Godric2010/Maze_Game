@@ -41,7 +41,7 @@ namespace Engine::AssetHandling
         using HandleT = typename AssetTraits<T>::Handle;
 
         template <AssetType T>
-        HandleT<T> RegisterAsset(std::shared_ptr<T> asset);
+        HandleT<T> RegisterAsset(T asset);
 
         template <AssetType T>
         std::shared_ptr<const T> GetAsset(HandleT<T> handle) const;
@@ -50,7 +50,7 @@ namespace Engine::AssetHandling
         uint32_t GetAssetRevision(HandleT<T> handle) const;
 
         template <AssetType T>
-        std::shared_ptr<T> LoadAssetWithoutCaching(const std::string& asset_name);
+        T LoadAssetWithoutCaching(const std::string& asset_name);
 
         template <AssetType T>
         std::vector<HandleT<T>> GetAllAssetHandlesOfType();
