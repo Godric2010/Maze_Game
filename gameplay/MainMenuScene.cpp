@@ -8,14 +8,18 @@
 #include "ui/Text.hpp"
 
 
-namespace Gameplay {
-    MainMenuScene::MainMenuScene() {
+namespace Gameplay
+{
+    MainMenuScene::MainMenuScene()
+    {
     }
 
-    MainMenuScene::~MainMenuScene() {
+    MainMenuScene::~MainMenuScene()
+    {
     }
 
-    void MainMenuScene::OnStart() {
+    void MainMenuScene::OnStart()
+    {
         std::cout << "MainMenuScene::OnStart" << std::endl;
         SetupCamera();
         m_background_entity = CreateMenuBackground();
@@ -25,12 +29,16 @@ namespace Gameplay {
         SwitchUiElements(MenuState::Main);
     }
 
-    void MainMenuScene::EvaluateSystemCommands(const std::vector<std::any>& commands) {
-        for (const std::any& command: commands) {
-            if (command.type() == typeid(Engine::Commands::UI::ButtonClickedCommand)) {
+    void MainMenuScene::EvaluateSystemCommands(const std::vector<std::any>& commands)
+    {
+        for (const std::any& command : commands)
+        {
+            if (command.type() == typeid(Engine::Commands::UI::ButtonClickedCommand))
+            {
                 auto button_clicked = std::any_cast<Engine::Commands::UI::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
-                switch (m_menu_state) {
+                switch (m_menu_state)
+                {
                     case MenuState::Main:
                         EvaluateMainMenuUiElementCommands(button_id);
                         break;
@@ -42,22 +50,24 @@ namespace Gameplay {
         }
     }
 
-    void MainMenuScene::OnExit() {
+    void MainMenuScene::OnExit()
+    {
         std::cout << "MainMenuScene::OnExit" << std::endl;
         Input().DisableInputMap("UIInputMap");
         Input().SetMouseVisibility(false);
     }
 
-    void MainMenuScene::SetupCamera() const {
+    void MainMenuScene::SetupCamera() const
+    {
         const auto camera_entity = World().CreateEntity("MainCamera");
         const auto [width, height, aspect_ratio] = Screen();
         const auto camera_component = Engine::Components::Camera()
-                .SetWidth(width)
-                .SetHeight(height)
-                .SetAspectRatio(aspect_ratio)
-                .SetFieldOfView(60)
-                .SetNearClip(0.01f)
-                .SetFarClip(1000.0f);
+                                      .SetWidth(width)
+                                      .SetHeight(height)
+                                      .SetAspectRatio(aspect_ratio)
+                                      .SetFieldOfView(60)
+                                      .SetNearClip(0.01f)
+                                      .SetFarClip(1000.0f);
 
         World().AddComponent<Engine::Components::Camera>(camera_entity, camera_component);
 
@@ -65,12 +75,16 @@ namespace Gameplay {
         World().AddComponent(camera_entity, camera_transform);
     }
 
-    void MainMenuScene::SwitchUiElements(const MenuState new_state) {
-        for (auto& active_element: m_active_state_entities) {
+    void MainMenuScene::SwitchUiElements(const MenuState new_state)
+    {
+        for (auto& active_element : m_active_state_entities)
+        {
             World().DestroyEntity(active_element);
         }
+        m_active_state_entities.clear();
 
-        switch (new_state) {
+        switch (new_state)
+        {
             case MenuState::Main:
                 CreateMainMenuUiElements();
                 break;
@@ -81,16 +95,17 @@ namespace Gameplay {
         m_menu_state = new_state;
     }
 
-    Engine::Ecs::EntityId MainMenuScene::CreateMenuBackground() const {
+    Engine::Ecs::EntityId MainMenuScene::CreateMenuBackground() const
+    {
         const auto bg_entity = World().CreateEntity("MenuBackground");
         const auto screen = Screen();
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width, screen.height);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
         const auto bg_rect_transform = Engine::Components::UI::RectTransform()
-                .SetPosition(bg_position)
-                .SetSize(bg_size)
-                .SetPivot(bg_pivot);
+                                       .SetPosition(bg_position)
+                                       .SetSize(bg_size)
+                                       .SetPivot(bg_pivot);
         World().AddComponent(bg_entity, bg_rect_transform);
         constexpr auto bg_image = Engine::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
         World().AddComponent(bg_entity, bg_image);
@@ -100,18 +115,19 @@ namespace Gameplay {
     Engine::Ecs::EntityId MainMenuScene::CreateMenuText(const std::string& content, const std::string& font_name,
                                                         const int font_size,
                                                         const glm::vec2 pos, const glm::vec2 size,
-                                                        const Engine::Ecs::EntityId parent_entity) {
+                                                        const Engine::Ecs::EntityId parent_entity)
+    {
         const auto text_entity = World().CreateEntity("MenuText_" + content);
         const auto text_transform = Engine::Components::UI::RectTransform()
-                .SetPosition(pos)
-                .SetSize(size)
-                .SetAnchor(Engine::Components::UI::Anchor::Center)
-                .SetPivot(glm::vec2{0.5f, 0.0f})
-                .SetParent(parent_entity);
+                                    .SetPosition(pos)
+                                    .SetSize(size)
+                                    .SetAnchor(Engine::Components::UI::Anchor::Center)
+                                    .SetPivot(glm::vec2{0.5f, 0.0f})
+                                    .SetParent(parent_entity);
         const auto text = Engine::Components::UI::Text()
-                .SetText(content)
-                .SetFontName(font_name)
-                .SetFontSize(font_size);
+                          .SetText(content)
+                          .SetFontName(font_name)
+                          .SetFontSize(font_size);
         World().AddComponent(text_entity, text_transform);
         World().AddComponent(text_entity, text);
         m_active_state_entities.push_back(text_entity);
@@ -120,16 +136,17 @@ namespace Gameplay {
 
     Engine::Ecs::EntityId MainMenuScene::CreateMenuButton(const std::string& name, uint32_t button_id, glm::vec2 pos,
                                                           const std::string& content,
-                                                          Engine::Ecs::EntityId parent_entity) {
+                                                          Engine::Ecs::EntityId parent_entity)
+    {
         constexpr auto button_size = glm::vec2(200, 70);
         const auto button_entity = World().CreateEntity(name);
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
         auto resume_rect = Engine::Components::UI::RectTransform()
-                .SetPosition(pos)
-                .SetSize(button_size)
-                .SetPivot(pivot)
-                .SetAnchor(Engine::Components::UI::Anchor::Center)
-                .SetParent(parent_entity);
+                           .SetPosition(pos)
+                           .SetSize(button_size)
+                           .SetPivot(pivot)
+                           .SetAnchor(Engine::Components::UI::Anchor::Center)
+                           .SetParent(parent_entity);
         World().AddComponent(button_entity, resume_rect);
 
         auto button = Engine::Components::UI::Button();
@@ -146,88 +163,104 @@ namespace Gameplay {
         return button_entity;
     }
 
-    void MainMenuScene::CreateMainMenuUiElements() {
+    void MainMenuScene::CreateMainMenuUiElements()
+    {
         CreateMenuText("Space Maze",
                        "SpaceFont.ttf",
                        128,
                        glm::vec2(0.0f, -300),
                        glm::vec2(1, 1),
                        m_background_entity
-                );
+                      );
 
         auto position = glm::vec2(0.0f, -100.0f);
         CreateMenuButton("StartGameButton", m_start_game_button, position, "Start", m_background_entity);
-        
+
         position = glm::vec2(0.0f, 100.0f);
         CreateMenuButton("QuitGameButton", m_quit_button, position, "Quit", m_background_entity);
     }
 
-    void MainMenuScene::EvaluateMainMenuUiElementCommands(const uint32_t button_id) {
-        if (button_id == m_start_game_button) {
+    void MainMenuScene::EvaluateMainMenuUiElementCommands(const uint32_t button_id)
+    {
+        if (button_id == m_start_game_button)
+        {
             SwitchUiElements(MenuState::DifficultySelect);
-        } else if (button_id == m_quit_button) {
+        }
+        else if (button_id == m_quit_button)
+        {
             Application().Quit();
         }
     }
 
-    void MainMenuScene::CreateDifficultyUiElements() {
+    void MainMenuScene::CreateDifficultyUiElements()
+    {
         CreateMenuButton("EasyDifficultyButton",
                          m_easy_difficulty_button,
                          glm::vec2(-300, 0.0f),
                          "Easy",
                          m_background_entity
-                );
+                        );
         CreateMenuButton("MediumDifficultyButton",
                          m_medium_difficulty_button,
                          glm::vec2(0.0f, 0.0f),
                          "Medium",
                          m_background_entity
-                );
+                        );
         CreateMenuButton("HardDifficultyButton",
                          m_hard_difficulty_button,
                          glm::vec2(300, 0.0f),
                          "Hard",
                          m_background_entity
-                );
+                        );
         CreateMenuButton("BackButton", m_back_button, glm::vec2(-300, 300), "<-", m_background_entity);
         CreateMenuButton("DevSceneButton", m_dev_scene_button, glm::vec2(300, 300), "Dev", m_background_entity);
     }
 
-    void MainMenuScene::EvaluateDifficultyUiElementCommands(const uint32_t button_id) {
-        if (button_id == m_easy_difficulty_button) {
+    void MainMenuScene::EvaluateDifficultyUiElementCommands(const uint32_t button_id)
+    {
+        if (button_id == m_easy_difficulty_button)
+        {
             SceneManager().LoadScene("Game",
                                      Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Easy
                                          }
                                      }
-                    );
-        } else if (button_id == m_medium_difficulty_button) {
+                                    );
+        }
+        else if (button_id == m_medium_difficulty_button)
+        {
             SceneManager().LoadScene("Game",
                                      Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Medium
                                          }
                                      }
-                    );
-        } else if (button_id == m_hard_difficulty_button) {
+                                    );
+        }
+        else if (button_id == m_hard_difficulty_button)
+        {
             SceneManager().LoadScene("Game",
                                      Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Hard
                                          }
                                      }
-                    );
-        } else if (button_id == m_back_button) {
+                                    );
+        }
+        else if (button_id == m_back_button)
+        {
             SwitchUiElements(MenuState::Main);
-        } else if (button_id == m_dev_scene_button) {
+        }
+        else if (button_id == m_dev_scene_button)
+        {
             SceneManager().LoadScene("Game",
                                      Engine::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Developer
                                          }
                                      }
-                    );
+                                    );
         }
     }
 } // namespace
