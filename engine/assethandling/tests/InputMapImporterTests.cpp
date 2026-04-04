@@ -104,7 +104,7 @@ button = "middle"
 press_state = "Down"
 )";
 
-    InputMap expected = {
+    const InputMap expected = {
         .name = "TestInputMap",
         .key_bindings = std::vector<KeyBinding>{
             KeyBinding{.name = "forward", .key = Key::W, .press_state = PressState::Pressed},
@@ -123,4 +123,172 @@ press_state = "Down"
     InputMap actual;
     InputMapImporter::ExtractInputMapFromFileData(actual, toml_str);
     CompareInputMaps(actual, expected);
+}
+
+TEST_CASE("InputMapImporter - InputMap toml is valid without key bindings")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+
+[[mouse_bindings]]
+name = "MouseLeft"
+button = "left"
+press_state = "pressed"
+)";
+    const InputMap expected = {
+        .name = "TestInputMap",
+        .mouse_bindings = std::vector<MouseKeyBinding>{
+            MouseKeyBinding{.name = "MouseLeft", .button = MouseButton::Left, .press_state = PressState::Pressed},
+        },
+    };
+
+    InputMap actual;
+    InputMapImporter::ExtractInputMapFromFileData(actual, toml_str);
+    CompareInputMaps(actual, expected);
+}
+
+TEST_CASE("InputMapImporter - InputMap toml is valid without mouse bindings")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+[[key_bindings]]
+name = "forward"
+key = "W"
+press_state = "Pressed"
+
+)";
+
+    const InputMap expected = {
+        .name = "TestInputMap",
+        .key_bindings = std::vector<KeyBinding>{
+            KeyBinding{.name = "forward", .key = Key::W, .press_state = PressState::Pressed},
+        },
+    };
+
+    InputMap actual;
+    InputMapImporter::ExtractInputMapFromFileData(actual, toml_str);
+    CompareInputMaps(actual, expected);
+}
+
+TEST_CASE("InputMapImporter - InputMap toml contains invalid key")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+[[key_bindings]]
+name = "forward"
+key = "InvalidKey"
+press_state = "Pressed"
+)";
+    InputMap actual;
+    REQUIRE_THROWS(InputMapImporter::ExtractInputMapFromFileData(actual, toml_str));
+}
+
+TEST_CASE("InputMapImporter - InputMap toml contains invalid press state")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+[[key_bindings]]
+name = "forward"
+key = "W"
+press_state = "InvalidPressState"
+)";
+    InputMap actual;
+    REQUIRE_THROWS(InputMapImporter::ExtractInputMapFromFileData(actual, toml_str));
+}
+
+TEST_CASE("InputMapImporter - InputMap toml contains invalid mouse button")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+[[mouse_bindings]]
+name = "Left"
+button = "InvalidMouseButton"
+press_state = "InvalidPressState"
+)";
+    InputMap actual;
+    REQUIRE_THROWS(InputMapImporter::ExtractInputMapFromFileData(actual, toml_str));
+}
+
+TEST_CASE("InputMapImporter - InputMap name is missing")
+{
+    std::string toml_str = R"(
+[[mouse_bindings]]
+name = "Left"
+button = "InvalidMouseButton"
+press_state = "InvalidPressState"
+)";
+    InputMap actual;
+    REQUIRE_THROWS(InputMapImporter::ExtractInputMapFromFileData(actual, toml_str));
+}
+
+TEST_CASE("InputMapImporter - InputMap mouse bindings name is missing")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+[[mouse_bindings]]
+button = "InvalidMouseButton"
+press_state = "InvalidPressState"
+)";
+    InputMap actual;
+    REQUIRE_THROWS(InputMapImporter::ExtractInputMapFromFileData(actual, toml_str));
+}
+
+TEST_CASE("InputMapImporter - InputMap mouse bindings button is missing")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+[[mouse_bindings]]
+name = "Left"
+press_state = "InvalidPressState"
+)";
+    InputMap actual;
+    REQUIRE_THROWS(InputMapImporter::ExtractInputMapFromFileData(actual, toml_str));
+}
+
+TEST_CASE("InputMapImporter - InputMap mouse bindings press_state is missing")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+[[mouse_bindings]]
+name = "Left"
+button = "left"
+)";
+    InputMap actual;
+    REQUIRE_THROWS(InputMapImporter::ExtractInputMapFromFileData(actual, toml_str));
+}
+
+TEST_CASE("InputMapImporter - InputMap toml key bindings name is missing")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+[[key_bindings]]
+key = "W"
+press_state = "InvalidPressState"
+)";
+    InputMap actual;
+    REQUIRE_THROWS(InputMapImporter::ExtractInputMapFromFileData(actual, toml_str));
+}
+
+TEST_CASE("InputMapImporter - InputMap toml key bindings key is missing")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+[[key_bindings]]
+name = "forward"
+press_state = "InvalidPressState"
+)";
+    InputMap actual;
+    REQUIRE_THROWS(InputMapImporter::ExtractInputMapFromFileData(actual, toml_str));
+}
+
+TEST_CASE("InputMapImporter - InputMap toml key bindings press_state is missing")
+{
+    std::string toml_str = R"(
+name = "TestInputMap"
+[[key_bindings]]
+name = "forward"
+key = "W"
+)";
+    InputMap actual;
+    REQUIRE_THROWS(InputMapImporter::ExtractInputMapFromFileData(actual, toml_str));
 }
