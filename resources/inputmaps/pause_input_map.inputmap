@@ -1,0 +1,11 @@
+name = "PauseInputMap"
+
+[[key_bindings]]
+name = "resume"
+key = "ESC"
+press_state = "Down"
+
+[[mouse_bindings]]
+name = "confirm"
+button = "Left"
+press_state = "Up"

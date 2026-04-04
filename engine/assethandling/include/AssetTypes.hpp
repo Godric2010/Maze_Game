@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 
 #include "Assets/AssetHandleTypes.hpp"
+#include "Input/InputTypes.hpp"
 
 namespace Engine::AssetHandling
 {
@@ -82,5 +83,11 @@ namespace Engine::AssetHandling
         Assets::ShaderHandle shader_handle;
         MaterialTexture albedo_texture;
         glm::vec4 base_color;
+    };
+    
+    struct InputMapAsset: Asset
+    {
+        std::string name;
+        Input::InputMap input_map;
     };
 }

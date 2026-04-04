@@ -47,11 +47,16 @@ namespace Engine::Assets
     {
     };
 
+    struct InputMapTag
+    {
+    };
+
     using ShaderHandle = AssetId<ShaderTag>;
     using TextureHandle = AssetId<TextureTag>;
     using MeshHandle = AssetId<MeshTag>;
     using FontHandle = AssetId<FontTag>;
     using MaterialHandle = AssetId<MaterialTag>;
+    using InputMapHandle = AssetId<InputMapTag>;
 }
 
 namespace std

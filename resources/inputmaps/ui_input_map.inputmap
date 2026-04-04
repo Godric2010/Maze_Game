@@ -1,0 +1,11 @@
+name = "UIInputMap"
+
+[[mouse_bindings]]
+name = "UiButtonDown"
+button = "Left"
+press_state = "Down"
+
+[[mouse_bindings]]
+name = "UiButtonUp"
+button = "Left"
+press_state = "Up"

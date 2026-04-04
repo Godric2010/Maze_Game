@@ -1,0 +1,26 @@
+name = "PlayerInputMap"
+
+[[key_bindings]]
+name = "forward"
+key = "W"
+press_state = "Pressed"
+
+[[key_bindings]]
+name = "backwards"
+key = "S"
+press_state = "Pressed"
+
+[[key_bindings]]
+name = "left"
+key = "A"
+press_state = "Pressed"
+
+[[key_bindings]]
+name = "right"
+key = "D"
+press_state = "Pressed"
+
+[[key_bindings]]
+name = "pause"
+key = "ESC"
+press_state = "Down"

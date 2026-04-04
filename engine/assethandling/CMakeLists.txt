@@ -16,6 +16,8 @@ add_library(AssetHandling STATIC
         src/Textures/TextureImporter.hpp
         src/Materials/MaterialImporter.cpp
         src/Materials/MaterialImporter.hpp
+        src/InputMaps/InputMapImporter.cpp
+        src/InputMaps/InputMapImporter.hpp
 )
 
 target_link_libraries(AssetHandling PUBLIC Interface Environment glm::glm PRIVATE lodepng tomlplusplus::tomlplusplus fmt::fmt)

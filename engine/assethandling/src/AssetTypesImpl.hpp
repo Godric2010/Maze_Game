@@ -8,6 +8,7 @@
 #include "IFileReader.hpp"
 #include "../include/AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
+#include "InputMaps/InputMapImporter.hpp"
 #include "Materials/MaterialImporter.hpp"
 #include "Mesh/MeshImporter.hpp"
 #include "Textures/TextureImporter.hpp"
@@ -25,14 +26,16 @@ namespace Engine::AssetHandling
         inline static const std::string dir_name = std::string("shaders");
 
         static ShaderAsset Load(AssetLoadContext context,
-                                                 const std::string& asset_name)
+                                const std::string& asset_name)
         {
-            const auto vertex_shader_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name + ".vert");
+            const auto vertex_shader_content = context.file_reader->
+                                                       ReadTextFromFile(dir_name + "/" + asset_name + ".vert");
             if (!vertex_shader_content.Ok())
             {
                 throw std::runtime_error("Failed to load vertex shader" + asset_name);
             }
-            const auto fragment_shader_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name + ".frag");
+            const auto fragment_shader_content = context.file_reader->
+                                                         ReadTextFromFile(dir_name + "/" + asset_name + ".frag");
             if (!fragment_shader_content.Ok())
             {
                 throw std::runtime_error("Failed to load fragment shader" + asset_name);
@@ -52,7 +55,7 @@ namespace Engine::AssetHandling
         inline static const std::string dir_name = std::string("fonts");
 
         static FontAsset Load(AssetLoadContext context,
-                                               const std::string& asset_name)
+                              const std::string& asset_name)
         {
             const auto font_content = context.file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
             if (!font_content.Ok())
@@ -73,7 +76,7 @@ namespace Engine::AssetHandling
         inline static const std::string dir_name = std::string("meshes");
 
         static MeshAsset Load(AssetLoadContext context,
-                                               const std::string& asset_name)
+                              const std::string& asset_name)
         {
             const auto mesh_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
             if (!mesh_content.Ok())
@@ -98,7 +101,7 @@ namespace Engine::AssetHandling
         inline static const std::string dir_name = std::string("textures");
 
         static TextureAsset Load(AssetLoadContext context,
-                                                  const std::string& asset_name)
+                                 const std::string& asset_name)
         {
             const auto texture_content = context.file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
             if (!texture_content.Ok())
@@ -118,7 +121,7 @@ namespace Engine::AssetHandling
         inline static const std::string dir_name = std::string("materials");
 
         static MaterialAsset Load(AssetLoadContext context,
-                                                   const std::string& asset_name)
+                                  const std::string& asset_name)
         {
             const auto toml_file_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
             if (!toml_file_content.Ok())
@@ -132,14 +135,38 @@ namespace Engine::AssetHandling
             material.name = material_file_data.name;
             material.render_state = material_file_data.render_state;
             material.render_queue_index = material_file_data.render_queue_index;
-            material.shader_handle = context.asset_handler->LoadShader(material_file_data.shader_name); 
+            material.shader_handle = context.asset_handler->LoadShader(material_file_data.shader_name);
             material.base_color = material_file_data.base_color;
-            material.albedo_texture.texture = context.asset_handler->LoadTexture(material_file_data.albedo_texture.name);
+            material.albedo_texture.texture = context.asset_handler->
+                                                      LoadTexture(material_file_data.albedo_texture.name);
             material.albedo_texture.tiling = material_file_data.albedo_texture.tiling;
             material.albedo_texture.uv_scale = material_file_data.albedo_texture.uv_scale;
 
 
             return material;
+        }
+    };
+
+    template <>
+    struct AssetTraits<InputMapAsset>
+    {
+        using Handle = InputMapHandle;
+        inline static const std::string dir_name = std::string("inputmaps");
+
+        static InputMapAsset Load(AssetLoadContext context, std::string asset_name)
+        {
+            const auto toml_file_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
+            if (!toml_file_content.Ok())
+            {
+                throw std::runtime_error("Failed to load input map asset " + asset_name);
+            }
+
+            Input::InputMap input_map;
+            InputMaps::InputMapImporter::ExtractInputMapFromFileData(input_map, toml_file_content.value);
+            auto input_map_asset = InputMapAsset();
+            input_map_asset.name = input_map.name;
+            input_map_asset.input_map = input_map;
+            return input_map_asset;
         }
     };
 }
