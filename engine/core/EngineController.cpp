@@ -20,6 +20,7 @@ namespace Engine::Core
 
     EngineController::~EngineController() = default;
 
+
     void EngineController::Initialize(const std::vector<Ecs::SystemMeta>& systems)
     {
         m_window = Environment::EnvironmentBuilder::CreateEngineWindow();
@@ -31,15 +32,13 @@ namespace Engine::Core
             .windowMode = Environment::WindowMode::Window
         };
         m_window->Setup(config);
-        auto asset_handler = std::make_unique<AssetHandling::AssetHandler>();
-        m_services->RegisterService(std::move(asset_handler));
-        auto asset_handler_service = m_services->GetService<AssetHandling::AssetHandler>();
+        AssetHandling::AssetHandler* asset_handler_service = SetupAssetHandler();
 
         m_input_manager = Input::InputManagerBuilder::CreateInputManager(m_window.get());
 
         auto render_controller = Renderer::RenderControllerFactory::CreateRenderController(
-            m_window->GetWindowContext(),
-            asset_handler_service);
+             m_window->GetWindowContext(),
+             asset_handler_service);
         m_services->RegisterService(std::move(render_controller));
 
         auto text_controller = std::make_unique<Text::TextController>(asset_handler_service);
@@ -50,7 +49,7 @@ namespace Engine::Core
                                                     m_services->GetService<AssetHandling::AssetHandler>(),
                                                     m_window->GetWindowContext(),
                                                     90
-        );
+                                                   );
 
         m_system_manager = std::make_unique<Ecs::SystemManager>(systems, m_services.get(), m_cache_manager.get());
 
@@ -63,7 +62,22 @@ namespace Engine::Core
                                                                               asset_handler_service),
                                                                           static_cast<float>(window_context.width),
                                                                           static_cast<float>(window_context.height)
-        );
+                                                                         );
+    }
+
+    AssetHandling::AssetHandler* EngineController::SetupAssetHandler() const
+    {
+        auto asset_handler = std::make_unique<AssetHandling::AssetHandler>();
+
+        const auto input_map_files = m_file_reader->FindFilesOfType("inputmaps", ".inputmap");
+        for (const auto file : input_map_files)
+        {
+            asset_handler->LoadAsset<AssetHandling::InputMapAsset>(file);
+        }
+
+        m_services->RegisterService(std::move(asset_handler));
+        const auto asset_handler_service = m_services->GetService<AssetHandling::AssetHandler>();
+        return asset_handler_service;
     }
 
     void EngineController::Update()
@@ -104,7 +118,7 @@ namespace Engine::Core
                 m_debug_console->PushValue("FPS:", static_cast<size_t>(fps));
                 m_debug_console->PushValue("Draws:",
                                            m_services->GetService<Renderer::IRenderController>()->GetDrawCalls()
-                );
+                                          );
             }
 
             accumulator += frame_dt;

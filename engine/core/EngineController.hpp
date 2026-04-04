@@ -23,6 +23,7 @@ namespace Engine::Core {
         EngineController();
 
         ~EngineController() override;
+        AssetHandling::AssetHandler* SetupAssetHandler() const;
 
         /**
          * Initialize the engine backend
