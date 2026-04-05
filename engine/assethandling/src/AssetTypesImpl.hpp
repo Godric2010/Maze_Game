@@ -5,7 +5,7 @@
 #pragma once
 #include <stdexcept>
 
-#include "IFileReader.hpp"
+#include "IFileManager.hpp"
 #include "../include/AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 #include "InputMaps/InputMapImporter.hpp"
@@ -29,13 +29,13 @@ namespace Engine::AssetHandling
                                 const std::string& asset_name)
         {
             const auto vertex_shader_content = context.file_reader->
-                                                       ReadTextFromFile(dir_name + "/" + asset_name + ".vert");
+                                                       ReadTextFromResourceFile(dir_name + "/" + asset_name + ".vert");
             if (!vertex_shader_content.Ok())
             {
                 throw std::runtime_error("Failed to load vertex shader" + asset_name);
             }
             const auto fragment_shader_content = context.file_reader->
-                                                         ReadTextFromFile(dir_name + "/" + asset_name + ".frag");
+                                                         ReadTextFromResourceFile(dir_name + "/" + asset_name + ".frag");
             if (!fragment_shader_content.Ok())
             {
                 throw std::runtime_error("Failed to load fragment shader" + asset_name);
@@ -57,7 +57,7 @@ namespace Engine::AssetHandling
         static FontAsset Load(AssetLoadContext context,
                               const std::string& asset_name)
         {
-            const auto font_content = context.file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
+            const auto font_content = context.file_reader->ReadBinaryFromResourceFile(dir_name + "/" + asset_name);
             if (!font_content.Ok())
             {
                 throw std::runtime_error("Failed to load font asset" + asset_name);
@@ -78,7 +78,7 @@ namespace Engine::AssetHandling
         static MeshAsset Load(AssetLoadContext context,
                               const std::string& asset_name)
         {
-            const auto mesh_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
+            const auto mesh_content = context.file_reader->ReadTextFromResourceFile(dir_name + "/" + asset_name);
             if (!mesh_content.Ok())
             {
                 throw std::runtime_error("Failed to load mesh asset " + asset_name);
@@ -103,7 +103,7 @@ namespace Engine::AssetHandling
         static TextureAsset Load(AssetLoadContext context,
                                  const std::string& asset_name)
         {
-            const auto texture_content = context.file_reader->ReadBinaryFromFile(dir_name + "/" + asset_name);
+            const auto texture_content = context.file_reader->ReadBinaryFromResourceFile(dir_name + "/" + asset_name);
             if (!texture_content.Ok())
             {
                 throw std::runtime_error("Failed to load texture asset " + asset_name);
@@ -123,7 +123,7 @@ namespace Engine::AssetHandling
         static MaterialAsset Load(AssetLoadContext context,
                                   const std::string& asset_name)
         {
-            const auto toml_file_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
+            const auto toml_file_content = context.file_reader->ReadTextFromResourceFile(dir_name + "/" + asset_name);
             if (!toml_file_content.Ok())
             {
                 throw std::runtime_error("Failed to load material asset " + asset_name);
@@ -155,7 +155,7 @@ namespace Engine::AssetHandling
 
         static InputMapAsset Load(AssetLoadContext context, std::string asset_name)
         {
-            const auto toml_file_content = context.file_reader->ReadTextFromFile(dir_name + "/" + asset_name);
+            const auto toml_file_content = context.file_reader->ReadTextFromResourceFile(dir_name + "/" + asset_name);
             if (!toml_file_content.Ok())
             {
                 throw std::runtime_error("Failed to load input map asset " + asset_name);

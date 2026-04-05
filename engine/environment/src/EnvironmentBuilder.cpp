@@ -6,11 +6,11 @@
 
 #include <memory>
 
-#include "IFileReader.hpp"
+#include "IFileManager.hpp"
 #include "SDLInput.hpp"
 #include "SDLWindow.hpp"
 #include "Window.hpp"
-#include "Files/FileReader.hpp"
+#include "Files/FileManager.hpp"
 
 namespace Engine::Environment {
     std::unique_ptr<IWindow> EnvironmentBuilder::CreateEngineWindow() {
@@ -21,7 +21,7 @@ namespace Engine::Environment {
         return std::make_unique<SDLInput>(reinterpret_cast<SDLWindow&>(window));
     }
 
-    std::unique_ptr<Files::IFileReader> EnvironmentBuilder::CreateFileReader() {
-        return std::make_unique<Files::FileReader>();
+    std::unique_ptr<Files::IFileManager> EnvironmentBuilder::CreateFileManager() {
+        return std::make_unique<Files::FileManager>();
     }
 }

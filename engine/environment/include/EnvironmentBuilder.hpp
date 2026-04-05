@@ -2,7 +2,7 @@
 #include <memory>
 
 #include "EnvInput.hpp"
-#include "IFileReader.hpp"
+#include "IFileManager.hpp"
 #include "Window.hpp"
 
 namespace Engine::Environment {
@@ -15,6 +15,6 @@ namespace Engine::Environment {
 
         static std::unique_ptr<IEnvInput> CreateInput(IWindow& window);
 
-        static std::unique_ptr<Files::IFileReader> CreateFileReader();
+        static std::unique_ptr<Files::IFileManager> CreateFileManager();
     };
 }

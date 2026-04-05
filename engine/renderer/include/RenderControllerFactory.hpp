@@ -2,7 +2,7 @@
 #include <memory>
 
 #include "AssetHandler.hpp"
-#include "IFileReader.hpp"
+#include "IFileManager.hpp"
 #include "IRenderController.hpp"
 #include "Window.hpp"
 

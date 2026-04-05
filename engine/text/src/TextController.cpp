@@ -1,6 +1,6 @@
 #include "../include/TextController.hpp"
 #include <spdlog/spdlog.h>
-#include "IFileReader.hpp"
+#include "IFileManager.hpp"
 
 namespace Engine::Text {
     TextController::TextController(AssetHandling::AssetHandler* asset_handler) {

@@ -6,7 +6,7 @@ namespace Engine::AssetHandling
 {
     inline AssetHandler::AssetHandler()
     {
-        m_file_reader = Environment::EnvironmentBuilder::CreateFileReader();
+        m_file_reader = Environment::EnvironmentBuilder::CreateFileManager();
     }
 
     inline MeshHandle AssetHandler::LoadMesh(const std::string& mesh_name)

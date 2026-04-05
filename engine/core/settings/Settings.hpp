@@ -3,8 +3,10 @@
 //
 
 #pragma once
+#include <array>
+#include <string>
 
-namespace Engine::Core
+namespace Engine::Core::Settings
 {
     # define WindowModeList \
         X(Windowed) \
@@ -16,6 +18,14 @@ namespace Engine::Core
         #define X(name) name,
         WindowModeList
         #undef X
+    };
+
+    constexpr std::array<std::pair<std::string_view, WindowMode>, 3> WindowModeMap = {
+        {
+            #define X(name) {#name, WindowMode::name},
+            WindowModeList
+            #undef X
+        }
     };
 
     struct WindowSettings
@@ -36,6 +46,14 @@ namespace Engine::Core
         #define X(name) name,
         RenderApiList
         #undef X
+    };
+
+    constexpr  std::array<std::pair<std::string_view, RenderApi>, 3> RenderApiMap = {
+        {
+            #define X(name) {#name, RenderApi::name},
+            RenderApiList
+            #undef X
+        }
     };
 
     struct RenderSettings

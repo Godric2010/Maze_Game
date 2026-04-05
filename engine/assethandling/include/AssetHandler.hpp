@@ -1,5 +1,5 @@
 #pragma once
-#include <IFileReader.hpp>
+#include <IFileManager.hpp>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -74,7 +74,7 @@ namespace Engine::AssetHandling
             }
 
         private:
-            std::unique_ptr<Environment::Files::IFileReader> m_file_reader;
+            std::unique_ptr<Environment::Files::IFileManager> m_file_reader;
 
             template <AssetType T>
             struct AssetRecord
@@ -104,7 +104,7 @@ namespace Engine::AssetHandling
 
     struct AssetLoadContext
     {
-        Environment::Files::IFileReader* file_reader;
+        Environment::Files::IFileManager* file_reader;
         AssetHandler* asset_handler;
     };
 } // namespace

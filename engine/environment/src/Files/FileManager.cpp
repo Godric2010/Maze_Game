@@ -1,4 +1,4 @@
-#include "FileReader.hpp"
+#include "FileManager.hpp"
 
 #include <algorithm>
 #include <fstream>
@@ -7,19 +7,37 @@
 
 namespace Engine::Environment::Files
 {
-    FileReader::FileReader()
+    FileManager::FileManager()
     {
         m_root_data_path = GetExecutableDirectory().string();
     }
 
-    Result<std::string> FileReader::ReadTextFromFile(const std::string& relative_path)
+    bool FileManager::WriteTextToFile(std::string relative_path, std::string file_name, std::string content)
+    {
+        auto absolute_dir_path = std::filesystem::path(m_root_data_path) / relative_path;
+        if (std::filesystem::create_directories(absolute_dir_path) || std::filesystem::exists(absolute_dir_path))
+        {
+            auto absolute_path = absolute_dir_path / file_name;
+            std::ofstream file(absolute_path, std::ios::out | std::ios::trunc);
+            if (!file.is_open())
+            {
+                return false;
+            }
+            file << content;
+            return file.good();
+        }
+        return false;
+    }
+
+    Result<std::string> FileManager::ReadTextFromFile(const std::string& relative_path)
     {
         std::string error_msg;
         std::filesystem::path file_path;
         std::error_code error_code;
+
         if (!ValidatePath(relative_path, file_path, error_msg, error_code))
         {
-            return Fail<std::string>(error_msg, -1);
+            return FileNotFound<std::string>();
         }
 
         std::ifstream file(file_path, std::ios::ate | std::ios::binary);
@@ -39,14 +57,41 @@ namespace Engine::Environment::Files
         };
     }
 
-    Result<FileBinary> FileReader::ReadBinaryFromFile(const std::string& relative_path)
+    Result<std::string> FileManager::ReadTextFromResourceFile(const std::string& relative_path)
     {
         std::string error_msg;
         std::filesystem::path file_path;
         std::error_code error_code;
-        if (!ValidatePath(relative_path, file_path, error_msg, error_code))
+        if (!ValidatePath(m_resource_dir_name + "/" + relative_path, file_path, error_msg, error_code))
         {
-            return Fail<FileBinary>(error_msg, -1);
+            return FileNotFound<std::string>();
+        }
+
+        std::ifstream file(file_path, std::ios::ate | std::ios::binary);
+        if (!file.is_open())
+        {
+            return Fail<std::string>("Failed to open file: " + file_path.string(), 0);
+        }
+
+        const auto file_size = file.tellg();
+        std::vector<char> buffer(file_size);
+        file.seekg(0);
+        file.read(buffer.data(), file_size);
+        file.close();
+        return Result<std::string>{
+            .value = std::string{buffer.data(), static_cast<size_t>(file_size)},
+            .error = LoadError{}
+        };
+    }
+
+    Result<FileBinary> FileManager::ReadBinaryFromResourceFile(const std::string& relative_path)
+    {
+        std::string error_msg;
+        std::filesystem::path file_path;
+        std::error_code error_code;
+        if (!ValidatePath(m_resource_dir_name + "/" + relative_path, file_path, error_msg, error_code))
+        {
+            return FileNotFound<FileBinary>();
         }
         std::ifstream ifs(file_path, std::ios::binary | std::ios::ate);
         if (!ifs)
@@ -101,7 +146,8 @@ namespace Engine::Environment::Files
         };
     }
 
-    std::vector<std::string> FileReader::FindFilesOfType(const std::string& directory, const std::string& file_type)
+    std::vector<std::string> FileManager::FindResourceFilesOfType(const std::string& directory,
+                                                                  const std::string& file_type)
     {
         if (file_type.empty())
         {
@@ -111,7 +157,7 @@ namespace Engine::Environment::Files
         std::string file_type_normalized(file_type);
         std::ranges::transform(file_type_normalized, file_type_normalized.begin(), ::tolower);
 
-        const auto base_path = std::filesystem::path(m_root_data_path) / m_resource_dir_name;
+        const auto base_path = std::filesystem::path(m_root_data_path);
         const auto directory_path = base_path / directory;
         std::vector<std::string> result;
         for (const auto& entry : std::filesystem::directory_iterator{directory_path})
@@ -125,14 +171,14 @@ namespace Engine::Environment::Files
         return result;
     }
 
-    bool FileReader::ValidatePath(const std::string& relative_path, std::filesystem::path& path, std::string& error,
-                                  std::error_code& error_code)
+    bool FileManager::ValidatePath(const std::string& relative_path, std::filesystem::path& path, std::string& error,
+                                   std::error_code& error_code)
     {
         if (relative_path.empty())
         {
             throw std::invalid_argument("relative file path is null");
         }
-        const auto base = std::filesystem::path(m_root_data_path) / m_resource_dir_name;
+        const auto base = std::filesystem::path(m_root_data_path);
         std::filesystem::path resource_path = base;
 
         auto relative_file_path = std::filesystem::path(relative_path);
@@ -178,13 +224,31 @@ namespace Engine::Environment::Files
     }
 
     template <typename T>
-    Result<T> FileReader::Fail(const std::string& msg, const int code)
+    Result<T> FileManager::Success(T value)
+    {
+        Result<T> result;
+        result.value = std::move(value);
+        result.type = ResultType::Ok;
+        return result;
+    }
+
+    template <typename T>
+    Result<T> FileManager::Fail(const std::string& msg, const int code)
     {
         Result<T> result;
         result.error = LoadError{
             .message = msg,
             .code = code
         };
+        result.type = ResultType::FileError;
+        return result;
+    }
+
+    template <typename T>
+    Result<T> FileManager::FileNotFound()
+    {
+        Result<T> result;
+        result.type = ResultType::FileNotFound;
         return result;
     }
 } // namespace

@@ -4,10 +4,11 @@
 #include "DebugBuilder.hpp"
 #include "EnvironmentBuilder.hpp"
 #include "RenderControllerFactory.hpp"
-#include "Settings.hpp"
+#include "settings/Settings.hpp"
 #include "SystemManager.hpp"
 #include "TextController.hpp"
 #include "../input/include/InputManagerBuilder.hpp"
+#include "settings/SettingsHandler.hpp"
 
 namespace Engine::Core
 {
@@ -15,7 +16,7 @@ namespace Engine::Core
     {
         m_services = std::make_unique<ServiceLocator>();
         m_cache_manager = Systems::CacheManagerFactory::CreateCacheManager();
-        m_file_reader = Environment::EnvironmentBuilder::CreateFileReader();
+        m_file_manager = Environment::EnvironmentBuilder::CreateFileManager();
         m_is_running = true;
     };
 
@@ -24,7 +25,7 @@ namespace Engine::Core
 
     void EngineController::Initialize(const std::vector<Ecs::SystemMeta>& systems)
     {
-        const auto engine_settings = EngineSettings{};
+        const auto engine_settings = Settings::SettingsHandler::ReadSettingsFromDisk(m_file_manager.get());
         SetupWindow(engine_settings);
 
         AssetHandling::AssetHandler* asset_handler_service = SetupAssetHandler();
@@ -58,18 +59,18 @@ namespace Engine::Core
                                                                          );
     }
 
-    void EngineController::SetupWindow(const EngineSettings& settings)
+    void EngineController::SetupWindow(const Settings::EngineSettings& settings)
     {
         Environment::WindowMode window_mode = {};
         switch (settings.window.mode)
         {
-            case WindowMode::Windowed:
+            case Settings::WindowMode::Windowed:
                 window_mode = Environment::WindowMode::Window;
                 break;
-            case WindowMode::Borderless:
+            case Settings::WindowMode::Borderless:
                 window_mode = Environment::WindowMode::Borderless;
                 break;
-            case WindowMode::Fullscreen:
+            case Settings::WindowMode::Fullscreen:
                 window_mode = Environment::WindowMode::Fullscreen;
                 break;
         }
@@ -77,13 +78,13 @@ namespace Engine::Core
         Environment::API render_api{};
         switch (settings.render.api)
         {
-            case RenderApi::OpenGL:
+            case Settings::RenderApi::OpenGL:
                 render_api = Environment::API::OpenGL;
                 break;
-            case RenderApi::Vulkan:
+            case Settings::RenderApi::Vulkan:
                 render_api = Environment::API::Vulkan;
                 break;
-            case RenderApi::Metal:
+            case Settings::RenderApi::Metal:
                 render_api = Environment::API::Metal;
                 break;
         }
@@ -104,7 +105,7 @@ namespace Engine::Core
     {
         auto asset_handler = std::make_unique<AssetHandling::AssetHandler>();
 
-        const auto input_map_files = m_file_reader->FindFilesOfType("inputmaps", ".inputmap");
+        const auto input_map_files = m_file_manager->FindResourceFilesOfType("resources/inputmaps", ".inputmap");
         for (const auto& file : input_map_files)
         {
             asset_handler->LoadAsset<AssetHandling::InputMapAsset>(file);
