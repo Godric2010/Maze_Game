@@ -1,29 +1,27 @@
 #include "InputManager.hpp"
 
+#include <algorithm>
 #include <stdexcept>
 
 namespace Engine::Input
 {
-    InputManager::InputManager(std::unique_ptr<Environment::IEnvInput> env_input)
+    InputManager::InputManager(std::unique_ptr<Environment::IEnvInput> env_input,
+                               const std::vector<InputMap>& input_maps)
     {
         m_input_env = std::move(env_input);
 
-        const InputMap ui_input_map{
-            .name = "UIInputMap",
-            .mouse_bindings = {
-                MouseKeyBinding{
-                    .name = "UiButtonDown",
-                    .button = MouseButton::Left,
-                    .press_state = PressState::Down
-                },
-                MouseKeyBinding{
-                    .name = "UiButtonUp",
-                    .button = MouseButton::Left,
-                    .press_state = PressState::Up
-                },
-            },
-        };
-        m_input_maps.push_back(ui_input_map);
+        for (auto& input_map : input_maps)
+        {
+            for (const auto& registered_map : m_input_maps)
+            {
+                if (registered_map.name == input_map.name)
+                {
+                    throw std::invalid_argument("Try to register an input map with the same name twice! " +
+                                                input_map.name);
+                }
+            }
+            m_input_maps.push_back(input_map);
+        }
     }
 
     InputManager::~InputManager() = default;
@@ -39,18 +37,6 @@ namespace Engine::Input
     Environment::AppEventsSnapshot InputManager::GetAppEventSnapshot()
     {
         return m_input_env->GetAppEventSnapshot();
-    }
-
-    void InputManager::AddInputMapping(const InputMap& input_map)
-    {
-        for (const auto& input_map_name : m_input_maps)
-        {
-            if (input_map_name.name == input_map.name)
-            {
-                throw std::runtime_error("Same input map has been registered already!");
-            }
-        }
-        m_input_maps.push_back(input_map);
     }
 
     void InputManager::EnableInputMap(const std::string& input_map_name)

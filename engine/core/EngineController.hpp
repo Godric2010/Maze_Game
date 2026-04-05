@@ -12,57 +12,59 @@
 #include "../scenemanagement/src/SceneManager.hpp"
 #include "../systems/src/CacheManager.hpp"
 
-namespace Engine::Core {
+namespace Engine::Core
+{
     /**
      * @class EngineController
      * The central engine controller that brings all elements of the engine together.
      * All systems and their events are managed through this instance.
      */
-    class EngineController final : public IApplication {
-    public:
-        EngineController();
+    class EngineController final : public IApplication
+    {
+        public:
+            EngineController();
 
-        ~EngineController() override;
-        AssetHandling::AssetHandler* SetupAssetHandler() const;
+            ~EngineController() override;
 
-        /**
-         * Initialize the engine backend
-         */
-        void Initialize(const std::vector<Ecs::SystemMeta>& systems);
+            /**
+             * Initialize the engine backend
+             */
+            void Initialize(const std::vector<Ecs::SystemMeta>& systems);
 
-        /**
-         * Update the engines systems, like drawing, the objects in the world, etc.
-         */
-        void Update();
+            /**
+             * Update the engines systems, like drawing, the objects in the world, etc.
+             */
+            void Update();
 
-        /**
-         * Shutdown the engines system and free all resources.
-         */
-        void Shutdown() const;
+            /**
+             * Shutdown the engines system and free all resources.
+             */
+            void Shutdown() const;
 
-        void Quit() override;
+            void Quit() override;
 
-        void RegisterInputMap(Input::InputMap map) override;
+            void RegisterScene(const std::string& name, SceneManagement::SceneFactory scene_factory) override;
 
-        void RegisterScene(const std::string& name, SceneManagement::SceneFactory scene_factory) override;
+            void SetInitialScene(const std::string& name, const SceneManagement::SceneArgs& args) override;
 
-        void SetInitialScene(const std::string& name, const SceneManagement::SceneArgs& args) override;
+        private:
+            void SetupInputManager(AssetHandling::AssetHandler* asset_handler);
+            [[nodiscard]] AssetHandling::AssetHandler* SetupAssetHandler() const;
 
-    private:
-        std::unique_ptr<ServiceLocator> m_services;
-        std::unique_ptr<Environment::IWindow> m_window;
-        std::unique_ptr<Environment::Files::IFileReader> m_file_reader;
-        std::unique_ptr<Ecs::SystemManager> m_system_manager;
-        std::unique_ptr<Systems::ICacheManager> m_cache_manager;
-        std::unique_ptr<Input::IInputManager> m_input_manager;
-        std::unique_ptr<Debug::IDebugConsole> m_debug_console;
+            std::unique_ptr<ServiceLocator> m_services;
+            std::unique_ptr<Environment::IWindow> m_window;
+            std::unique_ptr<Environment::Files::IFileReader> m_file_reader;
+            std::unique_ptr<Ecs::SystemManager> m_system_manager;
+            std::unique_ptr<Systems::ICacheManager> m_cache_manager;
+            std::unique_ptr<Input::IInputManager> m_input_manager;
+            std::unique_ptr<Debug::IDebugConsole> m_debug_console;
 
-        std::unique_ptr<SceneManagement::SceneManager> m_scene_manager;
+            std::unique_ptr<SceneManagement::SceneManager> m_scene_manager;
 
-        bool m_is_running = true;
-        std::string m_initial_scene_name;
+            bool m_is_running = true;
+            std::string m_initial_scene_name;
 
-        float m_fps_frames = 0;
-        float m_fps_accumulator = 0;
+            float m_fps_frames = 0;
+            float m_fps_accumulator = 0;
     };
 } // namespace

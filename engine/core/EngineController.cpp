@@ -32,9 +32,9 @@ namespace Engine::Core
             .windowMode = Environment::WindowMode::Window
         };
         m_window->Setup(config);
+        
         AssetHandling::AssetHandler* asset_handler_service = SetupAssetHandler();
-
-        m_input_manager = Input::InputManagerBuilder::CreateInputManager(m_window.get());
+        SetupInputManager(asset_handler_service);
 
         auto render_controller = Renderer::RenderControllerFactory::CreateRenderController(
              m_window->GetWindowContext(),
@@ -78,6 +78,21 @@ namespace Engine::Core
         m_services->RegisterService(std::move(asset_handler));
         const auto asset_handler_service = m_services->GetService<AssetHandling::AssetHandler>();
         return asset_handler_service;
+    }
+
+    void EngineController::SetupInputManager(AssetHandling::AssetHandler* asset_handler)
+    {
+        const auto input_map_asset_ids = asset_handler->GetAllAssetHandlesOfType<AssetHandling::InputMapAsset>();
+        std::vector<Input::InputMap> input_maps;
+        input_maps.resize(input_map_asset_ids.size());
+        for (size_t i = 0; i < input_map_asset_ids.size(); ++i)
+        {
+            const auto input_map_asset = asset_handler->GetAsset<AssetHandling::InputMapAsset>(input_map_asset_ids[i]);
+            input_maps[i] = input_map_asset->input_map;
+        }
+        
+        
+        m_input_manager = Input::InputManagerBuilder::CreateInputManager(m_window.get(), input_maps);
     }
 
     void EngineController::Update()
@@ -152,11 +167,6 @@ namespace Engine::Core
     void EngineController::Quit()
     {
         m_is_running = false;
-    }
-
-    void EngineController::RegisterInputMap(const Input::InputMap map)
-    {
-        m_input_manager->AddInputMapping(map);
     }
 
     void EngineController::RegisterScene(const std::string& name, const SceneManagement::SceneFactory scene_factory)

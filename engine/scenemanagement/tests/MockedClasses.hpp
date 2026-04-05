@@ -19,10 +19,6 @@ public:
     void SetInitialScene(const std::string& name, const Engine::SceneManagement::SceneArgs& args) override
     {
     }
-
-    void RegisterInputMap(Engine::Input::InputMap map) override
-    {
-    }
 };
 
 class FakeInput : public Engine::Input::IInput

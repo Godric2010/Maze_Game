@@ -8,57 +8,6 @@ namespace Gameplay
 {
     GameplayManager::GameplayManager(Engine::IApplication& engine) : m_engine(engine)
     {
-        const Engine::Input::InputMap player_input_map{
-            .name = "PlayerInputMap",
-            .key_bindings = {
-                Engine::Input::KeyBinding{
-                    .name = "forward",
-                    .key = Engine::Input::Key::W,
-                    .press_state = Engine::Input::PressState::Pressed
-                },
-                Engine::Input::KeyBinding{
-                    .name = "backwards",
-                    .key = Engine::Input::Key::S,
-                    .press_state = Engine::Input::PressState::Pressed
-                },
-                Engine::Input::KeyBinding{
-                    .name = "left",
-                    .key = Engine::Input::Key::A,
-                    .press_state = Engine::Input::PressState::Pressed
-                },
-                Engine::Input::KeyBinding{
-                    .name = "right",
-                    .key = Engine::Input::Key::D,
-                    .press_state = Engine::Input::PressState::Pressed
-                },
-                Engine::Input::KeyBinding{
-                    .name = "pause",
-                    .key = Engine::Input::Key::Esc,
-                    .press_state = Engine::Input::PressState::Down
-                }
-            },
-            .mouse_bindings = {},
-        };
-        m_engine.RegisterInputMap(player_input_map);
-
-        const Engine::Input::InputMap pause_input_map{
-            .name = "PauseInputMap",
-            .key_bindings = {
-                Engine::Input::KeyBinding{
-                    .name = "resume",
-                    .key = Engine::Input::Key::Esc,
-                    .press_state = Engine::Input::PressState::Down
-                },
-            },
-            .mouse_bindings = {
-                Engine::Input::MouseKeyBinding{
-                    .name = "confirm",
-                    .button = Engine::Input::MouseButton::Left,
-                    .press_state = Engine::Input::PressState::Up
-                }
-            },
-        };
-        m_engine.RegisterInputMap(pause_input_map);
     }
 
     GameplayManager::~GameplayManager() = default;

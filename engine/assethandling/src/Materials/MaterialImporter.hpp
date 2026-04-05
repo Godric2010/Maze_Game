@@ -3,8 +3,9 @@
 //
 
 #pragma once
-#include <toml++/toml.hpp>
 #include <string>
+#include <glm/vec2.hpp>
+#include <toml++/toml.hpp>
 #include "AssetTypes.hpp"
 
 

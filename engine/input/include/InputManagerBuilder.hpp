@@ -6,9 +6,12 @@
 #include <memory>
 #include "IInputManager.hpp"
 
-namespace Engine::Input {
-    class InputManagerBuilder {
-    public:
-        static std::unique_ptr<IInputManager> CreateInputManager(Environment::IWindow* window);
+namespace Engine::Input
+{
+    class InputManagerBuilder
+    {
+        public:
+            static std::unique_ptr<IInputManager> CreateInputManager(Environment::IWindow* window,
+                                                                     const std::vector<InputMap>& input_maps);
     };
 }
