@@ -5,6 +5,7 @@ add_library(Core STATIC
         ServiceLocator.inl
         ServiceLocator.hpp
         ../interface/include/Commands/UI/ButtonClickedCommand.hpp
+        Settings.hpp
 )
 
 target_include_directories(Core PUBLIC

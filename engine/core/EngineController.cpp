@@ -4,6 +4,7 @@
 #include "DebugBuilder.hpp"
 #include "EnvironmentBuilder.hpp"
 #include "RenderControllerFactory.hpp"
+#include "Settings.hpp"
 #include "SystemManager.hpp"
 #include "TextController.hpp"
 #include "../input/include/InputManagerBuilder.hpp"
@@ -23,16 +24,9 @@ namespace Engine::Core
 
     void EngineController::Initialize(const std::vector<Ecs::SystemMeta>& systems)
     {
-        m_window = Environment::EnvironmentBuilder::CreateEngineWindow();
-        const Environment::WindowConfig config{
-            .width = 1920,
-            .height = 1080,
-            .title = "MazeGame",
-            .renderApi = Environment::API::OpenGL,
-            .windowMode = Environment::WindowMode::Window
-        };
-        m_window->Setup(config);
-        
+        const auto engine_settings = EngineSettings{};
+        SetupWindow(engine_settings);
+
         AssetHandling::AssetHandler* asset_handler_service = SetupAssetHandler();
         SetupInputManager(asset_handler_service);
 
@@ -53,7 +47,6 @@ namespace Engine::Core
 
         m_system_manager = std::make_unique<Ecs::SystemManager>(systems, m_services.get(), m_cache_manager.get());
 
-        auto renderer = m_services->TryGetService<Renderer::IRenderController>();
         const auto window_context = m_window->GetWindowContext();
         m_scene_manager = std::make_unique<SceneManagement::SceneManager>(*this,
                                                                           *m_system_manager,
@@ -65,12 +58,54 @@ namespace Engine::Core
                                                                          );
     }
 
+    void EngineController::SetupWindow(const EngineSettings& settings)
+    {
+        Environment::WindowMode window_mode = {};
+        switch (settings.window.mode)
+        {
+            case WindowMode::Windowed:
+                window_mode = Environment::WindowMode::Window;
+                break;
+            case WindowMode::Borderless:
+                window_mode = Environment::WindowMode::Borderless;
+                break;
+            case WindowMode::Fullscreen:
+                window_mode = Environment::WindowMode::Fullscreen;
+                break;
+        }
+
+        Environment::API render_api{};
+        switch (settings.render.api)
+        {
+            case RenderApi::OpenGL:
+                render_api = Environment::API::OpenGL;
+                break;
+            case RenderApi::Vulkan:
+                render_api = Environment::API::Vulkan;
+                break;
+            case RenderApi::Metal:
+                render_api = Environment::API::Metal;
+                break;
+        }
+
+        m_window = Environment::EnvironmentBuilder::CreateEngineWindow();
+        const Environment::WindowConfig config{
+            .width = settings.window.width,
+            .height = settings.window.height,
+            .title = settings.window.title,
+            .renderApi = render_api,
+            .windowMode = window_mode,
+            .vsync = settings.render.vsync
+        };
+        m_window->Setup(config);
+    }
+
     AssetHandling::AssetHandler* EngineController::SetupAssetHandler() const
     {
         auto asset_handler = std::make_unique<AssetHandling::AssetHandler>();
 
         const auto input_map_files = m_file_reader->FindFilesOfType("inputmaps", ".inputmap");
-        for (const auto file : input_map_files)
+        for (const auto& file : input_map_files)
         {
             asset_handler->LoadAsset<AssetHandling::InputMapAsset>(file);
         }
@@ -90,8 +125,8 @@ namespace Engine::Core
             const auto input_map_asset = asset_handler->GetAsset<AssetHandling::InputMapAsset>(input_map_asset_ids[i]);
             input_maps[i] = input_map_asset->input_map;
         }
-        
-        
+
+
         m_input_manager = Input::InputManagerBuilder::CreateInputManager(m_window.get(), input_maps);
     }
 

@@ -38,6 +38,7 @@ namespace Engine::Environment {
         std::string title;
         API renderApi;
         WindowMode windowMode;
+        bool vsync;
     };
 
     /**

@@ -57,7 +57,7 @@ namespace Engine::Environment
                     .context = SDL_GL_CreateContext(m_window),
                 };
                 SDL_GL_MakeCurrent(m_context.openGLContext.windowHandle, m_context.openGLContext.context);
-                SDL_GL_SetSwapInterval(0);
+                SDL_GL_SetSwapInterval(config.vsync ? 1 : 0);
                 break;
             case API::Vulkan:
             case API::Metal:
@@ -99,7 +99,8 @@ namespace Engine::Environment
             if (rc != 0)
             {
                 throw std::runtime_error(
-                    std::string("SDL_GL_SetAttribute failed for") + name + ": " + std::string(SDL_GetError()));
+                                         std::string("SDL_GL_SetAttribute failed for") + name + ": " +
+                                         std::string(SDL_GetError()));
             }
         };
 

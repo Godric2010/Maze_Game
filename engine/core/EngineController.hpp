@@ -7,6 +7,7 @@
 #include <IDebugConsole.hpp>
 #include "IInputManager.hpp"
 #include "ServiceLocator.hpp"
+#include "Settings.hpp"
 #include "SystemManager.hpp"
 #include "Window.hpp"
 #include "../scenemanagement/src/SceneManager.hpp"
@@ -48,6 +49,7 @@ namespace Engine::Core
             void SetInitialScene(const std::string& name, const SceneManagement::SceneArgs& args) override;
 
         private:
+            void SetupWindow(const EngineSettings& settings);
             void SetupInputManager(AssetHandling::AssetHandler* asset_handler);
             [[nodiscard]] AssetHandling::AssetHandler* SetupAssetHandler() const;
 
