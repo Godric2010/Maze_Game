@@ -248,10 +248,15 @@ namespace Engine::Utilities::Toml
 
     std::optional<TomlTable> TomlTable::GetOptionalTable(const std::string& table_name) const
     {
-        const auto table = m_node[table_name].as_table();
-        if (!table)
+        const auto field = m_node[table_name];
+        if (!field)
         {
             return std::nullopt;
+        }
+        const auto table = field.as_table();
+        if (!table)
+        {
+            throw std::runtime_error("Field '" + table_name + "' is not a table");
         }
         return TomlTable(toml::node_view(table));
     }
