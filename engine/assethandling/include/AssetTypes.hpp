@@ -62,10 +62,23 @@ namespace Engine::AssetHandling
         std::vector<uint8_t> pixels;
     };
 
+    #define RenderStateList \
+        X(Opaque) \
+        X(UI)
+
     enum class RenderState
     {
-        Opaque,
-        UI,
+        #define X(name) name,
+        RenderStateList
+        #undef X
+    };
+
+    constexpr std::array<std::pair<std::string_view, RenderState>, 2> RenderStateMap = {
+        {
+            #define X(name) {#name, RenderState::name},
+            RenderStateList
+            #undef X
+        }
     };
 
     struct MaterialTexture
@@ -84,8 +97,8 @@ namespace Engine::AssetHandling
         MaterialTexture albedo_texture;
         glm::vec4 base_color;
     };
-    
-    struct InputMapAsset: Asset
+
+    struct InputMapAsset : Asset
     {
         std::string name;
         Input::InputMap input_map;

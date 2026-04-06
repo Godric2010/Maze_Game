@@ -5,8 +5,8 @@
 #pragma once
 #include <string>
 #include <glm/vec2.hpp>
-#include <toml++/toml.hpp>
 #include "AssetTypes.hpp"
+#include "toml/TomlDocument.hpp"
 
 
 namespace Engine::AssetHandling::Materials
@@ -34,16 +34,9 @@ namespace Engine::AssetHandling::Materials
         static void ExtractMaterialFileData(MaterialFileData& material_asset, const std::string& file_content);
 
     private:
-        static void ReadMaterialProperties(MaterialFileData& material_asset, const toml::table& content_table);
-        static void ReadTextureProperties(MaterialTextureFileData& material_texture, const toml::table& content_table,
+        static void ReadMaterialProperties(MaterialFileData& material_asset, const Utilities::Toml::TomlTable& table);
+        static void ReadTextureProperties(MaterialTextureFileData& material_texture, const std::optional<Utilities::Toml::TomlTable>& table,
                                           const std::string& texture_type);
-        static void ReadColorProperties(MaterialFileData& material_asset, const toml::table& content_table);
-
-        static std::string ReadFieldAsString(toml::node_view<const toml::node> node, const std::string& field_name);
-        static int ReadFieldAsInt(toml::node_view<const toml::node> node, const std::string& field_name);
-        static glm::vec2 ReadFieldAsVec2(toml::node_view<const toml::node> node, const std::string& field_name);
-        static glm::vec4 ReadFieldAsVec4(toml::node_view<const toml::node> node, const std::string& field_name);
-        static RenderState ReadFieldAsRenderState(toml::node_view<const toml::node> node,
-                                                  const std::string& field_name);
+        static void ReadColorProperties(MaterialFileData& material_asset, const Utilities::Toml::TomlTable& table);
     };
 }

@@ -7,6 +7,8 @@
 #include "Settings.hpp"
 #include <toml++/toml.hpp>
 
+#include "toml/TomlDocument.hpp"
+
 
 namespace Engine::Core::Settings
 {
@@ -27,19 +29,7 @@ namespace Engine::Core::Settings
 
             // Read functions
             static EngineSettings ReadSettingsFromToml(const std::string& toml_str);
-            static WindowSettings ReadWindowSettingsFromToml(const toml::table& table);
-            static RenderSettings ReadRenderSettingsFromToml(const toml::table& table);
-
-            static void ReadTomlFieldAsString(toml::node_view<const toml::node> node, const std::string& field_name,
-                                              std::string& field_value);
-            static void ReadTomlFieldAsInt(toml::node_view<const toml::node> node, const std::string& field_name,
-                                           int& field_value);
-            static void ReadTomlFieldAsBool(toml::node_view<const toml::node> node, const std::string& field_name,
-                                            bool& field_value);
-            static void ReadTomlFieldAsWindowMode(toml::node_view<const toml::node> node, const std::string& field_name,
-                                                  WindowMode& field_value);
-            static void ReadTomlFieldAsRenderApi(toml::node_view<const toml::node> node, const std::string& field_name,
-                                                 RenderApi& field_value);
-            static std::string ToLower(const std::string_view& str);
+            static WindowSettings ReadWindowSettingsFromToml(Utilities::Toml::TomlTable table);
+            static RenderSettings ReadRenderSettingsFromToml(Utilities::Toml::TomlTable table);
     };
 }

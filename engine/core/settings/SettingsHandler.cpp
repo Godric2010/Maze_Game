@@ -1,7 +1,7 @@
 #include "SettingsHandler.hpp"
 
-#include <algorithm>
 #include <spdlog/spdlog.h>
+#include "toml/TomlDocument.hpp"
 
 namespace Engine::Core::Settings
 {
@@ -60,7 +60,7 @@ namespace Engine::Core::Settings
     {
         toml_str += "[Renderer]\n";
         toml_str += "api = \"" + GetNameOfRenderApi(render_settings.api) + "\"\n";
-        toml_str += "vsync = " + std::to_string(render_settings.vsync ? 1 : 0) + "\n";
+        toml_str += "vsync = " + std::string(render_settings.vsync ? "true\n" : "false\n");
         // Add new settings here
         toml_str += "\n";
     }
@@ -91,112 +91,28 @@ namespace Engine::Core::Settings
 
     EngineSettings SettingsHandler::ReadSettingsFromToml(const std::string& toml_str)
     {
-        toml::table toml_content;
-        try
-        {
-            toml_content = toml::parse(toml_str);
-        }
-        catch (const toml::parse_error& e)
-        {
-            spdlog::error(e.what());
-            throw;
-        }
-
+        const auto toml_doc = Utilities::Toml::TomlDocument(toml_str);
         EngineSettings settings{};
-        settings.window = ReadWindowSettingsFromToml(toml_content);
-        settings.render = ReadRenderSettingsFromToml(toml_content);
+        settings.window = ReadWindowSettingsFromToml(toml_doc.GetRequiredTable("Window"));
+        settings.render = ReadRenderSettingsFromToml(toml_doc.GetRequiredTable("Renderer"));
         return settings;
     }
 
-    WindowSettings SettingsHandler::ReadWindowSettingsFromToml(const toml::table& table)
+    WindowSettings SettingsHandler::ReadWindowSettingsFromToml(Utilities::Toml::TomlTable table)
     {
         WindowSettings settings{};
-        toml::node_view<const toml::node> category = table["Window"];
-        ReadTomlFieldAsInt(category, "width", settings.width);
-        ReadTomlFieldAsInt(category, "height", settings.height);
-        ReadTomlFieldAsWindowMode(category, "mode", settings.mode);
-        ReadTomlFieldAsString(category, "title", settings.title);
+        settings.width = table.GetOptionalInt("width").value_or(settings.width);
+        settings.height = table.GetOptionalInt("height").value_or(settings.height);
+        settings.title = table.GetOptionalString("title").value_or(settings.title);
+        settings.mode = table.GetOptionalEnum<WindowMode>("mode", WindowModeMap).value_or(settings.mode);
         return settings;
     }
 
-    RenderSettings SettingsHandler::ReadRenderSettingsFromToml(const toml::table& table)
+    RenderSettings SettingsHandler::ReadRenderSettingsFromToml(Utilities::Toml::TomlTable table)
     {
         RenderSettings settings{};
-        toml::node_view<const toml::node> category = table["Renderer"];
-        ReadTomlFieldAsRenderApi(category, "api", settings.api);
-        ReadTomlFieldAsBool(category, "vsync", settings.vsync);
+        settings.api = table.GetOptionalEnum<RenderApi>("api", RenderApiMap).value_or(settings.api);
+        settings.vsync = table.GetOptionalBool("vsync").value_or(settings.vsync);
         return settings;
-    }
-
-    void SettingsHandler::ReadTomlFieldAsString(toml::node_view<const toml::node> node, const std::string& field_name,
-                                                std::string& field_value)
-    {
-        if (const auto value = node[field_name].value<std::string>())
-        {
-            field_value = *value;
-        }
-    }
-
-    void SettingsHandler::ReadTomlFieldAsInt(toml::node_view<const toml::node> node, const std::string& field_name,
-                                             int& field_value)
-    {
-        if (const auto value = node[field_name].value<int>())
-        {
-            field_value = *value;
-        }
-    }
-
-    void SettingsHandler::ReadTomlFieldAsBool(toml::node_view<const toml::node> node, const std::string& field_name,
-                                              bool& field_value)
-    {
-        if (const auto value = node[field_name].value<int>())
-        {
-            field_value = *value > 0;
-        }
-    }
-
-    void SettingsHandler::ReadTomlFieldAsWindowMode(toml::node_view<const toml::node> node,
-                                                    const std::string& field_name, WindowMode& field_value)
-    {
-        const auto value = node[field_name].value<std::string>();
-        if (value.has_value())
-        {
-            const auto window_mode_str = value.value();
-            const auto window_mode_str_normalized = ToLower(window_mode_str);
-            for (const auto& [name, mode] : WindowModeMap)
-            {
-                if (ToLower(name) == window_mode_str_normalized)
-                {
-                    field_value = mode;
-                    return;
-                }
-            }
-        }
-    }
-
-    void SettingsHandler::ReadTomlFieldAsRenderApi(toml::node_view<const toml::node> node,
-                                                   const std::string& field_name, RenderApi& field_value)
-    {
-        const auto value = node[field_name].value<std::string>();
-        if (value.has_value())
-        {
-            const auto api_str = value.value();
-            const auto api_str_normalized = ToLower(api_str);
-            for (const auto& [name, api] : RenderApiMap)
-            {
-                if (ToLower(name) == api_str_normalized)
-                {
-                    field_value = api;
-                    return;
-                }
-            }
-        }
-    }
-
-    std::string SettingsHandler::ToLower(const std::string_view& str)
-    {
-        std::string result(str);
-        std::ranges::transform(result, result.begin(), ::tolower);
-        return result;
     }
 } // namespace

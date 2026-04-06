@@ -1,4 +1,5 @@
 
+add_subdirectory(utilities)
 add_subdirectory(interface)
 add_subdirectory(input)
 add_subdirectory(core)
