@@ -1,5 +1,6 @@
 #include "SettingsHandler.hpp"
 
+#include <algorithm>
 #include <spdlog/spdlog.h>
 
 namespace Engine::Core::Settings
@@ -18,7 +19,7 @@ namespace Engine::Core::Settings
         const auto loaded_settings = file_manager->ReadTextFromFile("settings.toml");
         if (loaded_settings.Ok())
         {
-            return EngineSettings{};
+            return ReadSettingsFromToml(loaded_settings.value);
         }
 
         if (loaded_settings.type == Environment::Files::ResultType::FileNotFound)
@@ -86,5 +87,116 @@ namespace Engine::Core::Settings
             }
         }
         throw std::runtime_error("Unknown render api.");
+    }
+
+    EngineSettings SettingsHandler::ReadSettingsFromToml(const std::string& toml_str)
+    {
+        toml::table toml_content;
+        try
+        {
+            toml_content = toml::parse(toml_str);
+        }
+        catch (const toml::parse_error& e)
+        {
+            spdlog::error(e.what());
+            throw;
+        }
+
+        EngineSettings settings{};
+        settings.window = ReadWindowSettingsFromToml(toml_content);
+        settings.render = ReadRenderSettingsFromToml(toml_content);
+        return settings;
+    }
+
+    WindowSettings SettingsHandler::ReadWindowSettingsFromToml(const toml::table& table)
+    {
+        WindowSettings settings{};
+        toml::node_view<const toml::node> category = table["Window"];
+        ReadTomlFieldAsInt(category, "width", settings.width);
+        ReadTomlFieldAsInt(category, "height", settings.height);
+        ReadTomlFieldAsWindowMode(category, "mode", settings.mode);
+        ReadTomlFieldAsString(category, "title", settings.title);
+        return settings;
+    }
+
+    RenderSettings SettingsHandler::ReadRenderSettingsFromToml(const toml::table& table)
+    {
+        RenderSettings settings{};
+        toml::node_view<const toml::node> category = table["Renderer"];
+        ReadTomlFieldAsRenderApi(category, "api", settings.api);
+        ReadTomlFieldAsBool(category, "vsync", settings.vsync);
+        return settings;
+    }
+
+    void SettingsHandler::ReadTomlFieldAsString(toml::node_view<const toml::node> node, const std::string& field_name,
+                                                std::string& field_value)
+    {
+        if (const auto value = node[field_name].value<std::string>())
+        {
+            field_value = *value;
+        }
+    }
+
+    void SettingsHandler::ReadTomlFieldAsInt(toml::node_view<const toml::node> node, const std::string& field_name,
+                                             int& field_value)
+    {
+        if (const auto value = node[field_name].value<int>())
+        {
+            field_value = *value;
+        }
+    }
+
+    void SettingsHandler::ReadTomlFieldAsBool(toml::node_view<const toml::node> node, const std::string& field_name,
+                                              bool& field_value)
+    {
+        if (const auto value = node[field_name].value<int>())
+        {
+            field_value = *value > 0;
+        }
+    }
+
+    void SettingsHandler::ReadTomlFieldAsWindowMode(toml::node_view<const toml::node> node,
+                                                    const std::string& field_name, WindowMode& field_value)
+    {
+        const auto value = node[field_name].value<std::string>();
+        if (value.has_value())
+        {
+            const auto window_mode_str = value.value();
+            const auto window_mode_str_normalized = ToLower(window_mode_str);
+            for (const auto& [name, mode] : WindowModeMap)
+            {
+                if (ToLower(name) == window_mode_str_normalized)
+                {
+                    field_value = mode;
+                    return;
+                }
+            }
+        }
+    }
+
+    void SettingsHandler::ReadTomlFieldAsRenderApi(toml::node_view<const toml::node> node,
+                                                   const std::string& field_name, RenderApi& field_value)
+    {
+        const auto value = node[field_name].value<std::string>();
+        if (value.has_value())
+        {
+            const auto api_str = value.value();
+            const auto api_str_normalized = ToLower(api_str);
+            for (const auto& [name, api] : RenderApiMap)
+            {
+                if (ToLower(name) == api_str_normalized)
+                {
+                    field_value = api;
+                    return;
+                }
+            }
+        }
+    }
+
+    std::string SettingsHandler::ToLower(const std::string_view& str)
+    {
+        std::string result(str);
+        std::ranges::transform(result, result.begin(), ::tolower);
+        return result;
     }
 } // namespace
