@@ -2,7 +2,7 @@
 #include "SystemManager.hpp"
 
 namespace Gameplay::Systems {
-    ECS_SYSTEM(ItemSystem, Update, [])
+    ECS_SYSTEM(ItemSystem, Update, TAGS(), DEPENDENCIES())
 
     class ItemSystem : public Engine::Ecs::ISystem {
     public:

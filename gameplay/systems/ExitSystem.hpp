@@ -1,10 +1,9 @@
 #pragma once
 #include "IEngineSystem.hpp"
 #include "Ecs/Types.hpp"
-#include "../commands/LevelFinished.hpp"
 
 namespace Gameplay::Systems {
-    ECS_SYSTEM(ExitSystem, Update, [])
+    ECS_SYSTEM(ExitSystem, Update, TAGS(), DEPENDENCIES())
 
     class ExitSystem final : public Engine::Ecs::ISystem {
     public:

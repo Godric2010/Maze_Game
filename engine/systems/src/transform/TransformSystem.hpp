@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 
 #include "IEngineSystem.hpp"
-ECS_SYSTEM(TransformSystem, LateUpdate, [ENGINE])
+ECS_SYSTEM(TransformSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
 namespace Engine::Systems {
     class TransformSystem : public Ecs::IEngineSystem {

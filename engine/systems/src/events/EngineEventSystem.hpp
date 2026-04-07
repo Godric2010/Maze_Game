@@ -3,7 +3,7 @@
 
 #include "IEngineSystem.hpp"
 
-ECS_SYSTEM(EngineEventSystem, EngineEvents, [ENGINE])
+ECS_SYSTEM(EngineEventSystem, EngineEvents, TAGS(ENGINE), DEPENDENCIES())
 
 namespace Engine::Systems {
     struct TransformCommand {

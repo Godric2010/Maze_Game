@@ -9,7 +9,7 @@
 #include "collision/MoverSolver.hpp"
 
 namespace Engine::Systems::Physics {
-    ECS_SYSTEM(PhysicsSystem, Physics, [ENGINE])
+    ECS_SYSTEM(PhysicsSystem, Physics, TAGS(ENGINE), DEPENDENCIES())
 
     class PhysicsSystem final : public Ecs::IEngineSystem {
     public:

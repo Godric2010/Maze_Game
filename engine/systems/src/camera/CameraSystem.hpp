@@ -6,7 +6,7 @@
 #include <Transform.hpp>
 #include "IEngineSystem.hpp"
 
-ECS_SYSTEM(CameraSystem, LateUpdate, [ENGINE])
+ECS_SYSTEM(CameraSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
 namespace Engine::Systems {
     class CameraSystem final : public Ecs::IEngineSystem {

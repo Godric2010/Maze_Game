@@ -28,6 +28,8 @@ add_library(ECS STATIC
         src/ISystem.cpp
         include/SystemWorld.hpp
         include/ISystemManager.hpp
+        src/SystemMetaSorter.cpp
+        src/SystemMetaSorter.hpp
 )
 
 target_link_libraries(ECS PUBLIC Interface Input Systems)

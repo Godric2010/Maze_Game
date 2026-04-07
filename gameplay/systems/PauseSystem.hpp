@@ -2,7 +2,7 @@
 #include "IEngineSystem.hpp"
 
 namespace Gameplay::Systems {
-    ECS_SYSTEM(PauseSystem, Update, [])
+    ECS_SYSTEM(PauseSystem, Update, TAGS(), DEPENDENCIES())
 
     class PauseSystem : public Engine::Ecs::ISystem {
     public:

@@ -4,7 +4,7 @@
 #include "IEngineSystem.hpp"
 
 namespace Engine::Systems {
-    ECS_SYSTEM(RectTransformSystem, LateUpdate, [ENGINE])
+    ECS_SYSTEM(RectTransformSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
     struct LayoutData {
         glm::vec2 local_position;

@@ -8,7 +8,7 @@
 #include "../CacheManager.hpp"
 
 namespace Engine::Systems {
-    ECS_SYSTEM(UiImageSystem, Ui, [ENGINE])
+    ECS_SYSTEM(UiImageSystem, Ui, TAGS(ENGINE), DEPENDENCIES())
 
     class UiImageSystem : public Ecs::IEngineSystem {
     public:
@@ -27,7 +27,7 @@ namespace Engine::Systems {
         AssetHandling::AssetHandler* m_asset_handler = nullptr;
 
         void RegisterImageElement(Ecs::EntityId entity, glm::vec4 color) const;
-        
+
         Assets::MaterialHandle RegisterNewUiMaterial() const;
     };
 } // namespace

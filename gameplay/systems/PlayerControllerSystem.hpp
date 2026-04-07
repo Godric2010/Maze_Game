@@ -2,7 +2,7 @@
 #include "Input/InputBuffer.hpp"
 #include "IEngineSystem.hpp"
 
-ECS_SYSTEM(PlayerControllerSystem, Input, [])
+ECS_SYSTEM(PlayerControllerSystem, Input, TAGS(), DEPENDENCIES())
 
 namespace Gameplay::Systems {
     class PlayerControllerSystem : public Engine::Ecs::ISystem {
@@ -18,7 +18,7 @@ namespace Gameplay::Systems {
     private:
         const float m_movement_speed = 0.6f;
         const float m_sensitivity = 0.6f;
-        
+
         mutable float m_yaw_target = 0.0f;
         mutable float m_pitch_target = 0.0f;
         mutable bool m_initialized = false;

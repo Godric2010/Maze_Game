@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "SystemWorld.hpp"
+#include "../commands/LevelFinished.hpp"
 #include "../components/Exit.hpp"
 #include "../components/Inventory.hpp"
 

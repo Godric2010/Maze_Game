@@ -5,12 +5,15 @@
 
 #include "MeshRenderer.hpp"
 
-ECS_SYSTEM(RenderSystem, Render, [ENGINE])
+ECS_SYSTEM(RenderSystem,
+           Render,
+           TAGS(ENGINE),
+           DEPENDENCIES(UiImageSystem, UiButtonSystem, UiTextSystem, RectTransformSystem, TransformSystem, CameraSystem
+           )
+        )
 
-namespace Engine::Systems
-{
-    class RenderSystem : public Ecs::IEngineSystem
-    {
+namespace Engine::Systems {
+    class RenderSystem : public Ecs::IEngineSystem {
     public:
         RenderSystem();
 
@@ -34,6 +37,7 @@ namespace Engine::Systems
         void ClearDrawAssets();
 
         void FillMeshDrawAssets();
+
         bool IsDrawAssetValid(const Renderer::DrawAsset& ui_draw_asset) const;
 
         void FillUiDrawAssets();

@@ -12,7 +12,7 @@ namespace Engine::Input {
 }
 
 namespace Engine::Ecs {
-#define ECS_SYSTEM(name, phase, tags)
+#define ECS_SYSTEM(name, phase, tags, dependencies)
 
     class SystemWorld;
     struct EngineBindToken;
