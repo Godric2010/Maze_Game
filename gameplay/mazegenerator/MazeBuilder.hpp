@@ -27,18 +27,20 @@ namespace Gameplay::Mazegenerator {
         Maze m_maze;
         Engine::Assets::MeshHandle m_floor_mesh;
         Engine::Assets::MeshHandle m_wall_mesh;
+        Engine::Assets::MeshHandle m_ceiling_mesh;
         Engine::Assets::MeshHandle m_key_mesh;
         Engine::Assets::MaterialHandle m_default_material;
         Engine::Assets::MaterialHandle m_key_material;
         Engine::Assets::MaterialHandle m_start_material;
         Engine::Assets::MaterialHandle m_exit_material;
         Engine::Assets::MaterialHandle m_wall_material;
+        Engine::Assets::MaterialHandle m_ceiling_material;
 
-        void CreateCellFloorTile(
-            const CellIndex& cell_idx, Engine::Assets::MaterialHandle material) const;
+        void CreateCellFloorTile(const CellIndex& cell_idx, Engine::Assets::MaterialHandle material) const;
 
-        void CreateWallTile(const CellIndex& cell_idx,
-                            const Direction& direction) const;
+        void CreateWallTile(const CellIndex& cell_idx, const Direction& direction) const;
+
+        void CreateCeilingTile(const CellIndex& cell_idx) const;
 
         [[nodiscard]] Engine::Assets::MaterialHandle DetermineFloorMaterialForCell(const CellIndex& cell_idx) const;
 

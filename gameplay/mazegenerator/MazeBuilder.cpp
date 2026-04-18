@@ -22,11 +22,13 @@ namespace Gameplay::Mazegenerator {
         m_floor_mesh = m_assets->LoadMesh("FloorTiles.obj");
         m_wall_mesh = m_assets->LoadMesh("WallTile.obj");
         m_key_mesh = m_assets->LoadMesh("Key.obj");
+        m_ceiling_mesh = m_assets->LoadMesh("Ceiling.obj");
         m_default_material = m_assets->LoadMaterial("default.material");
         m_key_material = m_assets->LoadMaterial("key.material");
         m_start_material = m_assets->LoadMaterial("start_tile.material");
         m_exit_material = m_assets->LoadMaterial("exit_tile.material");
         m_wall_material = m_assets->LoadMaterial("wall.material");
+        m_ceiling_material = m_assets->LoadMaterial("ceiling.material");
     }
 
     void MazeBuilder::BuildMaze(int width, int height, int seed) {
@@ -48,8 +50,6 @@ namespace Gameplay::Mazegenerator {
 
     void MazeBuilder::CreateCellObjects() const {
         const auto maze_cells = m_maze.cells;
-        // CreateMazeCell(m_maze.cells[0]);
-        // CreateMazeCell(m_maze.cells[1]);
         for (const auto& cell: maze_cells) {
             CreateMazeCell(cell);
         }
@@ -98,9 +98,9 @@ namespace Gameplay::Mazegenerator {
         constexpr auto collider = Engine::Components::BoxCollider{
             .is_static = true,
             .is_trigger = true,
-            .width = 1.5f,
+            .width = 0.5f,
             .height = 2.0f,
-            .depth = 1.5f
+            .depth = 0.5f
         };
         m_game_world->AddComponent(entity, collider);
 
@@ -112,6 +112,7 @@ namespace Gameplay::Mazegenerator {
     void MazeBuilder::CreateMazeCell(const Cell& cell) const {
         const auto tile_material = DetermineFloorMaterialForCell(cell.cell_index);
         CreateCellFloorTile(cell.cell_index, tile_material);
+        CreateCeilingTile(cell.cell_index);
 
         if (cell.HasWall(Front)) {
             CreateWallTile(cell.cell_index, Front);
@@ -193,6 +194,23 @@ namespace Gameplay::Mazegenerator {
             .depth = 1e-6f
         };
         m_game_world->AddComponent(entity, collider);
+    }
+
+    void MazeBuilder::CreateCeilingTile(const CellIndex& cell_idx) const {
+        const auto entity = m_game_world->CreateEntity(std::format("CeilingTile [{}|{}]", cell_idx.x, cell_idx.y));
+        const auto mesh_component = Engine::Components::MeshRenderer{
+            .Mesh = m_ceiling_mesh,
+            .Material = m_ceiling_material,
+        };
+        m_game_world->AddComponent(entity, mesh_component);
+        const auto position = glm::vec3(cell_idx.x * 2, 2.0f, cell_idx.y * 2);
+        constexpr auto rotation = glm::vec3(180.0f, 0.0f, 0.0f);
+        constexpr auto scale = glm::vec3(0.5f, 1.0f, 0.5f);
+        const auto transform_component = Engine::Components::Transform()
+                .SetPosition(position)
+                .SetRotation(rotation)
+                .SetScale(scale);
+        m_game_world->AddComponent(entity, transform_component);
     }
 
     Engine::Assets::MaterialHandle MazeBuilder::DetermineFloorMaterialForCell(const CellIndex& cell_idx) const {
