@@ -62,6 +62,8 @@ namespace Engine::AssetHandling::Mesh
         if (IsIndexValid("UvIndex", indices.UvIndex, vertex_uvs.size(), false))
         {
             vertex.uv = vertex_uvs[indices.UvIndex - 1];
+            vertex.uv.y = 1.0f - vertex.uv.y; // TODO: This is a quick fix here. Make this better configurable later!
+
         }
         if (IsIndexValid("NormalIndex", indices.NormalIndex, vertex_normals.size(), false))
         {

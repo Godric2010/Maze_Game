@@ -7,10 +7,8 @@
 
 #include "Assets/IAssetLibrary.hpp"
 
-namespace Gameplay::Mazegenerator
-{
-    class MazeBuilder
-    {
+namespace Gameplay::Mazegenerator {
+    class MazeBuilder {
     public:
         MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Assets::IAssetLibrary* renderer,
                     bool enable_debug_view);
@@ -40,7 +38,7 @@ namespace Gameplay::Mazegenerator
             const CellIndex& cell_idx, Engine::Assets::MaterialHandle material) const;
 
         void CreateWallTile(const CellIndex& cell_idx,
-                                 const Direction& direction) const;
+                            const Direction& direction) const;
 
         [[nodiscard]] Engine::Assets::MaterialHandle DetermineFloorMaterialForCell(const CellIndex& cell_idx) const;
 

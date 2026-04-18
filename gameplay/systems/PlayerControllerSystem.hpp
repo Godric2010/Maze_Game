@@ -16,7 +16,7 @@ namespace Gameplay::Systems {
         void Run(float delta_time) override;
 
     private:
-        const float m_movement_speed = 0.6f;
+        const float m_movement_speed = 1.0f;
         const float m_sensitivity = 0.6f;
 
         mutable float m_yaw_target = 0.0f;

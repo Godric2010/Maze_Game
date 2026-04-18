@@ -1,11 +1,11 @@
 [material]
 name = "default"
 render_type = "opaque"
-render_queue = 1 
+render_queue = 1
 shader = "mesh_opaque"
 
 [textures.albedo]
-file_name = "test.png"
+file_name = "FloorTile.png"
 uv_scale = [1.0, 1.0]
 tiling = [1.0, 1.0]
 

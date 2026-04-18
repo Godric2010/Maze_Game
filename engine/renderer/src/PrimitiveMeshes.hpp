@@ -12,9 +12,9 @@ namespace Engine::Renderer
 
         ui_mesh_primitive.vertices = std::vector{
             AssetHandling::MeshVertexAsset{glm::vec3{0, 0, 0}, glm::vec3(0), glm::vec2{0, 0}},
-            AssetHandling::MeshVertexAsset{glm::vec3{1, 0, 0}, glm::vec3(0), glm::vec2{1, 0}},
-            AssetHandling::MeshVertexAsset{glm::vec3{1, 1, 0}, glm::vec3(0), glm::vec2{1, 1}},
             AssetHandling::MeshVertexAsset{glm::vec3{0, 1, 0}, glm::vec3(0), glm::vec2{0, 1}},
+            AssetHandling::MeshVertexAsset{glm::vec3{1, 1, 0}, glm::vec3(0), glm::vec2{1, 1}},
+            AssetHandling::MeshVertexAsset{glm::vec3{1, 0, 0}, glm::vec3(0), glm::vec2{1, 0}},
         };
 
         ui_mesh_primitive.indices = std::vector<uint32_t>{0, 1, 2, 0, 2, 3};

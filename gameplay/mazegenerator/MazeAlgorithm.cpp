@@ -24,8 +24,9 @@ namespace Gameplay::Mazegenerator {
         BraidMaze();
 
         auto cells = std::vector<Cell>();
-        for (auto &cell: m_cells | std::views::values) {
-            cells.push_back(cell);
+        cells.resize(m_grid_width * m_grid_height);
+        for (const auto& [index,cell]: m_cells) {
+            cells[index.y * m_grid_width + index.x] = cell;
         }
         DefinePoIs(cells);
         return Maze(m_grid_width, m_grid_height, m_seed, cells, m_start_cell, m_exit_cell, m_key_cell);
@@ -74,7 +75,7 @@ namespace Gameplay::Mazegenerator {
         path.push(current_cell_idx);
 
         while (!path.empty()) {
-            Cell &current_cell = m_cells[current_cell_idx];
+            Cell& current_cell = m_cells[current_cell_idx];
             current_cell.visited = true;
             auto next_idx = SelectNextCell(current_cell);
             if (!next_idx.has_value()) {
@@ -87,7 +88,7 @@ namespace Gameplay::Mazegenerator {
             const int dx = static_cast<int>(next_idx.value().x - current_cell_idx.x);
             const int dy = static_cast<int>(next_idx.value().y - current_cell_idx.y);
 
-            Cell &next_cell = m_cells[next_idx.value()];
+            Cell& next_cell = m_cells[next_idx.value()];
             OpenCellBorder(current_cell, dx, dy);
             OpenCellBorder(next_cell, dx * -1, dy * -1);
 
@@ -96,7 +97,7 @@ namespace Gameplay::Mazegenerator {
         }
     }
 
-    std::optional<CellIndex> MazeAlgorithm::SelectNextCell(const Cell &current_cell) {
+    std::optional<CellIndex> MazeAlgorithm::SelectNextCell(const Cell& current_cell) {
         std::vector<CellIndex> valid_neighbors;
         for (auto neighbor: current_cell.adjacent_cells) {
             if (!m_cells[neighbor].visited) {
@@ -113,10 +114,10 @@ namespace Gameplay::Mazegenerator {
         return std::make_optional(next_cell_idx);
     }
 
-    std::optional<CellIndex> MazeAlgorithm::WalkBack(std::stack<CellIndex> &stack) {
+    std::optional<CellIndex> MazeAlgorithm::WalkBack(std::stack<CellIndex>& stack) {
         while (!stack.empty()) {
-            auto &top_cell_idx = stack.top();
-            Cell &top_cell = m_cells[top_cell_idx];
+            auto& top_cell_idx = stack.top();
+            Cell& top_cell = m_cells[top_cell_idx];
             if (auto next_idx = SelectNextCell(top_cell); next_idx.has_value()) {
                 return std::make_optional(top_cell_idx);
             }
@@ -131,7 +132,7 @@ namespace Gameplay::Mazegenerator {
 
 
     // Define POIs section
-    void MazeAlgorithm::DefinePoIs(const std::vector<Cell> &cells) {
+    void MazeAlgorithm::DefinePoIs(const std::vector<Cell>& cells) {
         m_exit_cell = DefineExitCell();
         m_key_cell = DefineKeyCell(cells);
     }
@@ -152,9 +153,9 @@ namespace Gameplay::Mazegenerator {
         return CellIndex(best_x, m_grid_height - 1);
     }
 
-    CellIndex MazeAlgorithm::DefineKeyCell(const std::vector<Cell> &cells) {
+    CellIndex MazeAlgorithm::DefineKeyCell(const std::vector<Cell>& cells) {
         std::vector<CellIndex> dead_ends;
-        for (auto &cell: cells) {
+        for (auto& cell: cells) {
             if (cell.IsDeadEnd()) {
                 dead_ends.push_back(cell.cell_index);
             }
@@ -166,7 +167,7 @@ namespace Gameplay::Mazegenerator {
         CellIndex best_cell_idx{};
         double best_score = -1;
 
-        for (const auto &cell: dead_ends) {
+        for (const auto& cell: dead_ends) {
             const int i = static_cast<int>(CellIndexAs1D(cell, m_grid_width));
             int dist_to_start = distances_to_start[i];
             int dist_to_end = distances_to_end[i];
@@ -186,7 +187,7 @@ namespace Gameplay::Mazegenerator {
     // Helper functions
 
 
-    void MazeAlgorithm::OpenCellBorder(Cell &cell, const int dx, const int dy) {
+    void MazeAlgorithm::OpenCellBorder(Cell& cell, const int dx, const int dy) {
         if (dx == 0 && dy == -1) {
             cell.RemoveWall(Back);
             return;
@@ -216,7 +217,7 @@ namespace Gameplay::Mazegenerator {
         while (!path.empty()) {
             CellIndex idx = path.front();
             path.pop();
-            const Cell &current_cell = m_cells[idx];
+            const Cell& current_cell = m_cells[idx];
             const int cell_dist = dist[CellIndexAs1D(idx, m_grid_width)];
 
             auto try_push = [&](const CellIndex next) {
@@ -224,7 +225,8 @@ namespace Gameplay::Mazegenerator {
                     return;
                 }
                 const uint32_t next_idx = CellIndexAs1D(next, m_grid_width);
-                if (dist[next_idx] != -1) return;
+                if (dist[next_idx] != -1)
+                    return;
                 dist[next_idx] = cell_dist + 1;
                 path.push(next);
             };

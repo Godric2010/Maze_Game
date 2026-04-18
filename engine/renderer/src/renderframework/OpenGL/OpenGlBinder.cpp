@@ -13,7 +13,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         glDepthFunc(GL_LESS);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-        glFrontFace(GL_CW);
+        glFrontFace(GL_CCW);
     }
 
     void OpenGlBinder::BindUiPassParameters()
