@@ -103,8 +103,6 @@ namespace Gameplay::Mazegenerator {
             .depth = 0.5f
         };
         m_game_world->AddComponent(entity, collider);
-
-
         m_game_world->AddComponent(entity, Components::Exit{});
     }
 

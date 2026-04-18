@@ -29,6 +29,8 @@ add_library(Gameplay STATIC
         MainMenuScene.hpp
         GameEndScene.cpp
         GameEndScene.hpp
+        systems/KeyAnimation.cpp
+        systems/KeyAnimation.hpp
 )
 
 target_link_libraries(Gameplay PUBLIC Engine Interface)
