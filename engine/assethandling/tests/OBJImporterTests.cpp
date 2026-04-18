@@ -98,10 +98,10 @@ TEST_CASE("OBJImporterTests - Analyse minimal quad mesh")
     REQUIRE(are_vectors_equal(vertices[1].normal, glm::vec3(0,0,1)));
     REQUIRE(are_vectors_equal(vertices[2].normal, glm::vec3(0,0,1)));
     REQUIRE(are_vectors_equal(vertices[3].normal, glm::vec3(0,0,1)));
-    REQUIRE(are_vectors_equal(vertices[0].uv, glm::vec2(0,0)));
-    REQUIRE(are_vectors_equal(vertices[1].uv, glm::vec2(1,0)));
-    REQUIRE(are_vectors_equal(vertices[2].uv, glm::vec2(1,1)));
-    REQUIRE(are_vectors_equal(vertices[3].uv, glm::vec2(0,1)));
+    REQUIRE(are_vectors_equal(vertices[0].uv, glm::vec2(0,1)));
+    REQUIRE(are_vectors_equal(vertices[1].uv, glm::vec2(1,1)));
+    REQUIRE(are_vectors_equal(vertices[2].uv, glm::vec2(1,0)));
+    REQUIRE(are_vectors_equal(vertices[3].uv, glm::vec2(0,0)));
 }
 
 TEST_CASE("OBJImporterTests - Analyse cube fragment mesh")
@@ -146,10 +146,10 @@ f 1/1/1 2/2/1 3/3/1 4/4/1)";
     REQUIRE(are_vectors_equal(vertices[1].normal, glm::vec3(0,0,1)));
     REQUIRE(are_vectors_equal(vertices[2].normal, glm::vec3(0,0,1)));
     REQUIRE(are_vectors_equal(vertices[3].normal, glm::vec3(0,0,1)));
-    REQUIRE(are_vectors_equal(vertices[0].uv, glm::vec2(0,0)));
-    REQUIRE(are_vectors_equal(vertices[1].uv, glm::vec2(1,0)));
-    REQUIRE(are_vectors_equal(vertices[2].uv, glm::vec2(1,1)));
-    REQUIRE(are_vectors_equal(vertices[3].uv, glm::vec2(0,1)));
+    REQUIRE(are_vectors_equal(vertices[0].uv, glm::vec2(0,1)));
+    REQUIRE(are_vectors_equal(vertices[1].uv, glm::vec2(1,1)));
+    REQUIRE(are_vectors_equal(vertices[2].uv, glm::vec2(1,0)));
+    REQUIRE(are_vectors_equal(vertices[3].uv, glm::vec2(0,0)));
 }
 
 TEST_CASE("OBJImporterTests - CRLF + Inline comments, no exception")
