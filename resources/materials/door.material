@@ -1,0 +1,13 @@
+[material]
+name = "door"
+render_type = "opaque"
+render_queue = 1
+shader = "mesh_opaque"
+
+[textures.albedo]
+file_name = "Door.png"
+uv_scale = [1.0, 1.0]
+tiling = [1.0, 1.0]
+
+[colors]
+base = [1.0, 1.0, 1.0, 1.0]

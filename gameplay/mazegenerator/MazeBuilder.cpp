@@ -23,12 +23,15 @@ namespace Gameplay::Mazegenerator {
         m_wall_mesh = m_assets->LoadMesh("WallTile.obj");
         m_key_mesh = m_assets->LoadMesh("Key.obj");
         m_ceiling_mesh = m_assets->LoadMesh("Ceiling.obj");
+        m_door_frame = m_assets->LoadMesh("DoorFrame.obj");
+        m_door = m_assets->LoadMesh("Door.obj");
         m_default_material = m_assets->LoadMaterial("default.material");
         m_key_material = m_assets->LoadMaterial("key.material");
         m_start_material = m_assets->LoadMaterial("start_tile.material");
         m_exit_material = m_assets->LoadMaterial("exit_tile.material");
         m_wall_material = m_assets->LoadMaterial("wall.material");
         m_ceiling_material = m_assets->LoadMaterial("ceiling.material");
+        m_door_material = m_assets->LoadMaterial("door.material");
     }
 
     void MazeBuilder::BuildMaze(int width, int height, int seed) {
@@ -51,7 +54,38 @@ namespace Gameplay::Mazegenerator {
     void MazeBuilder::CreateCellObjects() const {
         const auto maze_cells = m_maze.cells;
         for (const auto& cell: maze_cells) {
+            if (cell.cell_index == m_maze.exit_cell) {
+                CreateExitCell(cell);
+                continue;
+            }
+
             CreateMazeCell(cell);
+        }
+    }
+
+    void MazeBuilder::CreateExitCell(const Cell& exit_cell) const {
+        CreateCellFloorTile(exit_cell.cell_index, m_exit_material);
+        CreateCeilingTile(exit_cell.cell_index);
+
+        if (exit_cell.HasWall(Front)) {
+            CreateWallTile(exit_cell.cell_index, Front);
+        } else {
+            CreateDoorTile(exit_cell.cell_index, Front);
+        }
+        if (exit_cell.HasWall(Back)) {
+            CreateWallTile(exit_cell.cell_index, Back);
+        } else {
+            CreateDoorTile(exit_cell.cell_index, Back);
+        }
+        if (exit_cell.HasWall(Left)) {
+            CreateWallTile(exit_cell.cell_index, Left);
+        } else {
+            CreateDoorTile(exit_cell.cell_index, Left);
+        }
+        if (exit_cell.HasWall(Right)) {
+            CreateWallTile(exit_cell.cell_index, Right);
+        } else {
+            CreateDoorTile(exit_cell.cell_index, Right);
         }
     }
 
@@ -143,14 +177,10 @@ namespace Gameplay::Mazegenerator {
         m_game_world->AddComponent(entity, transform_component);
     }
 
-    void MazeBuilder::CreateWallTile(const CellIndex& cell_idx,
-                                     const Direction& direction) const {
-        const auto entity = m_game_world->CreateEntity(
-                std::format("WallTile [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))
-                );
-
-        auto shift_vector = glm::vec3(0.0f);
-        auto rotation_shift = glm::vec3(0.0f);
+    void MazeBuilder::GetShiftAndRotationVectorFromDirection(const Direction& direction, glm::vec3& shift_vector,
+                                                             glm::vec3& rotation_shift) {
+        shift_vector = glm::vec3(0.0f);
+        rotation_shift = glm::vec3(0.0f);
         switch (direction) {
             case Back:
                 shift_vector = glm::vec3(0.0f, 0.02f, -0.80f);
@@ -169,6 +199,17 @@ namespace Gameplay::Mazegenerator {
                 rotation_shift = glm::vec3(0.0f, -90.0f, 0.0f);
                 break;
         }
+    }
+
+    void MazeBuilder::CreateWallTile(const CellIndex& cell_idx,
+                                     const Direction& direction) const {
+        const auto entity = m_game_world->CreateEntity(
+                std::format("WallTile [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))
+                );
+
+        glm::vec3 shift_vector;
+        glm::vec3 rotation_shift;
+        GetShiftAndRotationVectorFromDirection(direction, shift_vector, rotation_shift);
 
         const auto mesh_component = Engine::Components::MeshRenderer{
             .Mesh = m_wall_mesh,
@@ -193,6 +234,62 @@ namespace Gameplay::Mazegenerator {
         };
         m_game_world->AddComponent(entity, collider);
     }
+
+    void MazeBuilder::CreateDoorTile(const CellIndex& cell_idx, const Direction& direction) const {
+        glm::vec3 shift_vector;
+        glm::vec3 rotation_shift;
+        GetShiftAndRotationVectorFromDirection(direction, shift_vector, rotation_shift);
+        const auto position = glm::vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2) + shift_vector;
+        const auto rotation = glm::vec3(0.0f, 0.0f, 0.0f) + rotation_shift;
+        const auto scale = glm::vec3(0.5f, 0.5f, 0.5f);
+
+
+        const auto frame_entity = m_game_world->CreateEntity(
+                std::format("DoorFrame [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))
+                );
+        const auto frame_mesh_component = Engine::Components::MeshRenderer{
+            .Mesh = m_door_frame,
+            .Material = m_door_material,
+        };
+        const auto frame_transform_component = Engine::Components::Transform()
+                .SetPosition(position)
+                .SetRotation(rotation)
+                .SetScale(scale);
+        constexpr auto frame_door_trigger = Engine::Components::BoxCollider{
+            .is_static = true,
+            .is_trigger = true,
+            .width = 2.0f,
+            .height = 2.0f,
+            .depth = 2.0f
+        };
+        m_game_world->AddComponent(frame_entity, frame_mesh_component);
+        m_game_world->AddComponent(frame_entity, frame_transform_component);
+        m_game_world->AddComponent(frame_entity, frame_door_trigger);
+
+
+        const auto door_entity = m_game_world->CreateEntity(
+                std::format("Door [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))
+                );
+        const auto door_mesh_component = Engine::Components::MeshRenderer{
+            .Mesh = m_door,
+            .Material = m_door_material,
+        };
+
+        const auto door_transform_component = Engine::Components::Transform()
+                .SetPosition(position)
+                .SetRotation(rotation)
+                .SetScale(scale);
+        constexpr auto door_collider = Engine::Components::BoxCollider{
+            .is_static = true,
+            .width = 2.0f,
+            .height = 2.0f,
+            .depth = 1e-6f
+        };
+        m_game_world->AddComponent(door_entity, door_mesh_component);
+        m_game_world->AddComponent(door_entity, door_transform_component);
+        m_game_world->AddComponent(door_entity, door_collider);
+    }
+
 
     void MazeBuilder::CreateCeilingTile(const CellIndex& cell_idx) const {
         const auto entity = m_game_world->CreateEntity(std::format("CeilingTile [{}|{}]", cell_idx.x, cell_idx.y));

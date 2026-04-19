@@ -29,16 +29,21 @@ namespace Gameplay::Mazegenerator {
         Engine::Assets::MeshHandle m_wall_mesh;
         Engine::Assets::MeshHandle m_ceiling_mesh;
         Engine::Assets::MeshHandle m_key_mesh;
+        Engine::Assets::MeshHandle m_door_frame;
+        Engine::Assets::MeshHandle m_door;
         Engine::Assets::MaterialHandle m_default_material;
         Engine::Assets::MaterialHandle m_key_material;
         Engine::Assets::MaterialHandle m_start_material;
         Engine::Assets::MaterialHandle m_exit_material;
         Engine::Assets::MaterialHandle m_wall_material;
         Engine::Assets::MaterialHandle m_ceiling_material;
+        Engine::Assets::MaterialHandle m_door_material;
 
         void CreateCellFloorTile(const CellIndex& cell_idx, Engine::Assets::MaterialHandle material) const;
 
         void CreateWallTile(const CellIndex& cell_idx, const Direction& direction) const;
+
+        void CreateDoorTile(const CellIndex& cell_idx, const Direction& direction) const;
 
         void CreateCeilingTile(const CellIndex& cell_idx) const;
 
@@ -46,10 +51,15 @@ namespace Gameplay::Mazegenerator {
 
         void CreateCellObjects() const;
 
+        void CreateExitCell(const Cell& exit_cell) const;
+
         void CreateKeyObject(const CellIndex& cell_index) const;
 
         void CreateExitTrigger(const CellIndex& cell_index) const;
 
         void CreateMazeCell(const Cell& cell) const;
+
+        static void GetShiftAndRotationVectorFromDirection(const Direction& direction, glm::vec3& shift_vector,
+                                                           glm::vec3& rotation_shift);
     };
 } // namespace
