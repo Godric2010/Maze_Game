@@ -5,6 +5,8 @@
 #include "Collider.hpp"
 #include "MeshRenderer.hpp"
 #include "Transform.hpp"
+#include "../components/Door.hpp"
+#include "../components/DoorTrigger.hpp"
 #include "../components/Exit.hpp"
 #include "../components/KeyItem.hpp"
 #include "Assets/IAssetLibrary.hpp"
@@ -247,6 +249,9 @@ namespace Gameplay::Mazegenerator {
         const auto frame_entity = m_game_world->CreateEntity(
                 std::format("DoorFrame [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))
                 );
+        const auto door_entity = m_game_world->CreateEntity(
+                std::format("Door [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))
+                );
         const auto frame_mesh_component = Engine::Components::MeshRenderer{
             .Mesh = m_door_frame,
             .Material = m_door_material,
@@ -265,11 +270,9 @@ namespace Gameplay::Mazegenerator {
         m_game_world->AddComponent(frame_entity, frame_mesh_component);
         m_game_world->AddComponent(frame_entity, frame_transform_component);
         m_game_world->AddComponent(frame_entity, frame_door_trigger);
+        m_game_world->AddComponent(frame_entity, Components::DoorTrigger{.door = door_entity});
 
 
-        const auto door_entity = m_game_world->CreateEntity(
-                std::format("Door [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))
-                );
         const auto door_mesh_component = Engine::Components::MeshRenderer{
             .Mesh = m_door,
             .Material = m_door_material,
@@ -288,6 +291,7 @@ namespace Gameplay::Mazegenerator {
         m_game_world->AddComponent(door_entity, door_mesh_component);
         m_game_world->AddComponent(door_entity, door_transform_component);
         m_game_world->AddComponent(door_entity, door_collider);
+        m_game_world->AddComponent(door_entity, Components::Door{});
     }
 
 

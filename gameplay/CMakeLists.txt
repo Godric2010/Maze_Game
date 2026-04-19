@@ -31,6 +31,10 @@ add_library(Gameplay STATIC
         GameEndScene.hpp
         systems/KeyAnimation.cpp
         systems/KeyAnimation.hpp
+        components/DoorTrigger.hpp
+        components/Door.hpp
+        systems/DoorAnimation.cpp
+        systems/DoorAnimation.hpp
 )
 
 target_link_libraries(Gameplay PUBLIC Engine Interface)
