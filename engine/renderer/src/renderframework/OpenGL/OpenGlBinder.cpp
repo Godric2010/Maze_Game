@@ -46,24 +46,41 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
     void OpenGlBinder::BindLight(const ShaderBindings& shader_bindings, glm::vec3 light_pos, glm::vec3 light_color,
                                  const float ambient_strength) {
+        if (shader_bindings.light_position_bind == -1 ||
+            shader_bindings.light_color_bind == -1 ||
+            shader_bindings.light_ambient_bind == -1) {
+            return;
+        }
         glUniform3fv(shader_bindings.light_position_bind, 1, glm::value_ptr(light_pos));
         glUniform3fv(shader_bindings.light_color_bind, 1, glm::value_ptr(light_color));
         glUniform1f(shader_bindings.light_ambient_bind, ambient_strength);
     }
 
     void OpenGlBinder::BindColor(const ShaderBindings& shader_bindings, glm::vec4 color) {
+        if (shader_bindings.color_bind == -1) {
+            return;
+        }
         glUniform4fv(shader_bindings.color_bind, 1, glm::value_ptr(color));
     }
 
     void OpenGlBinder::BindSpecularStrength(const ShaderBindings& shader_bindings, const float specular_strength) {
+        if (shader_bindings.specular_strength_bind == -1) {
+            return;
+        }
         glUniform1f(shader_bindings.specular_strength_bind, specular_strength);
     }
 
     void OpenGlBinder::BindShininess(const ShaderBindings& shader_bindings, const float shininess) {
+        if (shader_bindings.shininess_bind == -1) {
+            return;
+        }
         glUniform1f(shader_bindings.shininess_bind, shininess);
     }
 
     void OpenGlBinder::BindAlbedoTexture(const ShaderBindings& shader_bindings, const GLuint texture) {
+        if (shader_bindings.use_texture_bind == -1 || shader_bindings.albedo_tex_bind == -1) {
+            return;
+        }
         if (m_bound_albedo_texture == texture) {
             return;
         }
@@ -91,10 +108,16 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
     }
 
     void OpenGlBinder::BindModelMatrix(const ShaderBindings& shader_bindings, glm::mat4 proj_matrix) {
+        if (shader_bindings.model_bind == -1) {
+            return;
+        }
         glUniformMatrix4fv(shader_bindings.model_bind, 1, GL_FALSE, glm::value_ptr(proj_matrix));
     }
 
     void OpenGlBinder::BindNormalMatrix(const ShaderBindings& shader_bindings, glm::mat3 normal_matrix) {
+        if (shader_bindings.normal_mat_bind == -1) {
+            return;
+        }
         glUniformMatrix3fv(shader_bindings.normal_mat_bind, 1, GL_FALSE, glm::value_ptr(normal_matrix));
     }
 } // namespace
