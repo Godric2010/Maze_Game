@@ -4,24 +4,20 @@
 #include <ranges>
 #include <GL/glew.h>
 
-namespace Engine::Renderer::RenderFramework::OpenGl
-{
-    OpenGlMeshLibrary::OpenGlMeshLibrary()
-    {
+namespace Engine::Renderer::RenderFramework::OpenGl {
+    OpenGlMeshLibrary::OpenGlMeshLibrary() {
         m_meshes.clear();
     }
 
     OpenGlMeshLibrary::~OpenGlMeshLibrary() = default;
 
     void OpenGlMeshLibrary::AddMesh(const Assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh,
-                                    const uint32_t revision)
-    {
+                                    const uint32_t revision) {
         OpenGLMesh m = {};
         m.numVertices = mesh.vertices.size();
         m.numIndices = mesh.indices.size();
 
-        if (!mesh.IsValid())
-        {
+        if (!mesh.IsValid()) {
             m_meshes[handle] = m;
             return;
         }
@@ -39,16 +35,38 @@ namespace Engine::Renderer::RenderFramework::OpenGl
 
         // Bind index buffer
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(uint32_t) * m.numIndices),
-                     mesh.indices.data(),GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                     static_cast<GLsizeiptr>(sizeof(uint32_t) * m.numIndices),
+                     mesh.indices.data(),
+                     GL_STATIC_DRAW
+                );
 
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(AssetHandling::MeshVertexAsset),
-                              reinterpret_cast<void*>(offsetof(AssetHandling::MeshVertexAsset, position)));
+        glVertexAttribPointer(0,
+                              3,
+                              GL_FLOAT,
+                              GL_FALSE,
+                              sizeof(AssetHandling::MeshVertexAsset),
+                              reinterpret_cast<void*>(offsetof(AssetHandling::MeshVertexAsset, position))
+                );
 
         glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(AssetHandling::MeshVertexAsset),
-                              reinterpret_cast<void*>(offsetof(AssetHandling::MeshVertexAsset, uv)));
+        glVertexAttribPointer(1,
+                              3,
+                              GL_FLOAT,
+                              GL_FALSE,
+                              sizeof(AssetHandling::MeshVertexAsset),
+                              reinterpret_cast<void*>(offsetof(AssetHandling::MeshVertexAsset, normal))
+                );
+
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2,
+                              2,
+                              GL_FLOAT,
+                              GL_FALSE,
+                              sizeof(AssetHandling::MeshVertexAsset),
+                              reinterpret_cast<void*>(offsetof(AssetHandling::MeshVertexAsset, uv))
+                );
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
@@ -56,41 +74,33 @@ namespace Engine::Renderer::RenderFramework::OpenGl
         m_mesh_revisions[handle] = revision;
     }
 
-    OpenGLMesh& OpenGlMeshLibrary::GetMesh(const Assets::MeshHandle& handle)
-    {
+    OpenGLMesh &OpenGlMeshLibrary::GetMesh(const Assets::MeshHandle& handle) {
         return m_meshes[handle];
     }
 
-    uint32_t OpenGlMeshLibrary::Size() const
-    {
+    uint32_t OpenGlMeshLibrary::Size() const {
         return m_meshes.size();
     }
 
 
-    void OpenGlMeshLibrary::RemoveMesh(const Assets::MeshHandle& handle)
-    {
+    void OpenGlMeshLibrary::RemoveMesh(const Assets::MeshHandle& handle) {
         m_meshes.erase(handle);
         m_mesh_revisions.erase(handle);
     }
 
-    bool OpenGlMeshLibrary::HasMesh(const Assets::MeshHandle& handle) const
-    {
+    bool OpenGlMeshLibrary::HasMesh(const Assets::MeshHandle& handle) const {
         return m_meshes.contains(handle);
     }
 
-    uint32_t OpenGlMeshLibrary::GetMeshRevision(const Assets::MeshHandle& handle) const
-    {
-        if (const auto it = m_mesh_revisions.find(handle); it != m_mesh_revisions.end())
-        {
+    uint32_t OpenGlMeshLibrary::GetMeshRevision(const Assets::MeshHandle& handle) const {
+        if (const auto it = m_mesh_revisions.find(handle); it != m_mesh_revisions.end()) {
             return it->second;
         }
         throw std::invalid_argument("No mesh handle found in mesh revisions map.");
     }
 
-    void OpenGlMeshLibrary::ClearMeshes()
-    {
-        for (auto& val : m_meshes | std::views::values)
-        {
+    void OpenGlMeshLibrary::ClearMeshes() {
+        for (auto& val: m_meshes | std::views::values) {
             glDeleteBuffers(1, &val.VBO);
             glDeleteBuffers(1, &val.EBO);
             glDeleteVertexArrays(1, &val.VAO);

@@ -11,17 +11,20 @@
 #include "Assets/AssetHandleTypes.hpp"
 #include "Ecs/Types.hpp"
 
-namespace Engine::Renderer
-{
-    struct CameraAsset
-    {
+namespace Engine::Renderer {
+    struct CameraAsset {
         glm::mat4 view;
         glm::mat4 projection;
         glm::vec4 camera_position;
     };
 
-    struct DrawAsset
-    {
+    struct LightAsset {
+        glm::vec3 position;
+        glm::vec3 color;
+        float ambient_intensity;
+    };
+
+    struct DrawAsset {
         Ecs::EntityId Entity;
         AssetHandling::RenderState RenderState;
         size_t RenderQueueIndex;
