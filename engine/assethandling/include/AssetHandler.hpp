@@ -43,7 +43,7 @@ namespace Engine::AssetHandling
             HandleT<T> LoadAsset(const std::string& asset_name);
 
             template <AssetType T>
-            std::vector<HandleT<T>> LoadAssets(const std::vector<Environment::Files::FilePath>& asset_files);
+            std::vector<HandleT<T>> LoadAssets(const std::vector<Environment::Files::File>& asset_files);
 
             template <AssetType T>
             HandleT<T> RegisterAsset(T asset);

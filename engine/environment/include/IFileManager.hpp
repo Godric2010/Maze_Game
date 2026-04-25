@@ -12,9 +12,9 @@ namespace Engine::Environment::Files {
         uint64_t mtime = 0;
     };
 
-    struct FilePath {
-        std::string file_type;
-        std::string relative_file_path;
+    struct File {
+        std::string extension;
+        std::string name;
     };
 
     struct LoadError {
@@ -63,7 +63,7 @@ namespace Engine::Environment::Files {
 
         virtual Result<FileBinary> ReadBinaryFromResourceFile(const std::string& relative_path) = 0;
 
-        virtual ResultCollection<FilePath> FindResourceFilesOfTypes(const std::string& directory,
-                                                                    const std::vector<std::string>& file_types) = 0;
+        virtual ResultCollection<File> FindResourceFilesOfTypes(const std::string& directory,
+                                                                const std::vector<std::string>& file_extensions) = 0;
     };
 }

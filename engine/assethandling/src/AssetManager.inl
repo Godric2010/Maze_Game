@@ -88,7 +88,7 @@ namespace Engine::AssetHandling {
 
     template<AssetType T>
     std::vector<AssetHandler::HandleT<T> > AssetHandler::LoadAssets(
-            const std::vector<Environment::Files::FilePath>& asset_files) {
+            const std::vector<Environment::Files::File>& asset_files) {
         if (asset_files.empty()) {
             return std::vector<HandleT<T> >{};
         }

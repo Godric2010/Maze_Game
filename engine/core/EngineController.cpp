@@ -3,11 +3,11 @@
 #include "CacheManagerFactory.hpp"
 #include "DebugBuilder.hpp"
 #include "EnvironmentBuilder.hpp"
+#include "InputManagerBuilder.hpp"
 #include "RenderControllerFactory.hpp"
-#include "settings/Settings.hpp"
 #include "SystemManager.hpp"
 #include "TextController.hpp"
-#include "../input/include/InputManagerBuilder.hpp"
+#include "settings/Settings.hpp"
 #include "settings/SettingsHandler.hpp"
 
 namespace Engine::Core {

@@ -127,36 +127,36 @@ namespace Engine::Environment::Files {
         };
     }
 
-    ResultCollection<FilePath> FileManager::FindResourceFilesOfTypes(
+    ResultCollection<File> FileManager::FindResourceFilesOfTypes(
             const std::string& directory,
-            const std::vector<std::string>& file_types) {
-        if (file_types.empty()) {
-            return InvalidFileExtension<FilePath>("File extensions list was empty!");
+            const std::vector<std::string>& file_extensions) {
+        if (file_extensions.empty()) {
+            return InvalidFileExtension<File>("File extensions list was empty!");
         }
 
         const auto base_path = std::filesystem::path(m_root_data_path);
         const auto directory_path = base_path / directory;
 
 
-        std::vector<FilePath> result;
-        for (const auto& file_type: file_types) {
-            if (file_type.empty()) {
-                return InvalidFileExtension<FilePath>("File type is empty!");
+        std::vector<File> result;
+        for (const auto& file_extension: file_extensions) {
+            if (file_extension.empty()) {
+                return InvalidFileExtension<File>("File type is empty!");
             }
-            std::string file_type_normalized(file_type);
+            std::string file_type_normalized(file_extension);
             std::ranges::transform(file_type_normalized, file_type_normalized.begin(), ::tolower);
 
             for (const auto& entry: std::filesystem::directory_iterator{directory_path}) {
                 if (entry.is_regular_file() && entry.path().extension() == file_type_normalized) {
-                    auto relative = std::filesystem::relative(entry.path(), directory_path);
-                    result.emplace_back(file_type, relative.string());
+                    auto relative = std::filesystem::relative(entry.path(), directory_path).string();
+                    const auto file_name = relative.substr(0, relative.size() - file_extension.size() );
+                    result.emplace_back(file_extension, file_name);
                 }
             }
         }
         return ResultCollection{
             .type = ResultType::Ok,
             .value = std::move(result),
-            .error = "",
         };
     }
 

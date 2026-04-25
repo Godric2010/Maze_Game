@@ -22,17 +22,16 @@ namespace Engine::AssetHandling {
     template<>
     struct AssetTraits<ShaderAsset> {
         using Handle = ShaderHandle;
-        inline static const std::string dir_name = std::string("shaders");
+        inline static const auto dir_name = std::string("shaders");
 
         static std::vector<ShaderAsset> LoadMany(const AssetLoadContext context,
-                                                 const std::vector<Environment::Files::FilePath>& file_paths) {
+                                                 const std::vector<Environment::Files::File>& file_paths) {
             std::unordered_map<std::string, ShaderAsset> shader_name_content_map;
             for (int i = 0; i < file_paths.size(); ++i) {
-                const std::string extension = file_paths[i].file_type;
-                const std::string file = file_paths[i].relative_file_path;
-                const std::string file_name = file.substr(0, file.size() - extension.size());
+                const std::string extension = file_paths[i].extension;
+                const std::string file_name = file_paths[i].name;
 
-                const std::string file_content = GetShaderFileContent(context, file);
+                const std::string file_content = GetShaderFileContent(context, file_name + extension);
                 if (!shader_name_content_map.contains(file_name)) {
                     auto shader_asset = ShaderAsset();
                     shader_asset.name = file_name;
@@ -70,9 +69,9 @@ namespace Engine::AssetHandling {
     template<>
     struct AssetTraits<FontAsset> {
         using Handle = FontHandle;
-        inline static const std::string dir_name = std::string("fonts");
+        inline static const auto dir_name = std::string("fonts");
 
-        static FontAsset Load(AssetLoadContext context,
+        static FontAsset Load(const AssetLoadContext context,
                               const std::string& asset_name) {
             const auto font_content = context.file_reader->ReadBinaryFromResourceFile(dir_name + "/" + asset_name);
             if (!font_content.Ok()) {
@@ -88,9 +87,9 @@ namespace Engine::AssetHandling {
     template<>
     struct AssetTraits<MeshAsset> {
         using Handle = MeshHandle;
-        inline static const std::string dir_name = std::string("meshes");
+        inline static const auto dir_name = std::string("meshes");
 
-        static MeshAsset Load(AssetLoadContext context,
+        static MeshAsset Load(const AssetLoadContext context,
                               const std::string& asset_name) {
             const auto mesh_content = context.file_reader->ReadTextFromResourceFile(dir_name + "/" + asset_name);
             if (!mesh_content.Ok()) {
@@ -110,9 +109,9 @@ namespace Engine::AssetHandling {
     template<>
     struct AssetTraits<TextureAsset> {
         using Handle = TextureHandle;
-        inline static const std::string dir_name = std::string("textures");
+        inline static const auto dir_name = std::string("textures");
 
-        static TextureAsset Load(AssetLoadContext context,
+        static TextureAsset Load(const AssetLoadContext context,
                                  const std::string& asset_name) {
             const auto texture_content = context.file_reader->ReadBinaryFromResourceFile(dir_name + "/" + asset_name);
             if (!texture_content.Ok()) {
@@ -127,7 +126,7 @@ namespace Engine::AssetHandling {
     template<>
     struct AssetTraits<MaterialAsset> {
         using Handle = MaterialHandle;
-        inline static const std::string dir_name = std::string("materials");
+        inline static const auto dir_name = std::string("materials");
 
         static MaterialAsset Load(AssetLoadContext context,
                                   const std::string& asset_name) {
@@ -165,11 +164,11 @@ namespace Engine::AssetHandling {
         inline static const auto dir_name = std::string("inputmaps");
 
         static std::vector<InputMapAsset> LoadMany(const AssetLoadContext context,
-                                                   const std::vector<Environment::Files::FilePath>& file_paths) {
+                                                   const std::vector<Environment::Files::File>& files) {
             std::vector<InputMapAsset> input_maps;
-            input_maps.reserve(file_paths.size());
-            for (const auto& file_path: file_paths) {
-                const std::string path = dir_name + "/" + file_path.relative_file_path;
+            input_maps.reserve(files.size());
+            for (const auto& [extension, name]: files) {
+                const std::string path = dir_name + "/" + name + extension;
                 const auto toml_file_content = context.file_reader->ReadTextFromResourceFile(path);
                 if (!toml_file_content.Ok()) {
                     throw std::runtime_error("Failed to load input map asset " + path);

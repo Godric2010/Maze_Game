@@ -18,8 +18,8 @@ namespace Engine::Environment::Files {
 
         Result<FileBinary> ReadBinaryFromResourceFile(const std::string& relative_path) override;
 
-        ResultCollection<FilePath> FindResourceFilesOfTypes(
-                const std::string& directory, const std::vector<std::string>& file_types) override;
+        ResultCollection<File> FindResourceFilesOfTypes(
+                const std::string& directory, const std::vector<std::string>& file_extensions) override;
 
     private:
         std::string m_root_data_path;
