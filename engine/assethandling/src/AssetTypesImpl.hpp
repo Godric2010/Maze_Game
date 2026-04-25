@@ -3,6 +3,7 @@
 //
 
 #pragma once
+#include <ranges>
 #include <stdexcept>
 
 #include "IFileManager.hpp"
@@ -23,23 +24,46 @@ namespace Engine::AssetHandling {
         using Handle = ShaderHandle;
         inline static const std::string dir_name = std::string("shaders");
 
-        static ShaderAsset Load(AssetLoadContext context,
-                                const std::string& asset_name) {
-            const auto vertex_shader_content = context.file_reader->
-                    ReadTextFromResourceFile(dir_name + "/" + asset_name + ".vert");
-            if (!vertex_shader_content.Ok()) {
-                throw std::runtime_error("Failed to load vertex shader" + asset_name);
+        static std::vector<ShaderAsset> LoadMany(const AssetLoadContext context,
+                                                 const std::vector<Environment::Files::FilePath>& file_paths) {
+            std::unordered_map<std::string, ShaderAsset> shader_name_content_map;
+            for (int i = 0; i < file_paths.size(); ++i) {
+                const std::string extension = file_paths[i].file_type;
+                const std::string file = file_paths[i].relative_file_path;
+                const std::string file_name = file.substr(0, file.size() - extension.size());
+
+                const std::string file_content = GetShaderFileContent(context, file);
+                if (!shader_name_content_map.contains(file_name)) {
+                    auto shader_asset = ShaderAsset();
+                    shader_asset.name = file_name;
+                    shader_name_content_map[file_name] = shader_asset;
+                }
+
+                if (extension == ".vert") {
+                    shader_name_content_map[file_name].vertex_content = file_content;
+                } else if (extension == ".frag") {
+                    shader_name_content_map[file_name].fragment_content = file_content;
+                } else if (extension == ".glsl") {
+                } else {
+                    throw std::runtime_error("Unknown shader file extension: " + extension);
+                }
             }
-            const auto fragment_shader_content = context.file_reader->
-                    ReadTextFromResourceFile(dir_name + "/" + asset_name + ".frag");
-            if (!fragment_shader_content.Ok()) {
-                throw std::runtime_error("Failed to load fragment shader" + asset_name);
+            std::vector<ShaderAsset> shader_assets;
+            shader_assets.reserve(shader_name_content_map.size());
+            for (const auto& shader_name: shader_name_content_map | std::ranges::views::values) {
+                shader_assets.emplace_back(shader_name);
             }
-            auto shader_asset = ShaderAsset();
-            shader_asset.name = asset_name;
-            shader_asset.vertex_content = vertex_shader_content.value;
-            shader_asset.fragment_content = fragment_shader_content.value;
-            return shader_asset;
+            return shader_assets;
+        }
+
+    private:
+        static std::string GetShaderFileContent(const AssetLoadContext context, const std::string& file) {
+            const std::string path = dir_name + "/" + file;
+            auto content = context.file_reader->ReadTextFromResourceFile(path);
+            if (!content.Ok()) {
+                throw std::runtime_error("Failed to load shader file " + path);
+            }
+            return content.value;
         }
     };
 
@@ -114,11 +138,16 @@ namespace Engine::AssetHandling {
             Materials::MaterialFileData material_file_data{};
             Materials::MaterialImporter::ExtractMaterialFileData(material_file_data, toml_file_content.value);
 
+            auto shader_handle = context.asset_handler->FindShader(material_file_data.shader_name);
+            if (!shader_handle.has_value()) {
+                throw std::runtime_error("Material shader " + material_file_data.shader_name + " not found");
+            }
+
             auto material = MaterialAsset();
             material.name = material_file_data.name;
             material.render_state = material_file_data.render_state;
             material.render_queue_index = material_file_data.render_queue_index;
-            material.shader_handle = context.asset_handler->LoadShader(material_file_data.shader_name);
+            material.shader_handle = shader_handle.value();
             material.base_color = material_file_data.base_color;
             material.albedo_texture.texture = context.asset_handler->
                     LoadTexture(material_file_data.albedo_texture.name);

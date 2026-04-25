@@ -104,7 +104,7 @@ namespace Engine::Core {
     void EngineController::SetupInputManager(AssetHandling::AssetHandler* asset_handler) {
         // Load all input maps from disk and store them as assets
         const std::string directory = "resources/inputmaps";
-        const std::vector<std::string> file_extensions = {".inputmaps"};
+        const std::vector<std::string> file_extensions = {".inputmap"};
         const auto input_map_files = m_file_manager->FindResourceFilesOfTypes(directory, file_extensions);
 
         if (!input_map_files.Ok()) {
@@ -128,6 +128,16 @@ namespace Engine::Core {
     }
 
     void EngineController::SetupRenderController(AssetHandling::AssetHandler* asset_handler_service) const {
+        // Load all shader files from disk and store them as assets
+        const std::string directory = "resources/shaders";
+        const std::vector<std::string> file_extensions = {".vert", ".frag", ".glsl"};
+        const auto shader_files = m_file_manager->FindResourceFilesOfTypes(directory, file_extensions);
+
+        if (!shader_files.Ok()) {
+            throw std::runtime_error("Failed to load input map files" + shader_files.error.message);
+        }
+        asset_handler_service->LoadAssets<AssetHandling::ShaderAsset>(shader_files.value);
+
         auto render_controller = Renderer::RenderControllerFactory::CreateRenderController(
                 m_window->GetWindowContext(),
                 asset_handler_service

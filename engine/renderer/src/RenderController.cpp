@@ -17,10 +17,6 @@ namespace Engine::Renderer
         m_window_context = window_context;
         m_asset_handler = asset_handler;
 
-
-        m_asset_handler->LoadShader("mesh_opaque");
-        m_asset_handler->LoadShader("ui");
-
         switch (window_context.renderApi)
         {
             case Environment::API::OpenGL:

@@ -25,7 +25,6 @@ namespace Engine::AssetHandling
             Assets::MeshHandle LoadMesh(const std::string& mesh_name) override;
             Assets::MaterialHandle LoadMaterial(const std::string& name) override;
             Assets::TextureHandle LoadTexture(const std::string& texture_name) override;
-            Assets::ShaderHandle LoadShader(const std::string& shader_name);
 
             std::optional<Assets::MeshHandle> FindMesh(const std::string& mesh_name) override;
             std::optional<Assets::MaterialHandle> FindMaterial(const std::string& material_name) override;

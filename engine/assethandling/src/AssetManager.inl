@@ -19,10 +19,6 @@ namespace Engine::AssetHandling {
         return LoadAsset<TextureAsset>(texture_name);
     }
 
-    inline ShaderHandle AssetHandler::LoadShader(const std::string& shader_name) {
-        return LoadAsset<ShaderAsset>(shader_name);
-    }
-
     inline std::optional<MeshHandle> AssetHandler::FindMesh(const std::string& mesh_name) {
         return FindAsset<MeshAsset>(mesh_name);
     }
