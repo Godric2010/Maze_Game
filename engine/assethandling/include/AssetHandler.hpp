@@ -44,6 +44,9 @@ namespace Engine::AssetHandling
             HandleT<T> LoadAsset(const std::string& asset_name);
 
             template <AssetType T>
+            std::vector<HandleT<T>> LoadAssets(const std::vector<Environment::Files::FilePath>& asset_files);
+
+            template <AssetType T>
             HandleT<T> RegisterAsset(T asset);
 
             template <AssetType T, typename Fn>
