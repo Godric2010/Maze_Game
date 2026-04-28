@@ -10,6 +10,7 @@ add_library(Components INTERFACE
         ui/RectTransform.hpp
         ui/Text.hpp
         Rigidbody.hpp
+        Lights.hpp
 )
 
 target_link_libraries(Components INTERFACE ECS)
