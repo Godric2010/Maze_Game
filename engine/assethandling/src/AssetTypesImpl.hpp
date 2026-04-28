@@ -12,6 +12,7 @@
 #include "InputMaps/InputMapImporter.hpp"
 #include "Materials/MaterialImporter.hpp"
 #include "Mesh/MeshImporter.hpp"
+#include "Shader/ShaderPreProcessor.hpp"
 #include "Textures/TextureImporter.hpp"
 
 namespace Engine::AssetHandling {
@@ -26,31 +27,41 @@ namespace Engine::AssetHandling {
 
         static std::vector<ShaderAsset> LoadMany(const AssetLoadContext context,
                                                  const std::vector<Environment::Files::File>& file_paths) {
-            std::unordered_map<std::string, ShaderAsset> shader_name_content_map;
+            std::unordered_map<std::string, std::string> vert_shader_content_map;
+            std::unordered_map<std::string, std::string> frag_shader_content_map;
+            std::unordered_map<std::string, std::string> helper_shader_content_map;
+
             for (int i = 0; i < file_paths.size(); ++i) {
                 const std::string extension = file_paths[i].extension;
                 const std::string file_name = file_paths[i].name;
-
                 const std::string file_content = GetShaderFileContent(context, file_name + extension);
-                if (!shader_name_content_map.contains(file_name)) {
-                    auto shader_asset = ShaderAsset();
-                    shader_asset.name = file_name;
-                    shader_name_content_map[file_name] = shader_asset;
-                }
-
                 if (extension == ".vert") {
-                    shader_name_content_map[file_name].vertex_content = file_content;
+                    vert_shader_content_map[file_name] = file_content;
                 } else if (extension == ".frag") {
-                    shader_name_content_map[file_name].fragment_content = file_content;
+                    frag_shader_content_map[file_name] = file_content;
                 } else if (extension == ".glsl") {
+                    helper_shader_content_map[file_name] = file_content;
                 } else {
                     throw std::runtime_error("Unknown shader file extension: " + extension);
                 }
             }
+            if (vert_shader_content_map.size() != frag_shader_content_map.size()) {
+                throw std::runtime_error("Vertex and fragment shader files do not match in amount!");
+            }
+
+            auto pre_processor = Shader::ShaderPreProcessor(helper_shader_content_map);
+            ProcessShaders(pre_processor, vert_shader_content_map);
+            ProcessShaders(pre_processor, frag_shader_content_map);
+
             std::vector<ShaderAsset> shader_assets;
-            shader_assets.reserve(shader_name_content_map.size());
-            for (const auto& shader_name: shader_name_content_map | std::ranges::views::values) {
-                shader_assets.emplace_back(shader_name);
+            shader_assets.reserve(vert_shader_content_map.size());
+            for (const auto& [name, vert_content]: vert_shader_content_map) {
+                auto shader_asset = ShaderAsset();
+                shader_asset.name = name;
+                shader_asset.vertex_content = vert_content;
+                shader_asset.fragment_content = frag_shader_content_map[name];
+
+                shader_assets.emplace_back(shader_asset);
             }
             return shader_assets;
         }
@@ -63,6 +74,15 @@ namespace Engine::AssetHandling {
                 throw std::runtime_error("Failed to load shader file " + path);
             }
             return content.value;
+        }
+
+        static void ProcessShaders(Shader::ShaderPreProcessor& pre_processor,
+                                   std::unordered_map<std::string, std::string>& shader_content_map) {
+            for (auto& [shader_name, content]: shader_content_map) {
+                const auto original = content;
+                const auto processed = pre_processor.PreProcessShader(original);
+                shader_content_map[shader_name] = processed;
+            }
         }
     };
 

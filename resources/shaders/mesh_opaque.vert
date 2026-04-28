@@ -4,11 +4,7 @@ layout(location = 0) in vec3 pos;
 layout(location = 1) in vec3 normal;
 layout(location = 2) in vec2 uv;
 
-layout(std140) uniform Camera {
-    mat4 u_View;
-    mat4 u_Proj;
-    vec4 u_CameraPos;
-};
+#include <camera>
 
 uniform mat4 u_Model;
 uniform mat3 u_NormalMatrix;
@@ -27,5 +23,5 @@ void main()
 
     v_worldNormal = normalize(u_NormalMatrix * normal);
 
-    gl_Position = u_Proj * u_View * worldPosition;
+    gl_Position = GetViewPosition(worldPosition);
 }

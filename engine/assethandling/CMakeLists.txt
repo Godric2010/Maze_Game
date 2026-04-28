@@ -17,6 +17,8 @@ add_library(AssetHandling STATIC
         src/Materials/MaterialImporter.hpp
         src/InputMaps/InputMapImporter.cpp
         src/InputMaps/InputMapImporter.hpp
+        src/Shader/ShaderPreProcessor.cpp
+        src/Shader/ShaderPreProcessor.hpp
 )
 
 target_link_libraries(AssetHandling PUBLIC Interface Environment glm::glm Utilities PRIVATE lodepng fmt::fmt)
