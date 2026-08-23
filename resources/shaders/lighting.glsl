@@ -4,27 +4,45 @@
 
 // Properties
 // Uniforms - light
-uniform vec3 u_LightPosition;
-uniform vec3 u_LightColor;
-uniform float u_AmbientStrength;
+const int MAX_POINT_LIGHTS = 64;
+
+struct PointLight{
+    vec4 position;
+    vec4 colorIntensity;
+};
+
+layout(std140) uniform LightBlock{
+    vec4 ambientColorIntensity;
+    ivec4 lightMeta;
+    PointLight pointLights[MAX_POINT_LIGHTS];
+};
 
 // Functions
-vec3 CalculateBlinnPhong(vec3 normal, vec3 frag_pos, float specular_strength, float shininess){
-    vec3 N = normalize(normal);
-    vec3 L = normalize(u_LightPosition - frag_pos);
-    vec3 V = normalize(u_CameraPos.xyz - frag_pos);
-    vec3 H = normalize(L + V);
+vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDirection, float specularStrength, float shininess){
+    vec3 lightDirection = normalize(light.position.xyz - fragPos);
+    vec3 halfDirection = normalize(lightDirection + viewDirection);
+    float diffuseFactor = max(dot(normal, lightDirection), 0.0);
+    float specularFactor = 0.0f;
 
-    float diff = max(dot(N, L), 0.0f);
-    float spec = 0.0;
-    if (diff > 0.0){
-        spec = pow(max(dot(N, H), 0.0f), shininess);
+    if (diffuseFactor > 0.0){
+        specularFactor = pow(max(dot(normal, halfDirection), 0.0), shininess);
     }
+    vec3 lightColor = light.colorIntensity.rgb * light.colorIntensity.a;
+    vec3 diffuse = diffuseFactor * lightColor;
+    vec3 specular = specularStrength * specularFactor * lightColor;
 
-    vec3 ambient = u_AmbientStrength * u_LightColor;
-    vec3 diffuse = diff * u_LightColor;
-    vec3 specular = specular_strength * spec * u_LightColor;
+    return diffuse + specular;
+}
 
-    return ambient + diffuse + specular;
+vec3 CalculateLighting(vec3 normal, vec3 fragPos, float specularStrength, float shininess){
+    vec3 N = normalize(normal);
+    vec3 V = normalize(u_CameraPos.xyz - fragPos);
+    vec3 lighting = ambientColorIntensity.rgb * ambientColorIntensity.a;
+    int lightCount = min(lightMeta.x, MAX_POINT_LIGHTS);
+
+    for (int i = 0; i < lightCount; ++i){
+        lighting += CalculatePointLight(pointLights[i], N, fragPos, V, specularStrength, shininess);
+    }
+    return lighting;
 }
 /// End lighting.glsl import

@@ -22,7 +22,7 @@ void main() {
     }
 
     vec4 obj_color = u_Color * tex;
-    vec3 lighting = CalculateBlinnPhong(v_worldNormal, v_worldPosition, u_SpecularStrength, u_Shininess);
+    vec3 lighting = CalculateLighting(v_worldNormal, v_worldPosition, u_SpecularStrength, u_Shininess);
 
     vec3 final_color = (obj_color.rgb * lighting);
 

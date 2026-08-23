@@ -57,6 +57,8 @@ namespace Gameplay::Mazegenerator {
 
         void CreateExitTrigger(const CellIndex& cell_index) const;
 
+        void CreateCeilingLight(CellIndex cell_index) const;
+
         void CreateMazeCell(const Cell& cell) const;
 
         static void GetShiftAndRotationVectorFromDirection(const Direction& direction, glm::vec3& shift_vector,

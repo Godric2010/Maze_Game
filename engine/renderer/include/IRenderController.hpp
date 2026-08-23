@@ -16,7 +16,7 @@ namespace Engine::Renderer
 
         virtual void SubmitDebugInfos(const std::vector<DrawAsset>& debug_draw_assets) = 0;
 
-        virtual void RenderFrame(const CameraAsset& camera_asset, std::vector<DrawAsset> draw_assets) const = 0;
+        virtual void RenderFrame(const FrameData& frame_data, std::vector<DrawAsset> draw_assets) const = 0;
 
         virtual Assets::MeshHandle GetUIMeshHandle() const = 0;
 

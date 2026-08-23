@@ -27,6 +27,7 @@ add_library(Renderer STATIC
         src/renderframework/OpenGL/materials/OpenGlMaterialLibrary.cpp
         src/renderframework/OpenGL/materials/OpenGlMaterialLibrary.hpp
         src/renderframework/OpenGL/materials/OpenGlMaterial.hpp
+        src/renderframework/OpenGL/Lights/GPULightAssets.hpp
 
 )
 

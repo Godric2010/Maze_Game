@@ -23,7 +23,7 @@ namespace Engine::Renderer
 
         void SubmitDebugInfos(const std::vector<DrawAsset>& debug_draw_assets) override;
         
-        void RenderFrame(const CameraAsset& camera_asset, std::vector<DrawAsset> draw_assets) const override;
+        void RenderFrame(const FrameData& frame_data, std::vector<DrawAsset> draw_assets) const override;
 
         Assets::MeshHandle GetUIMeshHandle() const override;
 

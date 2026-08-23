@@ -18,10 +18,21 @@ namespace Engine::Renderer {
         glm::vec4 camera_position;
     };
 
+    struct AmbientLightAsset {
+        glm::vec3 color;
+        float intensity;
+    };
+
     struct LightAsset {
         glm::vec3 position;
         glm::vec3 color;
-        float ambient_intensity;
+        float intensity;
+    };
+
+    struct FrameData {
+        CameraAsset camera;
+        AmbientLightAsset ambient_light;
+        std::vector<LightAsset> lights;
     };
 
     struct DrawAsset {

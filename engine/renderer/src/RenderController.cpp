@@ -62,7 +62,7 @@ namespace Engine::Renderer
         m_debug_draw_assets = debug_draw_assets;
     }
 
-    void RenderController::RenderFrame(const CameraAsset& camera_asset, std::vector<DrawAsset> draw_assets) const
+    void RenderController::RenderFrame(const FrameData& frame_data, std::vector<DrawAsset> draw_assets) const
     {
         for (auto& debug_draw_asset : m_debug_draw_assets)
         {
@@ -70,7 +70,7 @@ namespace Engine::Renderer
         }
 
         PrepareGpuResources(draw_assets);
-        m_renderer->PrepareFrame(camera_asset);
+        m_renderer->PrepareFrame(frame_data);
         m_renderer->DrawFrame(draw_assets);
     }
 

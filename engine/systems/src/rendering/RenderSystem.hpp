@@ -30,11 +30,14 @@ namespace Engine::Systems {
         std::unordered_map<Ecs::EntityId, Renderer::DrawAsset> m_draw_asset_map;
         std::unordered_map<Ecs::EntityId, Renderer::DrawAsset> m_ui_draw_asset_map;
         std::unordered_map<Ecs::EntityId, Renderer::DrawAsset> m_ui_text_asset_map;
+        Renderer::AmbientLightAsset m_ambient_light{};
 
         Renderer::CameraAsset CreateCameraAsset(const Ecs::EntityId& camera_entity,
                                                 const Components::Transform* camera_transform) const;
 
         void ClearDrawAssets();
+
+        Renderer::FrameData FillFrameData() const;
 
         void FillMeshDrawAssets();
 

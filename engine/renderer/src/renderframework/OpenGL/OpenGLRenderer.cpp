@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 
+#include "Lights/GPULightAssets.hpp"
+
 namespace Engine::Renderer::RenderFramework::OpenGl {
     static auto MakeDrawAssetSortKey(const DrawAsset& mda) {
         return std::tuple{
@@ -34,7 +36,6 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         m_mesh_manager = mesh_library;
         m_texture_manager = texture_library;
         m_asset_handler = asset_handler;
-        m_camera_asset = {};
         m_camera_ubo = 0;
     }
 
@@ -57,6 +58,13 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         glBufferData(GL_UNIFORM_BUFFER, sizeof(CameraAsset), nullptr, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
         glBindBufferBase(GL_UNIFORM_BUFFER, camera_binding_point, m_camera_ubo);
+
+        glGenBuffers(1, &m_lighting_ubo);
+        glBindBuffer(GL_UNIFORM_BUFFER, m_lighting_ubo);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(OpenGL::GpuLightingData), nullptr, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        glBindBufferBase(GL_UNIFORM_BUFFER, light_binding_point, m_lighting_ubo);
+
         const auto shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("mesh_opaque");
         const auto shader_program = m_shader_manager->GetShaderProgram(shader_handle);
         if (!shader_program.has_value()) {
@@ -66,38 +74,36 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         if (cam_block_index != GL_INVALID_INDEX) {
             glUniformBlockBinding(shader_program.value(), cam_block_index, camera_binding_point);
         }
+
+        const GLuint light_block_index = glGetUniformBlockIndex(shader_program.value(), "LightBlock");
+        if (light_block_index != GL_INVALID_INDEX) {
+            glUniformBlockBinding(shader_program.value(), light_block_index, light_binding_point);
+        }
+
         glEnable(GL_MULTISAMPLE);
         int samples = 0;
         glGetIntegerv(GL_SAMPLES, &samples);
         spdlog::info("MSAA samples: {}", samples);
     }
 
-    void OpenGlRenderer::PrepareFrame(const CameraAsset& camera_asset) {
-        glBindBuffer(GL_UNIFORM_BUFFER, m_camera_ubo);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, static_cast<GLsizeiptr>(sizeof(CameraAsset)), &camera_asset);
-        glBindBuffer(GL_UNIFORM_BUFFER, 0);
-        glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    void OpenGlRenderer::PrepareFrame(const FrameData& frame_data) {
+        BindCamera(frame_data.camera);
+        BindLights(frame_data.lights, frame_data.ambient_light);
     }
 
     void OpenGlRenderer::DrawFrame(std::vector<DrawAsset>& draw_assets) {
         m_draw_calls = 0;
-        LightAsset light_asset{
-            .position = glm::vec3(2.0f, 1.0f, 0.0f),
-            .color = glm::vec3(1.0f, 1.0f, 1.0f),
-            .ambient_intensity = 0.1f,
-        };
         SortDrawAssets(draw_assets);
         for (auto draw_asset: draw_assets) {
             BindRenderPass(draw_asset.RenderState);
             BindMaterial(draw_asset.Material);
             m_bind_cache->BindColor(m_context.ShaderFields, draw_asset.Color);
             BindMesh(draw_asset.Mesh);
-            m_bind_cache->BindLight(m_context.ShaderFields,
-                                    light_asset.position,
-                                    light_asset.color,
-                                    light_asset.ambient_intensity
-                    );
+            // m_bind_cache->BindLight(m_context.ShaderFields,
+            // light_asset.position,
+            // light_asset.color,
+            // light_asset.intensity
+            // );
 
             DrawElement(draw_asset.Model);
         }
@@ -111,6 +117,50 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         m_shader_manager->ClearShaders();
         m_shader_manager.reset();
         m_material_library->ClearMaterials();
+    }
+
+    void OpenGlRenderer::BindCamera(const CameraAsset& camera) const {
+        glBindBuffer(GL_UNIFORM_BUFFER, m_camera_ubo);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, static_cast<GLsizeiptr>(sizeof(CameraAsset)), &camera);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
+        glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+
+    void OpenGlRenderer::BindLights(const std::vector<LightAsset>& lights, const AmbientLightAsset& ambient) {
+        auto lighting_data = OpenGL::GpuLightingData{};
+        lighting_data.ambient_color_intensity = glm::vec4(ambient.color.r,
+                                                          ambient.color.g,
+                                                          ambient.color.b,
+                                                          ambient.intensity
+                );
+
+        auto max_lights = std::min(static_cast<int>(lights.size()), OpenGL::MAX_POINT_LIGHTS);
+        lighting_data.light_meta.x = max_lights;
+        for (auto i = 0; i < max_lights; i++) {
+            const auto& light_asset = lights[i];
+            const auto light_position = glm::vec4(light_asset.position.x,
+                                                  light_asset.position.y,
+                                                  light_asset.position.z,
+                                                  1.0f
+                    );
+            const auto light_color_intensity = glm::vec4(light_asset.color.r,
+                                                         light_asset.color.g,
+                                                         light_asset.color.b,
+                                                         light_asset.intensity
+                    );
+
+            auto point_light_asset = OpenGL::PointLightAsset{
+                .position = light_position,
+                .color_intensity = light_color_intensity
+            };
+            lighting_data.point_light[i] = point_light_asset;
+        }
+
+        constexpr auto buffer_size = static_cast<GLsizeiptr>(sizeof(OpenGL::GpuLightingData));
+        glBindBuffer(GL_UNIFORM_BUFFER, m_lighting_ubo);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, buffer_size, &lighting_data);
+        glBindBuffer(GL_UNIFORM_BUFFER, 0);
     }
 
     void OpenGlRenderer::SortDrawAssets(std::vector<DrawAsset>& mesh_draw_assets) {
@@ -192,6 +242,5 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         m_bind_cache->BindNormalMatrix(m_context.ShaderFields, normal_matrix);
         glDrawElements(GL_TRIANGLES, m_context.MeshIndicesCount, GL_UNSIGNED_INT, nullptr);
         m_draw_calls++;
-
     }
 }

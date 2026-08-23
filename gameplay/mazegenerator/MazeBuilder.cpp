@@ -3,6 +3,7 @@
 #include <format>
 
 #include "Collider.hpp"
+#include "Lights.hpp"
 #include "MeshRenderer.hpp"
 #include "Transform.hpp"
 #include "../components/Door.hpp"
@@ -142,11 +143,33 @@ namespace Gameplay::Mazegenerator {
         m_game_world->AddComponent(entity, Components::Exit{});
     }
 
+    void MazeBuilder::CreateCeilingLight(CellIndex cell_index) const {
+        const auto light_entity = m_game_world->CreateEntity(
+                std::format("Ceiling Light [{}|{}]", cell_index.x, cell_index.y)
+                );
+        const auto point_light_component = Engine::Components::PointLight()
+                .SetColor(1.0f, 1.0f, 1.0f)
+                .SetIntensity(0.3f)
+                .SetConstant(1.0f)
+                .SetLinear(0.09f)
+                .SetQuadratic(0.032f)
+                .SetEnabled(true);
+
+        m_game_world->AddComponent(light_entity, point_light_component);
+        const auto position = glm::vec3(cell_index.x * 2, 1.9f, cell_index.y * 2);
+        constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+        const auto transform_component = Engine::Components::Transform()
+                .SetPosition(position)
+                .SetRotation(rotation);
+        m_game_world->AddComponent(light_entity, transform_component);
+    }
+
 
     void MazeBuilder::CreateMazeCell(const Cell& cell) const {
         const auto tile_material = DetermineFloorMaterialForCell(cell.cell_index);
         CreateCellFloorTile(cell.cell_index, tile_material);
         CreateCeilingTile(cell.cell_index);
+        CreateCeilingLight(cell.cell_index);
 
         if (cell.HasWall(Front)) {
             CreateWallTile(cell.cell_index, Front);

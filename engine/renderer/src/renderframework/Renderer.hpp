@@ -21,7 +21,7 @@ namespace Engine::Renderer::RenderFramework
             /**
              * Prepare the frame of the renderer
              */
-            virtual void PrepareFrame(const CameraAsset& camera_asset) = 0;
+            virtual void PrepareFrame(const FrameData& frame_data) = 0;
 
             /**
              * Call to render to the screen
