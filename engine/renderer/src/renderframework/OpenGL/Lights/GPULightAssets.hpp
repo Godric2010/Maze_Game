@@ -11,9 +11,10 @@ namespace Engine::Renderer::RenderFramework::OpenGL {
     struct alignas(16) PointLightAsset {
         glm::vec4 position;
         glm::vec4 color_intensity;
+        glm::vec4 attenuation;
     };
 
-    static_assert(sizeof(PointLightAsset) == 32);
+    static_assert(sizeof(PointLightAsset) == 48);
 
     struct alignas(16) GpuLightingData {
         glm::vec4 ambient_color_intensity;

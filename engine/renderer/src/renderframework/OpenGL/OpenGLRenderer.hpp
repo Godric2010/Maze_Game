@@ -67,7 +67,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
 
         void BindCamera(const CameraAsset& camera) const;
 
-        void BindLights(const std::vector<LightAsset>& lights, const AmbientLightAsset& ambient);
+        void BindLights(const std::vector<LightAsset>& lights, const AmbientLightAsset& ambient) const;
 
         static void SortDrawAssets(std::vector<DrawAsset>& mesh_draw_assets);
 

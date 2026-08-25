@@ -99,12 +99,6 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
             BindMaterial(draw_asset.Material);
             m_bind_cache->BindColor(m_context.ShaderFields, draw_asset.Color);
             BindMesh(draw_asset.Mesh);
-            // m_bind_cache->BindLight(m_context.ShaderFields,
-            // light_asset.position,
-            // light_asset.color,
-            // light_asset.intensity
-            // );
-
             DrawElement(draw_asset.Model);
         }
         glBindVertexArray(0);
@@ -127,7 +121,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    void OpenGlRenderer::BindLights(const std::vector<LightAsset>& lights, const AmbientLightAsset& ambient) {
+    void OpenGlRenderer::BindLights(const std::vector<LightAsset>& lights, const AmbientLightAsset& ambient) const {
         auto lighting_data = OpenGL::GpuLightingData{};
         lighting_data.ambient_color_intensity = glm::vec4(ambient.color.r,
                                                           ambient.color.g,
@@ -150,9 +144,16 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
                                                          light_asset.intensity
                     );
 
+            const auto light_attenuation = glm::vec4(light_asset.constant_attenuation,
+                                                     light_asset.linear_attenuation,
+                                                     light_asset.quadratic_attenuation,
+                                                     0.0f
+                    );
+
             auto point_light_asset = OpenGL::PointLightAsset{
                 .position = light_position,
-                .color_intensity = light_color_intensity
+                .color_intensity = light_color_intensity,
+                .attenuation = light_attenuation,
             };
             lighting_data.point_light[i] = point_light_asset;
         }
@@ -210,7 +211,7 @@ namespace Engine::Renderer::RenderFramework::OpenGl {
         }
         m_bind_cache->BindAlbedoTexture(m_context.ShaderFields, texture);
         m_bind_cache->BindSpecularStrength(m_context.ShaderFields, 0.5f);
-        m_bind_cache->BindShininess(m_context.ShaderFields, 0.3f);
+        m_bind_cache->BindShininess(m_context.ShaderFields, 32.0f);
     }
 
     void OpenGlRenderer::BindMesh(const Assets::MeshHandle& mesh_handle) {

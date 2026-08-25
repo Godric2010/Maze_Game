@@ -27,6 +27,9 @@ namespace Engine::Renderer {
         glm::vec3 position;
         glm::vec3 color;
         float intensity;
+        float constant_attenuation;
+        float linear_attenuation;
+        float quadratic_attenuation;
     };
 
     struct FrameData {

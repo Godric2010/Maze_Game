@@ -14,7 +14,7 @@ namespace Engine::Systems {
     RenderSystem::RenderSystem() {
         m_ambient_light = Renderer::AmbientLightAsset{
             .color = glm::vec3(1.0f, 1.0f, 1.0f),
-            .intensity = 0.01f
+            .intensity = 0.02f
         };
     }
 
@@ -102,13 +102,16 @@ namespace Engine::Systems {
         frame_data.camera = camera_asset;
 
         const auto point_lights = EcsWorld()->GetComponentsOfType<Components::PointLight>();
-        frame_data.lights.resize(point_lights.size());
+        frame_data.lights.reserve(point_lights.size());
         for (auto [point_light, entity]: point_lights) {
             const auto light_transform = EcsWorld()->GetComponent<Components::Transform>(entity);
             const auto light_asset = Renderer::LightAsset{
                 .position = light_transform->GetPosition(),
                 .color = point_light->GetColor(),
                 .intensity = point_light->GetIntensity(),
+                .constant_attenuation = point_light->GetConstant(),
+                .linear_attenuation = point_light->GetLinear(),
+                .quadratic_attenuation = point_light->GetQuadratic()
             };
             frame_data.lights.emplace_back(light_asset);
         }

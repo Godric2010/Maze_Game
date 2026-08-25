@@ -149,7 +149,7 @@ namespace Gameplay::Mazegenerator {
                 );
         const auto point_light_component = Engine::Components::PointLight()
                 .SetColor(1.0f, 1.0f, 1.0f)
-                .SetIntensity(0.3f)
+                .SetIntensity(1.0f)
                 .SetConstant(1.0f)
                 .SetLinear(0.09f)
                 .SetQuadratic(0.032f)
@@ -169,7 +169,9 @@ namespace Gameplay::Mazegenerator {
         const auto tile_material = DetermineFloorMaterialForCell(cell.cell_index);
         CreateCellFloorTile(cell.cell_index, tile_material);
         CreateCeilingTile(cell.cell_index);
-        CreateCeilingLight(cell.cell_index);
+        if (cell.cell_index.x  == 4 && cell.cell_index.y == 0) {
+            CreateCeilingLight(cell.cell_index);
+        }
 
         if (cell.HasWall(Front)) {
             CreateWallTile(cell.cell_index, Front);
