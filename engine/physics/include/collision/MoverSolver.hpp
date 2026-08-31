@@ -22,7 +22,7 @@ namespace yarep::Physics::Collision {
     };
 
     struct MoverResult {
-        std::optional<Ecs::EntityId> hit_entity;
+        std::optional<ecs::EntityId> hit_entity;
         glm::vec3 new_position;
         bool collided{};
         float first_time_of_impact{std::numeric_limits<float>::infinity()};
@@ -32,10 +32,10 @@ namespace yarep::Physics::Collision {
     class MoverSolver {
     public:
         static MoverResult Solve(const MoverInput &input, const ICollisionQueryService &query_service,
-                                 const std::vector<Ecs::EntityId> &candidates) {
+                                 const std::vector<ecs::EntityId> &candidates) {
             glm::vec3 position = input.position;
             glm::vec3 rest = input.delta;
-            std::optional<Ecs::EntityId> hit_entity;
+            std::optional<ecs::EntityId> hit_entity;
 
             MoverResult out{std::nullopt, position, false, std::numeric_limits<float>::infinity(), {}};
 
@@ -76,7 +76,7 @@ namespace yarep::Physics::Collision {
             return out;
         }
 
-        static inline bool TryGetCollisionHit(const Ecs::EntityId entity, const Math::Sphere sphere,
+        static inline bool TryGetCollisionHit(const ecs::EntityId entity, const Math::Sphere sphere,
                                               const glm::vec3 &rest,
                                               const ICollisionQueryService &query_service,
                                               Math::CollisionHit &hit) {

@@ -1,7 +1,7 @@
 #pragma once
 #include "ComponentManager.hpp"
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     struct World::WorldImpl {
         std::unique_ptr<EntityManager> entity_manager;
         std::unique_ptr<ComponentManager> component_manager;

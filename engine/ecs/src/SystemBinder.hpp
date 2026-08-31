@@ -6,12 +6,12 @@
 #include "EngineBindToken.hpp"
 #include "Ecs/ISystem.hpp"
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     class SystemBinder {
     public:
         static void BindSystem(
                 ISystem& system,
-                Input::IInput& input,
+                input::IInput& input,
                 SystemWorld& game_world,
                 const std::function<void(const std::any& command)>& func
                 ) {

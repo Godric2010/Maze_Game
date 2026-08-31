@@ -2,7 +2,7 @@
 
 #include <ranges>
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     EntityManager::EntityManager() {
         // Never use index 0 since it is the indicator for a non-existing entity
         m_generations.push_back(1);

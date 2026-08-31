@@ -4,7 +4,7 @@
 #include "SystemBinder.hpp"
 #include "SystemMetaSorter.hpp"
 
-namespace yarep::Ecs
+namespace yarep::ecs
 {
     SystemManager::SystemManager(const std::vector<SystemMeta>& system_metas,
                                  IServiceToEcsProvider* service_provider, Systems::ICacheManager* cache_manager)
@@ -32,7 +32,7 @@ namespace yarep::Ecs
     }
 
 
-    void SystemManager::RegisterSystems(World* world, Input::IInput* input)
+    void SystemManager::RegisterSystems(World* world, input::IInput* input)
     {
         m_game_world = std::make_unique<SystemWorld>(world);
         m_phase_map.clear();

@@ -4,7 +4,7 @@
 #include "IServiceToEcsProvider.hpp"
 
 namespace yarep::Core {
-    class ServiceLocator : public Ecs::IServiceToEcsProvider {
+    class ServiceLocator : public ecs::IServiceToEcsProvider {
     public:
         ServiceLocator();
 

@@ -7,11 +7,11 @@
 #include <functional>
 #include "Types.hpp"
 
-namespace yarep::Input {
+namespace yarep::input {
     class IInput;
 }
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
 #define ECS_SYSTEM(name, phase, tags, dependencies)
 
     class SystemWorld;
@@ -23,7 +23,7 @@ namespace yarep::Ecs {
 
         virtual ~ISystem() = default;
 
-        void Bind(EngineBindToken, Input::IInput& input, SystemWorld& world, CommandEvent command_event);
+        void Bind(EngineBindToken, input::IInput& input, SystemWorld& world, CommandEvent command_event);
 
         virtual void Initialize() {
         }
@@ -44,14 +44,14 @@ namespace yarep::Ecs {
 
     protected:
         [[nodiscard]] SystemWorld* GameWorld() const { return m_world; }
-        [[nodiscard]] Input::IInput* Input() const { return m_input; }
+        [[nodiscard]] input::IInput* Input() const { return m_input; }
 
         void SendCommand(const std::any& command) const {
             m_command_event(command);
         }
 
     private:
-        Input::IInput* m_input = nullptr;
+        input::IInput* m_input = nullptr;
         SystemWorld* m_world = nullptr;
         CommandEvent m_command_event{};
     };

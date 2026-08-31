@@ -43,7 +43,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
 
     void OpenGlRenderer::Initialize() {
         const auto shader_handles = m_asset_handler->GetAllAssetHandlesOfType<AssetHandling::ShaderAsset>();
-        std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset> > > shaders;
+        std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset> > > shaders;
         shaders.reserve(shader_handles.size());
         for (int i = 0; i < shader_handles.size(); ++i) {
             const auto shader_handle = shader_handles[i];
@@ -197,7 +197,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
         }
     }
 
-    void OpenGlRenderer::BindMaterial(const Assets::MaterialHandle& material_handle) {
+    void OpenGlRenderer::BindMaterial(const assets::MaterialHandle& material_handle) {
         if (m_context.Material == material_handle || !material_handle) {
             return;
         }
@@ -214,7 +214,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
         m_bind_cache->BindShininess(m_context.ShaderFields, 32.0f);
     }
 
-    void OpenGlRenderer::BindMesh(const Assets::MeshHandle& mesh_handle) {
+    void OpenGlRenderer::BindMesh(const assets::MeshHandle& mesh_handle) {
         if (m_context.Mesh == mesh_handle) {
             return;
         }
@@ -224,7 +224,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
         m_context.MeshIndicesCount = m_bind_cache->BindMesh(mesh);
     }
 
-    void OpenGlRenderer::BindShaders(const Assets::ShaderHandle& shader) {
+    void OpenGlRenderer::BindShaders(const assets::ShaderHandle& shader) {
         const auto shader_program = m_shader_manager->GetShaderProgram(shader);
         if (!shader_program.has_value()) {
             throw std::runtime_error("Shader program not found");

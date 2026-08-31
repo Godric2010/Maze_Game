@@ -17,13 +17,13 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         ~OpenGlShaderLibrary() override;
 
         void CompileShaders(
-            const std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset>>>& shaders) override;
+            const std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset>>>& shaders) override;
 
         void ClearShaders() override;
 
         void CompileShaders();
 
-        std::optional<GLuint> GetShaderProgram(const Assets::ShaderHandle& shader_handle) const;
+        std::optional<GLuint> GetShaderProgram(const assets::ShaderHandle& shader_handle) const;
 
     private:
         AssetHandling::AssetHandler* m_asset_handler;

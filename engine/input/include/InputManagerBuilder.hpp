@@ -6,7 +6,7 @@
 #include <memory>
 #include "IInputManager.hpp"
 
-namespace yarep::Input
+namespace yarep::input
 {
     class InputManagerBuilder
     {

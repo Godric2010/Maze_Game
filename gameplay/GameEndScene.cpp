@@ -28,11 +28,11 @@ namespace gameplay {
 
     void GameEndScene::EvaluateSystemCommands(const std::vector<std::any>& commands) {
         for (const std::any& command: commands) {
-            if (command.type() == typeid(yarep::Commands::UI::ButtonClickedCommand)) {
-                auto button_clicked = std::any_cast<yarep::Commands::UI::ButtonClickedCommand>(command);
+            if (command.type() == typeid(yarep::commands::ui::ButtonClickedCommand)) {
+                auto button_clicked = std::any_cast<yarep::commands::ui::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
                 if (button_id == m_back_to_main_menu_button_id) {
-                    SceneManager().LoadScene("MainMenu", yarep::SceneManagement::SceneArgs{});
+                    SceneManager().LoadScene("MainMenu", yarep::scene_management::SceneArgs{});
                 }
             }
         }

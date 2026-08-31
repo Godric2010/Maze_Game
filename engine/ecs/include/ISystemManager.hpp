@@ -7,7 +7,7 @@
 #include "Ecs/ISystem.hpp"
 #include "Input/IInput.hpp"
 
-namespace yarep::Ecs
+namespace yarep::ecs
 {
     enum class Phase
     {
@@ -37,7 +37,7 @@ namespace yarep::Ecs
         public:
             virtual ~ISystemManager() = default;
 
-            virtual void RegisterSystems(World* world, Input::IInput* input) = 0;
+            virtual void RegisterSystems(World* world, input::IInput* input) = 0;
 
             virtual void PreFixed(float delta_time) = 0;
             virtual void FixedUpdateSystems(float fixed_dt) = 0;

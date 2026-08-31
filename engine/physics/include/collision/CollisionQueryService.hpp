@@ -17,12 +17,12 @@ namespace yarep::Physics::Collision {
         virtual ~ICollisionQueryService() = default;
 
         virtual void QuerySphereSweep(const glm::vec3 &pos, const glm::vec3 &rest, float radius,
-                                      std::vector<Ecs::EntityId> &out,
+                                      std::vector<ecs::EntityId> &out,
                                       const QueryFilter *f) const = 0;
 
-        [[nodiscard]] virtual const Math::AABB *GetAabb(Ecs::EntityId) const = 0;
+        [[nodiscard]] virtual const Math::AABB *GetAabb(ecs::EntityId) const = 0;
 
-        [[nodiscard]] virtual const Math::OBB *GetObb(Ecs::EntityId) const = 0;
+        [[nodiscard]] virtual const Math::OBB *GetObb(ecs::EntityId) const = 0;
     };
 
     class CollisionQueryService final : public ICollisionQueryService {
@@ -33,13 +33,13 @@ namespace yarep::Physics::Collision {
         }
 
         void QuerySphereSweep(const glm::vec3 &pos, const glm::vec3 &rest, const float radius,
-                              std::vector<Ecs::EntityId> &out, const QueryFilter *filter) const override {
+                              std::vector<ecs::EntityId> &out, const QueryFilter *filter) const override {
             const Math::AABB swept = BuildSweptAabb(pos, rest, radius);
             out.clear();
             m_broadphase.QueryAabb(swept, out, filter);
         }
 
-        [[nodiscard]] const Math::AABB *GetAabb(const Ecs::EntityId entity) const override {
+        [[nodiscard]] const Math::AABB *GetAabb(const ecs::EntityId entity) const override {
             const auto it = m_collider_cache.box_colliders.find(entity);
             if (m_collider_cache.box_colliders.end() == it) return nullptr;
 
@@ -49,7 +49,7 @@ namespace yarep::Physics::Collision {
             return &it->second.world_box;
         }
 
-        [[nodiscard]] const Math::OBB *GetObb(const Ecs::EntityId entity) const override {
+        [[nodiscard]] const Math::OBB *GetObb(const ecs::EntityId entity) const override {
             const auto it = m_collider_cache.box_colliders.find(entity);
             if (m_collider_cache.box_colliders.end() == it) return nullptr;
 

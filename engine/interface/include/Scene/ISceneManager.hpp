@@ -7,7 +7,7 @@
 
 #include "SceneArgs.hpp"
 
-namespace yarep::SceneManagement {
+namespace yarep::scene_management {
     class ISceneManager {
     public:
         virtual ~ISceneManager() = default;

@@ -4,7 +4,7 @@
 
 namespace yarep::Systems {
     ECS_SYSTEM(UiButtonSystem, Ui, TAGS(ENGINE), DEPENDENCIES())
-    class UiButtonSystem : public Ecs::IEngineSystem {
+    class UiButtonSystem : public ecs::IEngineSystem {
     public:
         UiButtonSystem();
 
@@ -20,12 +20,12 @@ namespace yarep::Systems {
         Renderer::IRenderController* m_render_controller = nullptr;
         AssetHandling::AssetHandler* m_asset_handler = nullptr;
 
-        void RegisterButtonElement(Ecs::EntityId entity, glm::vec4 color) const;
+        void RegisterButtonElement(ecs::EntityId entity, glm::vec4 color) const;
 
-        Assets::MaterialHandle RegisterNewUiMaterial() const;
+        assets::MaterialHandle RegisterNewUiMaterial() const;
 
-        bool IsMouseOverElement(glm::vec2 mouse_pos, const Ecs::EntityId& rect_entity) const;
+        bool IsMouseOverElement(glm::vec2 mouse_pos, const ecs::EntityId& rect_entity) const;
 
-        void HandleButtons(const Input::InputBuffer& input) const;
+        void HandleButtons(const input::InputBuffer& input) const;
     };
 }

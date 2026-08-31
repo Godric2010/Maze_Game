@@ -7,7 +7,7 @@
 
 #include "../src/EntityManager.hpp"
 
-using namespace yarep::Ecs;
+using namespace yarep::ecs;
 
 struct EntitymanagerFixture {
     EntityManager entity_manager;

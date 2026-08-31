@@ -6,7 +6,7 @@
 
 #include "../src/InputManager.hpp"
 
-using namespace yarep::Input;
+using namespace yarep::input;
 
 class FakeEnvInput : public yarep::Environment::IEnvInput
 {

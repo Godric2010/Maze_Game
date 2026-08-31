@@ -24,21 +24,21 @@ namespace yarep::Systems
         m_asset_handler = ServiceLocator()->GetService<AssetHandling::AssetHandler>();
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Image>(
-             [this](const Ecs::EntityId entity, const Components::UI::Image& image)
+             [this](const ecs::EntityId entity, const Components::UI::Image& image)
              {
                  this->RegisterImageElement(entity, image.color);
              });
 
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Image>(
-             [this](const Ecs::EntityId entity)
+             [this](const ecs::EntityId entity)
              {
                  this->m_ui_cache->DeregisterColorElement(entity);
              }
             );
     }
 
-    void UiImageSystem::RegisterImageElement(const Ecs::EntityId entity, const glm::vec4 color) const
+    void UiImageSystem::RegisterImageElement(const ecs::EntityId entity, const glm::vec4 color) const
     {
         if (this->m_ui_cache == nullptr)
         {
@@ -53,7 +53,7 @@ namespace yarep::Systems
         m_ui_cache->RegisterColorElement(entity, color_element);
     }
 
-    Assets::MaterialHandle UiImageSystem::RegisterNewUiMaterial() const
+    assets::MaterialHandle UiImageSystem::RegisterNewUiMaterial() const
     {
         auto material_asset = AssetHandling::MaterialAsset();
         material_asset.name = std::string("UiMaterial");

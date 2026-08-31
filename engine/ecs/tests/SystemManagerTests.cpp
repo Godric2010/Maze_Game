@@ -6,7 +6,7 @@
 
 #include "../include/SystemManager.hpp"
 
-using namespace yarep::Ecs;
+using namespace yarep::ecs;
 
 static std::vector<std::string> trace;
 

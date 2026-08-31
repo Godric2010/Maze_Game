@@ -12,13 +12,13 @@ namespace yarep::Systems::UI {
             uint64_t last_font_version;
             std::pair<float, float> text_dimensions;
             std::optional<Text::FontHandle> font_handle;
-            Assets::MaterialHandle material_handle;
-            Assets::MeshHandle mesh_handle;
+            assets::MaterialHandle material_handle;
+            assets::MeshHandle mesh_handle;
         };
 
         struct ColorElement {
-            Assets::MeshHandle mesh_handle;
-            Assets::MaterialHandle material_handle;
+            assets::MeshHandle mesh_handle;
+            assets::MaterialHandle material_handle;
             glm::vec4 color;
         };
 

@@ -11,7 +11,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
 
     OpenGLTextureLibrary::~OpenGLTextureLibrary() = default;
 
-    void OpenGLTextureLibrary::AddTexture(const Assets::TextureHandle& texture_handle,
+    void OpenGLTextureLibrary::AddTexture(const assets::TextureHandle& texture_handle,
                                           const AssetHandling::TextureAsset& texture_asset, const uint32_t revision)
     {
         OpenGLTexture texture{};
@@ -56,12 +56,12 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         m_texture_revisions[texture_handle] = revision;
     }
 
-    bool OpenGLTextureLibrary::HasTexture(const Assets::TextureHandle& texture_handle) const
+    bool OpenGLTextureLibrary::HasTexture(const assets::TextureHandle& texture_handle) const
     {
         return m_textures.contains(texture_handle);
     }
 
-    uint32_t OpenGLTextureLibrary::GetTextureRevision(const Assets::TextureHandle& texture_handle) const
+    uint32_t OpenGLTextureLibrary::GetTextureRevision(const assets::TextureHandle& texture_handle) const
     {
         if (const auto it = m_texture_revisions.find(texture_handle); it != m_texture_revisions.end())
         {
@@ -70,7 +70,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         throw std::runtime_error("No texture handle found in texture revisions map");
     }
 
-    OpenGLTexture& OpenGLTextureLibrary::GetTexture(const Assets::TextureHandle& texture_handle)
+    OpenGLTexture& OpenGLTextureLibrary::GetTexture(const assets::TextureHandle& texture_handle)
     {
         const auto it = m_textures.find(texture_handle);
         if (it != m_textures.end())
@@ -80,7 +80,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         throw std::runtime_error("No such texture handle: "); // + std::to_string(texture_handle));
     }
 
-    void OpenGLTextureLibrary::RemoveTexture(const Assets::TextureHandle& texture_handle)
+    void OpenGLTextureLibrary::RemoveTexture(const assets::TextureHandle& texture_handle)
     {
         const auto gl_texture = m_textures.find(texture_handle);
         if (gl_texture != m_textures.end())

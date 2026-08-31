@@ -74,7 +74,7 @@ namespace yarep::Renderer
         m_renderer->DrawFrame(draw_assets);
     }
 
-    Assets::MeshHandle RenderController::GetUIMeshHandle() const
+    assets::MeshHandle RenderController::GetUIMeshHandle() const
     {
         return m_ui_mesh_handle;
     }
@@ -94,7 +94,7 @@ namespace yarep::Renderer
         }
     }
 
-    void RenderController::PrepareMeshesForGpu(const Assets::MeshHandle& mesh_handle) const
+    void RenderController::PrepareMeshesForGpu(const assets::MeshHandle& mesh_handle) const
     {
         const auto mesh_revision = m_asset_handler->GetAssetRevision<AssetHandling::MeshAsset>(mesh_handle);
         if (!m_mesh_library->HasMesh(mesh_handle))
@@ -111,7 +111,7 @@ namespace yarep::Renderer
     }
 
 
-    void RenderController::PrepareMaterialsForGpu(const Assets::MaterialHandle& handle) const
+    void RenderController::PrepareMaterialsForGpu(const assets::MaterialHandle& handle) const
     {
         const auto material_revision = m_asset_handler->GetAssetRevision<AssetHandling::MaterialAsset>(handle);
         const auto material_asset = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(handle);
@@ -134,7 +134,7 @@ namespace yarep::Renderer
         PrepareTexturesForGpu(albedo_texture_handle);
     }
 
-    void RenderController::PrepareTexturesForGpu(const Assets::TextureHandle handle) const
+    void RenderController::PrepareTexturesForGpu(const assets::TextureHandle handle) const
     {
         const auto texture_revision = m_asset_handler->GetAssetRevision<AssetHandling::TextureAsset>(handle);
         if (!m_texture_library->HasTexture(handle))

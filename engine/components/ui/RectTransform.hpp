@@ -30,7 +30,7 @@ namespace yarep::Components::UI {
 
         [[nodiscard]] glm::vec2 GetPivot() const { return m_pivot; }
         [[nodiscard]] Anchor GetAnchor() const { return m_anchor; }
-        [[nodiscard]] std::optional<Ecs::EntityId> GetParent() const { return m_parent_entity; }
+        [[nodiscard]] std::optional<ecs::EntityId> GetParent() const { return m_parent_entity; }
         [[nodiscard]] uint64_t GetVersion() const { return m_version; }
 
         RectTransform &SetPosition(const glm::vec2 local_position) {
@@ -61,7 +61,7 @@ namespace yarep::Components::UI {
             return *this;
         }
 
-        RectTransform &SetParent(const Ecs::EntityId parent_entity) {
+        RectTransform &SetParent(const ecs::EntityId parent_entity) {
             m_parent_entity = parent_entity;
             m_version++;
             return *this;
@@ -72,7 +72,7 @@ namespace yarep::Components::UI {
         glm::vec2 m_size = glm::vec2(1.0f);
         glm::vec2 m_pivot = glm::vec2(0.5f, 0.5f);
         Anchor m_anchor = Anchor::TopLeft;
-        std::optional<Ecs::EntityId> m_parent_entity;
+        std::optional<ecs::EntityId> m_parent_entity;
         uint64_t m_version = 0;
     };
 }

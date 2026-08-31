@@ -10,7 +10,7 @@
 
 namespace yarep::Systems {
     ECS_SYSTEM(UiTextSystem, Ui, TAGS(ENGINE), DEPENDENCIES())
-    class UiTextSystem : public Ecs::IEngineSystem {
+    class UiTextSystem : public ecs::IEngineSystem {
     public:
         UiTextSystem();
 
@@ -21,20 +21,20 @@ namespace yarep::Systems {
         void Run(float delta_time) override;
 
     private:
-        std::unordered_map<Text::FontHandle, Assets::TextureHandle> m_font_textures;
+        std::unordered_map<Text::FontHandle, assets::TextureHandle> m_font_textures;
         Transform::TransformCache* m_transform_cache = nullptr;
         UI::UiCache* m_ui_cache = nullptr;
         Text::TextController* m_text_controller = nullptr;
         Renderer::IRenderController* m_render_controller = nullptr;
         AssetHandling::AssetHandler* m_asset_handler = nullptr;
 
-        Assets::MaterialHandle RegisterNewUiMaterial() const;
+        assets::MaterialHandle RegisterNewUiMaterial() const;
 
-        void RegisterTextElement(Ecs::EntityId entity) const;
+        void RegisterTextElement(ecs::EntityId entity) const;
 
         void HandleTextLabels();
 
-        void UpdateTextMesh(Ecs::EntityId entity, UI::UiCache::TextElement text_element,
+        void UpdateTextMesh(ecs::EntityId entity, UI::UiCache::TextElement text_element,
                             const Components::UI::Text* text) const;
 
         void RegisterTextureHandleFromFont(Text::FontHandle font_handle);

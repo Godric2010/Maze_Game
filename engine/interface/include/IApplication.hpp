@@ -4,7 +4,6 @@
 
 #pragma once
 #include "Scene/SceneArgs.hpp"
-#include "Input/InputTypes.hpp"
 
 namespace yarep {
     class IApplication {
@@ -13,8 +12,8 @@ namespace yarep {
 
         virtual void Quit() = 0;
 
-        virtual void RegisterScene(const std::string& name, SceneManagement::SceneFactory scene_factory) = 0;
+        virtual void RegisterScene(const std::string& name, scene_management::SceneFactory scene_factory) = 0;
 
-        virtual void SetInitialScene(const std::string& name, const SceneManagement::SceneArgs& args) = 0;
+        virtual void SetInitialScene(const std::string& name, const scene_management::SceneArgs& args) = 0;
     };
 }

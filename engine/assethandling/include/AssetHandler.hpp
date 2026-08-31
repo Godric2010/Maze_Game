@@ -15,26 +15,26 @@ namespace yarep::AssetHandling
 
     struct AssetLoadContext;
 
-    class AssetHandler : public Assets::IAssetLibrary
+    class AssetHandler : public assets::IAssetLibrary
     {
         public:
             AssetHandler();
 
             ~AssetHandler() override = default;
 
-            Assets::MeshHandle LoadMesh(const std::string& mesh_name) override;
-            Assets::MaterialHandle LoadMaterial(const std::string& name) override;
-            Assets::TextureHandle LoadTexture(const std::string& texture_name) override;
+            assets::MeshHandle LoadMesh(const std::string& mesh_name) override;
+            assets::MaterialHandle LoadMaterial(const std::string& name) override;
+            assets::TextureHandle LoadTexture(const std::string& texture_name) override;
 
-            std::optional<Assets::MeshHandle> FindMesh(const std::string& mesh_name) override;
-            std::optional<Assets::MaterialHandle> FindMaterial(const std::string& material_name) override;
-            std::optional<Assets::TextureHandle> FindTexture(const std::string& texture_name) override;
-            std::optional<Assets::FontHandle> FindFont(const std::string& font_name) override;
-            std::optional<Assets::ShaderHandle> FindShader(const std::string& shader_name) override;
+            std::optional<assets::MeshHandle> FindMesh(const std::string& mesh_name) override;
+            std::optional<assets::MaterialHandle> FindMaterial(const std::string& material_name) override;
+            std::optional<assets::TextureHandle> FindTexture(const std::string& texture_name) override;
+            std::optional<assets::FontHandle> FindFont(const std::string& font_name) override;
+            std::optional<assets::ShaderHandle> FindShader(const std::string& shader_name) override;
 
-            void UpdateMaterial(Assets::MaterialHandle handle, const std::function<void(MaterialAsset&)>& updater);
-            void UpdateTexture(Assets::TextureHandle handle, const std::function<void(TextureAsset&)>& updater);
-            void UpdateMesh(Assets::MeshHandle handle, const std::function<void(MeshAsset&)>& updater);
+            void UpdateMaterial(assets::MaterialHandle handle, const std::function<void(MaterialAsset&)>& updater);
+            void UpdateTexture(assets::TextureHandle handle, const std::function<void(TextureAsset&)>& updater);
+            void UpdateMesh(assets::MeshHandle handle, const std::function<void(MeshAsset&)>& updater);
 
             template <AssetType T>
             using HandleT = typename AssetTraits<T>::Handle;

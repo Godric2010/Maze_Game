@@ -21,7 +21,7 @@ namespace yarep::Core {
     EngineController::~EngineController() = default;
 
 
-    void EngineController::Initialize(const std::vector<Ecs::SystemMeta>& systems) {
+    void EngineController::Initialize(const std::vector<ecs::SystemMeta>& systems) {
         const auto engine_settings = Settings::SettingsHandler::ReadSettingsFromDisk(m_file_manager.get());
         SetupWindow(engine_settings);
 
@@ -40,13 +40,13 @@ namespace yarep::Core {
                                                     90
                 );
 
-        m_system_manager = std::make_unique<Ecs::SystemManager>(systems, m_services.get(), m_cache_manager.get());
+        m_system_manager = std::make_unique<ecs::SystemManager>(systems, m_services.get(), m_cache_manager.get());
 
         const auto window_context = m_window->GetWindowContext();
-        m_scene_manager = std::make_unique<SceneManagement::SceneManager>(*this,
+        m_scene_manager = std::make_unique<scene_management::SceneManager>(*this,
                                                                           *m_system_manager,
                                                                           *m_input_manager,
-                                                                          reinterpret_cast<Assets::IAssetLibrary&>(*
+                                                                          reinterpret_cast<assets::IAssetLibrary&>(*
                                                                               asset_handler_service),
                                                                           static_cast<float>(window_context.width),
                                                                           static_cast<float>(window_context.height)
@@ -114,7 +114,7 @@ namespace yarep::Core {
         const auto input_map_asset_ids = asset_handler->LoadAssets<AssetHandling::InputMapAsset>(input_map_files.value);
 
         // Fetch the created input map assets from the asset handler
-        std::vector<Input::InputMap> input_maps;
+        std::vector<input::InputMap> input_maps;
         input_maps.resize(input_map_asset_ids.size());
         for (size_t i = 0; i < input_map_asset_ids.size(); ++i) {
             const auto input_map_asset = asset_handler->GetAsset<AssetHandling::InputMapAsset>(
@@ -124,7 +124,7 @@ namespace yarep::Core {
         }
 
         // Create the input manager with all available input maps
-        m_input_manager = Input::InputManagerBuilder::CreateInputManager(m_window.get(), input_maps);
+        m_input_manager = input::InputManagerBuilder::CreateInputManager(m_window.get(), input_maps);
     }
 
     void EngineController::SetupRenderController(AssetHandling::AssetHandler* asset_handler_service) const {
@@ -211,11 +211,11 @@ namespace yarep::Core {
     }
 
     void EngineController::RegisterScene(const std::string& name,
-                                         const SceneManagement::SceneFactory scene_factory) {
+                                         const scene_management::SceneFactory scene_factory) {
         m_scene_manager->RegisterScene(name, scene_factory);
     }
 
-    void EngineController::SetInitialScene(const std::string& name, const SceneManagement::SceneArgs& args) {
+    void EngineController::SetInitialScene(const std::string& name, const scene_management::SceneArgs& args) {
         m_scene_manager->LoadScene(name, args);
     }
 } // namespace

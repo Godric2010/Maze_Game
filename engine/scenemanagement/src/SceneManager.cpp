@@ -1,14 +1,14 @@
 #include "SceneManager.hpp"
 
-namespace yarep::SceneManagement
+namespace yarep::scene_management
 {
     SceneManager::SceneManager(IApplication& app,
-                               Ecs::ISystemManager& system_manager, Input::IInput& input_manager,
-                               Assets::IAssetLibrary& asset_library,
+                               ecs::ISystemManager& system_manager, input::IInput& input_manager,
+                               assets::IAssetLibrary& asset_library,
                                const float screen_width,
                                const float screen_height)
     {
-        m_active_world = std::make_unique<Ecs::World>();
+        m_active_world = std::make_unique<ecs::World>();
         m_world_adapter = std::make_unique<SceneWorld>(*m_active_world);
         m_context.emplace(SceneContext{
                 .app = app,
@@ -93,7 +93,7 @@ namespace yarep::SceneManagement
         m_world_adapter.reset();
         m_active_world.reset();
 
-        m_active_world = std::make_unique<Ecs::World>();
+        m_active_world = std::make_unique<ecs::World>();
         m_world_adapter = std::make_unique<SceneWorld>(*m_active_world);
 
         const auto old_context = m_context.value();

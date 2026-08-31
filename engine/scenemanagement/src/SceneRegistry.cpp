@@ -1,6 +1,6 @@
 #include "SceneRegistry.hpp"
 
-namespace yarep::SceneManagement {
+namespace yarep::scene_management {
     void SceneRegistry::RegisterScene(std::string name, SceneFactory factory) {
         if (m_registry.contains(name)) {
             throw std::runtime_error("Scene already registered: " + name);

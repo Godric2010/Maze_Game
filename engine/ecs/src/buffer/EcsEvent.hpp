@@ -4,7 +4,7 @@
 #include "../ComponentManager.hpp"
 #include "../Entity.hpp"
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
 
     enum class EcsEventType {
         CreateEntity,

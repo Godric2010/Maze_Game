@@ -40,9 +40,9 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
     private:
         struct Context {
             AssetHandling::RenderState RenderPass;
-            Assets::MaterialHandle Material;
+            assets::MaterialHandle Material;
             ShaderBindings ShaderFields;
-            Assets::MeshHandle Mesh;
+            assets::MeshHandle Mesh;
             GLsizei MeshIndicesCount;
             glm::mat4 ProjectionMatrix;
         };
@@ -73,11 +73,11 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
 
         void BindRenderPass(const AssetHandling::RenderState& render_state);
 
-        void BindMaterial(const Assets::MaterialHandle& material);
+        void BindMaterial(const assets::MaterialHandle& material);
 
-        void BindMesh(const Assets::MeshHandle& mesh_handle);
+        void BindMesh(const assets::MeshHandle& mesh_handle);
 
-        void BindShaders(const Assets::ShaderHandle& shader);
+        void BindShaders(const assets::ShaderHandle& shader);
 
         void DrawElement(const glm::mat4& model_matrix);
     };

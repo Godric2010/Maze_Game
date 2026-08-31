@@ -1,6 +1,6 @@
 #include "EventBuffer.hpp"
 
-namespace yarep::Ecs::Buffer {
+namespace yarep::ecs::Buffer {
     template<typename T>
     EventBuffer<T>::EventBuffer() = default;
 

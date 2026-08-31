@@ -6,11 +6,11 @@
 #endif
 
 #include "../src/SystemMetaSorter.hpp"
-using namespace yarep::Ecs;
+using namespace yarep::ecs;
 
 namespace {
-    using yarep::Ecs::Phase;
-    using yarep::Ecs::SystemMeta;
+    using yarep::ecs::Phase;
+    using yarep::ecs::SystemMeta;
 
     SystemMeta MakeMeta(const std::string& name,
                         const Phase phase,

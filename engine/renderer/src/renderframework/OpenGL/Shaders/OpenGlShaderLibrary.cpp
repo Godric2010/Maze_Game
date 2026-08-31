@@ -16,11 +16,11 @@ namespace yarep::Renderer::RenderFramework::OpenGl
     }
 
     void OpenGlShaderLibrary::CompileShaders(
-        const std::vector<std::tuple<Assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset>>>& shaders)
+        const std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset>>>& shaders)
     {
         for (auto& shader_with_handle : shaders)
         {
-            const Assets::ShaderHandle& shader_handle = std::get<0>(shader_with_handle);
+            const assets::ShaderHandle& shader_handle = std::get<0>(shader_with_handle);
             auto shader_asset = std::get<1>(shader_with_handle);
             const std::string& shader_name = shader_asset->name;
             const char* v_src = shader_asset->vertex_content.c_str();
@@ -63,7 +63,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         }
     }
 
-    std::optional<GLuint> OpenGlShaderLibrary::GetShaderProgram(const Assets::ShaderHandle& shader_handle) const
+    std::optional<GLuint> OpenGlShaderLibrary::GetShaderProgram(const assets::ShaderHandle& shader_handle) const
     {
         if (!m_shader_program_map.contains(shader_handle.value))
         {

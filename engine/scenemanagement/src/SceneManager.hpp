@@ -6,14 +6,14 @@
 #include "Scene/ISceneManager.hpp"
 #include "Scene/SceneArgs.hpp"
 
-namespace yarep::SceneManagement
+namespace yarep::scene_management
 {
     class SceneManager : public ISceneManager
     {
     public:
         explicit SceneManager(IApplication& app,
-                              Ecs::ISystemManager& system_manager, Input::IInput& input_manager,
-                              Assets::IAssetLibrary& asset_library,
+                              ecs::ISystemManager& system_manager, input::IInput& input_manager,
+                              assets::IAssetLibrary& asset_library,
                               float screen_width, float screen_height);
 
         ~SceneManager() override;
@@ -33,7 +33,7 @@ namespace yarep::SceneManagement
         std::unique_ptr<IScene> m_current_scene;
         std::unique_ptr<IScene> m_pending_scene;
 
-        std::unique_ptr<Ecs::World> m_active_world;
+        std::unique_ptr<ecs::World> m_active_world;
         std::unique_ptr<SceneWorld> m_world_adapter;
 
         std::unique_ptr<SceneRegistry> m_registry;

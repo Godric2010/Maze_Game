@@ -16,22 +16,22 @@ namespace yarep::Renderer::RenderFramework::OpenGl
 
         ~OpenGlMaterialLibrary() override;
 
-        void AddMaterial(const Assets::MaterialHandle& material_handle,
+        void AddMaterial(const assets::MaterialHandle& material_handle,
                          const AssetHandling::MaterialAsset& material_asset,
                          uint32_t revision) override;
 
-        void RemoveMaterial(const Assets::MaterialHandle& material) override;
+        void RemoveMaterial(const assets::MaterialHandle& material) override;
         
-        bool HasMaterial(const Assets::MaterialHandle& material) const override;
+        bool HasMaterial(const assets::MaterialHandle& material) const override;
         
-        uint32_t GetMaterialRevision(const Assets::MaterialHandle& material) const override;
+        uint32_t GetMaterialRevision(const assets::MaterialHandle& material) const override;
 
-        OpenGlMaterial& Get(Assets::MaterialHandle material);
+        OpenGlMaterial& Get(assets::MaterialHandle material);
 
         void ClearMaterials() override;
 
     private:
-        std::unordered_map<Assets::MaterialHandle, OpenGlMaterial> m_material_map;
-        std::unordered_map<Assets::MaterialHandle, uint32_t> m_revision_map;
+        std::unordered_map<assets::MaterialHandle, OpenGlMaterial> m_material_map;
+        std::unordered_map<assets::MaterialHandle, uint32_t> m_revision_map;
     };
 }

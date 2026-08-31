@@ -7,7 +7,7 @@
 
 #include "IEngineSystem.hpp"
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     class CommandSystem : public IEngineSystem {
     public:
         explicit CommandSystem(const std::function<void(std::vector<std::any>)> &cb) {

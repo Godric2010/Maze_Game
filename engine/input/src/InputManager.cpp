@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace yarep::Input
+namespace yarep::input
 {
     InputManager::InputManager(std::unique_ptr<Environment::IEnvInput> env_input,
                                const std::vector<InputMap>& input_maps)

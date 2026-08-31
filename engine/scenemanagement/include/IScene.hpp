@@ -11,7 +11,7 @@
 #include "../src/SceneContext.hpp"
 #include "Input/IInput.hpp"
 
-namespace yarep::SceneManagement
+namespace yarep::scene_management
 {
     class SceneRegistry;
 
@@ -95,7 +95,7 @@ namespace yarep::SceneManagement
             return m_context->game_world;
         }
 
-        [[nodiscard]] Input::IInput& Input() const
+        [[nodiscard]] input::IInput& Input() const
         {
             if (m_context == nullptr)
             {
@@ -122,7 +122,7 @@ namespace yarep::SceneManagement
             return m_context->scene_manager;
         }
 
-        [[nodiscard]] Assets::IAssetLibrary& Assets() const
+        [[nodiscard]] assets::IAssetLibrary& Assets() const
         {
             if (m_context == nullptr)
             {

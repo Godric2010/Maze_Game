@@ -5,6 +5,6 @@
 #pragma once
 #include <cstdint>
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     using EntityId = uint64_t;
 }

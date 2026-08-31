@@ -27,18 +27,18 @@ namespace yarep::Physics::Collision {
          ~SpatialHashBroadphase() override = default;
 
         void Insert(const BroadphaseProxy& proxy) override;
-        void Remove(Ecs::EntityId entity) override;
-        void Update(Ecs::EntityId entity, const Math::AABB &new_aabb) override;
+        void Remove(ecs::EntityId entity) override;
+        void Update(ecs::EntityId entity, const Math::AABB &new_aabb) override;
 
-        void QueryAabb(const Math::AABB &area, std::vector<Ecs::EntityId> &out, const QueryFilter *filter) override;
+        void QueryAabb(const Math::AABB &area, std::vector<ecs::EntityId> &out, const QueryFilter *filter) override;
 
     private:
         float m_cell_size;
         float m_inv_cell_size;
 
-        std::unordered_map<CellKey, std::vector<Ecs::EntityId>, CellKeyHash> m_buckets;
-        std::unordered_map<Ecs::EntityId, std::vector<CellKey>> m_back_references;
-        std::unordered_map<Ecs::EntityId, BroadphaseProxy> m_proxies;
+        std::unordered_map<CellKey, std::vector<ecs::EntityId>, CellKeyHash> m_buckets;
+        std::unordered_map<ecs::EntityId, std::vector<CellKey>> m_back_references;
+        std::unordered_map<ecs::EntityId, BroadphaseProxy> m_proxies;
 
         static inline int FloorToCell(const float v, const float inv_cell) {
             return static_cast<int>(std::floor(v * inv_cell));
@@ -51,6 +51,6 @@ namespace yarep::Physics::Collision {
             return (proxy.category_bits & filter->mask_bits) && (filter->category_bits & proxy.mask_bits);
         }
 
-        static void Dedupe(std::vector<Ecs::EntityId>& vec);
+        static void Dedupe(std::vector<ecs::EntityId>& vec);
     };
 } // namespace

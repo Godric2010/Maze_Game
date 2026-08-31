@@ -25,7 +25,7 @@ namespace yarep::Physics::Collision {
     };
 
     struct ColliderCache {
-        std::unordered_map<Ecs::EntityId, BoxColliderInfo> box_colliders;
-        std::unordered_map<Ecs::EntityId, SphereColliderInfo> sphere_colliders;
+        std::unordered_map<ecs::EntityId, BoxColliderInfo> box_colliders;
+        std::unordered_map<ecs::EntityId, SphereColliderInfo> sphere_colliders;
     };
 }

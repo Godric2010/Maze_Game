@@ -7,7 +7,7 @@
 
 #include "../src/InputMaps/InputMapImporter.hpp"
 
-using namespace yarep::Input;
+using namespace yarep::input;
 using namespace yarep::AssetHandling;
 using namespace yarep::AssetHandling::InputMaps;
 

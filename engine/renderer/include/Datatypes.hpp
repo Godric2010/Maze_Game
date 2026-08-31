@@ -39,11 +39,11 @@ namespace yarep::Renderer {
     };
 
     struct DrawAsset {
-        Ecs::EntityId Entity;
+        ecs::EntityId Entity;
         AssetHandling::RenderState RenderState;
         size_t RenderQueueIndex;
-        Assets::MeshHandle Mesh;
-        Assets::MaterialHandle Material;
+        assets::MeshHandle Mesh;
+        assets::MaterialHandle Material;
         glm::mat4 Model;
         glm::vec4 Color;
     };

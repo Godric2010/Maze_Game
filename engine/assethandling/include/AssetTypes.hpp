@@ -83,7 +83,7 @@ namespace yarep::AssetHandling
 
     struct MaterialTexture
     {
-        Assets::TextureHandle texture;
+        assets::TextureHandle texture;
         glm::vec2 uv_scale;
         glm::vec2 tiling;
     };
@@ -93,7 +93,7 @@ namespace yarep::AssetHandling
         std::string name;
         RenderState render_state;
         size_t render_queue_index;
-        Assets::ShaderHandle shader_handle;
+        assets::ShaderHandle shader_handle;
         MaterialTexture albedo_texture;
         glm::vec4 base_color;
     };
@@ -101,6 +101,6 @@ namespace yarep::AssetHandling
     struct InputMapAsset : Asset
     {
         std::string name;
-        Input::InputMap input_map;
+        input::InputMap input_map;
     };
 }

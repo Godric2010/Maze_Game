@@ -5,7 +5,7 @@
 #pragma once
 #include "Ecs/ISystem.hpp"
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     struct EngineBindToken {
     private:
         EngineBindToken() = default;

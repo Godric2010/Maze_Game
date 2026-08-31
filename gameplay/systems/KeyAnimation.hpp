@@ -6,7 +6,7 @@
 namespace gameplay::systems {
     ECS_SYSTEM(KeyAnimation, Update, TAGS(), DEPENDENCIES())
 
-    class KeyAnimation : public yarep::Ecs::ISystem {
+    class KeyAnimation : public yarep::ecs::ISystem {
     public:
         KeyAnimation() = default;
 

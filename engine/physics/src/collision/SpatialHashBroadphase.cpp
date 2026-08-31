@@ -41,7 +41,7 @@ namespace yarep::Physics::Collision {
         }
     }
 
-    void SpatialHashBroadphase::Remove(const Ecs::EntityId entity) {
+    void SpatialHashBroadphase::Remove(const ecs::EntityId entity) {
         const auto it_back = m_back_references.find(entity);
         if (it_back != m_back_references.end()) {
             for (const auto &cell: it_back->second) {
@@ -61,7 +61,7 @@ namespace yarep::Physics::Collision {
         m_proxies.erase(entity);
     }
 
-    void SpatialHashBroadphase::Update(Ecs::EntityId entity, const Math::AABB &new_aabb) {
+    void SpatialHashBroadphase::Update(ecs::EntityId entity, const Math::AABB &new_aabb) {
         auto it_proxy = m_proxies.find(entity);
         if (it_proxy == m_proxies.end()) {
             BroadphaseProxy new_proxy{};
@@ -116,12 +116,12 @@ namespace yarep::Physics::Collision {
         it_proxy->second.aabb = new_aabb;
     }
 
-    void SpatialHashBroadphase::Dedupe(std::vector<Ecs::EntityId> &vec) {
+    void SpatialHashBroadphase::Dedupe(std::vector<ecs::EntityId> &vec) {
         std::ranges::sort(vec);
         vec.erase(std::ranges::unique(vec).begin(), vec.end());
     }
 
-    void SpatialHashBroadphase::QueryAabb(const Math::AABB &area, std::vector<Ecs::EntityId> &out,
+    void SpatialHashBroadphase::QueryAabb(const Math::AABB &area, std::vector<ecs::EntityId> &out,
                                           const QueryFilter *filter) {
         out.clear();
         std::vector<CellKey> cells;
@@ -137,7 +137,7 @@ namespace yarep::Physics::Collision {
             if (!filter) {
                 out.insert(out.end(), vec.begin(), vec.end());
             } else {
-                for (Ecs::EntityId entity: vec) {
+                for (ecs::EntityId entity: vec) {
                     auto proxy_it = m_proxies.find(entity);
                     if (proxy_it != m_proxies.end() && PassFilter(proxy_it->second, filter)) {
                         out.push_back(entity);

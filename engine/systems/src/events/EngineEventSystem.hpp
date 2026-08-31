@@ -12,7 +12,7 @@ namespace yarep::Systems {
         glm::vec3 scale;
     };
 
-    class EngineEventSystem final : public Ecs::IEngineSystem {
+    class EngineEventSystem final : public ecs::IEngineSystem {
     public:
         EngineEventSystem() = default;
 

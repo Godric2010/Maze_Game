@@ -16,7 +16,7 @@ namespace gameplay {
         Difficulty difficulty;
     };
 
-    class GameScene : public yarep::SceneManagement::IScene {
+    class GameScene : public yarep::scene_management::IScene {
     public:
         explicit GameScene(GameSceneSettings settings);
 
@@ -36,7 +36,7 @@ namespace gameplay {
         std::chrono::time_point<std::chrono::steady_clock> m_start_time;
         float m_time_passed = 0;
 
-        std::vector<yarep::Ecs::EntityId> m_pause_entities;
+        std::vector<yarep::ecs::EntityId> m_pause_entities;
 
         bool m_is_paused;
 
@@ -53,6 +53,6 @@ namespace gameplay {
         void CreatePauseUiOverlay() ;
 
         void CreateUiButton(const glm::vec2& position, const glm::vec2& size, const std::string& content, int button_id,
-                            const yarep::Ecs::EntityId& parent_entity);
+                            const yarep::ecs::EntityId& parent_entity);
     };
 } // namespace

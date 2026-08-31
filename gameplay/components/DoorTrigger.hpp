@@ -7,6 +7,6 @@
 namespace gameplay::components {
     struct DoorTrigger {
     public:
-        yarep::Ecs::EntityId door;
+        yarep::ecs::EntityId door;
     };
 }

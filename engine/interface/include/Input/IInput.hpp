@@ -7,7 +7,7 @@
 
 #include "InputBuffer.hpp"
 
-namespace yarep::Input {
+namespace yarep::input {
     class IInput {
     public:
         virtual ~IInput() = default;

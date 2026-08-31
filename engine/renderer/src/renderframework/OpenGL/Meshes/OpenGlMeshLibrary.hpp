@@ -15,22 +15,22 @@ namespace yarep::Renderer::RenderFramework::OpenGl
 
         ~OpenGlMeshLibrary() override;
 
-        void AddMesh(const Assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh, uint32_t revision) override;
+        void AddMesh(const assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh, uint32_t revision) override;
 
-        void RemoveMesh(const Assets::MeshHandle& handle) override;
+        void RemoveMesh(const assets::MeshHandle& handle) override;
 
-        bool HasMesh(const Assets::MeshHandle& handle) const override;
+        bool HasMesh(const assets::MeshHandle& handle) const override;
         
-        uint32_t GetMeshRevision(const Assets::MeshHandle& handle) const override;
+        uint32_t GetMeshRevision(const assets::MeshHandle& handle) const override;
         
         void ClearMeshes() override;
         
-        OpenGLMesh& GetMesh(const Assets::MeshHandle& handle);
+        OpenGLMesh& GetMesh(const assets::MeshHandle& handle);
 
         [[nodiscard]] uint32_t Size() const;
 
     private:
-        std::unordered_map<Assets::MeshHandle, OpenGLMesh> m_meshes{};
-        std::unordered_map<Assets::MeshHandle, uint32_t> m_mesh_revisions;
+        std::unordered_map<assets::MeshHandle, OpenGLMesh> m_meshes{};
+        std::unordered_map<assets::MeshHandle, uint32_t> m_mesh_revisions;
     };
 } // namespace

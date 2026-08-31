@@ -13,14 +13,14 @@ namespace yarep::Renderer::Resources
     public:
         virtual ~IGpuTextureLibrary() = default;
 
-        virtual void AddTexture(const Assets::TextureHandle& texture_handle,
+        virtual void AddTexture(const assets::TextureHandle& texture_handle,
                                 const AssetHandling::TextureAsset& texture_asset, uint32_t revision) = 0;
 
-        virtual void RemoveTexture(const Assets::TextureHandle& texture_handle) = 0;
+        virtual void RemoveTexture(const assets::TextureHandle& texture_handle) = 0;
 
-        virtual bool HasTexture(const Assets::TextureHandle& texture_handle) const = 0;
+        virtual bool HasTexture(const assets::TextureHandle& texture_handle) const = 0;
 
-        virtual uint32_t GetTextureRevision(const Assets::TextureHandle& texture_handle) const = 0;
+        virtual uint32_t GetTextureRevision(const assets::TextureHandle& texture_handle) const = 0;
 
         virtual void ClearTextures() = 0;
     };

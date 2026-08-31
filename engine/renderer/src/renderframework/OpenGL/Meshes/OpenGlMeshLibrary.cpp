@@ -11,7 +11,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
 
     OpenGlMeshLibrary::~OpenGlMeshLibrary() = default;
 
-    void OpenGlMeshLibrary::AddMesh(const Assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh,
+    void OpenGlMeshLibrary::AddMesh(const assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh,
                                     const uint32_t revision) {
         OpenGLMesh m = {};
         m.numVertices = mesh.vertices.size();
@@ -74,7 +74,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
         m_mesh_revisions[handle] = revision;
     }
 
-    OpenGLMesh &OpenGlMeshLibrary::GetMesh(const Assets::MeshHandle& handle) {
+    OpenGLMesh &OpenGlMeshLibrary::GetMesh(const assets::MeshHandle& handle) {
         return m_meshes[handle];
     }
 
@@ -83,16 +83,16 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
     }
 
 
-    void OpenGlMeshLibrary::RemoveMesh(const Assets::MeshHandle& handle) {
+    void OpenGlMeshLibrary::RemoveMesh(const assets::MeshHandle& handle) {
         m_meshes.erase(handle);
         m_mesh_revisions.erase(handle);
     }
 
-    bool OpenGlMeshLibrary::HasMesh(const Assets::MeshHandle& handle) const {
+    bool OpenGlMeshLibrary::HasMesh(const assets::MeshHandle& handle) const {
         return m_meshes.contains(handle);
     }
 
-    uint32_t OpenGlMeshLibrary::GetMeshRevision(const Assets::MeshHandle& handle) const {
+    uint32_t OpenGlMeshLibrary::GetMeshRevision(const assets::MeshHandle& handle) const {
         if (const auto it = m_mesh_revisions.find(handle); it != m_mesh_revisions.end()) {
             return it->second;
         }

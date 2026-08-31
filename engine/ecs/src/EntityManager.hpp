@@ -6,7 +6,7 @@
 #include "Entity.hpp"
 
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     /**
      * @brief Manages the creation, destruction, and querying of entity IDs.
      *

@@ -4,7 +4,7 @@
 namespace gameplay::systems {
     ECS_SYSTEM(ItemSystem, Update, TAGS(), DEPENDENCIES())
 
-    class ItemSystem : public yarep::Ecs::ISystem {
+    class ItemSystem : public yarep::ecs::ISystem {
     public:
         ItemSystem();
 
@@ -14,10 +14,10 @@ namespace gameplay::systems {
 
         void Run(float delta_time) override;
 
-        void OnCollisionEnter(const yarep::Ecs::EntityId& target, const yarep::Ecs::EntityId& other) override;
+        void OnCollisionEnter(const yarep::ecs::EntityId& target, const yarep::ecs::EntityId& other) override;
 
     private:
-        void CheckIfItemGotPickedUp(yarep::Ecs::EntityId target_entity,
-                                    yarep::Ecs::EntityId potential_item_entity) const;
+        void CheckIfItemGotPickedUp(yarep::ecs::EntityId target_entity,
+                                    yarep::ecs::EntityId potential_item_entity) const;
     };
 } // namespace

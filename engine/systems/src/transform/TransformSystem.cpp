@@ -9,7 +9,7 @@ namespace yarep::Systems {
 
     void TransformSystem::Initialize() {
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::Transform>(
-                [this](const Ecs::EntityId entity, const Components::Transform& _) {
+                [this](const ecs::EntityId entity, const Components::Transform& _) {
                     if (this->Cache()->GetTransformCache() == nullptr) {
                         throw std::runtime_error("TransformSystem: Transform cache is null");
                     }
@@ -18,7 +18,7 @@ namespace yarep::Systems {
                 );
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::Transform>(
-                [this](const Ecs::EntityId entity) {
+                [this](const ecs::EntityId entity) {
                     this->Cache()->GetTransformCache()->DeregisterTransformEntity(entity);
                 }
                 );

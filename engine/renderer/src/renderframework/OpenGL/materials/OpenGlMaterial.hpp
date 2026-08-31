@@ -10,7 +10,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
 {
     struct MaterialTextureRef
     {
-        Assets::TextureHandle texture;
+        assets::TextureHandle texture;
         glm::vec2 uv_scale;
         glm::vec2 tiling;
     };
@@ -18,7 +18,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
     struct OpenGlMaterial
     {
         AssetHandling::RenderState render_state;
-        Assets::ShaderHandle shader;
+        assets::ShaderHandle shader;
         MaterialTextureRef albedo_texture;
         glm::vec4 base_color;
     };

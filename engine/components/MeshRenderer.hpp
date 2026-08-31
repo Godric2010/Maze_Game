@@ -10,7 +10,7 @@ namespace yarep::Components
 {
     struct MeshRenderer
     {
-        Assets::MeshHandle Mesh;
-        Assets::MaterialHandle Material;
+        assets::MeshHandle Mesh;
+        assets::MaterialHandle Material;
     };
 }

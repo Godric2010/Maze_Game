@@ -11,7 +11,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
     {
     }
 
-    void OpenGlMaterialLibrary::AddMaterial(const Assets::MaterialHandle& material_handle,
+    void OpenGlMaterialLibrary::AddMaterial(const assets::MaterialHandle& material_handle,
                                             const AssetHandling::MaterialAsset& material_asset, 
                                             const uint32_t revision)
     {
@@ -31,18 +31,18 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         m_revision_map[material_handle] = revision;
     }
 
-    void OpenGlMaterialLibrary::RemoveMaterial(const Assets::MaterialHandle& material)
+    void OpenGlMaterialLibrary::RemoveMaterial(const assets::MaterialHandle& material)
     {
         m_material_map.erase(material);
         m_revision_map.erase(material);
     }
 
-    bool OpenGlMaterialLibrary::HasMaterial(const Assets::MaterialHandle& material) const
+    bool OpenGlMaterialLibrary::HasMaterial(const assets::MaterialHandle& material) const
     {
         return m_material_map.contains(material);
     }
 
-    uint32_t OpenGlMaterialLibrary::GetMaterialRevision(const Assets::MaterialHandle& material) const
+    uint32_t OpenGlMaterialLibrary::GetMaterialRevision(const assets::MaterialHandle& material) const
     {
         if (m_revision_map.contains(material))
         {
@@ -57,7 +57,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         m_material_map.clear();
     }
 
-    OpenGlMaterial& OpenGlMaterialLibrary::Get(const Assets::MaterialHandle material)
+    OpenGlMaterial& OpenGlMaterialLibrary::Get(const assets::MaterialHandle material)
     {
         if (m_material_map.contains(material))
         {

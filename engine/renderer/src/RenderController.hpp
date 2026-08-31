@@ -25,19 +25,19 @@ namespace yarep::Renderer
         
         void RenderFrame(const FrameData& frame_data, std::vector<DrawAsset> draw_assets) const override;
 
-        Assets::MeshHandle GetUIMeshHandle() const override;
+        assets::MeshHandle GetUIMeshHandle() const override;
 
         [[nodiscard]] uint32_t GetDrawCalls() const override;
-        void PrepareMaterialsForGpu(const Assets::MaterialHandle& handle) const;
-        void PrepareMeshesForGpu(const Assets::MeshHandle& mesh_handle) const;
-        void PrepareTexturesForGpu(Assets::TextureHandle handle) const;
+        void PrepareMaterialsForGpu(const assets::MaterialHandle& handle) const;
+        void PrepareMeshesForGpu(const assets::MeshHandle& mesh_handle) const;
+        void PrepareTexturesForGpu(assets::TextureHandle handle) const;
 
     private:
         Environment::WindowContext m_window_context;
         AssetHandling::AssetHandler* m_asset_handler;
         std::unique_ptr<RenderFramework::IRenderer> m_renderer;
         std::vector<DrawAsset> m_debug_draw_assets;
-        Assets::MeshHandle m_ui_mesh_handle;
+        assets::MeshHandle m_ui_mesh_handle;
         
         std::shared_ptr<Resources::IGpuMaterialLibrary> m_material_library;
         std::shared_ptr<Resources::IGpuMeshLibrary> m_mesh_library;

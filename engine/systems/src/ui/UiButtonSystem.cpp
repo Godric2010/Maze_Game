@@ -23,13 +23,13 @@ namespace yarep::Systems
         m_asset_handler = ServiceLocator()->GetService<AssetHandling::AssetHandler>();
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Button>(
-            [this](const Ecs::EntityId entity, const Components::UI::Button& button)
+            [this](const ecs::EntityId entity, const Components::UI::Button& button)
             {
                 this->RegisterButtonElement(entity, button.default_color);
             }
         );
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Button>(
-            [this](const Ecs::EntityId entity)
+            [this](const ecs::EntityId entity)
             {
                 this->m_ui_cache->DeregisterColorElement(entity);
             }
@@ -38,7 +38,7 @@ namespace yarep::Systems
 
     void UiButtonSystem::Run(float delta_time)
     {
-        const Input::InputBuffer input = Input()->GetInput();
+        const input::InputBuffer input = Input()->GetInput();
         if (!input.IsMapActive("UIInputMap"))
         {
             return;
@@ -46,7 +46,7 @@ namespace yarep::Systems
         HandleButtons(input);
     }
 
-    void UiButtonSystem::RegisterButtonElement(const Ecs::EntityId entity, const glm::vec4 color) const
+    void UiButtonSystem::RegisterButtonElement(const ecs::EntityId entity, const glm::vec4 color) const
     {
         if (this->m_ui_cache == nullptr)
         {
@@ -61,7 +61,7 @@ namespace yarep::Systems
         m_ui_cache->RegisterColorElement(entity, color_element);
     }
 
-    Assets::MaterialHandle UiButtonSystem::RegisterNewUiMaterial() const
+    assets::MaterialHandle UiButtonSystem::RegisterNewUiMaterial() const
     {
         auto material_asset = AssetHandling::MaterialAsset();
         material_asset.name = std::string("UiMaterial");
@@ -75,7 +75,7 @@ namespace yarep::Systems
         return handle;
     }
 
-    bool UiButtonSystem::IsMouseOverElement(glm::vec2 mouse_pos, const Ecs::EntityId& rect_entity) const
+    bool UiButtonSystem::IsMouseOverElement(glm::vec2 mouse_pos, const ecs::EntityId& rect_entity) const
     {
         const auto cached_values = m_transform_cache->GetRectTransformValue(rect_entity);
         if (mouse_pos.x > cached_values.global_position.x &&
@@ -88,7 +88,7 @@ namespace yarep::Systems
         return false;
     }
 
-    void UiButtonSystem::HandleButtons(const Input::InputBuffer& input) const
+    void UiButtonSystem::HandleButtons(const input::InputBuffer& input) const
     {
         auto buttons_with_entities = EcsWorld()->GetComponentsOfType<Components::UI::Button>();
         for (auto [button, entity] : buttons_with_entities)
@@ -112,7 +112,7 @@ namespace yarep::Systems
                 }
                 else if (input.HasAction("UiButtonUp"))
                 {
-                    const auto command = Commands::UI::ButtonClickedCommand(button->button_id);
+                    const auto command = commands::ui::ButtonClickedCommand(button->button_id);
                     EcsWorld()->PushCommand(command);
                 }
             }

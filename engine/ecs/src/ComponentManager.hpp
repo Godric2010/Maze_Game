@@ -13,7 +13,7 @@
 #include "ComponentPool.hpp"
 #include "Entity.hpp"
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     using ComponentTypeId = std::size_t;
 
     class ComponentManager;

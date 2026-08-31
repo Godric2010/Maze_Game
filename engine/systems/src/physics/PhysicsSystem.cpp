@@ -34,7 +34,7 @@ namespace yarep::Systems::Physics
         m_transform_cache = Cache()->GetTransformCache();
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::BoxCollider>(
-            [this](const Ecs::EntityId entity, const Components::BoxCollider& box_collider)
+            [this](const ecs::EntityId entity, const Components::BoxCollider& box_collider)
             {
                 const Components::Transform* transform = EcsWorld()->GetComponent<Components::Transform>(entity);
                 this->BuildBoxCollider(entity,
@@ -47,14 +47,14 @@ namespace yarep::Systems::Physics
         );
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::BoxCollider>(
-            [this](const Ecs::EntityId entity)
+            [this](const ecs::EntityId entity)
             {
                 this->m_collider_cache->box_colliders.erase(entity);
             }
         );
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::SphereCollider>(
-            [this](const Ecs::EntityId entity, const Components::SphereCollider& sphere_collider)
+            [this](const ecs::EntityId entity, const Components::SphereCollider& sphere_collider)
             {
                 const Components::Transform* transform = EcsWorld()->GetComponent<Components::Transform>(entity);
                 this->BuildSphereCollider(entity, sphere_collider, transform->GetPosition());
@@ -93,8 +93,8 @@ namespace yarep::Systems::Physics
             const float radius = it_sphere->second.world_sphere.radius;
             it_sphere->second.world_sphere.center = old_position;
 
-            std::vector<Ecs::EntityId> blocking_candidates;
-            std::vector<Ecs::EntityId> trigger_candidates;
+            std::vector<ecs::EntityId> blocking_candidates;
+            std::vector<ecs::EntityId> trigger_candidates;
             RunBroadphase(entity, radius, old_position, move_delta, blocking_candidates, trigger_candidates);
 
             glm::vec3 final_position;
@@ -110,7 +110,7 @@ namespace yarep::Systems::Physics
         }
     }
 
-    void PhysicsSystem::BuildBoxCollider(Ecs::EntityId entity, const Components::BoxCollider box_collider,
+    void PhysicsSystem::BuildBoxCollider(ecs::EntityId entity, const Components::BoxCollider box_collider,
                                          const glm::vec3& position, const glm::vec3& rotation,
                                          const glm::vec3& scale) const
     {
@@ -135,7 +135,7 @@ namespace yarep::Systems::Physics
         }
     }
 
-    void PhysicsSystem::BuildSphereCollider(Ecs::EntityId entity, const Components::SphereCollider sphere_collider,
+    void PhysicsSystem::BuildSphereCollider(ecs::EntityId entity, const Components::SphereCollider sphere_collider,
                                             const glm::vec3 position) const
     {
         Math::Sphere sphere{};
@@ -155,12 +155,12 @@ namespace yarep::Systems::Physics
         }
     }
 
-    void PhysicsSystem::RunBroadphase(const Ecs::EntityId target_entity, const float radius, const glm::vec3& position,
+    void PhysicsSystem::RunBroadphase(const ecs::EntityId target_entity, const float radius, const glm::vec3& position,
                                       const glm::vec3 move_delta,
-                                      std::vector<Ecs::EntityId>& blocking_candidates,
-                                      std::vector<Ecs::EntityId>& trigger_candidates) const
+                                      std::vector<ecs::EntityId>& blocking_candidates,
+                                      std::vector<ecs::EntityId>& trigger_candidates) const
     {
-        std::vector<Ecs::EntityId> candidates;
+        std::vector<ecs::EntityId> candidates;
         m_collision_query_service->QuerySphereSweep(position, move_delta, radius, candidates, nullptr);
 
 
@@ -202,9 +202,9 @@ namespace yarep::Systems::Physics
         }
     }
 
-    void PhysicsSystem::PerformCollisionSweep(const Ecs::EntityId target_entity,
+    void PhysicsSystem::PerformCollisionSweep(const ecs::EntityId target_entity,
                                               const glm::vec3 position, const glm::vec3 move_delta, const float radius,
-                                              const std::vector<Ecs::EntityId>& blocking_candidates,
+                                              const std::vector<ecs::EntityId>& blocking_candidates,
                                               glm::vec3* final_position)
     {
         spdlog::debug("Performing collision sweep");
@@ -220,18 +220,18 @@ namespace yarep::Systems::Physics
         RaiseCollisionEvents(target_entity, result);
     }
 
-    void PhysicsSystem::RaiseCollisionEvents(const Ecs::EntityId target_entity,
+    void PhysicsSystem::RaiseCollisionEvents(const ecs::EntityId target_entity,
                                              const Collision::MoverResult& mover_result)
     {
-        Ecs::PhysicsEvent event{};
+        ecs::PhysicsEvent event{};
         event.target_entity = target_entity;
 
-        if (!mover_result.collided && m_collided_entities[target_entity] != Ecs::INVALID_ENTITY_ID)
+        if (!mover_result.collided && m_collided_entities[target_entity] != ecs::INVALID_ENTITY_ID)
         {
             event.other_collider_entity = m_collided_entities[target_entity];
-            event.type = Ecs::PhysicsEventType::OnCollisionExit;
+            event.type = ecs::PhysicsEventType::OnCollisionExit;
             EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
-            m_collided_entities[target_entity] = Ecs::INVALID_ENTITY_ID;
+            m_collided_entities[target_entity] = ecs::INVALID_ENTITY_ID;
             return;
         }
 
@@ -242,25 +242,25 @@ namespace yarep::Systems::Physics
             {
                 return;
             }
-            if (m_collided_entities[target_entity] != Ecs::INVALID_ENTITY_ID)
+            if (m_collided_entities[target_entity] != ecs::INVALID_ENTITY_ID)
             {
                 event.other_collider_entity = m_collided_entities[target_entity];
-                event.type = Ecs::PhysicsEventType::OnCollisionExit;
+                event.type = ecs::PhysicsEventType::OnCollisionExit;
                 EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
             }
 
             event.other_collider_entity = other_collider;
-            event.type = Ecs::PhysicsEventType::OnCollisionEnter;
+            event.type = ecs::PhysicsEventType::OnCollisionEnter;
             EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
             m_collided_entities[target_entity] = event.other_collider_entity;
         }
     }
 
     void PhysicsSystem::DetectTriggerInteractions(const glm::vec3 final_position,
-                                                  const float radius, const Ecs::EntityId target_entity,
-                                                  const std::vector<Ecs::EntityId>& trigger_candidates)
+                                                  const float radius, const ecs::EntityId target_entity,
+                                                  const std::vector<ecs::EntityId>& trigger_candidates)
     {
-        std::unordered_set<Ecs::EntityId> current_inside;
+        std::unordered_set<ecs::EntityId> current_inside;
         current_inside.reserve(trigger_candidates.size());
 
         for (auto id : trigger_candidates)
@@ -288,13 +288,13 @@ namespace yarep::Systems::Physics
         RaiseTriggerEvents(target_entity, current_inside);
     }
 
-    void PhysicsSystem::RaiseTriggerEvents(Ecs::EntityId target_entity,
-                                           std::unordered_set<Ecs::EntityId>& trigger_entities)
+    void PhysicsSystem::RaiseTriggerEvents(ecs::EntityId target_entity,
+                                           std::unordered_set<ecs::EntityId>& trigger_entities)
     {
         if (!m_triggered_entities.contains(target_entity))
         {
-            Ecs::PhysicsEvent event{};
-            event.type = Ecs::PhysicsEventType::OnTriggerEnter;
+            ecs::PhysicsEvent event{};
+            event.type = ecs::PhysicsEventType::OnTriggerEnter;
             event.target_entity = target_entity;
 
             for (const auto id : trigger_entities)
@@ -305,14 +305,14 @@ namespace yarep::Systems::Physics
             m_triggered_entities.emplace(target_entity, trigger_entities);
             return;
         }
-        std::unordered_set<Ecs::EntityId> exited_triggers;
+        std::unordered_set<ecs::EntityId> exited_triggers;
         for (const auto id : m_triggered_entities[target_entity])
         {
             if (!trigger_entities.contains(id))
             {
                 exited_triggers.insert(id);
-                EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
-                        Ecs::PhysicsEventType::OnTriggerExit,
+                EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(ecs::PhysicsEvent{
+                        ecs::PhysicsEventType::OnTriggerExit,
                         target_entity,
                         id
                     }
@@ -320,14 +320,14 @@ namespace yarep::Systems::Physics
             }
         }
 
-        std::unordered_set<Ecs::EntityId> entered_triggers;
+        std::unordered_set<ecs::EntityId> entered_triggers;
         for (const auto id : trigger_entities)
         {
             if (!m_triggered_entities[target_entity].contains(id))
             {
                 entered_triggers.insert(id);
-                EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(Ecs::PhysicsEvent{
-                        Ecs::PhysicsEventType::OnTriggerEnter,
+                EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(ecs::PhysicsEvent{
+                        ecs::PhysicsEventType::OnTriggerEnter,
                         target_entity,
                         id
                     }

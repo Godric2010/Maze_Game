@@ -3,7 +3,7 @@
 #include "ComponentPool.hpp"
 #include <limits>
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     template<class T>
     ComponentPool<
         T>::ComponentPool(const std::size_t component_type_id) : m_none(std::numeric_limits<uint64_t>::max()),

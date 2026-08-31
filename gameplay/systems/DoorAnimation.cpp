@@ -7,11 +7,11 @@ namespace gameplay::systems {
         ISystem::Initialize();
     }
 
-    void DoorAnimation::OnTriggerEnter(const yarep::Ecs::EntityId& target, const yarep::Ecs::EntityId& other) {
+    void DoorAnimation::OnTriggerEnter(const yarep::ecs::EntityId& target, const yarep::ecs::EntityId& other) {
         CheckIfPlayerHasKey(target, other);
     }
 
-    void DoorAnimation::OnTriggerExit(const yarep::Ecs::EntityId& target, const yarep::Ecs::EntityId& other) {
+    void DoorAnimation::OnTriggerExit(const yarep::ecs::EntityId& target, const yarep::ecs::EntityId& other) {
         const auto is_player = GameWorld()->GetComponent<components::Inventory>(target) != nullptr;
         const auto door_trigger = GameWorld()->GetComponent<components::DoorTrigger>(other);
         if (!is_player || door_trigger == nullptr) {
@@ -71,8 +71,8 @@ namespace gameplay::systems {
         }
     }
 
-    void DoorAnimation::CheckIfPlayerHasKey(const yarep::Ecs::EntityId target,
-                                            const yarep::Ecs::EntityId door_trigger_entity) {
+    void DoorAnimation::CheckIfPlayerHasKey(const yarep::ecs::EntityId target,
+                                            const yarep::ecs::EntityId door_trigger_entity) {
         const auto player_inventory = GameWorld()->GetComponent<components::Inventory>(target);
         const auto door_trigger = GameWorld()->GetComponent<components::DoorTrigger>(door_trigger_entity);
 

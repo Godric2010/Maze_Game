@@ -10,7 +10,7 @@ struct App {
     ~App() = default;
 
     void Initialize() {
-        const std::vector<yarep::Ecs::SystemMeta> systems = MazeGame::GetSystemsFromGeneratedSource();
+        const std::vector<yarep::ecs::SystemMeta> systems = MazeGame::GetSystemsFromGeneratedSource();
         m_engine_controller = std::make_unique<yarep::Core::EngineController>();
         m_engine_controller->Initialize(systems);
 

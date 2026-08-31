@@ -12,16 +12,16 @@ public:
     {
     }
 
-    void RegisterScene(const std::string& name, yarep::SceneManagement::SceneFactory scene_factory) override
+    void RegisterScene(const std::string& name, yarep::scene_management::SceneFactory scene_factory) override
     {
     }
 
-    void SetInitialScene(const std::string& name, const yarep::SceneManagement::SceneArgs& args) override
+    void SetInitialScene(const std::string& name, const yarep::scene_management::SceneArgs& args) override
     {
     }
 };
 
-class FakeInput : public yarep::Input::IInput
+class FakeInput : public yarep::input::IInput
 {
 public:
     void EnableInputMap(const std::string& map_name) override
@@ -36,18 +36,18 @@ public:
     {
     }
 
-    yarep::Input::InputBuffer GetInput() override
+    yarep::input::InputBuffer GetInput() override
     {
         return {};
     }
 };
 
-class FakeSystemManager : public yarep::Ecs::ISystemManager
+class FakeSystemManager : public yarep::ecs::ISystemManager
 {
 public:
     ~FakeSystemManager() override = default;
 
-    void RegisterSystems(yarep::Ecs::World* world, yarep::Input::IInput* input) override
+    void RegisterSystems(yarep::ecs::World* world, yarep::input::IInput* input) override
     {
     }
 
@@ -73,47 +73,47 @@ public:
     }
 };
 
-class FakeAssetLibrary : public yarep::Assets::IAssetLibrary
+class FakeAssetLibrary : public yarep::assets::IAssetLibrary
 {
 public:
     ~FakeAssetLibrary() override = default;
 
-    yarep::Assets::MeshHandle LoadMesh(const std::string& name) override
+    yarep::assets::MeshHandle LoadMesh(const std::string& name) override
     {
         return {};
     }
 
-    yarep::Assets::MaterialHandle LoadMaterial(const std::string& name) override
+    yarep::assets::MaterialHandle LoadMaterial(const std::string& name) override
     {
         return {};
     }
 
-    yarep::Assets::TextureHandle LoadTexture(const std::string& name) override
+    yarep::assets::TextureHandle LoadTexture(const std::string& name) override
     {
         return {};
     }
 
-    std::optional<yarep::Assets::FontHandle> FindFont(const std::string& name) override
+    std::optional<yarep::assets::FontHandle> FindFont(const std::string& name) override
     {
         return {};
     }
 
-    std::optional<yarep::Assets::MaterialHandle> FindMaterial(const std::string& name) override
+    std::optional<yarep::assets::MaterialHandle> FindMaterial(const std::string& name) override
     {
         return {};
     }
 
-    std::optional<yarep::Assets::MeshHandle> FindMesh(const std::string& name) override
+    std::optional<yarep::assets::MeshHandle> FindMesh(const std::string& name) override
     {
         return {};
     }
 
-    std::optional<yarep::Assets::TextureHandle> FindTexture(const std::string& name) override
+    std::optional<yarep::assets::TextureHandle> FindTexture(const std::string& name) override
     {
         return {};
     }
 
-    std::optional<yarep::Assets::ShaderHandle> FindShader(const std::string& name) override
+    std::optional<yarep::assets::ShaderHandle> FindShader(const std::string& name) override
     {
         return {};
     }

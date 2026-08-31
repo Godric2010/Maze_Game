@@ -33,9 +33,9 @@ namespace gameplay
     {
         for (const std::any& command : commands)
         {
-            if (command.type() == typeid(yarep::Commands::UI::ButtonClickedCommand))
+            if (command.type() == typeid(yarep::commands::ui::ButtonClickedCommand))
             {
-                auto button_clicked = std::any_cast<yarep::Commands::UI::ButtonClickedCommand>(command);
+                auto button_clicked = std::any_cast<yarep::commands::ui::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
                 switch (m_menu_state)
                 {
@@ -95,7 +95,7 @@ namespace gameplay
         m_menu_state = new_state;
     }
 
-    yarep::Ecs::EntityId MainMenuScene::CreateMenuBackground() const
+    yarep::ecs::EntityId MainMenuScene::CreateMenuBackground() const
     {
         const auto bg_entity = World().CreateEntity("MenuBackground");
         const auto screen = Screen();
@@ -112,10 +112,10 @@ namespace gameplay
         return bg_entity;
     }
 
-    yarep::Ecs::EntityId MainMenuScene::CreateMenuText(const std::string& content, const std::string& font_name,
+    yarep::ecs::EntityId MainMenuScene::CreateMenuText(const std::string& content, const std::string& font_name,
                                                         const int font_size,
                                                         const glm::vec2 pos, const glm::vec2 size,
-                                                        const yarep::Ecs::EntityId parent_entity)
+                                                        const yarep::ecs::EntityId parent_entity)
     {
         const auto text_entity = World().CreateEntity("MenuText_" + content);
         const auto text_transform = yarep::Components::UI::RectTransform()
@@ -134,9 +134,9 @@ namespace gameplay
         return text_entity;
     }
 
-    yarep::Ecs::EntityId MainMenuScene::CreateMenuButton(const std::string& name, uint32_t button_id, glm::vec2 pos,
+    yarep::ecs::EntityId MainMenuScene::CreateMenuButton(const std::string& name, uint32_t button_id, glm::vec2 pos,
                                                           const std::string& content,
-                                                          yarep::Ecs::EntityId parent_entity)
+                                                          yarep::ecs::EntityId parent_entity)
     {
         constexpr auto button_size = glm::vec2(200, 70);
         const auto button_entity = World().CreateEntity(name);
@@ -221,7 +221,7 @@ namespace gameplay
         if (button_id == m_easy_difficulty_button)
         {
             SceneManager().LoadScene("Game",
-                                     yarep::SceneManagement::SceneArgs{
+                                     yarep::scene_management::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Easy
                                          }
@@ -231,7 +231,7 @@ namespace gameplay
         else if (button_id == m_medium_difficulty_button)
         {
             SceneManager().LoadScene("Game",
-                                     yarep::SceneManagement::SceneArgs{
+                                     yarep::scene_management::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Medium
                                          }
@@ -241,7 +241,7 @@ namespace gameplay
         else if (button_id == m_hard_difficulty_button)
         {
             SceneManager().LoadScene("Game",
-                                     yarep::SceneManagement::SceneArgs{
+                                     yarep::scene_management::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Hard
                                          }
@@ -255,7 +255,7 @@ namespace gameplay
         else if (button_id == m_dev_scene_button)
         {
             SceneManager().LoadScene("Game",
-                                     yarep::SceneManagement::SceneArgs{
+                                     yarep::scene_management::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Developer
                                          }

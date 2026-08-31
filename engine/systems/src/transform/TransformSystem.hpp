@@ -6,7 +6,7 @@
 ECS_SYSTEM(TransformSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
 namespace yarep::Systems {
-    class TransformSystem : public Ecs::IEngineSystem {
+    class TransformSystem : public ecs::IEngineSystem {
     public:
         TransformSystem();
 

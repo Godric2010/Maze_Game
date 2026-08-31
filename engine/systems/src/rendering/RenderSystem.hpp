@@ -13,7 +13,7 @@ ECS_SYSTEM(RenderSystem,
         )
 
 namespace yarep::Systems {
-    class RenderSystem : public Ecs::IEngineSystem {
+    class RenderSystem : public ecs::IEngineSystem {
     public:
         RenderSystem();
 
@@ -27,12 +27,12 @@ namespace yarep::Systems {
         const Renderer::IRenderController* m_render_controller{};
         const AssetHandling::AssetHandler* m_asset_handler{};
         std::vector<Renderer::DrawAsset> m_draw_assets;
-        std::unordered_map<Ecs::EntityId, Renderer::DrawAsset> m_draw_asset_map;
-        std::unordered_map<Ecs::EntityId, Renderer::DrawAsset> m_ui_draw_asset_map;
-        std::unordered_map<Ecs::EntityId, Renderer::DrawAsset> m_ui_text_asset_map;
+        std::unordered_map<ecs::EntityId, Renderer::DrawAsset> m_draw_asset_map;
+        std::unordered_map<ecs::EntityId, Renderer::DrawAsset> m_ui_draw_asset_map;
+        std::unordered_map<ecs::EntityId, Renderer::DrawAsset> m_ui_text_asset_map;
         Renderer::AmbientLightAsset m_ambient_light{};
 
-        Renderer::CameraAsset CreateCameraAsset(const Ecs::EntityId& camera_entity,
+        Renderer::CameraAsset CreateCameraAsset(const ecs::EntityId& camera_entity,
                                                 const Components::Transform* camera_transform) const;
 
         void ClearDrawAssets();
@@ -45,10 +45,10 @@ namespace yarep::Systems {
 
         void FillUiDrawAssets();
 
-        void RegisterDrawAssets(const Ecs::EntityId& entity, const Components::MeshRenderer& mesh_renderer);
+        void RegisterDrawAssets(const ecs::EntityId& entity, const Components::MeshRenderer& mesh_renderer);
 
-        void RegisterColorUiAssets(const Ecs::EntityId& entity);
+        void RegisterColorUiAssets(const ecs::EntityId& entity);
 
-        void RegisterTextUiAssets(const Ecs::EntityId& entity);
+        void RegisterTextUiAssets(const ecs::EntityId& entity);
     };
 } // namespace

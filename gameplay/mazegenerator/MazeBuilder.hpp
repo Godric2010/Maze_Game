@@ -10,7 +10,7 @@
 namespace gameplay::maze_generator {
     class MazeBuilder {
     public:
-        MazeBuilder(yarep::SceneManagement::SceneWorld* game_world, yarep::Assets::IAssetLibrary* renderer,
+        MazeBuilder(yarep::scene_management::SceneWorld* game_world, yarep::assets::IAssetLibrary* renderer,
                     bool enable_debug_view);
 
         ~MazeBuilder() = default;
@@ -20,26 +20,26 @@ namespace gameplay::maze_generator {
         glm::vec3 GetMazeStartPosition() const;
 
     private:
-        yarep::SceneManagement::SceneWorld* m_game_world;
-        yarep::Assets::IAssetLibrary* m_assets;
+        yarep::scene_management::SceneWorld* m_game_world;
+        yarep::assets::IAssetLibrary* m_assets;
         std::unique_ptr<MazeAlgorithm> m_maze_algorithm;
         std::unique_ptr<DebugGridDrawer> m_debug_grid_drawer;
         Maze m_maze;
-        yarep::Assets::MeshHandle m_floor_mesh;
-        yarep::Assets::MeshHandle m_wall_mesh;
-        yarep::Assets::MeshHandle m_ceiling_mesh;
-        yarep::Assets::MeshHandle m_key_mesh;
-        yarep::Assets::MeshHandle m_door_frame;
-        yarep::Assets::MeshHandle m_door;
-        yarep::Assets::MaterialHandle m_default_material;
-        yarep::Assets::MaterialHandle m_key_material;
-        yarep::Assets::MaterialHandle m_start_material;
-        yarep::Assets::MaterialHandle m_exit_material;
-        yarep::Assets::MaterialHandle m_wall_material;
-        yarep::Assets::MaterialHandle m_ceiling_material;
-        yarep::Assets::MaterialHandle m_door_material;
+        yarep::assets::MeshHandle m_floor_mesh;
+        yarep::assets::MeshHandle m_wall_mesh;
+        yarep::assets::MeshHandle m_ceiling_mesh;
+        yarep::assets::MeshHandle m_key_mesh;
+        yarep::assets::MeshHandle m_door_frame;
+        yarep::assets::MeshHandle m_door;
+        yarep::assets::MaterialHandle m_default_material;
+        yarep::assets::MaterialHandle m_key_material;
+        yarep::assets::MaterialHandle m_start_material;
+        yarep::assets::MaterialHandle m_exit_material;
+        yarep::assets::MaterialHandle m_wall_material;
+        yarep::assets::MaterialHandle m_ceiling_material;
+        yarep::assets::MaterialHandle m_door_material;
 
-        void CreateCellFloorTile(const CellIndex& cell_idx, yarep::Assets::MaterialHandle material) const;
+        void CreateCellFloorTile(const CellIndex& cell_idx, yarep::assets::MaterialHandle material) const;
 
         void CreateWallTile(const CellIndex& cell_idx, const Direction& direction) const;
 
@@ -47,7 +47,7 @@ namespace gameplay::maze_generator {
 
         void CreateCeilingTile(const CellIndex& cell_idx) const;
 
-        [[nodiscard]] yarep::Assets::MaterialHandle DetermineFloorMaterialForCell(const CellIndex& cell_idx) const;
+        [[nodiscard]] yarep::assets::MaterialHandle DetermineFloorMaterialForCell(const CellIndex& cell_idx) const;
 
         void CreateCellObjects() const;
 

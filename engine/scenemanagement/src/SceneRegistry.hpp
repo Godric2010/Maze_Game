@@ -5,7 +5,7 @@
 #include "../include/IScene.hpp"
 #include "Scene/SceneArgs.hpp"
 
-namespace yarep::SceneManagement {
+namespace yarep::scene_management {
     class SceneRegistry {
     public:
         SceneRegistry() = default;

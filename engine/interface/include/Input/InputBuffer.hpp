@@ -5,7 +5,7 @@
 
 #include "Input/InputTypes.hpp"
 
-namespace yarep::Input {
+namespace yarep::input {
     struct InputBuffer {
         std::set<std::string> active_map_names;
         std::vector<InputAction> actions;

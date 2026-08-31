@@ -22,21 +22,21 @@ namespace yarep::Systems
         m_asset_handler = ServiceLocator()->GetService<AssetHandling::AssetHandler>();
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Text>(
-             [this](const Ecs::EntityId entity, const Components::UI::Text& _)
+             [this](const ecs::EntityId entity, const Components::UI::Text& _)
              {
                  this->RegisterTextElement(entity);
              }
 
             );
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Text>(
-             [this](const Ecs::EntityId entity)
+             [this](const ecs::EntityId entity)
              {
                  this->m_ui_cache->DeregisterTextElement(entity);
              }
             );
     }
 
-    void UiTextSystem::RegisterTextElement(Ecs::EntityId entity) const
+    void UiTextSystem::RegisterTextElement(ecs::EntityId entity) const
     {
         if (this->m_ui_cache == nullptr)
         {
@@ -54,7 +54,7 @@ namespace yarep::Systems
         m_ui_cache->RegisterTextElement(entity, text_element);
     }
 
-    Assets::MaterialHandle UiTextSystem::RegisterNewUiMaterial() const
+    assets::MaterialHandle UiTextSystem::RegisterNewUiMaterial() const
     {
         auto material_asset = AssetHandling::MaterialAsset();
         material_asset.name = std::string("UiTextMaterial");
@@ -122,7 +122,7 @@ namespace yarep::Systems
         }
     }
 
-    void UiTextSystem::UpdateTextMesh(const Ecs::EntityId entity, UiCache::TextElement text_element,
+    void UiTextSystem::UpdateTextMesh(const ecs::EntityId entity, UiCache::TextElement text_element,
                                       const Components::UI::Text* text) const
     {
         if (!text_element.font_handle.has_value())

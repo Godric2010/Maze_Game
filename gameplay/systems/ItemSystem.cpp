@@ -12,12 +12,12 @@ namespace gameplay::systems {
     void ItemSystem::Run(float delta_time) {
     }
 
-    void ItemSystem::OnCollisionEnter(const yarep::Ecs::EntityId& target, const yarep::Ecs::EntityId& other) {
+    void ItemSystem::OnCollisionEnter(const yarep::ecs::EntityId& target, const yarep::ecs::EntityId& other) {
         CheckIfItemGotPickedUp(target, other);
     }
 
-    void ItemSystem::CheckIfItemGotPickedUp(const yarep::Ecs::EntityId target_entity,
-                                            const yarep::Ecs::EntityId potential_item_entity) const {
+    void ItemSystem::CheckIfItemGotPickedUp(const yarep::ecs::EntityId target_entity,
+                                            const yarep::ecs::EntityId potential_item_entity) const {
         const auto player_inventory = GameWorld()->GetComponent<components::Inventory>(target_entity);
         const auto is_key_item = GameWorld()->GetComponent<components::KeyItem>(potential_item_entity) != nullptr;
 
@@ -25,7 +25,7 @@ namespace gameplay::systems {
             player_inventory->key_collected = true;
             GameWorld()->DestroyEntity(potential_item_entity);
             const auto ui_entity = GameWorld()->GetEntityByName("KeyIndicator");
-            if (ui_entity == yarep::Ecs::INVALID_ENTITY_ID) {
+            if (ui_entity == yarep::ecs::INVALID_ENTITY_ID) {
                 return;
             }
             const auto image_ui = GameWorld()->GetComponent<yarep::Components::UI::Image>(ui_entity);

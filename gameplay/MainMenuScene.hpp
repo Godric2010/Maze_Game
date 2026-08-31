@@ -8,7 +8,7 @@ namespace gameplay {
         DifficultySelect,
     };
 
-    class MainMenuScene : public yarep::SceneManagement::IScene {
+    class MainMenuScene : public yarep::scene_management::IScene {
     public:
         explicit MainMenuScene();
 
@@ -21,8 +21,8 @@ namespace gameplay {
         void OnExit() override;
 
     private:
-        yarep::Ecs::EntityId m_background_entity = yarep::Ecs::INVALID_ENTITY_ID;
-        std::vector<yarep::Ecs::EntityId> m_active_state_entities;
+        yarep::ecs::EntityId m_background_entity = yarep::ecs::INVALID_ENTITY_ID;
+        std::vector<yarep::ecs::EntityId> m_active_state_entities;
         const int m_start_game_button = 1;
         const int m_quit_button = 2;
 
@@ -43,14 +43,14 @@ namespace gameplay {
 
         void SwitchUiElements(MenuState new_state);
 
-        yarep::Ecs::EntityId CreateMenuBackground() const;
+        yarep::ecs::EntityId CreateMenuBackground() const;
 
-        yarep::Ecs::EntityId CreateMenuText(const std::string &content, const std::string &font_name, int font_size,
+        yarep::ecs::EntityId CreateMenuText(const std::string &content, const std::string &font_name, int font_size,
                                              glm::vec2 pos,
-                                             glm::vec2 size, yarep::Ecs::EntityId parent_entity);
+                                             glm::vec2 size, yarep::ecs::EntityId parent_entity);
 
-        yarep::Ecs::EntityId CreateMenuButton(const std::string &name, uint32_t button_id, glm::vec2 pos,
-                                               const std::string &content, yarep::Ecs::EntityId parent_entity);
+        yarep::ecs::EntityId CreateMenuButton(const std::string &name, uint32_t button_id, glm::vec2 pos,
+                                               const std::string &content, yarep::ecs::EntityId parent_entity);
 
         void CreateMainMenuUiElements();
 

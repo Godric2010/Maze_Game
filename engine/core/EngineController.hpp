@@ -29,7 +29,7 @@ namespace yarep::Core {
         /**
          * Initialize the engine backend
          */
-        void Initialize(const std::vector<Ecs::SystemMeta>& systems);
+        void Initialize(const std::vector<ecs::SystemMeta>& systems);
 
         /**
          * Update the engines systems, like drawing, the objects in the world, etc.
@@ -43,9 +43,9 @@ namespace yarep::Core {
 
         void Quit() override;
 
-        void RegisterScene(const std::string& name, SceneManagement::SceneFactory scene_factory) override;
+        void RegisterScene(const std::string& name, scene_management::SceneFactory scene_factory) override;
 
-        void SetInitialScene(const std::string& name, const SceneManagement::SceneArgs& args) override;
+        void SetInitialScene(const std::string& name, const scene_management::SceneArgs& args) override;
 
     private:
         void SetupWindow(const Settings::EngineSettings& settings);
@@ -59,12 +59,12 @@ namespace yarep::Core {
         std::unique_ptr<ServiceLocator> m_services;
         std::unique_ptr<Environment::IWindow> m_window;
         std::unique_ptr<Environment::Files::IFileManager> m_file_manager;
-        std::unique_ptr<Ecs::SystemManager> m_system_manager;
+        std::unique_ptr<ecs::SystemManager> m_system_manager;
         std::unique_ptr<Systems::ICacheManager> m_cache_manager;
-        std::unique_ptr<Input::IInputManager> m_input_manager;
+        std::unique_ptr<input::IInputManager> m_input_manager;
         std::unique_ptr<Debug::IDebugConsole> m_debug_console;
 
-        std::unique_ptr<SceneManagement::SceneManager> m_scene_manager;
+        std::unique_ptr<scene_management::SceneManager> m_scene_manager;
 
         bool m_is_running = true;
         std::string m_initial_scene_name;

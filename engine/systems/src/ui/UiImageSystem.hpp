@@ -10,7 +10,7 @@
 namespace yarep::Systems {
     ECS_SYSTEM(UiImageSystem, Ui, TAGS(ENGINE), DEPENDENCIES())
 
-    class UiImageSystem : public Ecs::IEngineSystem {
+    class UiImageSystem : public ecs::IEngineSystem {
     public:
         UiImageSystem();
 
@@ -26,8 +26,8 @@ namespace yarep::Systems {
         Renderer::IRenderController* m_render_controller = nullptr;
         AssetHandling::AssetHandler* m_asset_handler = nullptr;
 
-        void RegisterImageElement(Ecs::EntityId entity, glm::vec4 color) const;
+        void RegisterImageElement(ecs::EntityId entity, glm::vec4 color) const;
 
-        Assets::MaterialHandle RegisterNewUiMaterial() const;
+        assets::MaterialHandle RegisterNewUiMaterial() const;
     };
 } // namespace

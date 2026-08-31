@@ -13,8 +13,8 @@
 #include "Assets/IAssetLibrary.hpp"
 
 namespace gameplay::maze_generator {
-    MazeBuilder::MazeBuilder(yarep::SceneManagement::SceneWorld* game_world,
-                             yarep::Assets::IAssetLibrary* renderer,
+    MazeBuilder::MazeBuilder(yarep::scene_management::SceneWorld* game_world,
+                             yarep::assets::IAssetLibrary* renderer,
                              const bool enable_debug_view) : m_maze() {
         m_game_world = game_world;
         m_assets = renderer;
@@ -189,7 +189,7 @@ namespace gameplay::maze_generator {
 
     void MazeBuilder::CreateCellFloorTile(
             const CellIndex& cell_idx,
-            yarep::Assets::MaterialHandle material) const {
+            yarep::assets::MaterialHandle material) const {
         const auto entity = m_game_world->CreateEntity(std::format("FloorTile [{}|{}]", cell_idx.x, cell_idx.y));
         const auto mesh_component = yarep::Components::MeshRenderer{
             .Mesh = m_floor_mesh,
@@ -337,7 +337,7 @@ namespace gameplay::maze_generator {
         m_game_world->AddComponent(entity, transform_component);
     }
 
-    yarep::Assets::MaterialHandle MazeBuilder::DetermineFloorMaterialForCell(const CellIndex& cell_idx) const {
+    yarep::assets::MaterialHandle MazeBuilder::DetermineFloorMaterialForCell(const CellIndex& cell_idx) const {
         auto material = m_default_material;
         if (cell_idx == m_maze.entrance_cell) {
             material = m_start_material;

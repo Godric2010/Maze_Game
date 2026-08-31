@@ -5,7 +5,7 @@
 #pragma once
 #include "../Entity.hpp"
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     enum class PhysicsEventType {
         OnCollisionEnter,
         OnCollisionExit,

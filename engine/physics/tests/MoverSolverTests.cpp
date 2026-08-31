@@ -18,7 +18,7 @@ using namespace yarep::Physics;
 
 TEST_CASE("MoverSolver stops at wall and slides", "[Physics]") {
     FakeCollisionQueryService query_service;
-    yarep::Ecs::EntityId entity = 1ull;
+    yarep::ecs::EntityId entity = 1ull;
     query_service.aabbs.emplace(entity, Math::AABB{{-1, -1, 0}, {1, 1, 2}});
     std::vector candidates = {entity};
 

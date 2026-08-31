@@ -38,8 +38,8 @@ namespace gameplay::systems
         CalculateNewTransform(player_entity, input, delta_time);
     }
 
-    void PlayerControllerSystem::CalculateNewTransform(const yarep::Ecs::EntityId player_entity,
-                                                       const yarep::Input::InputBuffer& input,
+    void PlayerControllerSystem::CalculateNewTransform(const yarep::ecs::EntityId player_entity,
+                                                       const yarep::input::InputBuffer& input,
                                                        const float delta_time) const
     {
         const auto transform = GameWorld()->GetComponent<yarep::Components::Transform>(player_entity);

@@ -9,7 +9,7 @@
 #include <vector>
 #include "World.hpp"
 
-namespace yarep::Ecs {
+namespace yarep::ecs {
     class SystemWorld {
     public:
         explicit SystemWorld(World* ecs_world) {

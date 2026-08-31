@@ -7,7 +7,7 @@ namespace yarep::Systems {
 
     void CameraSystem::Initialize() {
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::Camera>(
-                [this](const Ecs::EntityId entity, const Components::Camera& _) {
+                [this](const ecs::EntityId entity, const Components::Camera& _) {
                     if (this->Cache()->GetCameraCache() == nullptr) {
                         throw std::runtime_error("CameraSystem::Initialize() - cache is null");
                     }
@@ -15,7 +15,7 @@ namespace yarep::Systems {
                 }
                 );
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::Camera>(
-                [this](const Ecs::EntityId entity) {
+                [this](const ecs::EntityId entity) {
                     this->Cache()->GetCameraCache()->DeregisterEntity(entity);
                 }
                 );

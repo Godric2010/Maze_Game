@@ -9,15 +9,15 @@
 #include "Input/IInput.hpp"
 #include "Scene/ISceneManager.hpp"
 
-namespace yarep::SceneManagement {
+namespace yarep::scene_management {
     struct SceneContext {
         IApplication& app;
         ISceneManager& scene_manager;
-        Assets::IAssetLibrary& asset_library;
-        Ecs::World& world;
+        assets::IAssetLibrary& asset_library;
+        ecs::World& world;
         SceneWorld& game_world;
-        Ecs::ISystemManager& system_manager;
-        Input::IInput& input;
+        ecs::ISystemManager& system_manager;
+        input::IInput& input;
         float screen_width;
         float screen_height;
     };

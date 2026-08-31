@@ -14,7 +14,7 @@ namespace yarep::Systems {
         uint8_t parent_layer;
     };
 
-    class RectTransformSystem : public Ecs::IEngineSystem {
+    class RectTransformSystem : public ecs::IEngineSystem {
     public:
         RectTransformSystem() = default;
 
@@ -31,7 +31,7 @@ namespace yarep::Systems {
 
         static Transform::RectTransformCacheValue CreateUiLayoutResult(const LayoutData& rect_layout);
 
-        Transform::RectTransformCacheValue GetParentLayoutResult(const Ecs::EntityId& parent_entity);
+        Transform::RectTransformCacheValue GetParentLayoutResult(const ecs::EntityId& parent_entity);
 
         glm::vec2 m_world_origin = glm::vec2(0.0f);
         glm::vec2 m_world_scale = glm::vec2(1920, 1080);

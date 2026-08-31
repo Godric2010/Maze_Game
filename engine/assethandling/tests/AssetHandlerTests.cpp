@@ -20,7 +20,7 @@ namespace yarep::AssetHandling
     template <>
     struct AssetTraits<TestAsset>
     {
-        using Handle = Assets::AssetId<struct TestTag>;
+        using Handle = assets::AssetId<struct TestTag>;
 
         static TestAsset Load(AssetLoadContext, const std::string& name)
         {

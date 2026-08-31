@@ -7,7 +7,7 @@
 #include <functional>
 #include <memory>
 
-namespace yarep::SceneManagement {
+namespace yarep::scene_management {
     struct SceneArgs {
         std::any payload;
     };

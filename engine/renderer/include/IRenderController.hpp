@@ -18,7 +18,7 @@ namespace yarep::Renderer
 
         virtual void RenderFrame(const FrameData& frame_data, std::vector<DrawAsset> draw_assets) const = 0;
 
-        virtual Assets::MeshHandle GetUIMeshHandle() const = 0;
+        virtual assets::MeshHandle GetUIMeshHandle() const = 0;
 
         [[nodiscard]] virtual uint32_t GetDrawCalls() const = 0;
     };

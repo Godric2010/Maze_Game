@@ -14,21 +14,21 @@ namespace yarep::Renderer::RenderFramework::OpenGl
 
         ~OpenGLTextureLibrary() override;
 
-        void AddTexture(const Assets::TextureHandle& texture_handle,
+        void AddTexture(const assets::TextureHandle& texture_handle,
                         const AssetHandling::TextureAsset& texture_asset, uint32_t revision) override;
 
-        void RemoveTexture(const Assets::TextureHandle& texture_handle) override;
+        void RemoveTexture(const assets::TextureHandle& texture_handle) override;
 
-        bool HasTexture(const Assets::TextureHandle& texture_handle) const override;
+        bool HasTexture(const assets::TextureHandle& texture_handle) const override;
         
-        uint32_t GetTextureRevision(const Assets::TextureHandle& texture_handle) const override;
+        uint32_t GetTextureRevision(const assets::TextureHandle& texture_handle) const override;
         
         void ClearTextures() override;
 
-        OpenGLTexture& GetTexture(const Assets::TextureHandle& texture_handle);
+        OpenGLTexture& GetTexture(const assets::TextureHandle& texture_handle);
 
     private:
-        std::unordered_map<Assets::TextureHandle, OpenGLTexture> m_textures;
-        std::unordered_map<Assets::TextureHandle, uint32_t> m_texture_revisions;
+        std::unordered_map<assets::TextureHandle, OpenGLTexture> m_textures;
+        std::unordered_map<assets::TextureHandle, uint32_t> m_texture_revisions;
     };
 } // namespace

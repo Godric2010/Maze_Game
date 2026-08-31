@@ -15,7 +15,7 @@ namespace yarep::Physics::Collision {
     };
 
     struct BroadphaseProxy {
-        Ecs::EntityId entity{};
+        ecs::EntityId entity{};
         Math::AABB aabb{};
         uint32_t category_bits{0xFFFFFFFF};
         uint32_t mask_bits{0xFFFFFFFF};
@@ -28,10 +28,10 @@ namespace yarep::Physics::Collision {
 
         virtual void Insert(const BroadphaseProxy& proxy) = 0;
 
-        virtual void Remove(Ecs::EntityId entity) = 0;
+        virtual void Remove(ecs::EntityId entity) = 0;
 
-        virtual void Update(Ecs::EntityId entity, const Math::AABB& new_aabb) = 0;
+        virtual void Update(ecs::EntityId entity, const Math::AABB& new_aabb) = 0;
 
-        virtual void QueryAabb(const Math::AABB& area, std::vector<Ecs::EntityId>& out, const QueryFilter* filter) = 0;
+        virtual void QueryAabb(const Math::AABB& area, std::vector<ecs::EntityId>& out, const QueryFilter* filter) = 0;
     };
 }

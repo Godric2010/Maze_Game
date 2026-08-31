@@ -6,7 +6,7 @@
 #include <ranges>
 #include "../include/ComponentEventBus.hpp"
 
-namespace yarep::Ecs
+namespace yarep::ecs
 {
     inline ComponentManager::ComponentManager() = default;
 

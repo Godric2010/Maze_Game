@@ -8,8 +8,8 @@ namespace yarep::Debug
 {
     struct TextMeshElement
     {
-        Assets::MeshHandle mesh_handle;
-        Assets::MaterialHandle material_handle;
+        assets::MeshHandle mesh_handle;
+        assets::MaterialHandle material_handle;
         float width;
         float height;
     };
@@ -46,7 +46,7 @@ namespace yarep::Debug
 
         const int m_font_size = 24;
         Text::FontHandle m_font_handle;
-        Assets::TextureHandle m_texture_handle;
+        assets::TextureHandle m_texture_handle;
 
         uint8_t m_current_label_id = 0;
         std::unordered_map<std::string, uint8_t> m_label_id_map;

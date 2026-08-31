@@ -4,7 +4,7 @@
 namespace yarep::Systems {
     void RectTransformSystem::Initialize() {
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::RectTransform>(
-                [this](const Ecs::EntityId entity, const Components::UI::RectTransform& _) {
+                [this](const ecs::EntityId entity, const Components::UI::RectTransform& _) {
                     if (this->Cache()->GetTransformCache() == nullptr) {
                         throw std::runtime_error("TransformSystem: Transform cache is null");
                     }
@@ -13,7 +13,7 @@ namespace yarep::Systems {
                 );
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::RectTransform>(
-                [this](const Ecs::EntityId entity) {
+                [this](const ecs::EntityId entity) {
                     this->Cache()->GetTransformCache()->DeregisterRectTransformEntity(entity);
                 }
                 );
@@ -96,7 +96,7 @@ namespace yarep::Systems {
         return result;
     }
 
-    Transform::RectTransformCacheValue RectTransformSystem::GetParentLayoutResult(const Ecs::EntityId& parent_entity) {
+    Transform::RectTransformCacheValue RectTransformSystem::GetParentLayoutResult(const ecs::EntityId& parent_entity) {
         const auto parent_rect_transform = EcsWorld()->GetComponent<Components::UI::RectTransform>(parent_entity);
         const auto rect_transform_cache = Cache()->GetTransformCache()->GetRectTransformValue(parent_entity);
         if (parent_rect_transform->GetVersion() == rect_transform_cache.last_version) {

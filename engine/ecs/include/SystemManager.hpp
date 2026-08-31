@@ -10,13 +10,13 @@
 #include "SystemWorld.hpp"
 #include "../../systems/src/CacheManager.hpp"
 
-namespace yarep::Input
+namespace yarep::input
 {
     class IInput;
 }
 
 
-namespace yarep::Ecs
+namespace yarep::ecs
 {
     class SystemManager : public ISystemManager
     {
@@ -27,7 +27,7 @@ namespace yarep::Ecs
             ~SystemManager() override;
             void BuildCommandSystem(World* world);
 
-            void RegisterSystems(World* world, Input::IInput* input) override;
+            void RegisterSystems(World* world, input::IInput* input) override;
 
             void PreFixed(float delta_time) override;
             void FixedUpdateSystems(float fixed_dt) override;

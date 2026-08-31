@@ -9,7 +9,7 @@
 ECS_SYSTEM(CameraSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
 namespace yarep::Systems {
-    class CameraSystem final : public Ecs::IEngineSystem {
+    class CameraSystem final : public ecs::IEngineSystem {
     public:
         CameraSystem();
 

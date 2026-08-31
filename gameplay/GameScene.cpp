@@ -59,7 +59,7 @@ namespace gameplay
                 m_time_passed += duration;
 
                 SceneManager().LoadScene("GameEnd",
-                                         yarep::SceneManagement::SceneArgs{
+                                         yarep::scene_management::SceneArgs{
                                              .payload = GameEndShowData{
                                                  .time_to_completion = m_time_passed,
                                              }
@@ -67,9 +67,9 @@ namespace gameplay
                 );
                 continue;
             }
-            if (command.type() == typeid(yarep::Commands::UI::ButtonClickedCommand))
+            if (command.type() == typeid(yarep::commands::ui::ButtonClickedCommand))
             {
-                auto button_clicked = std::any_cast<yarep::Commands::UI::ButtonClickedCommand>(command);
+                auto button_clicked = std::any_cast<yarep::commands::ui::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
                 if (button_id == 1)
                 {
@@ -77,7 +77,7 @@ namespace gameplay
                 }
                 else if (button_id == 2)
                 {
-                    SceneManager().LoadScene("MainMenu", yarep::SceneManagement::SceneArgs{});
+                    SceneManager().LoadScene("MainMenu", yarep::scene_management::SceneArgs{});
                 }
                 else if (button_id == 3)
                 {
@@ -243,7 +243,7 @@ namespace gameplay
     }
 
     void GameScene::CreateUiButton(const glm::vec2& position, const glm::vec2& size, const std::string& content,
-                                   int button_id, const yarep::Ecs::EntityId& parent_entity)
+                                   int button_id, const yarep::ecs::EntityId& parent_entity)
     {
         const auto button_entity = World().CreateEntity(content + "Button");
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);

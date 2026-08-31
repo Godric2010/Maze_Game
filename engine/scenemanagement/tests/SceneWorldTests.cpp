@@ -7,10 +7,10 @@
 
 #include "SceneWorld.hpp"
 using namespace yarep;
-using namespace yarep::SceneManagement;
+using namespace yarep::scene_management;
 
 TEST_CASE("SceneWorldTests - Test Scene World Facade") {
-    auto* world = new Ecs::World();
+    auto* world = new ecs::World();
     const auto scene_world = std::make_unique<SceneWorld>(*world);
 
     const auto entity_id = scene_world->CreateEntity("TestEntity");
@@ -36,6 +36,6 @@ TEST_CASE("SceneWorldTests - Test Scene World Facade") {
     world->ApplyEngineEvents();
 
     auto invalid_entity = world->GetEntityByName("TestEntity");
-    REQUIRE(invalid_entity == Ecs::INVALID_ENTITY_ID);
+    REQUIRE(invalid_entity == ecs::INVALID_ENTITY_ID);
     delete world;
 }

@@ -16,7 +16,7 @@
 #include "Textures/TextureImporter.hpp"
 
 namespace yarep::AssetHandling {
-    using namespace Assets;
+    using namespace assets;
     template<typename T>
     struct AssetTraits;
 
@@ -201,7 +201,7 @@ namespace yarep::AssetHandling {
 
     private:
         static InputMapAsset LoadInputMap(const std::string& toml_file_content) {
-            Input::InputMap input_map;
+            input::InputMap input_map;
             InputMaps::InputMapImporter::ExtractInputMapFromFileData(input_map, toml_file_content);
             auto input_map_asset = InputMapAsset();
             input_map_asset.name = input_map.name;
