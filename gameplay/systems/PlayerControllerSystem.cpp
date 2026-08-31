@@ -42,8 +42,8 @@ namespace gameplay::systems
                                                        const yarep::input::InputBuffer& input,
                                                        const float delta_time) const
     {
-        const auto transform = GameWorld()->GetComponent<yarep::Components::Transform>(player_entity);
-        const auto rigidbody = GameWorld()->GetComponent<yarep::Components::Rigidbody>(player_entity);
+        const auto transform = GameWorld()->GetComponent<yarep::components::Transform>(player_entity);
+        const auto rigidbody = GameWorld()->GetComponent<yarep::components::Rigidbody>(player_entity);
         if (transform == nullptr || rigidbody == nullptr)
         {
             return;

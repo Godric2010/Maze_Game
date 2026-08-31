@@ -3,9 +3,9 @@
 #include "Commands/UI/ButtonClickedCommand.hpp"
 #include "ui/Button.hpp"
 
-using namespace yarep::Systems::UI;
+using namespace yarep::systems::ui;
 
-namespace yarep::Systems
+namespace yarep::systems
 {
     UiButtonSystem::UiButtonSystem()
     {
@@ -19,16 +19,16 @@ namespace yarep::Systems
     {
         m_transform_cache = Cache()->GetTransformCache();
         m_ui_cache = Cache()->GetUiCache();
-        m_render_controller = ServiceLocator()->GetService<Renderer::IRenderController>();
-        m_asset_handler = ServiceLocator()->GetService<AssetHandling::AssetHandler>();
+        m_render_controller = ServiceLocator()->GetService<renderer::IRenderController>();
+        m_asset_handler = ServiceLocator()->GetService<asset_handling::AssetHandler>();
 
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Button>(
-            [this](const ecs::EntityId entity, const Components::UI::Button& button)
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::ui::Button>(
+            [this](const ecs::EntityId entity, const components::ui::Button& button)
             {
                 this->RegisterButtonElement(entity, button.default_color);
             }
         );
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Button>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::ui::Button>(
             [this](const ecs::EntityId entity)
             {
                 this->m_ui_cache->DeregisterColorElement(entity);
@@ -55,7 +55,7 @@ namespace yarep::Systems
 
         UiCache::ColorElement color_element{};
         color_element.color = color;
-        color_element.mesh_handle = m_render_controller->GetUIMeshHandle();
+        color_element.mesh_handle = m_render_controller->GetUiMeshHandle();
         color_element.material_handle = RegisterNewUiMaterial();
 
         m_ui_cache->RegisterColorElement(entity, color_element);
@@ -63,12 +63,12 @@ namespace yarep::Systems
 
     assets::MaterialHandle UiButtonSystem::RegisterNewUiMaterial() const
     {
-        auto material_asset = AssetHandling::MaterialAsset();
+        auto material_asset = asset_handling::MaterialAsset();
         material_asset.name = std::string("UiMaterial");
-        material_asset.render_state = AssetHandling::RenderState::UI;
+        material_asset.render_state = asset_handling::RenderState::UI;
         material_asset.render_queue_index = 0;
-        material_asset.shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
-        material_asset.albedo_texture = AssetHandling::MaterialTexture{};
+        material_asset.shader_handle = m_asset_handler->GetHandleFromName<asset_handling::ShaderAsset>("ui");
+        material_asset.albedo_texture = asset_handling::MaterialTexture{};
         material_asset.base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         const auto handle = m_asset_handler->RegisterAsset(material_asset);
@@ -90,7 +90,7 @@ namespace yarep::Systems
 
     void UiButtonSystem::HandleButtons(const input::InputBuffer& input) const
     {
-        auto buttons_with_entities = EcsWorld()->GetComponentsOfType<Components::UI::Button>();
+        auto buttons_with_entities = EcsWorld()->GetComponentsOfType<components::ui::Button>();
         for (auto [button, entity] : buttons_with_entities)
         {
             UiCache::ColorElement cached_button = m_ui_cache->GetColorElement(entity);

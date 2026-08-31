@@ -11,13 +11,13 @@
 #include "renderframework/Renderer.hpp"
 #include "resources/IGpuMaterialLibrary.hpp"
 
-namespace yarep::Renderer
+namespace yarep::renderer
 {
     class RenderController : public IRenderController
     {
     public:
-        explicit RenderController(const Environment::WindowContext& window_context,
-                                  AssetHandling::AssetHandler* asset_handler);
+        explicit RenderController(const environment::WindowContext& window_context,
+                                  asset_handling::AssetHandler* asset_handler);
 
         ~RenderController() override;
 
@@ -25,7 +25,7 @@ namespace yarep::Renderer
         
         void RenderFrame(const FrameData& frame_data, std::vector<DrawAsset> draw_assets) const override;
 
-        assets::MeshHandle GetUIMeshHandle() const override;
+        assets::MeshHandle GetUiMeshHandle() const override;
 
         [[nodiscard]] uint32_t GetDrawCalls() const override;
         void PrepareMaterialsForGpu(const assets::MaterialHandle& handle) const;
@@ -33,16 +33,16 @@ namespace yarep::Renderer
         void PrepareTexturesForGpu(assets::TextureHandle handle) const;
 
     private:
-        Environment::WindowContext m_window_context;
-        AssetHandling::AssetHandler* m_asset_handler;
-        std::unique_ptr<RenderFramework::IRenderer> m_renderer;
+        environment::WindowContext m_window_context;
+        asset_handling::AssetHandler* m_asset_handler;
+        std::unique_ptr<render_framework::IRenderer> m_renderer;
         std::vector<DrawAsset> m_debug_draw_assets;
         assets::MeshHandle m_ui_mesh_handle;
         
-        std::shared_ptr<Resources::IGpuMaterialLibrary> m_material_library;
-        std::shared_ptr<Resources::IGpuMeshLibrary> m_mesh_library;
-        std::shared_ptr<Resources::IGpuTextureLibrary> m_texture_library;
-        std::shared_ptr<Resources::IShaderLibrary> m_shader_library;
+        std::shared_ptr<resources::IGpuMaterialLibrary> m_material_library;
+        std::shared_ptr<resources::IGpuMeshLibrary> m_mesh_library;
+        std::shared_ptr<resources::IGpuTextureLibrary> m_texture_library;
+        std::shared_ptr<resources::IShaderLibrary> m_shader_library;
         
         void PrepareGpuResources(const std::vector<DrawAsset>& draw_assets) const;
     };

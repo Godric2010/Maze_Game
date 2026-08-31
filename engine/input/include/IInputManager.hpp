@@ -14,6 +14,6 @@ namespace yarep::input {
     public:
         virtual void UpdateInput() = 0;
 
-        virtual Environment::AppEventsSnapshot GetAppEventSnapshot() = 0;
+        virtual environment::AppEventsSnapshot GetAppEventSnapshot() = 0;
     };
 }

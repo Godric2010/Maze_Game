@@ -10,9 +10,9 @@
 #include <ui/Text.hpp>
 
 
-namespace yarep::Systems {
+namespace yarep::systems {
     RenderSystem::RenderSystem() {
-        m_ambient_light = Renderer::AmbientLightAsset{
+        m_ambient_light = renderer::AmbientLightAsset{
             .color = glm::vec3(1.0f, 1.0f, 1.0f),
             .intensity = 0.02f
         };
@@ -21,51 +21,51 @@ namespace yarep::Systems {
     RenderSystem::~RenderSystem() = default;
 
     void RenderSystem::Initialize() {
-        const auto* render_controller = ServiceLocator()->GetService<Renderer::IRenderController>();
+        const auto* render_controller = ServiceLocator()->GetService<renderer::IRenderController>();
         m_render_controller = render_controller;
-        const auto* asset_handler = ServiceLocator()->GetService<AssetHandling::AssetHandler>();
+        const auto* asset_handler = ServiceLocator()->GetService<asset_handling::AssetHandler>();
         m_asset_handler = asset_handler;
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::MeshRenderer>(
-                [this](const ecs::EntityId entity, const Components::MeshRenderer& mesh_renderer) {
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::MeshRenderer>(
+                [this](const ecs::EntityId entity, const components::MeshRenderer& mesh_renderer) {
                     this->RegisterDrawAssets(entity, mesh_renderer);
                 }
                 );
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Image>(
-                [this](const ecs::EntityId entity, const Components::UI::Image& _) {
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::ui::Image>(
+                [this](const ecs::EntityId entity, const components::ui::Image& _) {
                     this->RegisterColorUiAssets(entity);
                 }
                 );
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Button>(
-                [this](const ecs::EntityId entity, const Components::UI::Button& _) {
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::ui::Button>(
+                [this](const ecs::EntityId entity, const components::ui::Button& _) {
                     this->RegisterColorUiAssets(entity);
                 }
                 );
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Text>(
-                [this](const ecs::EntityId entity, const Components::UI::Text& _) {
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::ui::Text>(
+                [this](const ecs::EntityId entity, const components::ui::Text& _) {
                     this->RegisterTextUiAssets(entity);
                 }
                 );
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::MeshRenderer>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::MeshRenderer>(
                 [this](const ecs::EntityId entity) {
                     this->m_draw_asset_map.erase(entity);
                 }
                 );
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Image>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::ui::Image>(
                 [this](const ecs::EntityId entity) {
                     this->m_ui_draw_asset_map.erase(entity);
                 }
                 );
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Button>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::ui::Button>(
                 [this](const ecs::EntityId entity) {
                     this->m_ui_draw_asset_map.erase(entity);
                 }
                 );
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Text>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::ui::Text>(
                 [this](const ecs::EntityId entity) {
                     this->m_ui_text_asset_map.erase(entity);
                 }
                 );
-        m_draw_assets = std::vector<Renderer::DrawAsset>();
+        m_draw_assets = std::vector<renderer::DrawAsset>();
     }
 
     void RenderSystem::Run(float delta_time) {
@@ -76,10 +76,10 @@ namespace yarep::Systems {
         m_render_controller->RenderFrame(frame_data, m_draw_assets);
     }
 
-    Renderer::CameraAsset RenderSystem::CreateCameraAsset(const ecs::EntityId& camera_entity,
-                                                          const Components::Transform* camera_transform) const {
+    renderer::CameraAsset RenderSystem::CreateCameraAsset(const ecs::EntityId& camera_entity,
+                                                          const components::Transform* camera_transform) const {
         const auto camera_cache_val = Cache()->GetCameraCache()->GetCacheValue(camera_entity);
-        const Renderer::CameraAsset camera_asset{
+        const renderer::CameraAsset camera_asset{
             .view = camera_cache_val.view,
             .projection = camera_cache_val.projection,
             .camera_position = glm::vec4(camera_transform->GetPosition(), 1.0f)
@@ -92,20 +92,20 @@ namespace yarep::Systems {
         m_draw_assets.reserve(m_draw_asset_map.size() + m_ui_draw_asset_map.size() + m_ui_text_asset_map.size());
     }
 
-    Renderer::FrameData RenderSystem::FillFrameData() const {
-        Renderer::FrameData frame_data;
+    renderer::FrameData RenderSystem::FillFrameData() const {
+        renderer::FrameData frame_data;
         frame_data.ambient_light = m_ambient_light;
 
-        const auto [camera, cameraEntity] = EcsWorld()->GetComponentsOfType<Components::Camera>()[0];
-        const auto camera_transform = EcsWorld()->GetComponent<Components::Transform>(cameraEntity);
+        const auto [camera, cameraEntity] = EcsWorld()->GetComponentsOfType<components::Camera>()[0];
+        const auto camera_transform = EcsWorld()->GetComponent<components::Transform>(cameraEntity);
         const auto camera_asset = CreateCameraAsset(cameraEntity, camera_transform);
         frame_data.camera = camera_asset;
 
-        const auto point_lights = EcsWorld()->GetComponentsOfType<Components::PointLight>();
+        const auto point_lights = EcsWorld()->GetComponentsOfType<components::PointLight>();
         frame_data.lights.reserve(point_lights.size());
         for (auto [point_light, entity]: point_lights) {
-            const auto light_transform = EcsWorld()->GetComponent<Components::Transform>(entity);
-            const auto light_asset = Renderer::LightAsset{
+            const auto light_transform = EcsWorld()->GetComponent<components::Transform>(entity);
+            const auto light_asset = renderer::LightAsset{
                 .position = light_transform->GetPosition(),
                 .color = point_light->GetColor(),
                 .intensity = point_light->GetIntensity(),
@@ -120,11 +120,11 @@ namespace yarep::Systems {
 
     void RenderSystem::FillMeshDrawAssets() {
         for (auto [entity, mesh_draw_asset]: m_draw_asset_map) {
-            if (!m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_draw_asset.Mesh)->IsValid()) {
+            if (!m_asset_handler->GetAsset<asset_handling::MeshAsset>(mesh_draw_asset.mesh)->IsValid()) {
                 continue;
             }
 
-            mesh_draw_asset.Model = Cache()->GetTransformCache()->GetTransformValue(entity).transform_matrix;
+            mesh_draw_asset.model = Cache()->GetTransformCache()->GetTransformValue(entity).transform_matrix;
             m_draw_assets.push_back(mesh_draw_asset);
         }
     }
@@ -139,10 +139,10 @@ namespace yarep::Systems {
             }
 
             const auto rect_transform = transform_cache->GetRectTransformValue(entity);
-            ui_draw_asset.Model = rect_transform.global_matrix;
-            ui_draw_asset.RenderQueueIndex = rect_transform.layer;
+            ui_draw_asset.model = rect_transform.global_matrix;
+            ui_draw_asset.render_queue_index = rect_transform.layer;
 
-            ui_draw_asset.Color = ui_cache->GetColorElement(entity).color;
+            ui_draw_asset.color = ui_cache->GetColorElement(entity).color;
             m_draw_assets.push_back(ui_draw_asset);
         }
 
@@ -152,57 +152,57 @@ namespace yarep::Systems {
             }
 
             const auto rect_transform = transform_cache->GetRectTransformValue(entity);
-            ui_draw_asset.Model = rect_transform.global_matrix;
-            ui_draw_asset.RenderQueueIndex = rect_transform.layer;
+            ui_draw_asset.model = rect_transform.global_matrix;
+            ui_draw_asset.render_queue_index = rect_transform.layer;
 
             m_draw_assets.push_back(ui_draw_asset);
         }
     }
 
-    void RenderSystem::RegisterDrawAssets(const ecs::EntityId& entity, const Components::MeshRenderer& mesh_renderer) {
-        const auto material = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(mesh_renderer.Material);
+    void RenderSystem::RegisterDrawAssets(const ecs::EntityId& entity, const components::MeshRenderer& mesh_renderer) {
+        const auto material = m_asset_handler->GetAsset<asset_handling::MaterialAsset>(mesh_renderer.material);
         if (material == nullptr) {
             throw std::runtime_error("[RenderSystem] Material not found");
         }
-        const Renderer::DrawAsset mesh_draw_assets{
-            .Entity = entity,
-            .RenderState = material->render_state,
-            .RenderQueueIndex = 0,
-            .Mesh = mesh_renderer.Mesh,
-            .Material = mesh_renderer.Material,
-            .Color = material->base_color,
+        const renderer::DrawAsset mesh_draw_assets{
+            .entity = entity,
+            .render_state = material->render_state,
+            .render_queue_index = 0,
+            .mesh = mesh_renderer.mesh,
+            .material = mesh_renderer.material,
+            .color = material->base_color,
         };
         m_draw_asset_map[entity] = mesh_draw_assets;
     }
 
     void RenderSystem::RegisterColorUiAssets(const ecs::EntityId& entity) {
         const auto color_element = Cache()->GetUiCache()->GetColorElement(entity);
-        Renderer::DrawAsset draw_asset{};
-        draw_asset.Entity = entity;
-        draw_asset.RenderState = AssetHandling::RenderState::UI;
-        draw_asset.Color = color_element.color;
-        draw_asset.Mesh = color_element.mesh_handle;
-        draw_asset.Material = color_element.material_handle;
+        renderer::DrawAsset draw_asset{};
+        draw_asset.entity = entity;
+        draw_asset.render_state = asset_handling::RenderState::UI;
+        draw_asset.color = color_element.color;
+        draw_asset.mesh = color_element.mesh_handle;
+        draw_asset.material = color_element.material_handle;
         m_ui_draw_asset_map[entity] = draw_asset;
     }
 
     void RenderSystem::RegisterTextUiAssets(const ecs::EntityId& entity) {
         const auto text_element = Cache()->GetUiCache()->GetTextElement(entity);
-        Renderer::DrawAsset draw_asset{};
-        draw_asset.RenderState = AssetHandling::RenderState::UI;
-        draw_asset.Entity = entity;
-        draw_asset.Color = glm::vec4(1, 1, 1, 1);
-        draw_asset.Mesh = text_element.mesh_handle;
-        draw_asset.Material = text_element.material_handle;
+        renderer::DrawAsset draw_asset{};
+        draw_asset.render_state = asset_handling::RenderState::UI;
+        draw_asset.entity = entity;
+        draw_asset.color = glm::vec4(1, 1, 1, 1);
+        draw_asset.mesh = text_element.mesh_handle;
+        draw_asset.material = text_element.material_handle;
         m_ui_text_asset_map[entity] = draw_asset;
     }
 
-    bool RenderSystem::IsDrawAssetValid(const Renderer::DrawAsset& ui_draw_asset) const {
-        if (!ui_draw_asset.Material || !ui_draw_asset.Mesh) {
+    bool RenderSystem::IsDrawAssetValid(const renderer::DrawAsset& ui_draw_asset) const {
+        if (!ui_draw_asset.material || !ui_draw_asset.mesh) {
             return false;
         }
 
-        if (!m_asset_handler->GetAsset<AssetHandling::MeshAsset>(ui_draw_asset.Mesh)->IsValid()) {
+        if (!m_asset_handler->GetAsset<asset_handling::MeshAsset>(ui_draw_asset.mesh)->IsValid()) {
             return false;
         }
         return true;

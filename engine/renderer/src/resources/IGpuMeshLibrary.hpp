@@ -6,14 +6,14 @@
 #include "AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 
-namespace yarep::Renderer::Resources
+namespace yarep::renderer::resources
 {
     class IGpuMeshLibrary
     {
     public:
         virtual ~IGpuMeshLibrary() = default;
 
-        virtual void AddMesh(const assets::MeshHandle& mesh_handle, const AssetHandling::MeshAsset& mesh_asset, uint32_t revision) = 0;
+        virtual void AddMesh(const assets::MeshHandle& mesh_handle, const asset_handling::MeshAsset& mesh_asset, uint32_t revision) = 0;
 
         virtual void RemoveMesh(const assets::MeshHandle& mesh_handle) = 0;
         

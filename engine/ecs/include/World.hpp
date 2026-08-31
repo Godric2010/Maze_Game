@@ -52,7 +52,7 @@ namespace yarep::ecs {
             return m_physics_event_bus.get();
         }
 
-        [[nodiscard]] Buffer::EventBuffer<PhysicsEvent>* GetPhysicsEventBuffer() const {
+        [[nodiscard]] buffer::EventBuffer<PhysicsEvent>* GetPhysicsEventBuffer() const {
             return m_physics_event_buffer.get();
         }
 
@@ -67,11 +67,11 @@ namespace yarep::ecs {
     private:
         struct WorldImpl;
         std::unique_ptr<WorldImpl> m_impl;
-        std::unique_ptr<Buffer::EventBuffer<EcsEvent> > m_ecs_event_buffer;
-        std::unique_ptr<Buffer::EventBuffer<PhysicsEvent> > m_physics_event_buffer;
+        std::unique_ptr<buffer::EventBuffer<EcsEvent> > m_ecs_event_buffer;
+        std::unique_ptr<buffer::EventBuffer<PhysicsEvent> > m_physics_event_buffer;
         std::unique_ptr<ComponentEventBus> m_component_event_bus;
         std::unique_ptr<PhysicsEventBus> m_physics_event_bus;
-        std::unique_ptr<Buffer::SystemCommandQueue> m_command_queue;
+        std::unique_ptr<buffer::SystemCommandQueue> m_command_queue;
     };
 }
 

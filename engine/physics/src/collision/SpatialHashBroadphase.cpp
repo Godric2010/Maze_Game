@@ -3,13 +3,13 @@
 #include <algorithm>
 #include <unordered_set>
 
-namespace yarep::Physics::Collision {
+namespace yarep::physics::collision {
     SpatialHashBroadphase::SpatialHashBroadphase(const float cell_size) {
         m_cell_size = cell_size;
         m_inv_cell_size = (1.0f / cell_size);
     }
 
-    void SpatialHashBroadphase::BoxToCells(const Math::AABB &aabb, std::vector<CellKey> &tmp) const {
+    void SpatialHashBroadphase::BoxToCells(const math::AABB &aabb, std::vector<CellKey> &tmp) const {
         tmp.clear();
         const int ix0 = FloorToCell(aabb.min.x, m_inv_cell_size);
         const int iy0 = FloorToCell(aabb.min.y, m_inv_cell_size);
@@ -61,7 +61,7 @@ namespace yarep::Physics::Collision {
         m_proxies.erase(entity);
     }
 
-    void SpatialHashBroadphase::Update(ecs::EntityId entity, const Math::AABB &new_aabb) {
+    void SpatialHashBroadphase::Update(ecs::EntityId entity, const math::AABB &new_aabb) {
         auto it_proxy = m_proxies.find(entity);
         if (it_proxy == m_proxies.end()) {
             BroadphaseProxy new_proxy{};
@@ -121,7 +121,7 @@ namespace yarep::Physics::Collision {
         vec.erase(std::ranges::unique(vec).begin(), vec.end());
     }
 
-    void SpatialHashBroadphase::QueryAabb(const Math::AABB &area, std::vector<ecs::EntityId> &out,
+    void SpatialHashBroadphase::QueryAabb(const math::AABB &area, std::vector<ecs::EntityId> &out,
                                           const QueryFilter *filter) {
         out.clear();
         std::vector<CellKey> cells;

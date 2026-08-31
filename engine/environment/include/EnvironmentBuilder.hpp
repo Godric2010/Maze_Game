@@ -5,7 +5,7 @@
 #include "IFileManager.hpp"
 #include "Window.hpp"
 
-namespace yarep::Environment {
+namespace yarep::environment {
     struct EnvironmentBuilder {
         /**
          * Create a new window instance.
@@ -15,6 +15,6 @@ namespace yarep::Environment {
 
         static std::unique_ptr<IEnvInput> CreateInput(IWindow& window);
 
-        static std::unique_ptr<Files::IFileManager> CreateFileManager();
+        static std::unique_ptr<files::IFileManager> CreateFileManager();
     };
 }

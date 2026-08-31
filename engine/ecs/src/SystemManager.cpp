@@ -7,7 +7,7 @@
 namespace yarep::ecs
 {
     SystemManager::SystemManager(const std::vector<SystemMeta>& system_metas,
-                                 IServiceToEcsProvider* service_provider, Systems::ICacheManager* cache_manager)
+                                 IServiceToEcsProvider* service_provider, systems::ICacheManager* cache_manager)
     {
         m_phase_execution_order = std::vector{
             Phase::Ui,
@@ -20,7 +20,7 @@ namespace yarep::ecs
 
         m_system_metas = system_metas;
         m_service_provider = service_provider;
-        m_cache_manager = reinterpret_cast<Systems::CacheManager*>(cache_manager);
+        m_cache_manager = reinterpret_cast<systems::CacheManager*>(cache_manager);
     }
 
     SystemManager::~SystemManager()

@@ -61,7 +61,7 @@ namespace gameplay
     {
         const auto camera_entity = World().CreateEntity("MainCamera");
         const auto [width, height, aspect_ratio] = Screen();
-        const auto camera_component = yarep::Components::Camera()
+        const auto camera_component = yarep::components::Camera()
                                       .SetWidth(width)
                                       .SetHeight(height)
                                       .SetAspectRatio(aspect_ratio)
@@ -69,9 +69,9 @@ namespace gameplay
                                       .SetNearClip(0.01f)
                                       .SetFarClip(1000.0f);
 
-        World().AddComponent<yarep::Components::Camera>(camera_entity, camera_component);
+        World().AddComponent<yarep::components::Camera>(camera_entity, camera_component);
 
-        const auto camera_transform = yarep::Components::Transform();
+        const auto camera_transform = yarep::components::Transform();
         World().AddComponent(camera_entity, camera_transform);
     }
 
@@ -102,12 +102,12 @@ namespace gameplay
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width, screen.height);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = yarep::Components::UI::RectTransform()
+        const auto bg_rect_transform = yarep::components::ui::RectTransform()
                                        .SetPosition(bg_position)
                                        .SetSize(bg_size)
                                        .SetPivot(bg_pivot);
         World().AddComponent(bg_entity, bg_rect_transform);
-        constexpr auto bg_image = yarep::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
+        constexpr auto bg_image = yarep::components::ui::Image{.color = {0.2, 0.4, 0.2, 1.0}};
         World().AddComponent(bg_entity, bg_image);
         return bg_entity;
     }
@@ -118,13 +118,13 @@ namespace gameplay
                                                         const yarep::ecs::EntityId parent_entity)
     {
         const auto text_entity = World().CreateEntity("MenuText_" + content);
-        const auto text_transform = yarep::Components::UI::RectTransform()
+        const auto text_transform = yarep::components::ui::RectTransform()
                                     .SetPosition(pos)
                                     .SetSize(size)
-                                    .SetAnchor(yarep::Components::UI::Anchor::Center)
+                                    .SetAnchor(yarep::components::ui::Anchor::Center)
                                     .SetPivot(glm::vec2{0.5f, 0.0f})
                                     .SetParent(parent_entity);
-        const auto text = yarep::Components::UI::Text()
+        const auto text = yarep::components::ui::Text()
                           .SetText(content)
                           .SetFontName(font_name)
                           .SetFontSize(font_size);
@@ -141,15 +141,15 @@ namespace gameplay
         constexpr auto button_size = glm::vec2(200, 70);
         const auto button_entity = World().CreateEntity(name);
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto resume_rect = yarep::Components::UI::RectTransform()
+        auto resume_rect = yarep::components::ui::RectTransform()
                            .SetPosition(pos)
                            .SetSize(button_size)
                            .SetPivot(pivot)
-                           .SetAnchor(yarep::Components::UI::Anchor::Center)
+                           .SetAnchor(yarep::components::ui::Anchor::Center)
                            .SetParent(parent_entity);
         World().AddComponent(button_entity, resume_rect);
 
-        auto button = yarep::Components::UI::Button();
+        auto button = yarep::components::ui::Button();
         button.button_id = button_id;
         button.enabled = true;
         button.default_color = m_button_default_color;

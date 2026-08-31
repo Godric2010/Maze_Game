@@ -5,7 +5,7 @@
 #pragma once
 #include <glm/vec3.hpp>
 
-namespace yarep::Components
+namespace yarep::components
 {
     struct Rigidbody
     {

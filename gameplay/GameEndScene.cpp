@@ -47,16 +47,16 @@ namespace gameplay {
     void GameEndScene::SetupCamera() const {
         const auto camera_entity = World().CreateEntity("MainCamera");
         const auto [width, height, aspect_ratio] = Screen();
-        const auto camera_component = yarep::Components::Camera()
+        const auto camera_component = yarep::components::Camera()
                 .SetWidth(width)
                 .SetHeight(height)
                 .SetAspectRatio(aspect_ratio)
                 .SetFieldOfView(60)
                 .SetNearClip(0.01f)
                 .SetFarClip(1000.0f);
-        World().AddComponent<yarep::Components::Camera>(camera_entity, camera_component);
+        World().AddComponent<yarep::components::Camera>(camera_entity, camera_component);
 
-        const auto camera_transform = yarep::Components::Transform();
+        const auto camera_transform = yarep::components::Transform();
         World().AddComponent(camera_entity, camera_transform);
     }
 
@@ -66,21 +66,21 @@ namespace gameplay {
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width, screen.height);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = yarep::Components::UI::RectTransform()
+        const auto bg_rect_transform = yarep::components::ui::RectTransform()
                 .SetPosition(bg_position)
                 .SetSize(bg_size)
                 .SetPivot(bg_pivot);
         World().AddComponent(bg_entity, bg_rect_transform);
-        constexpr auto bg_image = yarep::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
+        constexpr auto bg_image = yarep::components::ui::Image{.color = {0.2, 0.4, 0.2, 1.0}};
         World().AddComponent(bg_entity, bg_image);
 
         const auto heading_entity = World().CreateEntity("Heading");
-        const auto heading_transform = yarep::Components::UI::RectTransform()
+        const auto heading_transform = yarep::components::ui::RectTransform()
                 .SetPosition(glm::vec2(0.0f, 300))
                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                .SetAnchor(yarep::Components::UI::Anchor::TopCenter)
+                .SetAnchor(yarep::components::ui::Anchor::TopCenter)
                 .SetParent(bg_entity);
-        const auto heading_text = yarep::Components::UI::Text()
+        const auto heading_text = yarep::components::ui::Text()
                 .SetText("Congratulations!")
                 .SetFontName("SpaceFont.ttf")
                 .SetFontSize(128.0f);
@@ -89,12 +89,12 @@ namespace gameplay {
 
 
         const auto sub_heading_entity = World().CreateEntity("SubHeading");
-        const auto sub_heading_transform = yarep::Components::UI::RectTransform()
+        const auto sub_heading_transform = yarep::components::ui::RectTransform()
                 .SetPosition(glm::vec2(0.0f, 420.0f))
                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                .SetAnchor(yarep::Components::UI::Anchor::TopCenter)
+                .SetAnchor(yarep::components::ui::Anchor::TopCenter)
                 .SetParent(bg_entity);
-        const auto sub_heading_text = yarep::Components::UI::Text()
+        const auto sub_heading_text = yarep::components::ui::Text()
                 .SetText("You escaped the maze!")
                 .SetFontName("SpaceFont.ttf")
                 .SetFontSize(48.0f);
@@ -107,12 +107,12 @@ namespace gameplay {
         const std::string time_needed_str = "Time needed: " + std::to_string(static_cast<int>(minutes)) + ":"
                                             + std::to_string(static_cast<int>(seconds));
         const auto time_display_entity = World().CreateEntity("TimeDisplay");
-        const auto time_display_transform = yarep::Components::UI::RectTransform()
+        const auto time_display_transform = yarep::components::ui::RectTransform()
                 .SetPosition(glm::vec2(0.0f, 550.0f))
                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                .SetAnchor(yarep::Components::UI::Anchor::TopCenter)
+                .SetAnchor(yarep::components::ui::Anchor::TopCenter)
                 .SetParent(bg_entity);
-        const auto time_display_text = yarep::Components::UI::Text()
+        const auto time_display_text = yarep::components::ui::Text()
                 .SetText(time_needed_str)
                 .SetFontName("SpaceFont.ttf")
                 .SetFontSize(32.0f);
@@ -123,15 +123,15 @@ namespace gameplay {
         const auto main_menu_button = World().CreateEntity("MainMenuButton");
         constexpr auto pos = glm::vec2(0, 900);
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto main_menu_button_rect = yarep::Components::UI::RectTransform()
+        auto main_menu_button_rect = yarep::components::ui::RectTransform()
                 .SetPosition(pos)
                 .SetSize(button_size)
                 .SetPivot(pivot)
-                .SetAnchor(yarep::Components::UI::Anchor::TopCenter)
+                .SetAnchor(yarep::components::ui::Anchor::TopCenter)
                 .SetParent(bg_entity);
         World().AddComponent(main_menu_button, main_menu_button_rect);
 
-        auto main_menu = yarep::Components::UI::Button();
+        auto main_menu = yarep::components::ui::Button();
         main_menu.button_id = m_back_to_main_menu_button_id;
         main_menu.enabled = true;
         main_menu.default_color = {1.0f, 1.0f, 1.0f, 0.0f};
@@ -141,12 +141,12 @@ namespace gameplay {
         World().AddComponent(main_menu_button, main_menu);
 
         const auto menu_button_text_entity = World().CreateEntity("MenuButton");
-        const auto menu_button_text_transform = yarep::Components::UI::RectTransform()
+        const auto menu_button_text_transform = yarep::components::ui::RectTransform()
                 .SetPosition(glm::vec2(0, 10))
                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                .SetAnchor(yarep::Components::UI::Anchor::Center)
+                .SetAnchor(yarep::components::ui::Anchor::Center)
                 .SetParent(main_menu_button);
-        const auto menu_button_text = yarep::Components::UI::Text()
+        const auto menu_button_text = yarep::components::ui::Text()
                 .SetText("Main Menu")
                 .SetFontName("SpaceFont.ttf")
                 .SetFontSize(32.0f);

@@ -6,11 +6,11 @@
 #include <glm/glm.hpp>
 #include "../renderer/include/Datatypes.hpp"
 
-namespace yarep::Components
+namespace yarep::components
 {
     struct MeshRenderer
     {
-        assets::MeshHandle Mesh;
-        assets::MaterialHandle Material;
+        assets::MeshHandle mesh;
+        assets::MaterialHandle material;
     };
 }

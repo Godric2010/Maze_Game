@@ -1,22 +1,22 @@
 #include "ServiceLocator.hpp"
 
-namespace yarep::Core {
+namespace yarep::core {
     inline ServiceLocator::ServiceLocator() = default;
 
     inline ServiceLocator::~ServiceLocator() = default;
 
     template<typename T>
     void ServiceLocator::RegisterService(std::unique_ptr<T> service) {
-        auto typeIndex = std::type_index(typeid(T));
-        if (const auto it = m_services.find(typeIndex); it == m_services.end()) {
-            m_services.insert({typeIndex, std::make_shared<Box<T> >(std::move(service))});
+        auto type_index = std::type_index(typeid(T));
+        if (const auto it = m_services.find(type_index); it == m_services.end()) {
+            m_services.insert({type_index, std::make_shared<Box<T> >(std::move(service))});
         }
     }
 
     template<typename T>
     T *ServiceLocator::TryGetService() const {
-        const auto typeIndex = std::type_index(typeid(T));
-        const auto it = m_services.find(typeIndex);
+        const auto type_index = std::type_index(typeid(T));
+        const auto it = m_services.find(type_index);
         if (it == m_services.end()) {
             return nullptr;
         }

@@ -21,11 +21,11 @@ namespace yarep::ecs {
     private:
         IServiceToEcsProvider* m_service_locator{};
         World* m_world{};
-        Systems::CacheManager* m_cache_manager{};
+        systems::CacheManager* m_cache_manager{};
 
     protected:
         [[nodiscard]] IServiceToEcsProvider* ServiceLocator() const { return m_service_locator; }
         [[nodiscard]] World* EcsWorld() const { return m_world; }
-        [[nodiscard]] Systems::CacheManager* Cache() const { return m_cache_manager; }
+        [[nodiscard]] systems::CacheManager* Cache() const { return m_cache_manager; }
     };
 }

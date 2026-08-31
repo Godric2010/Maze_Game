@@ -6,32 +6,32 @@
 #include "transform/TransformCache.hpp"
 #include "ui/UiCache.hpp"
 
-namespace yarep::Systems {
+namespace yarep::systems {
     class CacheManager : public ICacheManager {
     public:
         CacheManager() {
-            m_transform_cache = std::make_unique<Transform::TransformCache>();
-            m_camera_cache = std::make_unique<Camera::CameraCache>();
-            m_ui_cache = std::make_unique<UI::UiCache>();
+            m_transform_cache = std::make_unique<transform::TransformCache>();
+            m_camera_cache = std::make_unique<camera::CameraCache>();
+            m_ui_cache = std::make_unique<ui::UiCache>();
         }
 
         ~CacheManager() override = default;
 
-        [[nodiscard]] Transform::TransformCache* GetTransformCache() const {
+        [[nodiscard]] transform::TransformCache* GetTransformCache() const {
             return m_transform_cache.get();
         }
 
-        [[nodiscard]] Camera::CameraCache* GetCameraCache() const {
+        [[nodiscard]] camera::CameraCache* GetCameraCache() const {
             return m_camera_cache.get();
         }
 
-        [[nodiscard]] UI::UiCache* GetUiCache() const {
+        [[nodiscard]] ui::UiCache* GetUiCache() const {
             return m_ui_cache.get();
         }
 
     private:
-        std::unique_ptr<Transform::TransformCache> m_transform_cache;
-        std::unique_ptr<Camera::CameraCache> m_camera_cache;
-        std::unique_ptr<UI::UiCache> m_ui_cache;
+        std::unique_ptr<transform::TransformCache> m_transform_cache;
+        std::unique_ptr<camera::CameraCache> m_camera_cache;
+        std::unique_ptr<ui::UiCache> m_ui_cache;
     };
 } // namespace

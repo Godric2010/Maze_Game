@@ -11,7 +11,7 @@ namespace yarep::input
     class InputManagerBuilder
     {
         public:
-            static std::unique_ptr<IInputManager> CreateInputManager(Environment::IWindow* window,
+            static std::unique_ptr<IInputManager> CreateInputManager(environment::IWindow* window,
                                                                      const std::vector<InputMap>& input_maps);
     };
 }

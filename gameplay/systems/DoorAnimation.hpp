@@ -28,7 +28,7 @@ namespace gameplay::systems {
         float m_door_open_position = 1.8f;
         float m_door_close_position = 0.0f;
 
-        std::unordered_map<yarep::ecs::EntityId, yarep::Components::BoxCollider> m_disabled_box_colliders;
+        std::unordered_map<yarep::ecs::EntityId, yarep::components::BoxCollider> m_disabled_box_colliders;
 
         void CheckIfPlayerHasKey(const yarep::ecs::EntityId target, const yarep::ecs::EntityId door_trigger_entity);
     };

@@ -4,7 +4,7 @@
 #include "collision/IBroadphase.hpp"
 #include "Ecs/Types.hpp"
 
-namespace yarep::Physics::Collision {
+namespace yarep::physics::collision {
     struct CellKey {
         int x, y, z;
         bool operator==(const CellKey& other) const noexcept{ return x == other.x && y == other.y && z == other.z; }
@@ -28,9 +28,9 @@ namespace yarep::Physics::Collision {
 
         void Insert(const BroadphaseProxy& proxy) override;
         void Remove(ecs::EntityId entity) override;
-        void Update(ecs::EntityId entity, const Math::AABB &new_aabb) override;
+        void Update(ecs::EntityId entity, const math::AABB &new_aabb) override;
 
-        void QueryAabb(const Math::AABB &area, std::vector<ecs::EntityId> &out, const QueryFilter *filter) override;
+        void QueryAabb(const math::AABB &area, std::vector<ecs::EntityId> &out, const QueryFilter *filter) override;
 
     private:
         float m_cell_size;
@@ -44,7 +44,7 @@ namespace yarep::Physics::Collision {
             return static_cast<int>(std::floor(v * inv_cell));
         }
 
-        void BoxToCells(const Math::AABB& aabb, std::vector<CellKey>& tmp) const;
+        void BoxToCells(const math::AABB& aabb, std::vector<CellKey>& tmp) const;
 
         static inline bool PassFilter(const BroadphaseProxy& proxy, const QueryFilter* filter) {
             if (!filter) return true;

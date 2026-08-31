@@ -1,7 +1,7 @@
 #include "LayoutEngine.hpp"
 #include <limits>
 
-namespace yarep::Text
+namespace yarep::text
 {
     TextLayout LayoutEngine::GenerateTextLayout(const Font& font, const std::vector<uint32_t>& codepoints,
                                                 const TextAlignment& alignment)

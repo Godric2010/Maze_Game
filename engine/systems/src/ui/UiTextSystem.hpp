@@ -8,7 +8,7 @@
 #include "ui/Text.hpp"
 
 
-namespace yarep::Systems {
+namespace yarep::systems {
     ECS_SYSTEM(UiTextSystem, Ui, TAGS(ENGINE), DEPENDENCIES())
     class UiTextSystem : public ecs::IEngineSystem {
     public:
@@ -21,12 +21,12 @@ namespace yarep::Systems {
         void Run(float delta_time) override;
 
     private:
-        std::unordered_map<Text::FontHandle, assets::TextureHandle> m_font_textures;
-        Transform::TransformCache* m_transform_cache = nullptr;
-        UI::UiCache* m_ui_cache = nullptr;
-        Text::TextController* m_text_controller = nullptr;
-        Renderer::IRenderController* m_render_controller = nullptr;
-        AssetHandling::AssetHandler* m_asset_handler = nullptr;
+        std::unordered_map<text::FontHandle, assets::TextureHandle> m_font_textures;
+        transform::TransformCache* m_transform_cache = nullptr;
+        ui::UiCache* m_ui_cache = nullptr;
+        text::TextController* m_text_controller = nullptr;
+        renderer::IRenderController* m_render_controller = nullptr;
+        asset_handling::AssetHandler* m_asset_handler = nullptr;
 
         assets::MaterialHandle RegisterNewUiMaterial() const;
 
@@ -34,11 +34,11 @@ namespace yarep::Systems {
 
         void HandleTextLabels();
 
-        void UpdateTextMesh(ecs::EntityId entity, UI::UiCache::TextElement text_element,
-                            const Components::UI::Text* text) const;
+        void UpdateTextMesh(ecs::EntityId entity, ui::UiCache::TextElement text_element,
+                            const components::ui::Text* text) const;
 
-        void RegisterTextureHandleFromFont(Text::FontHandle font_handle);
+        void RegisterTextureHandleFromFont(text::FontHandle font_handle);
 
-        void UpdateTextureFromFont(Text::FontHandle font_handle);
+        void UpdateTextureFromFont(text::FontHandle font_handle);
     };
 }

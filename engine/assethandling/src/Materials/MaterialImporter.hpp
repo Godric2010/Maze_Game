@@ -9,7 +9,7 @@
 #include "toml/TomlDocument.hpp"
 
 
-namespace yarep::AssetHandling::Materials
+namespace yarep::asset_handling::materials
 {
     struct MaterialTextureFileData
     {
@@ -34,9 +34,9 @@ namespace yarep::AssetHandling::Materials
         static void ExtractMaterialFileData(MaterialFileData& material_asset, const std::string& file_content);
 
     private:
-        static void ReadMaterialProperties(MaterialFileData& material_asset, const Utilities::Toml::TomlTable& table);
-        static void ReadTextureProperties(MaterialTextureFileData& material_texture, const std::optional<Utilities::Toml::TomlTable>& table,
+        static void ReadMaterialProperties(MaterialFileData& material_asset, const utilities::toml_utils::TomlTable& table);
+        static void ReadTextureProperties(MaterialTextureFileData& material_texture, const std::optional<utilities::toml_utils::TomlTable>& table,
                                           const std::string& texture_type);
-        static void ReadColorProperties(MaterialFileData& material_asset, const Utilities::Toml::TomlTable& table);
+        static void ReadColorProperties(MaterialFileData& material_asset, const utilities::toml_utils::TomlTable& table);
     };
 }

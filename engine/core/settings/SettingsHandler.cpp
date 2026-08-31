@@ -3,18 +3,18 @@
 #include <spdlog/spdlog.h>
 #include "toml/TomlDocument.hpp"
 
-namespace yarep::Core::Settings
+namespace yarep::core::settings
 {
-    void SettingsHandler::WriteSettingsToDisk(Environment::Files::IFileManager* file_manager,
+    void SettingsHandler::WriteSettingsToDisk(environment::files::IFileManager* file_manager,
                                               const EngineSettings& settings)
     {
-        const std::string m_settings_file_name = "settings.toml";
-        const std::string m_settings_file_path = "";
+        const std::string settings_file_name = "settings.toml";
+        const std::string settings_file_path = "";
         const std::string toml_content = CreateTomlFromSettings(settings);
-        file_manager->WriteTextToFile(m_settings_file_path, m_settings_file_name, toml_content);
+        file_manager->WriteTextToFile(settings_file_path, settings_file_name, toml_content);
     }
 
-    EngineSettings SettingsHandler::ReadSettingsFromDisk(Environment::Files::IFileManager* file_manager)
+    EngineSettings SettingsHandler::ReadSettingsFromDisk(environment::files::IFileManager* file_manager)
     {
         const auto loaded_settings = file_manager->ReadTextFromFile("settings.toml");
         if (loaded_settings.Ok())
@@ -22,11 +22,11 @@ namespace yarep::Core::Settings
             return ReadSettingsFromToml(loaded_settings.value);
         }
 
-        if (loaded_settings.type == Environment::Files::ResultType::FileNotFound)
+        if (loaded_settings.type == environment::files::ResultType::FileNotFound)
         {
             spdlog::info("Settings file not found. Creating new settings file with default values.");
         }
-        else if (loaded_settings.type == Environment::Files::ResultType::FileError)
+        else if (loaded_settings.type == environment::files::ResultType::FileError)
         {
             spdlog::warn("Settings file is corrupted. Overriding settings with default state.");
         }
@@ -67,7 +67,7 @@ namespace yarep::Core::Settings
 
     std::string SettingsHandler::GetNameOfWindowMode(const WindowMode window_mode)
     {
-        for (const auto& [name, mode] : WindowModeMap)
+        for (const auto& [name, mode] : window_mode_map)
         {
             if (mode == window_mode)
             {
@@ -79,7 +79,7 @@ namespace yarep::Core::Settings
 
     std::string SettingsHandler::GetNameOfRenderApi(const RenderApi api)
     {
-        for (const auto& [name, render_api] : RenderApiMap)
+        for (const auto& [name, render_api] : render_api_map)
         {
             if (render_api == api)
             {
@@ -91,27 +91,27 @@ namespace yarep::Core::Settings
 
     EngineSettings SettingsHandler::ReadSettingsFromToml(const std::string& toml_str)
     {
-        const auto toml_doc = Utilities::Toml::TomlDocument(toml_str);
+        const auto toml_doc = utilities::toml_utils::TomlDocument(toml_str);
         EngineSettings settings{};
         settings.window = ReadWindowSettingsFromToml(toml_doc.GetRequiredTable("Window"));
         settings.render = ReadRenderSettingsFromToml(toml_doc.GetRequiredTable("Renderer"));
         return settings;
     }
 
-    WindowSettings SettingsHandler::ReadWindowSettingsFromToml(Utilities::Toml::TomlTable table)
+    WindowSettings SettingsHandler::ReadWindowSettingsFromToml(utilities::toml_utils::TomlTable table)
     {
         WindowSettings settings{};
         settings.width = table.GetOptionalInt("width").value_or(settings.width);
         settings.height = table.GetOptionalInt("height").value_or(settings.height);
         settings.title = table.GetOptionalString("title").value_or(settings.title);
-        settings.mode = table.GetOptionalEnum<WindowMode>("mode", WindowModeMap).value_or(settings.mode);
+        settings.mode = table.GetOptionalEnum<WindowMode>("mode", window_mode_map).value_or(settings.mode);
         return settings;
     }
 
-    RenderSettings SettingsHandler::ReadRenderSettingsFromToml(Utilities::Toml::TomlTable table)
+    RenderSettings SettingsHandler::ReadRenderSettingsFromToml(utilities::toml_utils::TomlTable table)
     {
         RenderSettings settings{};
-        settings.api = table.GetOptionalEnum<RenderApi>("api", RenderApiMap).value_or(settings.api);
+        settings.api = table.GetOptionalEnum<RenderApi>("api", render_api_map).value_or(settings.api);
         settings.vsync = table.GetOptionalBool("vsync").value_or(settings.vsync);
         return settings;
     }

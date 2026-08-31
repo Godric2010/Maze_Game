@@ -36,6 +36,6 @@ TEST_CASE("SceneWorldTests - Test Scene World Facade") {
     world->ApplyEngineEvents();
 
     auto invalid_entity = world->GetEntityByName("TestEntity");
-    REQUIRE(invalid_entity == ecs::INVALID_ENTITY_ID);
+    REQUIRE(invalid_entity == ecs::invalid_entity_id);
     delete world;
 }

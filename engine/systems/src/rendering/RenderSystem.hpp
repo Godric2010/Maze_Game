@@ -12,7 +12,7 @@ ECS_SYSTEM(RenderSystem,
            )
         )
 
-namespace yarep::Systems {
+namespace yarep::systems {
     class RenderSystem : public ecs::IEngineSystem {
     public:
         RenderSystem();
@@ -24,28 +24,28 @@ namespace yarep::Systems {
         void Run(float delta_time) override;
 
     private:
-        const Renderer::IRenderController* m_render_controller{};
-        const AssetHandling::AssetHandler* m_asset_handler{};
-        std::vector<Renderer::DrawAsset> m_draw_assets;
-        std::unordered_map<ecs::EntityId, Renderer::DrawAsset> m_draw_asset_map;
-        std::unordered_map<ecs::EntityId, Renderer::DrawAsset> m_ui_draw_asset_map;
-        std::unordered_map<ecs::EntityId, Renderer::DrawAsset> m_ui_text_asset_map;
-        Renderer::AmbientLightAsset m_ambient_light{};
+        const renderer::IRenderController* m_render_controller{};
+        const asset_handling::AssetHandler* m_asset_handler{};
+        std::vector<renderer::DrawAsset> m_draw_assets;
+        std::unordered_map<ecs::EntityId, renderer::DrawAsset> m_draw_asset_map;
+        std::unordered_map<ecs::EntityId, renderer::DrawAsset> m_ui_draw_asset_map;
+        std::unordered_map<ecs::EntityId, renderer::DrawAsset> m_ui_text_asset_map;
+        renderer::AmbientLightAsset m_ambient_light{};
 
-        Renderer::CameraAsset CreateCameraAsset(const ecs::EntityId& camera_entity,
-                                                const Components::Transform* camera_transform) const;
+        renderer::CameraAsset CreateCameraAsset(const ecs::EntityId& camera_entity,
+                                                const components::Transform* camera_transform) const;
 
         void ClearDrawAssets();
 
-        Renderer::FrameData FillFrameData() const;
+        renderer::FrameData FillFrameData() const;
 
         void FillMeshDrawAssets();
 
-        bool IsDrawAssetValid(const Renderer::DrawAsset& ui_draw_asset) const;
+        bool IsDrawAssetValid(const renderer::DrawAsset& ui_draw_asset) const;
 
         void FillUiDrawAssets();
 
-        void RegisterDrawAssets(const ecs::EntityId& entity, const Components::MeshRenderer& mesh_renderer);
+        void RegisterDrawAssets(const ecs::EntityId& entity, const components::MeshRenderer& mesh_renderer);
 
         void RegisterColorUiAssets(const ecs::EntityId& entity);
 

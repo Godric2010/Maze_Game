@@ -9,17 +9,17 @@
 #include "../math/Types.hpp"
 #include "../../../ecs/src/Entity.hpp"
 
-namespace yarep::Physics::Collision {
+namespace yarep::physics::collision {
 
     struct BoxColliderInfo {
-        Math::AABB world_box;
-        Math::OBB world_obb;
+        math::AABB world_box;
+        math::OBB world_obb;
         bool is_static;
         bool is_trigger;
     };
 
     struct SphereColliderInfo {
-        Math::Sphere world_sphere;
+        math::Sphere world_sphere;
         bool is_static;
         bool is_trigger;
     };

@@ -4,7 +4,7 @@
 #include <iostream>
 #include <ostream>
 
-namespace yarep::Physics::Math {
+namespace yarep::physics::math {
     namespace {
         constexpr float k_epsilon = 1e-6f;
 
@@ -21,7 +21,7 @@ namespace yarep::Physics::Math {
          * @return The minimum 't' value at which the ray enters the AABB. Returns a value greater than the ray length
          *         if there's no intersection.
          */
-        float RayAABB_tEnter(const glm::vec3 &origin, const glm::vec3 &dir, const float len, const AABB &box) noexcept {
+        float RayAabbTEnter(const glm::vec3 &origin, const glm::vec3 &dir, const float len, const AABB &box) noexcept {
             float t_near = 0.0f;
             float t_far = len;
 
@@ -168,7 +168,7 @@ namespace yarep::Physics::Math {
         const glm::vec3 dir = vec / len;
 
         const AABB expanded = ExpandedByRadius(box, sphere.radius);
-        const float t_enter = RayAABB_tEnter(sphere.center, dir, len, expanded);
+        const float t_enter = RayAabbTEnter(sphere.center, dir, len, expanded);
 
         if (t_enter <= len) {
             hit.hit = true;

@@ -9,34 +9,34 @@
 
 #include "AssetTypes.hpp"
 
-namespace yarep::Renderer::RenderFramework::OpenGl
+namespace yarep::renderer::render_framework::open_gl
 {
-    struct GLUploadFormat
+    struct GlUploadFormat
     {
-        GLint internalFormat;
+        GLint internal_format;
         GLenum format;
         GLenum type;
     };
 
-    inline GLUploadFormat ToGL(AssetHandling::PixelFormat pixel_format)
+    inline GlUploadFormat ToGl(asset_handling::PixelFormat pixel_format)
     {
         switch (pixel_format)
         {
-            case AssetHandling::PixelFormat::R8:
+            case asset_handling::PixelFormat::R8:
                 return {
-                    .internalFormat = GL_R8,
+                    .internal_format = GL_R8,
                     .format = GL_RED,
                     .type = GL_UNSIGNED_BYTE
                 };
-            case AssetHandling::PixelFormat::RGB8:
+            case asset_handling::PixelFormat::Rgb8:
                 return {
-                    .internalFormat = GL_RGB8,
+                    .internal_format = GL_RGB8,
                     .format = GL_RGB,
                     .type = GL_UNSIGNED_BYTE
                 };
-            case AssetHandling::PixelFormat::RGBA8:
+            case asset_handling::PixelFormat::Rgba8:
                 return {
-                    .internalFormat = GL_RGBA8,
+                    .internal_format = GL_RGBA8,
                     .format = GL_RGBA,
                     .type = GL_UNSIGNED_BYTE
                 };
@@ -44,11 +44,11 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         throw std::runtime_error("[OpenGL] Unknown pixel format: " + std::to_string(static_cast<int>(pixel_format)));
     }
 
-    struct OpenGLTexture
+    struct OpenGlTexture
     {
         GLuint texture_id;
         GLint width;
         GLint height;
-        GLUploadFormat uploadFormat;
+        GlUploadFormat upload_format;
     };
 }

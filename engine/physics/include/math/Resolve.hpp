@@ -9,7 +9,7 @@
 #include "ClosestPoint.hpp"
 #include "Overlap.hpp"
 
-namespace yarep::Physics::Math {
+namespace yarep::physics::math {
     /**
      * Calculates collision penetration properties between a sphere and an axis-aligned bounding box (AABB).
      *

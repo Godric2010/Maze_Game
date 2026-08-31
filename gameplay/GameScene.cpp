@@ -158,7 +158,7 @@ namespace gameplay
     {
         auto player = World().CreateEntity("Player");
         const auto [width, height, aspect_ratio] = Screen();
-        const auto camera_component = yarep::Components::Camera()
+        const auto camera_component = yarep::components::Camera()
                                       .SetWidth(width)
                                       .SetHeight(height)
                                       .SetAspectRatio(aspect_ratio)
@@ -166,19 +166,19 @@ namespace gameplay
                                       .SetNearClip(0.01f)
                                       .SetFarClip(100.0f);
 
-        World().AddComponent<yarep::Components::Camera>(player, camera_component);
+        World().AddComponent<yarep::components::Camera>(player, camera_component);
 
-        const auto camera_transform = yarep::Components::Transform()
+        const auto camera_transform = yarep::components::Transform()
                                       .SetPosition(m_maze_builder->GetMazeStartPosition())
                                       .SetRotation(glm::vec3(-10.0f, 180.0f, 0.0f));
         World().AddComponent(player, camera_transform);
 
-        const auto camera_rigidbody = yarep::Components::Rigidbody()
+        const auto camera_rigidbody = yarep::components::Rigidbody()
                                       .SetVelocityFixed(false)
                                       .SetVelocity(glm::vec3(0));
         World().AddComponent(player, camera_rigidbody);
 
-        constexpr auto camera_collider = yarep::Components::SphereCollider{
+        constexpr auto camera_collider = yarep::components::SphereCollider{
             .is_static = false,
             .radius = 0.1f
         };
@@ -195,12 +195,12 @@ namespace gameplay
         const auto screen = Screen();
         constexpr glm::vec2 size = {100, 100};
         const glm::vec2 position = {screen.width - size.x - 50, screen.height - size.y - 50};
-        const auto transform = yarep::Components::UI::RectTransform()
+        const auto transform = yarep::components::ui::RectTransform()
                                .SetPosition(position)
                                .SetSize(size);
         World().AddComponent(key_indicator, transform);
 
-        constexpr auto image = yarep::Components::UI::Image{.color = {1, 0, 0, 0.5}};
+        constexpr auto image = yarep::components::ui::Image{.color = {1, 0, 0, 0.5}};
         World().AddComponent(key_indicator, image);
     }
 
@@ -212,23 +212,23 @@ namespace gameplay
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width * 0.9f, screen.height * 0.9f);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = yarep::Components::UI::RectTransform()
+        const auto bg_rect_transform = yarep::components::ui::RectTransform()
                                        .SetPosition(bg_position)
                                        .SetSize(bg_size)
                                        .SetPivot(bg_pivot);
         World().AddComponent(pause_entity, bg_rect_transform);
 
-        constexpr auto bg_image = yarep::Components::UI::Image{.color = {0.3, 0.3, 0.3, 0.9}};
+        constexpr auto bg_image = yarep::components::ui::Image{.color = {0.3, 0.3, 0.3, 0.9}};
         World().AddComponent(pause_entity, bg_image);
         m_pause_entities.push_back(pause_entity);
 
         const auto heading_entity = World().CreateEntity("Pause");
-        const auto heading_transform = yarep::Components::UI::RectTransform()
+        const auto heading_transform = yarep::components::ui::RectTransform()
                                        .SetPosition(glm::vec2(0.0f, 300.0f))
                                        .SetPivot(glm::vec2(0.5f, 0.5f))
-                                       .SetAnchor(yarep::Components::UI::Anchor::TopCenter)
+                                       .SetAnchor(yarep::components::ui::Anchor::TopCenter)
                                        .SetParent(pause_entity);
-        const auto heading_text = yarep::Components::UI::Text()
+        const auto heading_text = yarep::components::ui::Text()
                                   .SetText("Pause")
                                   .SetFontName("SpaceFont.ttf")
                                   .SetFontSize(128.0f);
@@ -247,14 +247,14 @@ namespace gameplay
     {
         const auto button_entity = World().CreateEntity(content + "Button");
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto button_rect = yarep::Components::UI::RectTransform()
+        auto button_rect = yarep::components::ui::RectTransform()
                            .SetPosition(position)
                            .SetSize(size)
                            .SetPivot(pivot)
-                           .SetAnchor(yarep::Components::UI::Anchor::TopCenter)
+                           .SetAnchor(yarep::components::ui::Anchor::TopCenter)
                            .SetParent(parent_entity);
 
-        auto button = yarep::Components::UI::Button();
+        auto button = yarep::components::ui::Button();
         button.button_id = button_id;
         button.enabled = true;
         button.default_color = {1.0f, 1.0f, 1.0f, 0.0f};
@@ -266,12 +266,12 @@ namespace gameplay
         World().AddComponent(button_entity, button_rect);
 
         const auto button_text_entity = World().CreateEntity(content + "ButtonText");
-        auto button_text_rect = yarep::Components::UI::RectTransform()
+        auto button_text_rect = yarep::components::ui::RectTransform()
                                 .SetPosition(glm::vec2(0, 10))
                                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                                .SetAnchor(yarep::Components::UI::Anchor::Center)
+                                .SetAnchor(yarep::components::ui::Anchor::Center)
                                 .SetParent(button_entity);
-        auto button_text = yarep::Components::UI::Text()
+        auto button_text = yarep::components::ui::Text()
                            .SetText(content)
                            .SetFontName("SpaceFont.ttf")
                            .SetFontSize(32);

@@ -6,7 +6,7 @@
 #include "AssetTypes.hpp"
 
 
-namespace yarep::AssetHandling::Textures
+namespace yarep::asset_handling::textures
 {
     class TextureImporter
     {

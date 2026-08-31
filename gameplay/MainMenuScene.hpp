@@ -21,7 +21,7 @@ namespace gameplay {
         void OnExit() override;
 
     private:
-        yarep::ecs::EntityId m_background_entity = yarep::ecs::INVALID_ENTITY_ID;
+        yarep::ecs::EntityId m_background_entity = yarep::ecs::invalid_entity_id;
         std::vector<yarep::ecs::EntityId> m_active_state_entities;
         const int m_start_game_button = 1;
         const int m_quit_button = 2;

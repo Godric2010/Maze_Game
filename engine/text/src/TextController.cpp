@@ -2,8 +2,8 @@
 #include <spdlog/spdlog.h>
 #include "IFileManager.hpp"
 
-namespace yarep::Text {
-    TextController::TextController(AssetHandling::AssetHandler* asset_handler) {
+namespace yarep::text {
+    TextController::TextController(asset_handling::AssetHandler* asset_handler) {
         m_font_manager = std::make_unique<FontManager>(asset_handler);
         m_utf8_decoder = std::make_unique<Utf8Decoder>();
         m_layout_engine = std::make_unique<LayoutEngine>();

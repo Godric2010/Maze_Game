@@ -8,7 +8,7 @@
 
 ECS_SYSTEM(CameraSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
-namespace yarep::Systems {
+namespace yarep::systems {
     class CameraSystem final : public ecs::IEngineSystem {
     public:
         CameraSystem();
@@ -21,7 +21,7 @@ namespace yarep::Systems {
 
     private:
         static glm::mat4 CalculatedViewMat(
-                const Components::Transform* transform);
-        static glm::mat4 CalculateProjectionMat(const Components::Camera *camera_component);
+                const components::Transform* transform);
+        static glm::mat4 CalculateProjectionMat(const components::Camera *camera_component);
     };
 } // namespace

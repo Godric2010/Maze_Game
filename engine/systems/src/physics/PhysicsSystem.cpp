@@ -15,15 +15,15 @@
 #include "collision/MoverSolver.hpp"
 #include "math/TypeUtils.hpp"
 
-namespace yarep::Systems::Physics
+namespace yarep::systems::physics
 {
-    using namespace yarep::Physics;
+    using namespace yarep::physics;
 
     PhysicsSystem::PhysicsSystem()
     {
-        m_collider_cache = std::make_unique<Collision::ColliderCache>();
-        m_broadphase = Collision::BroadphaseBuilder::BuildBroadphase(2);
-        m_collision_query_service = std::make_unique<Collision::CollisionQueryService>(
+        m_collider_cache = std::make_unique<collision::ColliderCache>();
+        m_broadphase = collision::BroadphaseBuilder::BuildBroadphase(2);
+        m_collision_query_service = std::make_unique<collision::CollisionQueryService>(
             *m_broadphase,
             *m_collider_cache
         );
@@ -33,10 +33,10 @@ namespace yarep::Systems::Physics
     {
         m_transform_cache = Cache()->GetTransformCache();
 
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::BoxCollider>(
-            [this](const ecs::EntityId entity, const Components::BoxCollider& box_collider)
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::BoxCollider>(
+            [this](const ecs::EntityId entity, const components::BoxCollider& box_collider)
             {
-                const Components::Transform* transform = EcsWorld()->GetComponent<Components::Transform>(entity);
+                const components::Transform* transform = EcsWorld()->GetComponent<components::Transform>(entity);
                 this->BuildBoxCollider(entity,
                                        box_collider,
                                        transform->GetPosition(),
@@ -46,17 +46,17 @@ namespace yarep::Systems::Physics
             }
         );
 
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::BoxCollider>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::BoxCollider>(
             [this](const ecs::EntityId entity)
             {
                 this->m_collider_cache->box_colliders.erase(entity);
             }
         );
 
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::SphereCollider>(
-            [this](const ecs::EntityId entity, const Components::SphereCollider& sphere_collider)
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::SphereCollider>(
+            [this](const ecs::EntityId entity, const components::SphereCollider& sphere_collider)
             {
-                const Components::Transform* transform = EcsWorld()->GetComponent<Components::Transform>(entity);
+                const components::Transform* transform = EcsWorld()->GetComponent<components::Transform>(entity);
                 this->BuildSphereCollider(entity, sphere_collider, transform->GetPosition());
             }
         );
@@ -64,10 +64,10 @@ namespace yarep::Systems::Physics
 
     void PhysicsSystem::Run(const float fixed_delta_time)
     {
-        const auto movable_objects = EcsWorld()->GetComponentsOfType<Components::Rigidbody>();
+        const auto movable_objects = EcsWorld()->GetComponentsOfType<components::Rigidbody>();
         for (const auto [rigidbody, entity] : movable_objects)
         {
-            auto transform = EcsWorld()->GetComponent<Components::Transform>(entity);
+            auto transform = EcsWorld()->GetComponent<components::Transform>(entity);
             if (transform == nullptr)
             {
                 throw std::runtime_error("A moveable object without a transform component is impossible to handle!");
@@ -110,19 +110,19 @@ namespace yarep::Systems::Physics
         }
     }
 
-    void PhysicsSystem::BuildBoxCollider(ecs::EntityId entity, const Components::BoxCollider box_collider,
+    void PhysicsSystem::BuildBoxCollider(ecs::EntityId entity, const components::BoxCollider box_collider,
                                          const glm::vec3& position, const glm::vec3& rotation,
                                          const glm::vec3& scale) const
     {
-        const auto obb = Math::Util::BuildWorldObb(position,
+        const auto obb = math::util::BuildWorldObb(position,
                                                    rotation,
                                                    box_collider.width,
                                                    box_collider.height,
                                                    box_collider.depth
         );
-        const auto aabb = Math::Util::ToTightAabb(obb);
+        const auto aabb = math::util::ToTightAabb(obb);
 
-        Collision::BoxColliderInfo info{};
+        collision::BoxColliderInfo info{};
         info.world_box = aabb;
         info.world_obb = obb;
         info.is_static = box_collider.is_static;
@@ -135,14 +135,14 @@ namespace yarep::Systems::Physics
         }
     }
 
-    void PhysicsSystem::BuildSphereCollider(ecs::EntityId entity, const Components::SphereCollider sphere_collider,
+    void PhysicsSystem::BuildSphereCollider(ecs::EntityId entity, const components::SphereCollider sphere_collider,
                                             const glm::vec3 position) const
     {
-        Math::Sphere sphere{};
+        math::Sphere sphere{};
         sphere.radius = sphere_collider.radius;
         sphere.center = position;
 
-        Collision::SphereColliderInfo info{};
+        collision::SphereColliderInfo info{};
         info.world_sphere = sphere;
         info.is_static = sphere_collider.is_static;
         info.is_trigger = sphere_collider.is_trigger;
@@ -150,7 +150,7 @@ namespace yarep::Systems::Physics
         m_collider_cache->sphere_colliders.emplace(entity, info);
         if (sphere_collider.is_static)
         {
-            const auto proxy_sphere = Math::Util::FromSphere(sphere);
+            const auto proxy_sphere = math::util::FromSphere(sphere);
             m_broadphase->Insert({entity, proxy_sphere, sphere_collider.is_static});
         }
     }
@@ -208,30 +208,30 @@ namespace yarep::Systems::Physics
                                               glm::vec3* final_position)
     {
         spdlog::debug("Performing collision sweep");
-        Collision::MoverInput input;
+        collision::MoverInput input;
         input.position = position;
         input.radius = radius;
         input.delta = move_delta;
         input.max_iterations = 3;
 
-        const auto result = Collision::MoverSolver::Solve(input, *m_collision_query_service, blocking_candidates);
+        const auto result = collision::MoverSolver::Solve(input, *m_collision_query_service, blocking_candidates);
         *final_position = result.new_position;
 
         RaiseCollisionEvents(target_entity, result);
     }
 
     void PhysicsSystem::RaiseCollisionEvents(const ecs::EntityId target_entity,
-                                             const Collision::MoverResult& mover_result)
+                                             const collision::MoverResult& mover_result)
     {
         ecs::PhysicsEvent event{};
         event.target_entity = target_entity;
 
-        if (!mover_result.collided && m_collided_entities[target_entity] != ecs::INVALID_ENTITY_ID)
+        if (!mover_result.collided && m_collided_entities[target_entity] != ecs::invalid_entity_id)
         {
             event.other_collider_entity = m_collided_entities[target_entity];
             event.type = ecs::PhysicsEventType::OnCollisionExit;
             EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
-            m_collided_entities[target_entity] = ecs::INVALID_ENTITY_ID;
+            m_collided_entities[target_entity] = ecs::invalid_entity_id;
             return;
         }
 
@@ -242,7 +242,7 @@ namespace yarep::Systems::Physics
             {
                 return;
             }
-            if (m_collided_entities[target_entity] != ecs::INVALID_ENTITY_ID)
+            if (m_collided_entities[target_entity] != ecs::invalid_entity_id)
             {
                 event.other_collider_entity = m_collided_entities[target_entity];
                 event.type = ecs::PhysicsEventType::OnCollisionExit;
@@ -346,7 +346,7 @@ namespace yarep::Systems::Physics
     }
 
 
-    Math::AABB PhysicsSystem::BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest, const float radius) noexcept
+    math::AABB PhysicsSystem::BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest, const float radius) noexcept
     {
         const glm::vec3 p0 = pos;
         const glm::vec3 p1 = pos + rest;

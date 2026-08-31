@@ -7,17 +7,17 @@
 #include "AssetHandler.hpp"
 #include "../../../resources/IShaderLibrary.hpp"
 
-namespace yarep::Renderer::RenderFramework::OpenGl
+namespace yarep::renderer::render_framework::open_gl
 {
-    class OpenGlShaderLibrary : public Resources::IShaderLibrary
+    class OpenGlShaderLibrary : public resources::IShaderLibrary
     {
     public:
-        OpenGlShaderLibrary(AssetHandling::AssetHandler* asset_handler);
+        OpenGlShaderLibrary(asset_handling::AssetHandler* asset_handler);
 
         ~OpenGlShaderLibrary() override;
 
         void CompileShaders(
-            const std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset>>>& shaders) override;
+            const std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const asset_handling::ShaderAsset>>>& shaders) override;
 
         void ClearShaders() override;
 
@@ -26,7 +26,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         std::optional<GLuint> GetShaderProgram(const assets::ShaderHandle& shader_handle) const;
 
     private:
-        AssetHandling::AssetHandler* m_asset_handler;
+        asset_handling::AssetHandler* m_asset_handler;
         std::unordered_map<size_t, GLuint> m_shader_program_map;
 
 

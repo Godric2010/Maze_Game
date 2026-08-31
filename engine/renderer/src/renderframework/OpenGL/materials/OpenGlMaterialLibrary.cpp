@@ -1,7 +1,7 @@
 #include "OpenGlMaterial.hpp"
 #include "OpenGlMaterialLibrary.hpp"
 
-namespace yarep::Renderer::RenderFramework::OpenGl
+namespace yarep::renderer::render_framework::open_gl
 {
     OpenGlMaterialLibrary::OpenGlMaterialLibrary()
     {
@@ -12,7 +12,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
     }
 
     void OpenGlMaterialLibrary::AddMaterial(const assets::MaterialHandle& material_handle,
-                                            const AssetHandling::MaterialAsset& material_asset, 
+                                            const asset_handling::MaterialAsset& material_asset, 
                                             const uint32_t revision)
     {
         const MaterialTextureRef albedo_texture{

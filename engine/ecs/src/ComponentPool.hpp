@@ -77,9 +77,9 @@ namespace yarep::ecs {
 
     private:
         const uint64_t m_none;
-        std::vector<T> m_denseComponents;
-        std::vector<EntityId> m_denseEntities;
-        std::vector<uint64_t> m_sparseToDense;
+        std::vector<T> m_dense_components;
+        std::vector<EntityId> m_dense_entities;
+        std::vector<uint64_t> m_sparse_to_dense;
         std::size_t m_component_type_id;
     };
 } // namespace

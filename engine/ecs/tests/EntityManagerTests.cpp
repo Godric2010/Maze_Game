@@ -28,7 +28,7 @@ TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::GenerateEntity: returns n
     INFO("Entity: " << entity);
     REQUIRE_FALSE(entity_manager.IsEntityAlive(entity));
     REQUIRE_FALSE(entity_manager.IsEntityPending(entity));
-    REQUIRE(entity_manager.GetEntityByName("T1") == INVALID_ENTITY_ID);
+    REQUIRE(entity_manager.GetEntityByName("T1") == invalid_entity_id);
 }
 
 TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::GenerateEntity: no two entities are equal", "[ecs][fast]") {
@@ -50,7 +50,7 @@ TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::DestroyEntity: invalidate
     INFO("Entity: " << entity);
     REQUIRE_FALSE(entity_manager.IsEntityAlive(entity));
     REQUIRE_FALSE(entity_manager.IsEntityPending(entity));
-    REQUIRE(entity_manager.GetEntityByName("E1") == INVALID_ENTITY_ID);
+    REQUIRE(entity_manager.GetEntityByName("E1") == invalid_entity_id);
 }
 
 TEST_CASE_METHOD(EntitymanagerFixture, "EntityManager::DestroyEntity: recycles index but bumps generation",

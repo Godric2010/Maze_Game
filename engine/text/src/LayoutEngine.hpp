@@ -2,7 +2,7 @@
 #include "FontManager.hpp"
 #include <vector>
 
-namespace yarep::Text {
+namespace yarep::text {
     /**
      * @struct GlyphData
      * Contains all data needed to define the layout of a glyph

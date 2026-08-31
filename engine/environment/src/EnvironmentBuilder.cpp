@@ -7,21 +7,21 @@
 #include <memory>
 
 #include "IFileManager.hpp"
-#include "SDLInput.hpp"
-#include "SDLWindow.hpp"
+#include "SdlInput.hpp"
+#include "SdlWindow.hpp"
 #include "Window.hpp"
 #include "Files/FileManager.hpp"
 
-namespace yarep::Environment {
+namespace yarep::environment {
     std::unique_ptr<IWindow> EnvironmentBuilder::CreateEngineWindow() {
-        return std::make_unique<SDLWindow>();
+        return std::make_unique<SdlWindow>();
     }
 
     std::unique_ptr<IEnvInput> EnvironmentBuilder::CreateInput(IWindow& window) {
-        return std::make_unique<SDLInput>(reinterpret_cast<SDLWindow&>(window));
+        return std::make_unique<SdlInput>(reinterpret_cast<SdlWindow&>(window));
     }
 
-    std::unique_ptr<Files::IFileManager> EnvironmentBuilder::CreateFileManager() {
-        return std::make_unique<Files::FileManager>();
+    std::unique_ptr<files::IFileManager> EnvironmentBuilder::CreateFileManager() {
+        return std::make_unique<files::FileManager>();
     }
 }

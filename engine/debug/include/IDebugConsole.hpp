@@ -5,7 +5,7 @@
 #pragma once
 #include <string>
 
-namespace yarep::Debug {
+namespace yarep::debug {
     class IDebugConsole {
     public:
         virtual ~IDebugConsole() = default;

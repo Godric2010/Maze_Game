@@ -5,7 +5,7 @@
 
 ECS_SYSTEM(EngineEventSystem, EngineEvents, TAGS(ENGINE), DEPENDENCIES())
 
-namespace yarep::Systems {
+namespace yarep::systems {
     struct TransformCommand {
         glm::vec3 translation;
         glm::vec3 rotation;

@@ -23,7 +23,7 @@ namespace gameplay::systems {
         float m_min_height = 0.4f;
         float m_max_height = 0.6f;
 
-        glm::vec3 hover_direction = glm::vec3(0.0f, 1.0f, 0.0f);
-        bool goes_up = true;
+        glm::vec3 m_hover_direction = glm::vec3(0.0f, 1.0f, 0.0f);
+        bool m_goes_up = true;
     };
 } // namespace

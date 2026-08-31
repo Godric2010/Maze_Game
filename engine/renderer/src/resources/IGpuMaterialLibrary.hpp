@@ -6,7 +6,7 @@
 #include "AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 
-namespace yarep::Renderer::Resources
+namespace yarep::renderer::resources
 {
     class IGpuMaterialLibrary
     {
@@ -14,7 +14,7 @@ namespace yarep::Renderer::Resources
         virtual ~IGpuMaterialLibrary() = default;
 
         virtual void AddMaterial(const assets::MaterialHandle& material_handle,
-                                 const AssetHandling::MaterialAsset& material_asset,
+                                 const asset_handling::MaterialAsset& material_asset,
                                  uint32_t revision) = 0;
 
         virtual void RemoveMaterial(const assets::MaterialHandle& material_handle) = 0;

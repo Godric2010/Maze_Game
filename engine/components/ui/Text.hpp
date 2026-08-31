@@ -5,7 +5,7 @@
 #pragma once
 #include <string>
 
-namespace yarep::Components::UI {
+namespace yarep::components::ui {
     struct Text {
         Text() {
             m_text_content = "";

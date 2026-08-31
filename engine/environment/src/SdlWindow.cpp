@@ -1,37 +1,37 @@
-#include "SDLWindow.hpp"
+#include "SdlWindow.hpp"
 
 #include <iostream>
 #include <ostream>
 
-namespace yarep::Environment
+namespace yarep::environment
 {
-    SDLWindow::SDLWindow()
+    SdlWindow::SdlWindow()
     {
         m_window = nullptr;
         m_context = {};
     };
 
-    SDLWindow::~SDLWindow() = default;
+    SdlWindow::~SdlWindow() = default;
 
-    void SDLWindow::Setup(WindowConfig config)
+    void SdlWindow::Setup(WindowConfig config)
     {
         if (SDL_Init(SDL_INIT_VIDEO) != 0)
         {
             throw std::runtime_error("SDL_Init failed: " + std::string(SDL_GetError()));
         }
 
-        uint32_t windowFlags = SDL_WINDOW_ALLOW_HIGHDPI;
-        switch (config.renderApi)
+        uint32_t window_flags = SDL_WINDOW_ALLOW_HIGHDPI;
+        switch (config.render_api)
         {
-            case API::OpenGL:
-                windowFlags |= SDL_WINDOW_OPENGL;
-                SetupOpenGL();
+            case Api::OpenGl:
+                window_flags |= SDL_WINDOW_OPENGL;
+                SetupOpenGl();
                 break;
-            case API::Vulkan:
-                windowFlags |= SDL_WINDOW_VULKAN;
+            case Api::Vulkan:
+                window_flags |= SDL_WINDOW_VULKAN;
                 break;
-            case API::Metal:
-                windowFlags |= SDL_WINDOW_METAL;
+            case Api::Metal:
+                window_flags |= SDL_WINDOW_METAL;
                 break;
         }
 
@@ -40,7 +40,7 @@ namespace yarep::Environment
                                     SDL_WINDOWPOS_CENTERED,
                                     config.width,
                                     config.height,
-                                    windowFlags);
+                                    window_flags);
         if (m_window == nullptr)
         {
             throw std::runtime_error(SDL_GetError());
@@ -48,39 +48,39 @@ namespace yarep::Environment
 
         m_context.width = config.width;
         m_context.height = config.height;
-        SDL_GL_GetDrawableSize(m_window, &m_context.drawableWidth, &m_context.drawableHeight);
-        switch (config.renderApi)
+        SDL_GL_GetDrawableSize(m_window, &m_context.drawable_width, &m_context.drawable_height);
+        switch (config.render_api)
         {
-            case API::OpenGL:
-                m_context.openGLContext = OpenGLContext{
-                    .windowHandle = m_window,
+            case Api::OpenGl:
+                m_context.open_gl_context = OpenGlContext{
+                    .window_handle = m_window,
                     .context = SDL_GL_CreateContext(m_window),
                 };
-                SDL_GL_MakeCurrent(m_context.openGLContext.windowHandle, m_context.openGLContext.context);
+                SDL_GL_MakeCurrent(m_context.open_gl_context.window_handle, m_context.open_gl_context.context);
                 SDL_GL_SetSwapInterval(config.vsync ? 1 : 0);
                 break;
-            case API::Vulkan:
-            case API::Metal:
+            case Api::Vulkan:
+            case Api::Metal:
                 break;
         }
     }
 
-    WindowContext& SDLWindow::GetWindowContext()
+    WindowContext& SdlWindow::GetWindowContext()
     {
         return m_context;
     }
 
-    void SDLWindow::SwapBuffers()
+    void SdlWindow::SwapBuffers()
     {
         SDL_GL_SwapWindow(m_window);
     }
 
-    void SDLWindow::Shutdown()
+    void SdlWindow::Shutdown()
     {
         SDL_DestroyWindow(m_window);
     }
 
-    void SDLWindow::PollEvents(const std::function<void(const SDL_Event&)>& callback)
+    void SdlWindow::PollEvents(const std::function<void(const SDL_Event&)>& callback)
     {
         SDL_Event event;
         while (SDL_PollEvent(&event))
@@ -90,7 +90,7 @@ namespace yarep::Environment
     }
 
 
-    void SDLWindow::SetupOpenGL()
+    void SdlWindow::SetupOpenGl()
     {
         SDL_GL_ResetAttributes();
 

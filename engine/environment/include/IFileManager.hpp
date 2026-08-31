@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace yarep::Environment::Files {
+namespace yarep::environment::files {
     struct FileBinary {
         std::vector<uint8_t> data;
         size_t size = 0;

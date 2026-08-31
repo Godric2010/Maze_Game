@@ -10,8 +10,8 @@ struct App {
     ~App() = default;
 
     void Initialize() {
-        const std::vector<yarep::ecs::SystemMeta> systems = MazeGame::GetSystemsFromGeneratedSource();
-        m_engine_controller = std::make_unique<yarep::Core::EngineController>();
+        const std::vector<yarep::ecs::SystemMeta> systems = maze_game::GetSystemsFromGeneratedSource();
+        m_engine_controller = std::make_unique<yarep::core::EngineController>();
         m_engine_controller->Initialize(systems);
 
         m_gameplay_manager = std::make_unique<gameplay::GameplayManager>(*m_engine_controller);
@@ -28,7 +28,7 @@ struct App {
     }
 
 private:
-    std::unique_ptr<yarep::Core::EngineController> m_engine_controller;
+    std::unique_ptr<yarep::core::EngineController> m_engine_controller;
     std::unique_ptr<gameplay::GameplayManager> m_gameplay_manager;
 };
 

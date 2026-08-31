@@ -1,20 +1,20 @@
 #include "CameraSystem.hpp"
 
-namespace yarep::Systems {
+namespace yarep::systems {
     CameraSystem::CameraSystem() = default;
 
     CameraSystem::~CameraSystem() = default;
 
     void CameraSystem::Initialize() {
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::Camera>(
-                [this](const ecs::EntityId entity, const Components::Camera& _) {
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::Camera>(
+                [this](const ecs::EntityId entity, const components::Camera& _) {
                     if (this->Cache()->GetCameraCache() == nullptr) {
                         throw std::runtime_error("CameraSystem::Initialize() - cache is null");
                     }
                     this->Cache()->GetCameraCache()->RegisterEntity(entity);
                 }
                 );
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::Camera>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::Camera>(
                 [this](const ecs::EntityId entity) {
                     this->Cache()->GetCameraCache()->DeregisterEntity(entity);
                 }
@@ -22,9 +22,9 @@ namespace yarep::Systems {
     }
 
     void CameraSystem::Run(float delta_time) {
-        auto camera_components = EcsWorld()->GetComponentsOfType<Components::Camera>();
+        auto camera_components = EcsWorld()->GetComponentsOfType<components::Camera>();
         for (const auto [camera, entity]: camera_components) {
-            const auto camera_transform = EcsWorld()->GetComponent<Components::Transform>(entity);
+            const auto camera_transform = EcsWorld()->GetComponent<components::Transform>(entity);
             auto view_mat = CalculatedViewMat(camera_transform);
 
             const auto cache_val = Cache()->GetCameraCache()->GetCacheValue(entity);
@@ -37,7 +37,7 @@ namespace yarep::Systems {
         }
     }
 
-    glm::mat4 CameraSystem::CalculatedViewMat(const Components::Transform* transform) {
+    glm::mat4 CameraSystem::CalculatedViewMat(const components::Transform* transform) {
         const auto cam_rotation = transform->GetRotation();
         const float pitch_rad = glm::radians(cam_rotation.x);
         const float yaw_rad = glm::radians(cam_rotation.y);
@@ -56,7 +56,7 @@ namespace yarep::Systems {
         return lookAt(eye, target, up);
     }
 
-    glm::mat4 CameraSystem::CalculateProjectionMat(const Components::Camera* camera_component) {
+    glm::mat4 CameraSystem::CalculateProjectionMat(const components::Camera* camera_component) {
         return glm::perspective(glm::radians(camera_component->GetFieldOfView()),
                                 camera_component->GetAspectRatio(),
                                 camera_component->GetNearClip(),

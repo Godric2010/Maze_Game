@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ostream>
 
-namespace yarep::Systems {
+namespace yarep::systems {
     void EngineEventSystem::Initialize() {
     }
 

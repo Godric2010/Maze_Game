@@ -1,10 +1,10 @@
 #include "RectTransformSystem.hpp"
 #include <glm/ext/matrix_transform.hpp>
 
-namespace yarep::Systems {
+namespace yarep::systems {
     void RectTransformSystem::Initialize() {
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::RectTransform>(
-                [this](const ecs::EntityId entity, const Components::UI::RectTransform& _) {
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::ui::RectTransform>(
+                [this](const ecs::EntityId entity, const components::ui::RectTransform& _) {
                     if (this->Cache()->GetTransformCache() == nullptr) {
                         throw std::runtime_error("TransformSystem: Transform cache is null");
                     }
@@ -12,7 +12,7 @@ namespace yarep::Systems {
                 }
                 );
 
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::RectTransform>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::ui::RectTransform>(
                 [this](const ecs::EntityId entity) {
                     this->Cache()->GetTransformCache()->DeregisterRectTransformEntity(entity);
                 }
@@ -20,7 +20,7 @@ namespace yarep::Systems {
     }
 
     void RectTransformSystem::Run(float delta_time) {
-        const auto rect_transform_components = EcsWorld()->GetComponentsOfType<Components::UI::RectTransform>();
+        const auto rect_transform_components = EcsWorld()->GetComponentsOfType<components::ui::RectTransform>();
         for (const auto [rect_transform, entity]: rect_transform_components) {
             auto rect_transform_cache_value = Cache()->GetTransformCache()->GetRectTransformValue(entity);
             if (rect_transform->GetVersion() == rect_transform_cache_value.last_version) {
@@ -34,32 +34,32 @@ namespace yarep::Systems {
         }
     }
 
-    glm::vec2 RectTransformSystem::GetAnchorValue(const Components::UI::Anchor& anchor) {
+    glm::vec2 RectTransformSystem::GetAnchorValue(const components::ui::Anchor& anchor) {
         switch (anchor) {
-            case Components::UI::Anchor::TopLeft:
+            case components::ui::Anchor::TopLeft:
                 return {0.0f, 0.0f};
-            case Components::UI::Anchor::TopCenter:
+            case components::ui::Anchor::TopCenter:
                 return {0.5f, 0.0f};
-            case Components::UI::Anchor::TopRight:
+            case components::ui::Anchor::TopRight:
                 return {1.0f, 0.0f};
-            case Components::UI::Anchor::CenterLeft:
+            case components::ui::Anchor::CenterLeft:
                 return {0.0f, 0.5f};
-            case Components::UI::Anchor::Center:
+            case components::ui::Anchor::Center:
                 return {0.5f, 0.5f};
-            case Components::UI::Anchor::CenterRight:
+            case components::ui::Anchor::CenterRight:
                 return {1.0f, 0.5f};
-            case Components::UI::Anchor::BottomLeft:
+            case components::ui::Anchor::BottomLeft:
                 return {0.0f, 1.0f};
-            case Components::UI::Anchor::BottomCenter:
+            case components::ui::Anchor::BottomCenter:
                 return {0.5f, 1.0f};
-            case Components::UI::Anchor::BottomRight:
+            case components::ui::Anchor::BottomRight:
                 return {1.0f, 1.0f};
             default:
                 throw std::runtime_error("Unknown Anchor type");
         };
     }
 
-    LayoutData RectTransformSystem::CreateLayoutData(const Components::UI::RectTransform* rect_transform) {
+    LayoutData RectTransformSystem::CreateLayoutData(const components::ui::RectTransform* rect_transform) {
         LayoutData result{};
         result.local_position = rect_transform->GetLocalPosition();
         result.local_size = rect_transform->GetLocalSize();
@@ -78,8 +78,8 @@ namespace yarep::Systems {
         return result;
     }
 
-    Transform::RectTransformCacheValue RectTransformSystem::CreateUiLayoutResult(const LayoutData& rect_layout) {
-        Transform::RectTransformCacheValue result{};
+    transform::RectTransformCacheValue RectTransformSystem::CreateUiLayoutResult(const LayoutData& rect_layout) {
+        transform::RectTransformCacheValue result{};
 
         const glm::vec2 global_position = rect_layout.anchor_point + rect_layout.local_position - rect_layout.local_size
                                           * rect_layout.pivot;
@@ -96,8 +96,8 @@ namespace yarep::Systems {
         return result;
     }
 
-    Transform::RectTransformCacheValue RectTransformSystem::GetParentLayoutResult(const ecs::EntityId& parent_entity) {
-        const auto parent_rect_transform = EcsWorld()->GetComponent<Components::UI::RectTransform>(parent_entity);
+    transform::RectTransformCacheValue RectTransformSystem::GetParentLayoutResult(const ecs::EntityId& parent_entity) {
+        const auto parent_rect_transform = EcsWorld()->GetComponent<components::ui::RectTransform>(parent_entity);
         const auto rect_transform_cache = Cache()->GetTransformCache()->GetRectTransformValue(parent_entity);
         if (parent_rect_transform->GetVersion() == rect_transform_cache.last_version) {
             return rect_transform_cache;

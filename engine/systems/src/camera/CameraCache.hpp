@@ -3,7 +3,7 @@
 #include <glm/fwd.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-namespace yarep::Systems::Camera {
+namespace yarep::systems::camera {
     class CameraCache {
     public:
         struct Element {

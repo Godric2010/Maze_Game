@@ -2,7 +2,7 @@
 
 #include "SpatialHashBroadphase.hpp"
 
-namespace yarep::Physics::Collision
+namespace yarep::physics::collision
 {
     std::unique_ptr<IBroadphase> BroadphaseBuilder::BuildBroadphase(float cell_size)
     {

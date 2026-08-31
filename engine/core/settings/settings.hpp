@@ -6,9 +6,9 @@
 #include <array>
 #include <string>
 
-namespace yarep::Core::Settings
+namespace yarep::core::settings
 {
-    # define WindowModeList \
+    # define WINDOW_MODE_LIST \
         X(Windowed) \
         X(Borderless) \
         X(Fullscreen)
@@ -16,14 +16,14 @@ namespace yarep::Core::Settings
     enum class WindowMode
     {
         #define X(name) name,
-        WindowModeList
+        WINDOW_MODE_LIST
         #undef X
     };
 
-    constexpr std::array<std::pair<std::string_view, WindowMode>, 3> WindowModeMap = {
+    constexpr std::array<std::pair<std::string_view, WindowMode>, 3> window_mode_map = {
         {
             #define X(name) {#name, WindowMode::name},
-            WindowModeList
+            WINDOW_MODE_LIST
             #undef X
         }
     };
@@ -36,7 +36,7 @@ namespace yarep::Core::Settings
         std::string title = "Unknown Game";
     };
 
-    #define RenderApiList \
+    #define RENDER_API_LIST \
         X(OpenGL) \
         X(Metal) \
         X(Vulkan)
@@ -44,14 +44,14 @@ namespace yarep::Core::Settings
     enum class RenderApi
     {
         #define X(name) name,
-        RenderApiList
+        RENDER_API_LIST
         #undef X
     };
 
-    constexpr  std::array<std::pair<std::string_view, RenderApi>, 3> RenderApiMap = {
+    constexpr  std::array<std::pair<std::string_view, RenderApi>, 3> render_api_map = {
         {
             #define X(name) {#name, RenderApi::name},
-            RenderApiList
+            RENDER_API_LIST
             #undef X
         }
     };

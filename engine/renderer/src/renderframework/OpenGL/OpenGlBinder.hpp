@@ -7,10 +7,10 @@
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Meshes/OpenGLMesh.hpp"
+#include "Meshes/OpenGlMesh.hpp"
 
 
-namespace yarep::Renderer::RenderFramework::OpenGl {
+namespace yarep::renderer::render_framework::open_gl {
     struct ShaderBindings {
         // Vertex bindings
         GLint model_bind;
@@ -53,7 +53,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
 
         void BindShader() const;
 
-        GLsizei BindMesh(OpenGLMesh mesh);
+        GLsizei BindMesh(OpenGlMesh mesh);
 
         void BindModelMatrix(const ShaderBindings& shader_bindings, glm::mat4 proj_matrix);
 

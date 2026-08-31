@@ -8,12 +8,12 @@
 #include "IDebugConsole.hpp"
 #include "../src/DebugConsole.hpp"
 
-namespace yarep::Debug
+namespace yarep::debug
 {
-    static std::unique_ptr<IDebugConsole> CreateDebugConsole(Text::TextController* text,
-                                                             Renderer::IRenderController* render,
-                                                             AssetHandling::AssetHandler* asset_handler,
-                                                             Environment::WindowContext& ctx, uint32_t col_width)
+    static std::unique_ptr<IDebugConsole> CreateDebugConsole(text::TextController* text,
+                                                             renderer::IRenderController* render,
+                                                             asset_handling::AssetHandler* asset_handler,
+                                                             environment::WindowContext& ctx, uint32_t col_width)
     {
         return std::make_unique<DebugConsole>(text, render, asset_handler, ctx, col_width);
     }

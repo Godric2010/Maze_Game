@@ -2,20 +2,20 @@
 #include <unordered_map>
 
 #include "AssetTypes.hpp"
-#include "OpenGLTexture.hpp"
+#include "OpenGlTexture.hpp"
 #include "../../../resources/IGpuTextureLibrary.hpp"
 
-namespace yarep::Renderer::RenderFramework::OpenGl
+namespace yarep::renderer::render_framework::open_gl
 {
-    class OpenGLTextureLibrary : public Resources::IGpuTextureLibrary
+    class OpenGlTextureLibrary : public resources::IGpuTextureLibrary
     {
     public:
-        OpenGLTextureLibrary();
+        OpenGlTextureLibrary();
 
-        ~OpenGLTextureLibrary() override;
+        ~OpenGlTextureLibrary() override;
 
         void AddTexture(const assets::TextureHandle& texture_handle,
-                        const AssetHandling::TextureAsset& texture_asset, uint32_t revision) override;
+                        const asset_handling::TextureAsset& texture_asset, uint32_t revision) override;
 
         void RemoveTexture(const assets::TextureHandle& texture_handle) override;
 
@@ -25,10 +25,10 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         
         void ClearTextures() override;
 
-        OpenGLTexture& GetTexture(const assets::TextureHandle& texture_handle);
+        OpenGlTexture& GetTexture(const assets::TextureHandle& texture_handle);
 
     private:
-        std::unordered_map<assets::TextureHandle, OpenGLTexture> m_textures;
+        std::unordered_map<assets::TextureHandle, OpenGlTexture> m_textures;
         std::unordered_map<assets::TextureHandle, uint32_t> m_texture_revisions;
     };
 } // namespace

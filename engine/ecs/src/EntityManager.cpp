@@ -32,8 +32,8 @@ namespace yarep::ecs {
 
         m_pending_entities[idx] = 1;
 
-        const uint64_t generation = m_generations[idx] & GENRATION_MASK;
-        const auto entity = (generation << INDEX_BITS) | (idx & INDEX_MASK);
+        const uint64_t generation = m_generations[idx] & genration_mask;
+        const auto entity = (generation << index_bits) | (idx & index_mask);
 
         if (m_entities_lookup.contains(name)) {
             throw std::runtime_error("Entity with the name " + name + " already exists");
@@ -45,7 +45,7 @@ namespace yarep::ecs {
     }
 
     void EntityManager::CommitEntity(const EntityId entity) {
-        if (entity == INVALID_ENTITY_ID) {
+        if (entity == invalid_entity_id) {
             return;
         }
 
@@ -55,7 +55,7 @@ namespace yarep::ecs {
         }
 
         const uint64_t generation = GetEntityGenration(entity);
-        if ((m_generations[idx] & GENRATION_MASK) != generation) {
+        if ((m_generations[idx] & genration_mask) != generation) {
             return;
         }
 
@@ -85,8 +85,8 @@ namespace yarep::ecs {
             m_pending_entities[idx] = 0;
         }
 
-        uint64_t gen = m_generations[idx] & GENRATION_MASK;
-        gen = (gen + 1u) & GENRATION_MASK;
+        uint64_t gen = m_generations[idx] & genration_mask;
+        gen = (gen + 1u) & genration_mask;
         m_generations[idx] = gen;
         m_generations[idx] = static_cast<uint32_t>(gen);
         m_free_entity_indices.push_back(entity);
@@ -97,7 +97,7 @@ namespace yarep::ecs {
     }
 
     bool EntityManager::IsEntityAlive(const EntityId entity) const {
-        if (entity == INVALID_ENTITY_ID) {
+        if (entity == invalid_entity_id) {
             return false;
         }
         const uint64_t idx = GetEntityIndex(entity);
@@ -105,14 +105,14 @@ namespace yarep::ecs {
             return false;
         }
         const uint64_t gen = GetEntityGenration(entity);
-        if ((m_generations[idx] & GENRATION_MASK) != gen) {
+        if ((m_generations[idx] & genration_mask) != gen) {
             return false;
         }
         return m_alive_entities[idx] != 0;
     }
 
     bool EntityManager::IsEntityPending(EntityId entity) const {
-        if (entity == INVALID_ENTITY_ID) {
+        if (entity == invalid_entity_id) {
             return false;
         }
         const uint64_t idx = GetEntityIndex(entity);
@@ -120,7 +120,7 @@ namespace yarep::ecs {
             return false;
         }
         const uint64_t gen = GetEntityGenration(entity);
-        if ((m_generations[idx] & GENRATION_MASK) != gen) {
+        if ((m_generations[idx] & genration_mask) != gen) {
             return false;
         }
         return m_pending_entities[idx] != 0;
@@ -130,7 +130,7 @@ namespace yarep::ecs {
         if (m_entities_lookup.contains(name)) {
             return m_entities_lookup.at(name);
         }
-        return INVALID_ENTITY_ID;
+        return invalid_entity_id;
     }
 
     std::vector<EntityId> EntityManager::GetAllActiveEntities() const {
@@ -139,8 +139,8 @@ namespace yarep::ecs {
 
         for (uint64_t i = 1; i < m_generations.size(); ++i) {
             if (m_alive_entities[i]) {
-                const uint64_t gen = m_generations[i] & GENRATION_MASK;
-                const auto entity = (gen << INDEX_BITS) | (i & INDEX_MASK);
+                const uint64_t gen = m_generations[i] & genration_mask;
+                const auto entity = (gen << index_bits) | (i & index_mask);
                 result.push_back(entity);
             }
         }

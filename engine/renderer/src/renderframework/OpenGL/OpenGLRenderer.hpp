@@ -11,17 +11,17 @@
 #include "materials/OpenGlMaterialLibrary.hpp"
 #include "Meshes/OpenGlMeshLibrary.hpp"
 #include "Shaders/OpenGlShaderLibrary.hpp"
-#include "Textures/OpenGLTextureLibrary.hpp"
+#include "Textures/OpenGlTextureLibrary.hpp"
 
-namespace yarep::Renderer::RenderFramework::OpenGl {
+namespace yarep::renderer::render_framework::open_gl {
     class OpenGlRenderer final : public IRenderer {
     public:
-        explicit OpenGlRenderer(const Environment::WindowContext& window_context,
-                                AssetHandling::AssetHandler* asset_handler,
+        explicit OpenGlRenderer(const environment::WindowContext& window_context,
+                                asset_handling::AssetHandler* asset_handler,
                                 const std::shared_ptr<OpenGlMaterialLibrary>& material_library,
                                 const std::shared_ptr<OpenGlShaderLibrary>& shader_library,
                                 const std::shared_ptr<OpenGlMeshLibrary>& mesh_library,
-                                const std::shared_ptr<OpenGLTextureLibrary>& texture_library);
+                                const std::shared_ptr<OpenGlTextureLibrary>& texture_library);
 
         ~OpenGlRenderer() override;
 
@@ -39,12 +39,12 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
 
     private:
         struct Context {
-            AssetHandling::RenderState RenderPass;
-            assets::MaterialHandle Material;
-            ShaderBindings ShaderFields;
-            assets::MeshHandle Mesh;
-            GLsizei MeshIndicesCount;
-            glm::mat4 ProjectionMatrix;
+            asset_handling::RenderState render_pass;
+            assets::MaterialHandle material;
+            ShaderBindings shader_fields;
+            assets::MeshHandle mesh;
+            GLsizei mesh_indices_count;
+            glm::mat4 projection_matrix;
         };
 
         GLuint m_camera_ubo;
@@ -57,8 +57,8 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
         std::shared_ptr<OpenGlMaterialLibrary> m_material_library;
         std::shared_ptr<OpenGlShaderLibrary> m_shader_manager;
         std::shared_ptr<OpenGlMeshLibrary> m_mesh_manager;
-        std::shared_ptr<OpenGLTextureLibrary> m_texture_manager;
-        AssetHandling::AssetHandler* m_asset_handler;
+        std::shared_ptr<OpenGlTextureLibrary> m_texture_manager;
+        asset_handling::AssetHandler* m_asset_handler;
 
         Context m_context{};
 
@@ -71,7 +71,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
 
         static void SortDrawAssets(std::vector<DrawAsset>& mesh_draw_assets);
 
-        void BindRenderPass(const AssetHandling::RenderState& render_state);
+        void BindRenderPass(const asset_handling::RenderState& render_state);
 
         void BindMaterial(const assets::MaterialHandle& material);
 

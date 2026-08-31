@@ -7,13 +7,13 @@
 #include <IDebugConsole.hpp>
 #include "IInputManager.hpp"
 #include "ServiceLocator.hpp"
-#include "settings/Settings.hpp"
+#include "settings/settings.hpp"
 #include "SystemManager.hpp"
 #include "Window.hpp"
 #include "../scenemanagement/src/SceneManager.hpp"
 #include "../systems/src/CacheManager.hpp"
 
-namespace yarep::Core {
+namespace yarep::core {
     /**
      * @class EngineController
      * The central engine controller that brings all elements of the engine together.
@@ -48,21 +48,21 @@ namespace yarep::Core {
         void SetInitialScene(const std::string& name, const scene_management::SceneArgs& args) override;
 
     private:
-        void SetupWindow(const Settings::EngineSettings& settings);
+        void SetupWindow(const settings::EngineSettings& settings);
 
-        void SetupInputManager(AssetHandling::AssetHandler* asset_handler);
+        void SetupInputManager(asset_handling::AssetHandler* asset_handler);
 
-        void SetupRenderController(AssetHandling::AssetHandler* asset_handler_service) const;
+        void SetupRenderController(asset_handling::AssetHandler* asset_handler_service) const;
 
-        [[nodiscard]] AssetHandling::AssetHandler* SetupAssetHandler() const;
+        [[nodiscard]] asset_handling::AssetHandler* SetupAssetHandler() const;
 
         std::unique_ptr<ServiceLocator> m_services;
-        std::unique_ptr<Environment::IWindow> m_window;
-        std::unique_ptr<Environment::Files::IFileManager> m_file_manager;
+        std::unique_ptr<environment::IWindow> m_window;
+        std::unique_ptr<environment::files::IFileManager> m_file_manager;
         std::unique_ptr<ecs::SystemManager> m_system_manager;
-        std::unique_ptr<Systems::ICacheManager> m_cache_manager;
+        std::unique_ptr<systems::ICacheManager> m_cache_manager;
         std::unique_ptr<input::IInputManager> m_input_manager;
-        std::unique_ptr<Debug::IDebugConsole> m_debug_console;
+        std::unique_ptr<debug::IDebugConsole> m_debug_console;
 
         std::unique_ptr<scene_management::SceneManager> m_scene_manager;
 

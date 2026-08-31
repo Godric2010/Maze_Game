@@ -13,7 +13,7 @@
 #include "math/Resolve.hpp"
 #include "math/Sweep.hpp"
 
-namespace yarep::Physics::Collision {
+namespace yarep::physics::collision {
     struct MoverInput {
         glm::vec3 position;
         float radius;
@@ -44,9 +44,9 @@ namespace yarep::Physics::Collision {
                 glm::vec3 best_normal(0);
 
                 for (auto entity: candidates) {
-                    Math::Sphere sphere(position, input.radius);
+                    math::Sphere sphere(position, input.radius);
 
-                    Math::CollisionHit hit;
+                    math::CollisionHit hit;
                     if (!TryGetCollisionHit(entity, sphere, rest, query_service, hit)) {
                         throw std::runtime_error("No valid collider found");
                     }
@@ -62,7 +62,7 @@ namespace yarep::Physics::Collision {
                     float skin = 0.001f;
                     position += direction * best_time_of_impact + best_normal * skin;
                     glm::vec3 remaining = rest - direction * best_time_of_impact;
-                    rest = Math::Slide(remaining, best_normal);
+                    rest = math::Slide(remaining, best_normal);
                     out.collided = true;
                     out.first_time_of_impact = std::min(out.first_time_of_impact, best_time_of_impact);
                     out.last_normal = best_normal;
@@ -76,10 +76,10 @@ namespace yarep::Physics::Collision {
             return out;
         }
 
-        static inline bool TryGetCollisionHit(const ecs::EntityId entity, const Math::Sphere sphere,
+        static inline bool TryGetCollisionHit(const ecs::EntityId entity, const math::Sphere sphere,
                                               const glm::vec3 &rest,
                                               const ICollisionQueryService &query_service,
-                                              Math::CollisionHit &hit) {
+                                              math::CollisionHit &hit) {
             if (const auto *obb = query_service.GetObb(entity)) {
                 hit = Sweep(sphere, rest, *obb);
                 return true;

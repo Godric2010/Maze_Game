@@ -7,12 +7,12 @@
 
 #include "../include/Window.hpp"
 
-namespace yarep::Environment {
-    class SDLWindow final : public IWindow{
+namespace yarep::environment {
+    class SdlWindow final : public IWindow{
 
     public:
-        SDLWindow();
-        ~SDLWindow() override;
+        SdlWindow();
+        ~SdlWindow() override;
 
         void Setup(WindowConfig config) override;
 
@@ -26,7 +26,7 @@ namespace yarep::Environment {
 
     private:
 
-        static void SetupOpenGL();
+        static void SetupOpenGl();
 
         SDL_Window* m_window;
         WindowContext m_context;

@@ -4,20 +4,20 @@
 
 #pragma once
 #include "IFileManager.hpp"
-#include "Settings.hpp"
+#include "settings.hpp"
 #include <toml++/toml.hpp>
 
 #include "toml/TomlDocument.hpp"
 
 
-namespace yarep::Core::Settings
+namespace yarep::core::settings
 {
     class SettingsHandler
     {
         public:
-            static void WriteSettingsToDisk(Environment::Files::IFileManager* file_manager,
+            static void WriteSettingsToDisk(environment::files::IFileManager* file_manager,
                                             const EngineSettings& settings);
-            static EngineSettings ReadSettingsFromDisk(Environment::Files::IFileManager* file_manager);
+            static EngineSettings ReadSettingsFromDisk(environment::files::IFileManager* file_manager);
 
         private:
             // Write functions
@@ -29,7 +29,7 @@ namespace yarep::Core::Settings
 
             // Read functions
             static EngineSettings ReadSettingsFromToml(const std::string& toml_str);
-            static WindowSettings ReadWindowSettingsFromToml(Utilities::Toml::TomlTable table);
-            static RenderSettings ReadRenderSettingsFromToml(Utilities::Toml::TomlTable table);
+            static WindowSettings ReadWindowSettingsFromToml(utilities::toml_utils::TomlTable table);
+            static RenderSettings ReadRenderSettingsFromToml(utilities::toml_utils::TomlTable table);
     };
 }

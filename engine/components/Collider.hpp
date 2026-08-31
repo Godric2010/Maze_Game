@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace yarep::Components {
+namespace yarep::components {
     struct SphereCollider {
         bool is_static;
         bool is_trigger;

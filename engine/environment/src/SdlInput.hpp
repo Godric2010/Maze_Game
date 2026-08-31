@@ -2,14 +2,14 @@
 #include <SDL_events.h>
 
 #include "EnvInput.hpp"
-#include "SDLWindow.hpp"
+#include "SdlWindow.hpp"
 
-namespace yarep::Environment {
-    class SDLInput final : public IEnvInput {
+namespace yarep::environment {
+    class SdlInput final : public IEnvInput {
     public:
-        explicit SDLInput(SDLWindow& window);
+        explicit SdlInput(SdlWindow& window);
 
-        ~SDLInput() override;
+        ~SdlInput() override;
 
         void PrepareFrame() override;
 

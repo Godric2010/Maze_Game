@@ -8,7 +8,7 @@
 #include "collision/IBroadphase.hpp"
 #include "collision/MoverSolver.hpp"
 
-namespace yarep::Systems::Physics {
+namespace yarep::systems::physics {
     ECS_SYSTEM(PhysicsSystem, Physics, TAGS(ENGINE), DEPENDENCIES())
 
     class PhysicsSystem final : public ecs::IEngineSystem {
@@ -24,19 +24,19 @@ namespace yarep::Systems::Physics {
     private:
         const float m_epsilon = 1e-12f;
 
-        Transform::TransformCache* m_transform_cache = nullptr;
-        std::unique_ptr<yarep::Physics::Collision::ColliderCache> m_collider_cache;
-        std::unique_ptr<yarep::Physics::Collision::IBroadphase> m_broadphase;
-        std::unique_ptr<yarep::Physics::Collision::ICollisionQueryService> m_collision_query_service;
+        transform::TransformCache* m_transform_cache = nullptr;
+        std::unique_ptr<yarep::physics::collision::ColliderCache> m_collider_cache;
+        std::unique_ptr<yarep::physics::collision::IBroadphase> m_broadphase;
+        std::unique_ptr<yarep::physics::collision::ICollisionQueryService> m_collision_query_service;
 
         std::unordered_map<ecs::EntityId, ecs::EntityId> m_collided_entities;
         std::unordered_map<ecs::EntityId, std::unordered_set<ecs::EntityId> > m_triggered_entities;
 
-        void BuildBoxCollider(ecs::EntityId entity, Components::BoxCollider box_collider, const glm::vec3& position,
+        void BuildBoxCollider(ecs::EntityId entity, components::BoxCollider box_collider, const glm::vec3& position,
                               const glm::vec3& rotation, const
                               glm::vec3& scale) const;
 
-        void BuildSphereCollider(ecs::EntityId entity, Components::SphereCollider sphere_collider,
+        void BuildSphereCollider(ecs::EntityId entity, components::SphereCollider sphere_collider,
                                  glm::vec3 position) const;
 
         void RunBroadphase(ecs::EntityId target_entity, float radius, const glm::vec3& position, glm::vec3 move_delta,
@@ -53,13 +53,13 @@ namespace yarep::Systems::Physics {
                                        const std::vector<ecs::EntityId>& trigger_candidates);
 
         void RaiseCollisionEvents(ecs::EntityId target_entity,
-                                  const yarep::Physics::Collision::MoverResult& mover_result);
+                                  const yarep::physics::collision::MoverResult& mover_result);
 
         void RaiseTriggerEvents(ecs::EntityId target_entity,
                                 std::unordered_set<ecs::EntityId>& trigger_entities);
 
 
-        static yarep::Physics::Math::AABB BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest,
+        static yarep::physics::math::AABB BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest,
                                                           float radius) noexcept;
     };
 } // namespace

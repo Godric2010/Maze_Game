@@ -1,9 +1,9 @@
 #include "UiTextSystem.hpp"
 #include "ui/RectTransform.hpp"
 
-using namespace yarep::Systems::UI;
+using namespace yarep::systems::ui;
 
-namespace yarep::Systems
+namespace yarep::systems
 {
     UiTextSystem::UiTextSystem()
     {
@@ -17,18 +17,18 @@ namespace yarep::Systems
     {
         m_transform_cache = Cache()->GetTransformCache();
         m_ui_cache = Cache()->GetUiCache();
-        m_text_controller = ServiceLocator()->GetService<Text::TextController>();
-        m_render_controller = ServiceLocator()->GetService<Renderer::IRenderController>();
-        m_asset_handler = ServiceLocator()->GetService<AssetHandling::AssetHandler>();
+        m_text_controller = ServiceLocator()->GetService<text::TextController>();
+        m_render_controller = ServiceLocator()->GetService<renderer::IRenderController>();
+        m_asset_handler = ServiceLocator()->GetService<asset_handling::AssetHandler>();
 
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::Text>(
-             [this](const ecs::EntityId entity, const Components::UI::Text& _)
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::ui::Text>(
+             [this](const ecs::EntityId entity, const components::ui::Text& _)
              {
                  this->RegisterTextElement(entity);
              }
 
             );
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<Components::UI::Text>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::ui::Text>(
              [this](const ecs::EntityId entity)
              {
                  this->m_ui_cache->DeregisterTextElement(entity);
@@ -43,9 +43,9 @@ namespace yarep::Systems
             throw std::runtime_error("UiSystem: Cache is null");
         }
 
-        const auto text_mesh_asset = AssetHandling::MeshAsset();
+        const auto text_mesh_asset = asset_handling::MeshAsset();
         const auto mesh_handle = m_asset_handler->RegisterAsset(text_mesh_asset);
-        auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
+        auto asset = m_asset_handler->GetAsset<asset_handling::MeshAsset>(mesh_handle);
 
         UiCache::TextElement text_element{};
         text_element.mesh_handle = mesh_handle;
@@ -56,12 +56,12 @@ namespace yarep::Systems
 
     assets::MaterialHandle UiTextSystem::RegisterNewUiMaterial() const
     {
-        auto material_asset = AssetHandling::MaterialAsset();
+        auto material_asset = asset_handling::MaterialAsset();
         material_asset.name = std::string("UiTextMaterial");
-        material_asset.render_state = AssetHandling::RenderState::UI;
+        material_asset.render_state = asset_handling::RenderState::UI;
         material_asset.render_queue_index = 0;
-        material_asset.shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
-        material_asset.albedo_texture = AssetHandling::MaterialTexture{};
+        material_asset.shader_handle = m_asset_handler->GetHandleFromName<asset_handling::ShaderAsset>("ui");
+        material_asset.albedo_texture = asset_handling::MaterialTexture{};
         material_asset.base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         const auto handle = m_asset_handler->RegisterAsset(material_asset);
@@ -75,7 +75,7 @@ namespace yarep::Systems
 
     void UiTextSystem::HandleTextLabels()
     {
-        auto text_labels = EcsWorld()->GetComponentsOfType<Components::UI::Text>();
+        auto text_labels = EcsWorld()->GetComponentsOfType<components::ui::Text>();
         for (const auto [text, entity] : text_labels)
         {
             auto text_cache_value = m_ui_cache->GetTextElement(entity);
@@ -98,13 +98,13 @@ namespace yarep::Systems
                 text_cache_value.font_handle = font_handle;
                 text_cache_value.last_font_version = text->GetFontVersion();
 
-                const auto material_asset = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(
+                const auto material_asset = m_asset_handler->GetAsset<asset_handling::MaterialAsset>(
                      text_cache_value.material_handle);
                 auto font_texture_handle = m_font_textures[font_handle];
                 if (material_asset->albedo_texture.texture != font_texture_handle)
                 {
                     m_asset_handler->UpdateMaterial(text_cache_value.material_handle,
-                                                    [font_texture_handle](AssetHandling::MaterialAsset& material)
+                                                    [font_texture_handle](asset_handling::MaterialAsset& material)
                                                     {
                                                         material.albedo_texture.texture = font_texture_handle;
                                                         material.albedo_texture.uv_scale = glm::vec2(1, 1);
@@ -123,7 +123,7 @@ namespace yarep::Systems
     }
 
     void UiTextSystem::UpdateTextMesh(const ecs::EntityId entity, UiCache::TextElement text_element,
-                                      const Components::UI::Text* text) const
+                                      const components::ui::Text* text) const
     {
         if (!text_element.font_handle.has_value())
         {
@@ -131,20 +131,20 @@ namespace yarep::Systems
         }
         auto text_mesh = m_text_controller->BuildTextMesh(text_element.font_handle.value(),
                                                           text->GetText(),
-                                                          Text::TextAlignment::Left
+                                                          text::TextAlignment::Left
                                                          );
 
-        auto new_mesh_asset = AssetHandling::MeshAsset{};
+        auto new_mesh_asset = asset_handling::MeshAsset{};
         for (const auto& vertex : text_mesh.vertices)
         {
-            AssetHandling::MeshVertexAsset mesh_vertex{
+            asset_handling::MeshVertexAsset mesh_vertex{
                 .position = glm::vec3(vertex.x, vertex.y, 0),
                 .uv = glm::vec2(vertex.u, vertex.v),
             };
             new_mesh_asset.vertices.emplace_back(mesh_vertex);
         }
         new_mesh_asset.indices = text_mesh.indices;
-        m_asset_handler->UpdateMesh(text_element.mesh_handle, [new_mesh_asset](AssetHandling::MeshAsset& mesh_asset)
+        m_asset_handler->UpdateMesh(text_element.mesh_handle, [new_mesh_asset](asset_handling::MeshAsset& mesh_asset)
         {
             mesh_asset = new_mesh_asset;
         });
@@ -152,35 +152,35 @@ namespace yarep::Systems
         text_element.last_text_version = text->GetTextVersion();
         m_ui_cache->SetTextElementValue(entity, text_element);
 
-        const auto rect_transform = EcsWorld()->GetComponent<Components::UI::RectTransform>(entity);
+        const auto rect_transform = EcsWorld()->GetComponent<components::ui::RectTransform>(entity);
         rect_transform->SetSize(glm::vec2(text_mesh.dimensions_width, text_mesh.dimensions_height));
     }
 
-    void UiTextSystem::RegisterTextureHandleFromFont(Text::FontHandle font_handle)
+    void UiTextSystem::RegisterTextureHandleFromFont(text::FontHandle font_handle)
     {
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
-        auto texture_asset = AssetHandling::TextureAsset();
+        auto texture_asset = asset_handling::TextureAsset();
         texture_asset.width = width;
         texture_asset.height = height;
-        texture_asset.format = AssetHandling::PixelFormat::R8;
+        texture_asset.format = asset_handling::PixelFormat::R8;
         texture_asset.pixels = pixels;
 
         auto texture_handle = m_asset_handler->RegisterAsset(texture_asset);
-        auto asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(texture_handle);
+        auto asset = m_asset_handler->GetAsset<asset_handling::TextureAsset>(texture_handle);
         m_font_textures[font_handle] = texture_handle;
     }
 
-    void UiTextSystem::UpdateTextureFromFont(Text::FontHandle font_handle)
+    void UiTextSystem::UpdateTextureFromFont(text::FontHandle font_handle)
     {
         auto texture_handle = m_font_textures[font_handle];
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
-        auto new_texture_asset = AssetHandling::TextureAsset();
+        auto new_texture_asset = asset_handling::TextureAsset();
         new_texture_asset.width = width;
         new_texture_asset.height = height;
-        new_texture_asset.format = AssetHandling::PixelFormat::R8;
+        new_texture_asset.format = asset_handling::PixelFormat::R8;
         new_texture_asset.pixels = pixels;
 
-        m_asset_handler->UpdateTexture(texture_handle, [new_texture_asset](AssetHandling::TextureAsset& texture_asset)
+        m_asset_handler->UpdateTexture(texture_handle, [new_texture_asset](asset_handling::TextureAsset& texture_asset)
         {
             texture_asset = new_texture_asset;
         });

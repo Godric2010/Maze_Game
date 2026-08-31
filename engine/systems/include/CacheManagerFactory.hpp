@@ -3,7 +3,7 @@
 
 #include "ICacheManager.hpp"
 
-namespace yarep::Systems {
+namespace yarep::systems {
     class CacheManagerFactory {
     public:
         static std::unique_ptr<ICacheManager> CreateCacheManager();

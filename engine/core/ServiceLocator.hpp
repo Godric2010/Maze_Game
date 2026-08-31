@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include "IServiceToEcsProvider.hpp"
 
-namespace yarep::Core {
+namespace yarep::core {
     class ServiceLocator : public ecs::IServiceToEcsProvider {
     public:
         ServiceLocator();

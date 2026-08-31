@@ -9,9 +9,9 @@
 #include "AssetTypes.hpp"
 #include "../src/Mesh/MeshImporter.hpp"
 
-using namespace yarep::AssetHandling::Mesh;
+using namespace yarep::asset_handling::mesh;
 
-bool are_vectors_equal(const glm::vec3 actual, const glm::vec3 expected)
+bool AreVectorsEqual(const glm::vec3 actual, const glm::vec3 expected)
 {
     const float x_diff = std::abs(actual.x - expected.x);
     const float y_diff = std::abs(actual.y - expected.y);
@@ -26,7 +26,7 @@ bool are_vectors_equal(const glm::vec3 actual, const glm::vec3 expected)
     return true;
 }
 
-bool are_vectors_equal(const glm::vec2 actual, const glm::vec2 expected)
+bool AreVectorsEqual(const glm::vec2 actual, const glm::vec2 expected)
 {
     const float x_diff = std::abs(actual.x - expected.x);
     const float y_diff = std::abs(actual.y - expected.y);
@@ -51,16 +51,16 @@ v 0.0 1.0 0.0
 
 f 1 2 3)";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
     MeshImporter::BuildMeshAssetFromObj(obj_content, vertices, indices);
 
     REQUIRE(vertices.size() == 3);
     REQUIRE(indices.size() == 3);
     REQUIRE(indices == std::vector<uint32_t>({0, 1, 2}));
-    REQUIRE(are_vectors_equal(vertices[0].position, glm::vec3(0,0,0)));
-    REQUIRE(are_vectors_equal(vertices[1].position, glm::vec3(1,0,0)));
-    REQUIRE(are_vectors_equal(vertices[2].position, glm::vec3(0,1,0)));
+    REQUIRE(AreVectorsEqual(vertices[0].position, glm::vec3(0,0,0)));
+    REQUIRE(AreVectorsEqual(vertices[1].position, glm::vec3(1,0,0)));
+    REQUIRE(AreVectorsEqual(vertices[2].position, glm::vec3(0,1,0)));
 }
 
 TEST_CASE("OBJImporterTests - Analyse minimal quad mesh")
@@ -83,25 +83,25 @@ TEST_CASE("OBJImporterTests - Analyse minimal quad mesh")
             f 1/1/1 2/2/1 3/3/1 4/4/1
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
     MeshImporter::BuildMeshAssetFromObj(obj_content, vertices, indices);
 
     REQUIRE(vertices.size() == 4);
     REQUIRE(indices.size() == 6);
     REQUIRE(indices == std::vector<uint32_t>({0, 1, 2, 0, 2, 3}));
-    REQUIRE(are_vectors_equal(vertices[0].position, glm::vec3(0,0,0)));
-    REQUIRE(are_vectors_equal(vertices[1].position, glm::vec3(1,0,0)));
-    REQUIRE(are_vectors_equal(vertices[2].position, glm::vec3(1,1,0)));
-    REQUIRE(are_vectors_equal(vertices[3].position, glm::vec3(0,1,0)));
-    REQUIRE(are_vectors_equal(vertices[0].normal, glm::vec3(0,0,1)));
-    REQUIRE(are_vectors_equal(vertices[1].normal, glm::vec3(0,0,1)));
-    REQUIRE(are_vectors_equal(vertices[2].normal, glm::vec3(0,0,1)));
-    REQUIRE(are_vectors_equal(vertices[3].normal, glm::vec3(0,0,1)));
-    REQUIRE(are_vectors_equal(vertices[0].uv, glm::vec2(0,1)));
-    REQUIRE(are_vectors_equal(vertices[1].uv, glm::vec2(1,1)));
-    REQUIRE(are_vectors_equal(vertices[2].uv, glm::vec2(1,0)));
-    REQUIRE(are_vectors_equal(vertices[3].uv, glm::vec2(0,0)));
+    REQUIRE(AreVectorsEqual(vertices[0].position, glm::vec3(0,0,0)));
+    REQUIRE(AreVectorsEqual(vertices[1].position, glm::vec3(1,0,0)));
+    REQUIRE(AreVectorsEqual(vertices[2].position, glm::vec3(1,1,0)));
+    REQUIRE(AreVectorsEqual(vertices[3].position, glm::vec3(0,1,0)));
+    REQUIRE(AreVectorsEqual(vertices[0].normal, glm::vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[1].normal, glm::vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[2].normal, glm::vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[3].normal, glm::vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[0].uv, glm::vec2(0,1)));
+    REQUIRE(AreVectorsEqual(vertices[1].uv, glm::vec2(1,1)));
+    REQUIRE(AreVectorsEqual(vertices[2].uv, glm::vec2(1,0)));
+    REQUIRE(AreVectorsEqual(vertices[3].uv, glm::vec2(0,0)));
 }
 
 TEST_CASE("OBJImporterTests - Analyse cube fragment mesh")
@@ -131,65 +131,65 @@ s 1
 
 f 1/1/1 2/2/1 3/3/1 4/4/1)";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
     MeshImporter::BuildMeshAssetFromObj(obj_content, vertices, indices);
 
     REQUIRE(vertices.size() == 4);
     REQUIRE(indices.size() == 6);
     REQUIRE(indices == std::vector<uint32_t>({0, 1, 2, 0, 2, 3}));
-    REQUIRE(are_vectors_equal(vertices[0].position, glm::vec3(-1,-1,1)));
-    REQUIRE(are_vectors_equal(vertices[1].position, glm::vec3(1,-1,1)));
-    REQUIRE(are_vectors_equal(vertices[2].position, glm::vec3(1,1,1)));
-    REQUIRE(are_vectors_equal(vertices[3].position, glm::vec3(-1,1,1)));
-    REQUIRE(are_vectors_equal(vertices[0].normal, glm::vec3(0,0,1)));
-    REQUIRE(are_vectors_equal(vertices[1].normal, glm::vec3(0,0,1)));
-    REQUIRE(are_vectors_equal(vertices[2].normal, glm::vec3(0,0,1)));
-    REQUIRE(are_vectors_equal(vertices[3].normal, glm::vec3(0,0,1)));
-    REQUIRE(are_vectors_equal(vertices[0].uv, glm::vec2(0,1)));
-    REQUIRE(are_vectors_equal(vertices[1].uv, glm::vec2(1,1)));
-    REQUIRE(are_vectors_equal(vertices[2].uv, glm::vec2(1,0)));
-    REQUIRE(are_vectors_equal(vertices[3].uv, glm::vec2(0,0)));
+    REQUIRE(AreVectorsEqual(vertices[0].position, glm::vec3(-1,-1,1)));
+    REQUIRE(AreVectorsEqual(vertices[1].position, glm::vec3(1,-1,1)));
+    REQUIRE(AreVectorsEqual(vertices[2].position, glm::vec3(1,1,1)));
+    REQUIRE(AreVectorsEqual(vertices[3].position, glm::vec3(-1,1,1)));
+    REQUIRE(AreVectorsEqual(vertices[0].normal, glm::vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[1].normal, glm::vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[2].normal, glm::vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[3].normal, glm::vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[0].uv, glm::vec2(0,1)));
+    REQUIRE(AreVectorsEqual(vertices[1].uv, glm::vec2(1,1)));
+    REQUIRE(AreVectorsEqual(vertices[2].uv, glm::vec2(1,0)));
+    REQUIRE(AreVectorsEqual(vertices[3].uv, glm::vec2(0,0)));
 }
 
 TEST_CASE("OBJImporterTests - CRLF + Inline comments, no exception")
 {
-    const std::string OBJ_CRLF_AND_INLINE_COMMENT =
+    const std::string obj_crlf_and_inline_comment =
         "v 0 0 0 # comment\r\n"
         "v 1 0 0\r\n"
         "v 0 1 0\r\n"
         "f 1 2 3\r\n";
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_NOTHROW(MeshImporter::BuildMeshAssetFromObj(OBJ_CRLF_AND_INLINE_COMMENT, vertices, indices));
+    REQUIRE_NOTHROW(MeshImporter::BuildMeshAssetFromObj(obj_crlf_and_inline_comment, vertices, indices));
 }
 
 TEST_CASE("OBJImporterTests - Empty obj string")
 {
-    const std::string OBJ_EMPTY = "";
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    const std::string obj_empty = "";
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_EMPTY, vertices, indices), std::invalid_argument);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_empty, vertices, indices), std::invalid_argument);
 }
 
 TEST_CASE("OBJImporterTests - Invalid vertex line")
 {
-    const std::string OBJ_BAD_V = R"(
+    const std::string obj_bad_v = R"(
 v 0.0 1.0
 f 1 2 3
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_BAD_V, vertices, indices), std::runtime_error);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_bad_v, vertices, indices), std::runtime_error);
 }
 
 TEST_CASE("OBJImporterTests - Invalid normal line")
 {
-    const std::string OBJ_BAD_VN = R"(
+    const std::string obj_bad_vn = R"(
 vn 0.0 1.0
 v 0 0 0
 v 1 0 0
@@ -197,15 +197,15 @@ v 0 1 0
 f 1 2 3
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_BAD_VN, vertices, indices), std::runtime_error);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_bad_vn, vertices, indices), std::runtime_error);
 }
 
 TEST_CASE("OBJImporterTests - Invalid UV line")
 {
-    const std::string OBJ_BAD_VT = R"(
+    const std::string obj_bad_vt = R"(
 vt 0.5
 v 0 0 0
 v 1 0 0
@@ -213,57 +213,57 @@ v 0 1 0
 f 1 2 3
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_BAD_VT, vertices, indices), std::runtime_error);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_bad_vt, vertices, indices), std::runtime_error);
 }
 
 TEST_CASE("OBJImporterTests - Invalid face, less than three corners")
 {
-    const std::string OBJ_FACE_TOO_SHORT = R"(
+    const std::string obj_face_too_short = R"(
 v 0 0 0
 v 1 0 0
 f 1 2
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_FACE_TOO_SHORT, vertices, indices), std::runtime_error);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_face_too_short, vertices, indices), std::runtime_error);
 }
 
 TEST_CASE("OBJImporterTests - Invalid position index, out of bounds")
 {
-    const std::string OBJ_POS_OOB = R"(
+    const std::string obj_pos_oob = R"(
 v 0 0 0
 f 2 1 1
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_POS_OOB, vertices, indices), std::out_of_range);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_pos_oob, vertices, indices), std::out_of_range);
 }
 
 TEST_CASE("OBJImporterTests - Invalid position index, index is zero")
 {
-    const std::string OBJ_POS_ZERO = R"(
+    const std::string obj_pos_zero = R"(
 v 0 0 0
 v 1 0 0
 v 0 1 0
 f 0 1 2
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_POS_ZERO, vertices, indices), std::out_of_range);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_pos_zero, vertices, indices), std::out_of_range);
 }
 
 TEST_CASE("OBJImporterTests - Invalid UV index, out of bounds")
 {
-    const std::string OBJ_UV_OOB = R"(
+    const std::string obj_uv_oob = R"(
 v 0 0 0
 v 1 0 0
 v 0 1 0
@@ -275,15 +275,15 @@ vn 0 0 1
 f 1/2/1 2/1/1 3/1/1
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_UV_OOB, vertices, indices), std::out_of_range);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_uv_oob, vertices, indices), std::out_of_range);
 }
 
 TEST_CASE("OBJImporterTests - Invalid normal index, out of bounds")
 {
-    const std::string OBJ_NORM_OOB = R"(
+    const std::string obj_norm_oob = R"(
 v 0 0 0
 v 1 0 0
 v 0 1 0
@@ -297,30 +297,30 @@ vn 0 0 1
 f 1/1/2 2/2/1 3/3/1
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_NORM_OOB, vertices, indices), std::out_of_range);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_norm_oob, vertices, indices), std::out_of_range);
 }
 
 TEST_CASE("OBJImporterTests - Invalid vertex, position is not numeric")
 {
-    const std::string OBJ_POS_NON_NUMERIC = R"(
+    const std::string obj_pos_non_numeric = R"(
 v 0 0 0
 v 1 0 0
 v 0 1 0
 f a 2 3
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_POS_NON_NUMERIC, vertices, indices), std::runtime_error);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_pos_non_numeric, vertices, indices), std::runtime_error);
 }
 
 TEST_CASE("OBJImporterTests - Invalid UV, uv is not numeric")
 {
-    const std::string OBJ_UV_NON_NUMERIC = R"(
+    const std::string obj_uv_non_numeric = R"(
 v 0 0 0
 v 1 0 0
 v 0 1 0
@@ -334,15 +334,15 @@ vn 0 0 1
 f 1/x/1 2/2/1 3/3/1
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_UV_NON_NUMERIC, vertices, indices), std::runtime_error);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_uv_non_numeric, vertices, indices), std::runtime_error);
 }
 
 TEST_CASE("OBJImporterTests - Invalid normal, normal is not numeric")
 {
-    const std::string OBJ_NORM_NON_NUMERIC = R"(
+    const std::string obj_norm_non_numeric = R"(
 v 0 0 0
 v 1 0 0
 v 0 1 0
@@ -356,39 +356,39 @@ vn 0 0 1
 f 1/1/y 2/2/1 3/3/1
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_NORM_NON_NUMERIC, vertices, indices), std::runtime_error);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_norm_non_numeric, vertices, indices), std::runtime_error);
 }
 
 TEST_CASE("OBJImporterTests - Invalid object index, out of range")
 {
-    const std::string OBJ_INDEX_OUT_OF_RANGE = R"(
+    const std::string obj_index_out_of_range = R"(
 v 0 0 0
 v 1 0 0
 v 0 1 0
 f 999999999999999999999999999999 2 3
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_INDEX_OUT_OF_RANGE, vertices, indices),
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_index_out_of_range, vertices, indices),
                       std::runtime_error);
 }
 
 TEST_CASE("OBJImporterTests - Invalid index in face, index is negative")
 {
-    const std::string OBJ_NEGATIVE_INDEX = R"(
+    const std::string obj_negative_index = R"(
 v 0 0 0
 v 1 0 0
 v 0 1 0
 f -1 2 3
 )";
 
-    std::vector<yarep::AssetHandling::MeshVertexAsset> vertices;
+    std::vector<yarep::asset_handling::MeshVertexAsset> vertices;
     std::vector<uint32_t> indices;
 
-    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(OBJ_NEGATIVE_INDEX, vertices, indices), std::runtime_error);
+    REQUIRE_THROWS_AS(MeshImporter::BuildMeshAssetFromObj(obj_negative_index, vertices, indices), std::runtime_error);
 }

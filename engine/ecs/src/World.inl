@@ -10,11 +10,11 @@ namespace yarep::ecs {
     inline World::World() : m_impl(std::make_unique<WorldImpl>()) {
         m_impl->entity_manager = std::make_unique<EntityManager>();
         m_impl->component_manager = std::make_unique<ComponentManager>();
-        m_ecs_event_buffer = std::make_unique<Buffer::EventBuffer<EcsEvent> >();
-        m_physics_event_buffer = std::make_unique<Buffer::EventBuffer<PhysicsEvent> >();
+        m_ecs_event_buffer = std::make_unique<buffer::EventBuffer<EcsEvent> >();
+        m_physics_event_buffer = std::make_unique<buffer::EventBuffer<PhysicsEvent> >();
         m_component_event_bus = std::make_unique<ComponentEventBus>();
         m_physics_event_bus = std::make_unique<PhysicsEventBus>();
-        m_command_queue = std::make_unique<Buffer::SystemCommandQueue>();
+        m_command_queue = std::make_unique<buffer::SystemCommandQueue>();
     }
 
     inline World::~World() = default;

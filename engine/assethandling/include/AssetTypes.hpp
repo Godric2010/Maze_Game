@@ -6,7 +6,7 @@
 #include "Assets/AssetHandleTypes.hpp"
 #include "Input/InputTypes.hpp"
 
-namespace yarep::AssetHandling
+namespace yarep::asset_handling
 {
     struct Asset
     {
@@ -50,8 +50,8 @@ namespace yarep::AssetHandling
     enum class PixelFormat
     {
         R8,
-        RGB8,
-        RGBA8,
+        Rgb8,
+        Rgba8,
     };
 
     struct TextureAsset : Asset
@@ -62,21 +62,21 @@ namespace yarep::AssetHandling
         std::vector<uint8_t> pixels;
     };
 
-    #define RenderStateList \
+    #define RENDER_STATE_LIST \
         X(Opaque) \
         X(UI)
 
     enum class RenderState
     {
         #define X(name) name,
-        RenderStateList
+        RENDER_STATE_LIST
         #undef X
     };
 
-    constexpr std::array<std::pair<std::string_view, RenderState>, 2> RenderStateMap = {
+    constexpr std::array<std::pair<std::string_view, RenderState>, 2> render_state_map = {
         {
             #define X(name) {#name, RenderState::name},
-            RenderStateList
+            RENDER_STATE_LIST
             #undef X
         }
     };

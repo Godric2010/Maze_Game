@@ -2,9 +2,9 @@
 #include "EnvironmentBuilder.hpp"
 #include "AssetTypesImpl.hpp"
 
-namespace yarep::AssetHandling {
+namespace yarep::asset_handling {
     inline AssetHandler::AssetHandler() {
-        m_file_reader = Environment::EnvironmentBuilder::CreateFileManager();
+        m_file_reader = environment::EnvironmentBuilder::CreateFileManager();
     }
 
     inline MeshHandle AssetHandler::LoadMesh(const std::string& mesh_name) {
@@ -88,7 +88,7 @@ namespace yarep::AssetHandling {
 
     template<AssetType T>
     std::vector<AssetHandler::HandleT<T> > AssetHandler::LoadAssets(
-            const std::vector<Environment::Files::File>& asset_files) {
+            const std::vector<environment::files::File>& asset_files) {
         if (asset_files.empty()) {
             return std::vector<HandleT<T> >{};
         }

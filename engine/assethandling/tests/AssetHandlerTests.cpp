@@ -8,9 +8,9 @@
 #include "../include/AssetHandler.hpp"
 #include "../include/AssetTypes.hpp"
 
-using namespace yarep::AssetHandling;
+using namespace yarep::asset_handling;
 
-namespace yarep::AssetHandling
+namespace yarep::asset_handling
 {
     struct TestAsset : Asset
     {
@@ -44,10 +44,10 @@ TEST_CASE("AssetHandler - Register and GetAsset", "[AssetHandling]")
     TestAssetCacheGuard guard;
     AssetHandler handler;
 
-    TestAsset testAsset;
-    testAsset.value = 42;
+    TestAsset test_asset;
+    test_asset.value = 42;
 
-    auto handle = handler.RegisterAsset<TestAsset>(std::move(testAsset));
+    auto handle = handler.RegisterAsset<TestAsset>(std::move(test_asset));
 
     REQUIRE(handle);
 

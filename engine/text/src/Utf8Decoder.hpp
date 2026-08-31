@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-namespace yarep::Text {
+namespace yarep::text {
     /**
      * @class Utf8Decoder
      * Decodes a standard utf-8 string into codepoints, that are used to identify the matching

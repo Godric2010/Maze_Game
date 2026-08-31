@@ -2,9 +2,9 @@
 
 #include "RenderController.hpp"
 
-namespace yarep::Renderer {
+namespace yarep::renderer {
     std::unique_ptr<IRenderController> RenderControllerFactory::CreateRenderController(
-            const Environment::WindowContext& window_context, AssetHandling::
+            const environment::WindowContext& window_context, asset_handling::
             AssetHandler* asset_handler) {
         return std::make_unique<RenderController>(window_context,  asset_handler);
     }

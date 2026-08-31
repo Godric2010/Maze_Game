@@ -2,7 +2,7 @@
 #include <any>
 #include <vector>
 
-namespace yarep::ecs::Buffer {
+namespace yarep::ecs::buffer {
     class SystemCommandQueue {
     public:
         SystemCommandQueue();

@@ -14,6 +14,6 @@ namespace gameplay::components {
             Closing,
         };
 
-        State CurrentState = State::Closed;
+        State current_state = State::Closed;
     };
 }

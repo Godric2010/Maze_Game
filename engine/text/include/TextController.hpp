@@ -9,7 +9,7 @@
 #include "../src/TextMeshBuilder.hpp"
 #include "../src/Utf8Decoder.hpp"
 
-namespace yarep::Text {
+namespace yarep::text {
     /**
      * @class TextController
      * This class is responsible for orchestrating
@@ -17,7 +17,7 @@ namespace yarep::Text {
      */
     class TextController {
     public:
-        explicit TextController(AssetHandling::AssetHandler* asset_handler);
+        explicit TextController(asset_handling::AssetHandler* asset_handler);
 
         ~TextController() = default;
 

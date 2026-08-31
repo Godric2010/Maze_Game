@@ -6,7 +6,7 @@
 #include "AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 
-namespace yarep::Renderer::RenderFramework::OpenGl
+namespace yarep::renderer::render_framework::open_gl
 {
     struct MaterialTextureRef
     {
@@ -17,7 +17,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
 
     struct OpenGlMaterial
     {
-        AssetHandling::RenderState render_state;
+        asset_handling::RenderState render_state;
         assets::ShaderHandle shader;
         MaterialTextureRef albedo_texture;
         glm::vec4 base_color;

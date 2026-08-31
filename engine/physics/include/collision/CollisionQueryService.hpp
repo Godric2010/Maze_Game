@@ -12,7 +12,7 @@
 #include "collision/ColliderCache.hpp"
 #include "math/Types.hpp"
 
-namespace yarep::Physics::Collision {
+namespace yarep::physics::collision {
     struct ICollisionQueryService {
         virtual ~ICollisionQueryService() = default;
 
@@ -20,9 +20,9 @@ namespace yarep::Physics::Collision {
                                       std::vector<ecs::EntityId> &out,
                                       const QueryFilter *f) const = 0;
 
-        [[nodiscard]] virtual const Math::AABB *GetAabb(ecs::EntityId) const = 0;
+        [[nodiscard]] virtual const math::AABB *GetAabb(ecs::EntityId) const = 0;
 
-        [[nodiscard]] virtual const Math::OBB *GetObb(ecs::EntityId) const = 0;
+        [[nodiscard]] virtual const math::OBB *GetObb(ecs::EntityId) const = 0;
     };
 
     class CollisionQueryService final : public ICollisionQueryService {
@@ -34,12 +34,12 @@ namespace yarep::Physics::Collision {
 
         void QuerySphereSweep(const glm::vec3 &pos, const glm::vec3 &rest, const float radius,
                               std::vector<ecs::EntityId> &out, const QueryFilter *filter) const override {
-            const Math::AABB swept = BuildSweptAabb(pos, rest, radius);
+            const math::AABB swept = BuildSweptAabb(pos, rest, radius);
             out.clear();
             m_broadphase.QueryAabb(swept, out, filter);
         }
 
-        [[nodiscard]] const Math::AABB *GetAabb(const ecs::EntityId entity) const override {
+        [[nodiscard]] const math::AABB *GetAabb(const ecs::EntityId entity) const override {
             const auto it = m_collider_cache.box_colliders.find(entity);
             if (m_collider_cache.box_colliders.end() == it) return nullptr;
 
@@ -49,7 +49,7 @@ namespace yarep::Physics::Collision {
             return &it->second.world_box;
         }
 
-        [[nodiscard]] const Math::OBB *GetObb(const ecs::EntityId entity) const override {
+        [[nodiscard]] const math::OBB *GetObb(const ecs::EntityId entity) const override {
             const auto it = m_collider_cache.box_colliders.find(entity);
             if (m_collider_cache.box_colliders.end() == it) return nullptr;
 
@@ -63,7 +63,7 @@ namespace yarep::Physics::Collision {
         IBroadphase &m_broadphase;
         ColliderCache &m_collider_cache;
 
-        static Math::AABB BuildSweptAabb(const glm::vec3 &pos, const glm::vec3 &rest, const float radius) noexcept {
+        static math::AABB BuildSweptAabb(const glm::vec3 &pos, const glm::vec3 &rest, const float radius) noexcept {
             const glm::vec3 p0 = pos;
             const glm::vec3 p1 = pos + rest;
 

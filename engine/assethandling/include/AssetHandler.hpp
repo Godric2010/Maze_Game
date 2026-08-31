@@ -8,7 +8,7 @@
 #include "AssetTypes.hpp"
 #include "Assets/IAssetLibrary.hpp"
 
-namespace yarep::AssetHandling
+namespace yarep::asset_handling
 {
     template <typename T>
     struct AssetTraits;
@@ -43,7 +43,7 @@ namespace yarep::AssetHandling
             HandleT<T> LoadAsset(const std::string& asset_name);
 
             template <AssetType T>
-            std::vector<HandleT<T>> LoadAssets(const std::vector<Environment::Files::File>& asset_files);
+            std::vector<HandleT<T>> LoadAssets(const std::vector<environment::files::File>& asset_files);
 
             template <AssetType T>
             HandleT<T> RegisterAsset(T asset);
@@ -76,7 +76,7 @@ namespace yarep::AssetHandling
             }
 
         private:
-            std::unique_ptr<Environment::Files::IFileManager> m_file_reader;
+            std::unique_ptr<environment::files::IFileManager> m_file_reader;
 
             template <AssetType T>
             struct AssetRecord
@@ -106,7 +106,7 @@ namespace yarep::AssetHandling
 
     struct AssetLoadContext
     {
-        Environment::Files::IFileManager* file_reader;
+        environment::files::IFileManager* file_reader;
         AssetHandler* asset_handler;
     };
 } // namespace

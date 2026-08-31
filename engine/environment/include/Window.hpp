@@ -7,13 +7,13 @@
 #include <SDL.h>
 #include <string>
 
-namespace yarep::Environment {
+namespace yarep::environment {
     /**
-     * @enum API
+     * @enum Api
      * @brief Represents various graphics APIs that can be used in the application.
      */
-    enum class API {
-        OpenGL,
+    enum class Api {
+        OpenGl,
         Vulkan, // Not implemented, only here for reference
         Metal, // Not implemented, only here for reference
     };
@@ -36,18 +36,18 @@ namespace yarep::Environment {
         int width;
         int height;
         std::string title;
-        API renderApi;
-        WindowMode windowMode;
+        Api render_api;
+        WindowMode window_mode;
         bool vsync;
     };
 
     /**
-     *@struct OpenGLContext
+     *@struct OpenGlContext
      * The OpenGL context contains all necessary data to initialize
      * an OpenGL Renderer with this window
      */
-    struct OpenGLContext {
-        SDL_Window *windowHandle;
+    struct OpenGlContext {
+        SDL_Window *window_handle;
         SDL_GLContext context;
     };
 
@@ -58,10 +58,10 @@ namespace yarep::Environment {
     struct WindowContext {
         int width{};
         int height{};
-        int drawableWidth{};
-        int drawableHeight{};
-        API renderApi{};
-        OpenGLContext openGLContext{};
+        int drawable_width{};
+        int drawable_height{};
+        Api render_api{};
+        OpenGlContext open_gl_context{};
     };
 
 

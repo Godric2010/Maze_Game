@@ -9,23 +9,23 @@
 #include "renderframework/OpenGL/OpenGLRenderer.hpp"
 
 
-namespace yarep::Renderer
+namespace yarep::renderer
 {
-    RenderController::RenderController(const Environment::WindowContext& window_context,
-                                       AssetHandling::AssetHandler* asset_handler)
+    RenderController::RenderController(const environment::WindowContext& window_context,
+                                       asset_handling::AssetHandler* asset_handler)
     {
         m_window_context = window_context;
         m_asset_handler = asset_handler;
 
-        switch (window_context.renderApi)
+        switch (window_context.render_api)
         {
-            case Environment::API::OpenGL:
+            case environment::Api::OpenGl:
                 {
-                    auto material_library = std::make_shared<RenderFramework::OpenGl::OpenGlMaterialLibrary>();
-                    auto mesh_library = std::make_shared<RenderFramework::OpenGl::OpenGlMeshLibrary>();
-                    auto texture_library = std::make_shared<RenderFramework::OpenGl::OpenGLTextureLibrary>();
-                    auto shader_library = std::make_shared<RenderFramework::OpenGl::OpenGlShaderLibrary>(asset_handler);
-                    m_renderer = std::make_unique<RenderFramework::OpenGl::OpenGlRenderer>(
+                    auto material_library = std::make_shared<render_framework::open_gl::OpenGlMaterialLibrary>();
+                    auto mesh_library = std::make_shared<render_framework::open_gl::OpenGlMeshLibrary>();
+                    auto texture_library = std::make_shared<render_framework::open_gl::OpenGlTextureLibrary>();
+                    auto shader_library = std::make_shared<render_framework::open_gl::OpenGlShaderLibrary>(asset_handler);
+                    m_renderer = std::make_unique<render_framework::open_gl::OpenGlRenderer>(
                         m_window_context,
                         m_asset_handler,
                         material_library,
@@ -39,9 +39,9 @@ namespace yarep::Renderer
                     m_texture_library = texture_library;
                     break;
                 }
-            case Environment::API::Vulkan:
+            case environment::Api::Vulkan:
                 throw std::runtime_error("Vulkan renderer not supported (yet)");
-            case Environment::API::Metal:
+            case environment::Api::Metal:
                 throw std::runtime_error("Metal renderer not supported (yet)");
         }
         m_renderer->Initialize();
@@ -74,7 +74,7 @@ namespace yarep::Renderer
         m_renderer->DrawFrame(draw_assets);
     }
 
-    assets::MeshHandle RenderController::GetUIMeshHandle() const
+    assets::MeshHandle RenderController::GetUiMeshHandle() const
     {
         return m_ui_mesh_handle;
     }
@@ -89,22 +89,22 @@ namespace yarep::Renderer
     {
         for (const auto& draw_asset : draw_assets)
         {
-            PrepareMeshesForGpu(draw_asset.Mesh);
-            PrepareMaterialsForGpu(draw_asset.Material);
+            PrepareMeshesForGpu(draw_asset.mesh);
+            PrepareMaterialsForGpu(draw_asset.material);
         }
     }
 
     void RenderController::PrepareMeshesForGpu(const assets::MeshHandle& mesh_handle) const
     {
-        const auto mesh_revision = m_asset_handler->GetAssetRevision<AssetHandling::MeshAsset>(mesh_handle);
+        const auto mesh_revision = m_asset_handler->GetAssetRevision<asset_handling::MeshAsset>(mesh_handle);
         if (!m_mesh_library->HasMesh(mesh_handle))
         {
-            const auto mesh_asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
+            const auto mesh_asset = m_asset_handler->GetAsset<asset_handling::MeshAsset>(mesh_handle);
             m_mesh_library->AddMesh(mesh_handle, *mesh_asset, mesh_revision);
         }
         else if (m_mesh_library->GetMeshRevision(mesh_handle) != mesh_revision)
         {
-            const auto mesh_asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
+            const auto mesh_asset = m_asset_handler->GetAsset<asset_handling::MeshAsset>(mesh_handle);
             m_mesh_library->RemoveMesh(mesh_handle);
             m_mesh_library->AddMesh(mesh_handle, *mesh_asset, mesh_revision);
         }
@@ -113,8 +113,8 @@ namespace yarep::Renderer
 
     void RenderController::PrepareMaterialsForGpu(const assets::MaterialHandle& handle) const
     {
-        const auto material_revision = m_asset_handler->GetAssetRevision<AssetHandling::MaterialAsset>(handle);
-        const auto material_asset = m_asset_handler->GetAsset<AssetHandling::MaterialAsset>(handle);
+        const auto material_revision = m_asset_handler->GetAssetRevision<asset_handling::MaterialAsset>(handle);
+        const auto material_asset = m_asset_handler->GetAsset<asset_handling::MaterialAsset>(handle);
         if (!m_material_library->HasMaterial(handle))
         {
             m_material_library->AddMaterial(handle, *material_asset, material_revision);
@@ -136,16 +136,16 @@ namespace yarep::Renderer
 
     void RenderController::PrepareTexturesForGpu(const assets::TextureHandle handle) const
     {
-        const auto texture_revision = m_asset_handler->GetAssetRevision<AssetHandling::TextureAsset>(handle);
+        const auto texture_revision = m_asset_handler->GetAssetRevision<asset_handling::TextureAsset>(handle);
         if (!m_texture_library->HasTexture(handle))
         {
-            const auto texture_asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(handle);
+            const auto texture_asset = m_asset_handler->GetAsset<asset_handling::TextureAsset>(handle);
             m_texture_library->AddTexture(handle, *texture_asset, texture_revision);
         }
         else if (m_texture_library->GetTextureRevision(handle) != texture_revision)
         {
             m_texture_library->RemoveTexture(handle);
-            const auto texture_asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(handle);
+            const auto texture_asset = m_asset_handler->GetAsset<asset_handling::TextureAsset>(handle);
             m_texture_library->AddTexture(handle, *texture_asset, texture_revision);
         }
     }

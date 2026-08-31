@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace yarep::Systems {
+namespace yarep::systems {
     class ICacheManager {
     public:
         virtual ~ICacheManager() = default;

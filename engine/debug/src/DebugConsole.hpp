@@ -4,7 +4,7 @@
 #include "TextController.hpp"
 #include "../include/IDebugConsole.hpp"
 
-namespace yarep::Debug
+namespace yarep::debug
 {
     struct TextMeshElement
     {
@@ -25,9 +25,9 @@ namespace yarep::Debug
     class DebugConsole : public IDebugConsole
     {
     public:
-        DebugConsole(Text::TextController* text_controller, Renderer::IRenderController* render_controller,
-                     AssetHandling::AssetHandler* asset_handler,
-                     const Environment::WindowContext& context, uint32_t column_width);
+        DebugConsole(text::TextController* text_controller, renderer::IRenderController* render_controller,
+                     asset_handling::AssetHandler* asset_handler,
+                     const environment::WindowContext& context, uint32_t column_width);
 
         ~DebugConsole() override;
 
@@ -36,16 +36,16 @@ namespace yarep::Debug
         void PushToFrame() override;
 
     private:
-        Text::TextController* m_text_controller;
-        Renderer::IRenderController* m_render_controller;
-        AssetHandling::AssetHandler* m_asset_handler;
+        text::TextController* m_text_controller;
+        renderer::IRenderController* m_render_controller;
+        asset_handling::AssetHandler* m_asset_handler;
         float m_window_width;
         float m_window_height;
 
         float m_column_width;
 
         const int m_font_size = 24;
-        Text::FontHandle m_font_handle;
+        text::FontHandle m_font_handle;
         assets::TextureHandle m_texture_handle;
 
         uint8_t m_current_label_id = 0;
@@ -59,6 +59,6 @@ namespace yarep::Debug
 
         [[nodiscard]] TextMeshElement CreateTextMeshElement(const std::string& text) const;
 
-        Renderer::DrawAsset CreateUiDrawAsset(uint8_t col, uint8_t row, const TextMeshElement& text_mesh_element, uint8_t queue_index) const;
+        renderer::DrawAsset CreateUiDrawAsset(uint8_t col, uint8_t row, const TextMeshElement& text_mesh_element, uint8_t queue_index) const;
     };
 } // namespace

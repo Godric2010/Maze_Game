@@ -6,30 +6,30 @@
 
 #include "Lights/GPULightAssets.hpp"
 
-namespace yarep::Renderer::RenderFramework::OpenGl {
+namespace yarep::renderer::render_framework::open_gl {
     static auto MakeDrawAssetSortKey(const DrawAsset& mda) {
         return std::tuple{
-            static_cast<uint8_t>(mda.RenderState),
-            mda.RenderQueueIndex,
-            mda.Material.value,
-            mda.Mesh.value,
-            mda.Entity,
+            static_cast<uint8_t>(mda.render_state),
+            mda.render_queue_index,
+            mda.material.value,
+            mda.mesh.value,
+            mda.entity,
         };
     }
 
-    OpenGlRenderer::OpenGlRenderer(const Environment::WindowContext& window_context,
-                                   AssetHandling::AssetHandler* asset_handler,
+    OpenGlRenderer::OpenGlRenderer(const environment::WindowContext& window_context,
+                                   asset_handling::AssetHandler* asset_handler,
                                    const std::shared_ptr<OpenGlMaterialLibrary>& material_library,
                                    const std::shared_ptr<OpenGlShaderLibrary>& shader_library,
                                    const std::shared_ptr<OpenGlMeshLibrary>& mesh_library,
-                                   const std::shared_ptr<OpenGLTextureLibrary>& texture_library) {
+                                   const std::shared_ptr<OpenGlTextureLibrary>& texture_library) {
         glewExperimental = GL_TRUE;
         const GLenum rc = glewInit();
         if (rc != GLEW_OK) {
             throw std::runtime_error("Failed to initialize GLEW");
         }
         m_window_size = {window_context.width, window_context.height};
-        glViewport(0, 0, window_context.drawableWidth, window_context.drawableHeight);
+        glViewport(0, 0, window_context.drawable_width, window_context.drawable_height);
         m_bind_cache = std::make_unique<OpenGlBinder>();
         m_material_library = material_library;
         m_shader_manager = shader_library;
@@ -42,12 +42,12 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
     OpenGlRenderer::~OpenGlRenderer() = default;
 
     void OpenGlRenderer::Initialize() {
-        const auto shader_handles = m_asset_handler->GetAllAssetHandlesOfType<AssetHandling::ShaderAsset>();
-        std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset> > > shaders;
+        const auto shader_handles = m_asset_handler->GetAllAssetHandlesOfType<asset_handling::ShaderAsset>();
+        std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const asset_handling::ShaderAsset> > > shaders;
         shaders.reserve(shader_handles.size());
         for (int i = 0; i < shader_handles.size(); ++i) {
             const auto shader_handle = shader_handles[i];
-            const auto asset = m_asset_handler->GetAsset<AssetHandling::ShaderAsset>(shader_handle);
+            const auto asset = m_asset_handler->GetAsset<asset_handling::ShaderAsset>(shader_handle);
             const auto tuple = std::make_tuple(shader_handle, asset);
             shaders.push_back(tuple);
         }
@@ -61,11 +61,11 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
 
         glGenBuffers(1, &m_lighting_ubo);
         glBindBuffer(GL_UNIFORM_BUFFER, m_lighting_ubo);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(OpenGL::GpuLightingData), nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(open_gl::GpuLightingData), nullptr, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
         glBindBufferBase(GL_UNIFORM_BUFFER, light_binding_point, m_lighting_ubo);
 
-        const auto shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("mesh_opaque");
+        const auto shader_handle = m_asset_handler->GetHandleFromName<asset_handling::ShaderAsset>("mesh_opaque");
         const auto shader_program = m_shader_manager->GetShaderProgram(shader_handle);
         if (!shader_program.has_value()) {
             throw std::runtime_error("Shader program not found");
@@ -95,11 +95,11 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
         m_draw_calls = 0;
         SortDrawAssets(draw_assets);
         for (auto draw_asset: draw_assets) {
-            BindRenderPass(draw_asset.RenderState);
-            BindMaterial(draw_asset.Material);
-            m_bind_cache->BindColor(m_context.ShaderFields, draw_asset.Color);
-            BindMesh(draw_asset.Mesh);
-            DrawElement(draw_asset.Model);
+            BindRenderPass(draw_asset.render_state);
+            BindMaterial(draw_asset.material);
+            m_bind_cache->BindColor(m_context.shader_fields, draw_asset.color);
+            BindMesh(draw_asset.mesh);
+            DrawElement(draw_asset.model);
         }
         glBindVertexArray(0);
         glUseProgram(0);
@@ -122,14 +122,14 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
     }
 
     void OpenGlRenderer::BindLights(const std::vector<LightAsset>& lights, const AmbientLightAsset& ambient) const {
-        auto lighting_data = OpenGL::GpuLightingData{};
+        auto lighting_data = open_gl::GpuLightingData{};
         lighting_data.ambient_color_intensity = glm::vec4(ambient.color.r,
                                                           ambient.color.g,
                                                           ambient.color.b,
                                                           ambient.intensity
                 );
 
-        auto max_lights = std::min(static_cast<int>(lights.size()), OpenGL::MAX_POINT_LIGHTS);
+        auto max_lights = std::min(static_cast<int>(lights.size()), open_gl::max_point_lights);
         lighting_data.light_meta.x = max_lights;
         for (auto i = 0; i < max_lights; i++) {
             const auto& light_asset = lights[i];
@@ -150,7 +150,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
                                                      0.0f
                     );
 
-            auto point_light_asset = OpenGL::PointLightAsset{
+            auto point_light_asset = open_gl::PointLightAsset{
                 .position = light_position,
                 .color_intensity = light_color_intensity,
                 .attenuation = light_attenuation,
@@ -158,7 +158,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
             lighting_data.point_light[i] = point_light_asset;
         }
 
-        constexpr auto buffer_size = static_cast<GLsizeiptr>(sizeof(OpenGL::GpuLightingData));
+        constexpr auto buffer_size = static_cast<GLsizeiptr>(sizeof(open_gl::GpuLightingData));
         glBindBuffer(GL_UNIFORM_BUFFER, m_lighting_ubo);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, buffer_size, &lighting_data);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -174,34 +174,34 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
                 );
     }
 
-    void OpenGlRenderer::BindRenderPass(const AssetHandling::RenderState& render_state) {
-        if (m_context.RenderPass != render_state) {
+    void OpenGlRenderer::BindRenderPass(const asset_handling::RenderState& render_state) {
+        if (m_context.render_pass != render_state) {
             glBindVertexArray(0);
             glUseProgram(0);
-            m_context.Material = {};
-            m_context.ShaderFields = {};
-            m_context.Mesh = {};
+            m_context.material = {};
+            m_context.shader_fields = {};
+            m_context.mesh = {};
             switch (render_state) {
-                case AssetHandling::RenderState::Opaque:
+                case asset_handling::RenderState::Opaque:
                     m_bind_cache->BindOpaquePassParameters();
-                    m_context.ProjectionMatrix = glm::mat4(1.0);
+                    m_context.projection_matrix = glm::mat4(1.0);
                     break;
-                case AssetHandling::RenderState::UI:
+                case asset_handling::RenderState::UI:
                     m_bind_cache->BindUiPassParameters();
-                    m_context.ProjectionMatrix = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.0f, 1.0f);
+                    m_context.projection_matrix = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.0f, 1.0f);
                     break;
                 default:
                     throw std::runtime_error("Unknown render state");
             }
-            m_context.RenderPass = render_state;
+            m_context.render_pass = render_state;
         }
     }
 
     void OpenGlRenderer::BindMaterial(const assets::MaterialHandle& material_handle) {
-        if (m_context.Material == material_handle || !material_handle) {
+        if (m_context.material == material_handle || !material_handle) {
             return;
         }
-        m_context.Material = material_handle;
+        m_context.material = material_handle;
         const auto& material = m_material_library->Get(material_handle);
         BindShaders(material.shader);
         GLuint texture = 0;
@@ -209,19 +209,19 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
             const auto& texture_ref = m_texture_manager->GetTexture(material.albedo_texture.texture);
             texture = texture_ref.texture_id;
         }
-        m_bind_cache->BindAlbedoTexture(m_context.ShaderFields, texture);
-        m_bind_cache->BindSpecularStrength(m_context.ShaderFields, 0.5f);
-        m_bind_cache->BindShininess(m_context.ShaderFields, 32.0f);
+        m_bind_cache->BindAlbedoTexture(m_context.shader_fields, texture);
+        m_bind_cache->BindSpecularStrength(m_context.shader_fields, 0.5f);
+        m_bind_cache->BindShininess(m_context.shader_fields, 32.0f);
     }
 
     void OpenGlRenderer::BindMesh(const assets::MeshHandle& mesh_handle) {
-        if (m_context.Mesh == mesh_handle) {
+        if (m_context.mesh == mesh_handle) {
             return;
         }
 
         const auto& mesh = m_mesh_manager->GetMesh(mesh_handle);
-        m_context.Mesh = mesh_handle;
-        m_context.MeshIndicesCount = m_bind_cache->BindMesh(mesh);
+        m_context.mesh = mesh_handle;
+        m_context.mesh_indices_count = m_bind_cache->BindMesh(mesh);
     }
 
     void OpenGlRenderer::BindShaders(const assets::ShaderHandle& shader) {
@@ -229,19 +229,19 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
         if (!shader_program.has_value()) {
             throw std::runtime_error("Shader program not found");
         }
-        m_context.ShaderFields = m_bind_cache->BindShaderFields(shader_program.value());
+        m_context.shader_fields = m_bind_cache->BindShaderFields(shader_program.value());
         m_bind_cache->BindShader();
     }
 
     void OpenGlRenderer::DrawElement(const glm::mat4& model_matrix) {
-        if (m_context.MeshIndicesCount == 0) {
+        if (m_context.mesh_indices_count == 0) {
             return;
         }
-        const glm::mat4 model_projection_matrix = m_context.ProjectionMatrix * model_matrix;
+        const glm::mat4 model_projection_matrix = m_context.projection_matrix * model_matrix;
         const glm::mat3 normal_matrix = glm::transpose(glm::inverse(glm::mat3(model_matrix)));
-        m_bind_cache->BindModelMatrix(m_context.ShaderFields, model_projection_matrix);
-        m_bind_cache->BindNormalMatrix(m_context.ShaderFields, normal_matrix);
-        glDrawElements(GL_TRIANGLES, m_context.MeshIndicesCount, GL_UNSIGNED_INT, nullptr);
+        m_bind_cache->BindModelMatrix(m_context.shader_fields, model_projection_matrix);
+        m_bind_cache->BindNormalMatrix(m_context.shader_fields, normal_matrix);
+        glDrawElements(GL_TRIANGLES, m_context.mesh_indices_count, GL_UNSIGNED_INT, nullptr);
         m_draw_calls++;
     }
 }

@@ -7,7 +7,7 @@
 #include <TextController.hpp>
 #include "../CacheManager.hpp"
 
-namespace yarep::Systems {
+namespace yarep::systems {
     ECS_SYSTEM(UiImageSystem, Ui, TAGS(ENGINE), DEPENDENCIES())
 
     class UiImageSystem : public ecs::IEngineSystem {
@@ -21,10 +21,10 @@ namespace yarep::Systems {
         void Run(float delta_time) override;
 
     private:
-        Transform::TransformCache* m_transform_cache = nullptr;
-        UI::UiCache* m_ui_cache = nullptr;
-        Renderer::IRenderController* m_render_controller = nullptr;
-        AssetHandling::AssetHandler* m_asset_handler = nullptr;
+        transform::TransformCache* m_transform_cache = nullptr;
+        ui::UiCache* m_ui_cache = nullptr;
+        renderer::IRenderController* m_render_controller = nullptr;
+        asset_handling::AssetHandler* m_asset_handler = nullptr;
 
         void RegisterImageElement(ecs::EntityId entity, glm::vec4 color) const;
 

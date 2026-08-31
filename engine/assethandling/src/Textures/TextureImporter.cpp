@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <fmt/format.h>
 
-namespace yarep::AssetHandling::Textures
+namespace yarep::asset_handling::textures
 {
     void TextureImporter::BuildTextureFromFile(TextureAsset& texture_asset, const std::vector<uint8_t>& bytes,
                                                const std::string& file_name)
@@ -22,7 +22,7 @@ namespace yarep::AssetHandling::Textures
 
         texture_asset.width = static_cast<uint32_t>(texture_width);
         texture_asset.height = static_cast<uint32_t>(texture_height);
-        texture_asset.format = PixelFormat::RGBA8;
+        texture_asset.format = PixelFormat::Rgba8;
         texture_asset.pixels = std::move(pixels);
     }
 } // namespace

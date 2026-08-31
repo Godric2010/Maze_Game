@@ -4,14 +4,14 @@
 
 #include "TextController.hpp"
 
-namespace yarep::Systems::UI {
+namespace yarep::systems::ui {
     class UiCache {
     public:
         struct TextElement {
             uint64_t last_text_version;
             uint64_t last_font_version;
             std::pair<float, float> text_dimensions;
-            std::optional<Text::FontHandle> font_handle;
+            std::optional<text::FontHandle> font_handle;
             assets::MaterialHandle material_handle;
             assets::MeshHandle mesh_handle;
         };

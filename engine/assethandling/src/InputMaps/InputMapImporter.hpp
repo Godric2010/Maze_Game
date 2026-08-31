@@ -7,7 +7,7 @@
 #include "toml/TomlDocument.hpp"
 
 
-namespace yarep::AssetHandling::InputMaps
+namespace yarep::asset_handling::input_maps
 {
     class InputMapImporter
     {
@@ -16,8 +16,8 @@ namespace yarep::AssetHandling::InputMaps
 
         private:
             static void ReadKeyBindingsFromFile(input::InputMap& input_map,
-                                                const std::vector<Utilities::Toml::TomlTable>& tables);
+                                                const std::vector<utilities::toml_utils::TomlTable>& tables);
             static void ReadMouseBindingsFromFile(input::InputMap& input_map,
-                                                  const std::vector<Utilities::Toml::TomlTable>& tables);
+                                                  const std::vector<utilities::toml_utils::TomlTable>& tables);
     };
 }

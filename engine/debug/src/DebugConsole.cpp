@@ -2,11 +2,11 @@
 
 #include <ranges>
 
-namespace yarep::Debug
+namespace yarep::debug
 {
-    DebugConsole::DebugConsole(Text::TextController* text_controller, Renderer::IRenderController* render_controller,
-                               AssetHandling::AssetHandler* asset_handler,
-                               const Environment::WindowContext& context,
+    DebugConsole::DebugConsole(text::TextController* text_controller, renderer::IRenderController* render_controller,
+                               asset_handling::AssetHandler* asset_handler,
+                               const environment::WindowContext& context,
                                const uint32_t column_width) : m_font_handle(0),
                                                               m_texture_handle(0)
     {
@@ -21,13 +21,13 @@ namespace yarep::Debug
         m_font_handle = font_handle;
 
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
-        auto texture_asset = AssetHandling::TextureAsset();
+        auto texture_asset = asset_handling::TextureAsset();
         texture_asset.width = width;
         texture_asset.height = height;
         texture_asset.pixels = pixels;
 
         m_texture_handle = m_asset_handler->RegisterAsset(texture_asset);
-        auto asset = m_asset_handler->GetAsset<AssetHandling::TextureAsset>(m_texture_handle);
+        auto asset = m_asset_handler->GetAsset<asset_handling::TextureAsset>(m_texture_handle);
         // m_render_controller->RegisterTexture(*asset, m_texture_handle);
     }
 
@@ -58,7 +58,7 @@ namespace yarep::Debug
 
     void DebugConsole::PushToFrame()
     {
-        std::vector<Renderer::DrawAsset> draw_assets;
+        std::vector<renderer::DrawAsset> draw_assets;
         for (const auto& [id, text] : m_text_elements)
         {
             const uint8_t row = id;
@@ -92,34 +92,34 @@ namespace yarep::Debug
 
     TextMeshElement DebugConsole::CreateTextMeshElement(const std::string& text) const
     {
-        const Text::TextMesh text_mesh = m_text_controller->BuildTextMesh(
+        const text::TextMesh text_mesh = m_text_controller->BuildTextMesh(
                                                                           m_font_handle,
                                                                           text,
-                                                                          Text::TextAlignment::Left
+                                                                          text::TextAlignment::Left
                                                                          );
 
-        std::vector<AssetHandling::MeshVertexAsset> text_vertices;
+        std::vector<asset_handling::MeshVertexAsset> text_vertices;
         for (auto& vertex : text_mesh.vertices)
         {
-            AssetHandling::MeshVertexAsset mesh_vertex{};
+            asset_handling::MeshVertexAsset mesh_vertex{};
             mesh_vertex.position = glm::vec3(vertex.x, vertex.y, 0);
             mesh_vertex.uv = glm::vec2(vertex.u, vertex.v);
             text_vertices.push_back(mesh_vertex);
         }
 
-        auto mesh_asset = AssetHandling::MeshAsset();
+        auto mesh_asset = asset_handling::MeshAsset();
         mesh_asset.vertices = text_vertices;
         mesh_asset.indices = text_mesh.indices;
 
         auto mesh_handle = m_asset_handler->RegisterAsset(mesh_asset);
-        auto asset = m_asset_handler->GetAsset<AssetHandling::MeshAsset>(mesh_handle);
+        auto asset = m_asset_handler->GetAsset<asset_handling::MeshAsset>(mesh_handle);
 
-        auto material_asset = AssetHandling::MaterialAsset();
-        material_asset.render_state = AssetHandling::RenderState::UI;
+        auto material_asset = asset_handling::MaterialAsset();
+        material_asset.render_state = asset_handling::RenderState::UI;
         material_asset.render_queue_index = 99;
-        material_asset.shader_handle = m_asset_handler->GetHandleFromName<AssetHandling::ShaderAsset>("ui");
+        material_asset.shader_handle = m_asset_handler->GetHandleFromName<asset_handling::ShaderAsset>("ui");
         material_asset.base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-        material_asset.albedo_texture = AssetHandling::MaterialTexture{};
+        material_asset.albedo_texture = asset_handling::MaterialTexture{};
         material_asset.albedo_texture.texture = m_texture_handle;
 
         auto material_handle = m_asset_handler->RegisterAsset(material_asset);
@@ -132,7 +132,7 @@ namespace yarep::Debug
         return text_mesh_element;
     }
 
-    Renderer::DrawAsset DebugConsole::CreateUiDrawAsset(const uint8_t col, const uint8_t row,
+    renderer::DrawAsset DebugConsole::CreateUiDrawAsset(const uint8_t col, const uint8_t row,
                                                         const TextMeshElement& text_mesh_element,
                                                         const uint8_t queue_index) const
     {
@@ -147,13 +147,13 @@ namespace yarep::Debug
         model_mat = glm::translate(model_mat, glm::vec3(pos_x, pos_y, 0.0f));
         model_mat = glm::scale(model_mat, glm::vec3(text_mesh_element.width, text_mesh_element.height, 1.0f));
 
-        Renderer::DrawAsset draw_asset{};
-        draw_asset.RenderState = AssetHandling::RenderState::UI;
-        draw_asset.Model = model_mat;
-        draw_asset.Mesh = text_mesh_element.mesh_handle;
-        draw_asset.Material = text_mesh_element.material_handle;
-        draw_asset.RenderQueueIndex = 1000 - queue_index;
-        draw_asset.Color = glm::vec4(1, 0, 1, 1.0);
+        renderer::DrawAsset draw_asset{};
+        draw_asset.render_state = asset_handling::RenderState::UI;
+        draw_asset.model = model_mat;
+        draw_asset.mesh = text_mesh_element.mesh_handle;
+        draw_asset.material = text_mesh_element.material_handle;
+        draw_asset.render_queue_index = 1000 - queue_index;
+        draw_asset.color = glm::vec4(1, 0, 1, 1.0);
 
         return draw_asset;
     }

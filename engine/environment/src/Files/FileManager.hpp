@@ -3,7 +3,7 @@
 
 #include "IFileManager.hpp"
 
-namespace yarep::Environment::Files {
+namespace yarep::environment::files {
     class FileManager : public IFileManager {
     public:
         FileManager();

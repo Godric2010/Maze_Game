@@ -22,7 +22,7 @@ namespace yarep::ecs
     {
         public:
             SystemManager(const std::vector<SystemMeta>& system_metas, IServiceToEcsProvider* service_provider,
-                          Systems::ICacheManager* cache_manager);
+                          systems::ICacheManager* cache_manager);
 
             ~SystemManager() override;
             void BuildCommandSystem(World* world);
@@ -42,7 +42,7 @@ namespace yarep::ecs
             std::unique_ptr<SystemWorld> m_game_world;
             std::vector<SystemMeta> m_system_metas;
             IServiceToEcsProvider* m_service_provider;
-            Systems::CacheManager* m_cache_manager;
+            systems::CacheManager* m_cache_manager;
 
             std::vector<Phase> m_phase_execution_order;
             std::unordered_map<Phase, std::vector<std::unique_ptr<ISystem>>> m_phase_map;

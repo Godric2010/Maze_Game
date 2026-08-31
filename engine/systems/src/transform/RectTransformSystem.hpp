@@ -3,7 +3,7 @@
 #include <ui/RectTransform.hpp>
 #include "IEngineSystem.hpp"
 
-namespace yarep::Systems {
+namespace yarep::systems {
     ECS_SYSTEM(RectTransformSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
     struct LayoutData {
@@ -25,13 +25,13 @@ namespace yarep::Systems {
         void Run(float delta_time) override;
 
     private:
-        static glm::vec2 GetAnchorValue(const Components::UI::Anchor& anchor);
+        static glm::vec2 GetAnchorValue(const components::ui::Anchor& anchor);
 
-        LayoutData CreateLayoutData(const Components::UI::RectTransform* rect_transform);
+        LayoutData CreateLayoutData(const components::ui::RectTransform* rect_transform);
 
-        static Transform::RectTransformCacheValue CreateUiLayoutResult(const LayoutData& rect_layout);
+        static transform::RectTransformCacheValue CreateUiLayoutResult(const LayoutData& rect_layout);
 
-        Transform::RectTransformCacheValue GetParentLayoutResult(const ecs::EntityId& parent_entity);
+        transform::RectTransformCacheValue GetParentLayoutResult(const ecs::EntityId& parent_entity);
 
         glm::vec2 m_world_origin = glm::vec2(0.0f);
         glm::vec2 m_world_scale = glm::vec2(1920, 1080);

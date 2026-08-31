@@ -3,7 +3,7 @@
 #include <vector>
 #include "AssetTypes.hpp"
 
-namespace yarep::AssetHandling::Mesh
+namespace yarep::asset_handling::mesh
 {
     class MeshImporter
     {
@@ -14,14 +14,14 @@ namespace yarep::AssetHandling::Mesh
     private:
         struct FaceVertexIndex
         {
-            uint32_t PositionIndex;
-            uint32_t NormalIndex;
-            uint32_t UvIndex;
+            uint32_t position_index;
+            uint32_t normal_index;
+            uint32_t uv_index;
 
             bool operator==(const FaceVertexIndex& other) const
             {
-                return PositionIndex == other.PositionIndex && other.NormalIndex == NormalIndex && UvIndex == other.
-                    UvIndex;
+                return position_index == other.position_index && other.normal_index == normal_index && uv_index == other.
+                    uv_index;
             }
         };
         
@@ -29,9 +29,9 @@ namespace yarep::AssetHandling::Mesh
         {
            size_t operator()(const FaceVertexIndex& index) const noexcept
            {
-               size_t pos_hash = std::hash<uint32_t>{}(index.PositionIndex);
-               size_t normal_hash = std::hash<uint32_t>{}(index.NormalIndex);
-               size_t uv_hash = std::hash<uint32_t>{}(index.UvIndex);
+               size_t pos_hash = std::hash<uint32_t>{}(index.position_index);
+               size_t normal_hash = std::hash<uint32_t>{}(index.normal_index);
+               size_t uv_hash = std::hash<uint32_t>{}(index.uv_index);
                size_t seed = pos_hash;
                seed ^= normal_hash + 0x9e3779b9 + (seed << 6) + (seed >> 2);
                seed ^= uv_hash + 0x9e3779b9 + (seed << 6) + (seed >> 2);
@@ -41,7 +41,7 @@ namespace yarep::AssetHandling::Mesh
 
         struct Face
         {
-            std::vector<FaceVertexIndex> Indices;
+            std::vector<FaceVertexIndex> indices;
         };
 
         static void AnalyseString(const std::string& str, std::vector<glm::vec3>& vertex_positions,

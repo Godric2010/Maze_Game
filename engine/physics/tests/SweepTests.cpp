@@ -16,7 +16,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtx/norm.hpp> // length2
 #include <cmath>
-using namespace yarep::Physics::Math;
+using namespace yarep::physics::math;
 
 // ---- Helpers ----
 static bool ApproxVec3(const glm::vec3& a, const glm::vec3& b, float eps = 1e-5f)

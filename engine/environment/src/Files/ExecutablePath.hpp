@@ -17,7 +17,7 @@
     #error Unsupported platform
 #endif
 
-namespace yarep::Environment::Files {
+namespace yarep::environment::files {
     inline std::filesystem::path GetExecutablePath() {
         #if defined(_WIN32)
         std::wstring buffer;

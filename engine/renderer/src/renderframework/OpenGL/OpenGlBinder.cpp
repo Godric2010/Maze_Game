@@ -1,7 +1,7 @@
 #include "OpenGlBinder.hpp"
 
 
-namespace yarep::Renderer::RenderFramework::OpenGl {
+namespace yarep::renderer::render_framework::open_gl {
     OpenGlBinder::OpenGlBinder() = default;
 
     OpenGlBinder::~OpenGlBinder() = default;
@@ -98,11 +98,11 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
         glUseProgram(std::get<0>(m_bound_shader));
     }
 
-    GLsizei OpenGlBinder::BindMesh(OpenGLMesh mesh) {
-        if (std::get<0>(m_bound_mesh) != mesh.VAO) {
-            glBindVertexArray(mesh.VAO);
-            auto index_size = static_cast<GLsizei>(mesh.numIndices);
-            m_bound_mesh = std::make_tuple(mesh.VAO, index_size);
+    GLsizei OpenGlBinder::BindMesh(OpenGlMesh mesh) {
+        if (std::get<0>(m_bound_mesh) != mesh.vao) {
+            glBindVertexArray(mesh.vao);
+            auto index_size = static_cast<GLsizei>(mesh.num_indices);
+            m_bound_mesh = std::make_tuple(mesh.vao, index_size);
         }
         return std::get<1>(m_bound_mesh);
     }

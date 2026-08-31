@@ -4,39 +4,39 @@
 #include <ranges>
 #include <GL/glew.h>
 
-namespace yarep::Renderer::RenderFramework::OpenGl {
+namespace yarep::renderer::render_framework::open_gl {
     OpenGlMeshLibrary::OpenGlMeshLibrary() {
         m_meshes.clear();
     }
 
     OpenGlMeshLibrary::~OpenGlMeshLibrary() = default;
 
-    void OpenGlMeshLibrary::AddMesh(const assets::MeshHandle& handle, const AssetHandling::MeshAsset& mesh,
+    void OpenGlMeshLibrary::AddMesh(const assets::MeshHandle& handle, const asset_handling::MeshAsset& mesh,
                                     const uint32_t revision) {
-        OpenGLMesh m = {};
-        m.numVertices = mesh.vertices.size();
-        m.numIndices = mesh.indices.size();
+        OpenGlMesh m = {};
+        m.num_vertices = mesh.vertices.size();
+        m.num_indices = mesh.indices.size();
 
         if (!mesh.IsValid()) {
             m_meshes[handle] = m;
             return;
         }
 
-        glGenVertexArrays(1, &m.VAO);
-        glGenBuffers(1, &m.VBO);
-        glGenBuffers(1, &m.EBO);
+        glGenVertexArrays(1, &m.vao);
+        glGenBuffers(1, &m.vbo);
+        glGenBuffers(1, &m.ebo);
 
-        glBindVertexArray(m.VAO);
+        glBindVertexArray(m.vao);
 
         // Bind vertex buffer
-        glBindBuffer(GL_ARRAY_BUFFER, m.VBO);
-        const auto size = static_cast<GLsizeiptr>(m.numVertices * sizeof(AssetHandling::MeshVertexAsset));
+        glBindBuffer(GL_ARRAY_BUFFER, m.vbo);
+        const auto size = static_cast<GLsizeiptr>(m.num_vertices * sizeof(asset_handling::MeshVertexAsset));
         glBufferData(GL_ARRAY_BUFFER, size, mesh.vertices.data(), GL_STATIC_DRAW);
 
         // Bind index buffer
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m.ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                     static_cast<GLsizeiptr>(sizeof(uint32_t) * m.numIndices),
+                     static_cast<GLsizeiptr>(sizeof(uint32_t) * m.num_indices),
                      mesh.indices.data(),
                      GL_STATIC_DRAW
                 );
@@ -46,8 +46,8 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
                               3,
                               GL_FLOAT,
                               GL_FALSE,
-                              sizeof(AssetHandling::MeshVertexAsset),
-                              reinterpret_cast<void*>(offsetof(AssetHandling::MeshVertexAsset, position))
+                              sizeof(asset_handling::MeshVertexAsset),
+                              reinterpret_cast<void*>(offsetof(asset_handling::MeshVertexAsset, position))
                 );
 
         glEnableVertexAttribArray(1);
@@ -55,8 +55,8 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
                               3,
                               GL_FLOAT,
                               GL_FALSE,
-                              sizeof(AssetHandling::MeshVertexAsset),
-                              reinterpret_cast<void*>(offsetof(AssetHandling::MeshVertexAsset, normal))
+                              sizeof(asset_handling::MeshVertexAsset),
+                              reinterpret_cast<void*>(offsetof(asset_handling::MeshVertexAsset, normal))
                 );
 
         glEnableVertexAttribArray(2);
@@ -64,8 +64,8 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
                               2,
                               GL_FLOAT,
                               GL_FALSE,
-                              sizeof(AssetHandling::MeshVertexAsset),
-                              reinterpret_cast<void*>(offsetof(AssetHandling::MeshVertexAsset, uv))
+                              sizeof(asset_handling::MeshVertexAsset),
+                              reinterpret_cast<void*>(offsetof(asset_handling::MeshVertexAsset, uv))
                 );
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -74,7 +74,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
         m_mesh_revisions[handle] = revision;
     }
 
-    OpenGLMesh &OpenGlMeshLibrary::GetMesh(const assets::MeshHandle& handle) {
+    OpenGlMesh &OpenGlMeshLibrary::GetMesh(const assets::MeshHandle& handle) {
         return m_meshes[handle];
     }
 
@@ -101,9 +101,9 @@ namespace yarep::Renderer::RenderFramework::OpenGl {
 
     void OpenGlMeshLibrary::ClearMeshes() {
         for (auto& val: m_meshes | std::views::values) {
-            glDeleteBuffers(1, &val.VBO);
-            glDeleteBuffers(1, &val.EBO);
-            glDeleteVertexArrays(1, &val.VAO);
+            glDeleteBuffers(1, &val.vbo);
+            glDeleteBuffers(1, &val.ebo);
+            glDeleteVertexArrays(1, &val.vao);
         }
         m_meshes.clear();
     }

@@ -6,10 +6,10 @@
 #include "IRenderController.hpp"
 #include "Window.hpp"
 
-namespace yarep::Renderer {
+namespace yarep::renderer {
     class RenderControllerFactory {
     public:
         static std::unique_ptr<IRenderController> CreateRenderController(
-                const Environment::WindowContext& window_context, AssetHandling::AssetHandler* asset_handler);
+                const environment::WindowContext& window_context, asset_handling::AssetHandler* asset_handler);
     };
 } // namespace

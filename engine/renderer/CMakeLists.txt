@@ -16,14 +16,14 @@ add_library(Renderer STATIC
         src/renderframework/OpenGL/OpenGlBinder.cpp
         src/renderframework/OpenGL/OpenGlBinder.hpp
         src/renderframework/OpenGL/OpenGLRenderer.cpp
-        src/renderframework/OpenGL/Meshes/OpenGLMesh.hpp
+        src/renderframework/OpenGL/Meshes/OpenGlMesh.hpp
         src/renderframework/OpenGL/Meshes/OpenGlMeshLibrary.cpp
         src/renderframework/OpenGL/Meshes/OpenGlMeshLibrary.hpp
         src/renderframework/OpenGL/Shaders/OpenGlShaderLibrary.cpp
         src/renderframework/OpenGL/Shaders/OpenGlShaderLibrary.hpp
-        src/renderframework/OpenGL/Textures/OpenGLTextureLibrary.cpp
-        src/renderframework/OpenGL/Textures/OpenGLTextureLibrary.hpp
-        src/renderframework/OpenGL/Textures/OpenGLTexture.hpp
+        src/renderframework/OpenGL/Textures/OpenGlTextureLibrary.cpp
+        src/renderframework/OpenGL/Textures/OpenGlTextureLibrary.hpp
+        src/renderframework/OpenGL/Textures/OpenGlTexture.hpp
         src/renderframework/OpenGL/materials/OpenGlMaterialLibrary.cpp
         src/renderframework/OpenGL/materials/OpenGlMaterialLibrary.hpp
         src/renderframework/OpenGL/materials/OpenGlMaterial.hpp

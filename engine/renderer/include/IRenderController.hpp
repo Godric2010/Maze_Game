@@ -7,7 +7,7 @@
 #include <memory>
 #include "AssetTypes.hpp"
 
-namespace yarep::Renderer
+namespace yarep::renderer
 {
     class IRenderController 
     {
@@ -18,7 +18,7 @@ namespace yarep::Renderer
 
         virtual void RenderFrame(const FrameData& frame_data, std::vector<DrawAsset> draw_assets) const = 0;
 
-        virtual assets::MeshHandle GetUIMeshHandle() const = 0;
+        virtual assets::MeshHandle GetUiMeshHandle() const = 0;
 
         [[nodiscard]] virtual uint32_t GetDrawCalls() const = 0;
     };

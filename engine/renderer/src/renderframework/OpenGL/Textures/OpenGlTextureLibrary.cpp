@@ -1,23 +1,23 @@
-#include "OpenGLTextureLibrary.hpp"
+#include "OpenGlTextureLibrary.hpp"
 
 #include <GL/glew.h>
 #include <ranges>
 #include <stdexcept>
 #include <spdlog/spdlog.h>
 
-namespace yarep::Renderer::RenderFramework::OpenGl
+namespace yarep::renderer::render_framework::open_gl
 {
-    OpenGLTextureLibrary::OpenGLTextureLibrary() = default;
+    OpenGlTextureLibrary::OpenGlTextureLibrary() = default;
 
-    OpenGLTextureLibrary::~OpenGLTextureLibrary() = default;
+    OpenGlTextureLibrary::~OpenGlTextureLibrary() = default;
 
-    void OpenGLTextureLibrary::AddTexture(const assets::TextureHandle& texture_handle,
-                                          const AssetHandling::TextureAsset& texture_asset, const uint32_t revision)
+    void OpenGlTextureLibrary::AddTexture(const assets::TextureHandle& texture_handle,
+                                          const asset_handling::TextureAsset& texture_asset, const uint32_t revision)
     {
-        OpenGLTexture texture{};
+        OpenGlTexture texture{};
         texture.width = static_cast<GLint>(texture_asset.width);
         texture.height = static_cast<GLint>(texture_asset.height);
-        texture.uploadFormat = ToGL(texture_asset.format);
+        texture.upload_format = ToGl(texture_asset.format);
 
         glGenTextures(1, &texture.texture_id);
 
@@ -31,12 +31,12 @@ namespace yarep::Renderer::RenderFramework::OpenGl
 
         glTexImage2D(GL_TEXTURE_2D,
                      0,
-                     texture.uploadFormat.internalFormat,
+                     texture.upload_format.internal_format,
                      texture.width,
                      texture.height,
                      0,
-                     texture.uploadFormat.format,
-                     texture.uploadFormat.type,
+                     texture.upload_format.format,
+                     texture.upload_format.type,
                      texture_asset.pixels.data());
         glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -56,12 +56,12 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         m_texture_revisions[texture_handle] = revision;
     }
 
-    bool OpenGLTextureLibrary::HasTexture(const assets::TextureHandle& texture_handle) const
+    bool OpenGlTextureLibrary::HasTexture(const assets::TextureHandle& texture_handle) const
     {
         return m_textures.contains(texture_handle);
     }
 
-    uint32_t OpenGLTextureLibrary::GetTextureRevision(const assets::TextureHandle& texture_handle) const
+    uint32_t OpenGlTextureLibrary::GetTextureRevision(const assets::TextureHandle& texture_handle) const
     {
         if (const auto it = m_texture_revisions.find(texture_handle); it != m_texture_revisions.end())
         {
@@ -70,7 +70,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         throw std::runtime_error("No texture handle found in texture revisions map");
     }
 
-    OpenGLTexture& OpenGLTextureLibrary::GetTexture(const assets::TextureHandle& texture_handle)
+    OpenGlTexture& OpenGlTextureLibrary::GetTexture(const assets::TextureHandle& texture_handle)
     {
         const auto it = m_textures.find(texture_handle);
         if (it != m_textures.end())
@@ -80,7 +80,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         throw std::runtime_error("No such texture handle: "); // + std::to_string(texture_handle));
     }
 
-    void OpenGLTextureLibrary::RemoveTexture(const assets::TextureHandle& texture_handle)
+    void OpenGlTextureLibrary::RemoveTexture(const assets::TextureHandle& texture_handle)
     {
         const auto gl_texture = m_textures.find(texture_handle);
         if (gl_texture != m_textures.end())
@@ -93,7 +93,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         throw std::runtime_error("No such texture handle: "); // + std::to_string(texture_handle));
     }
 
-    void OpenGLTextureLibrary::ClearTextures()
+    void OpenGlTextureLibrary::ClearTextures()
     {
         for (auto& val : m_textures | std::views::values)
         {

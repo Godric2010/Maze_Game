@@ -11,13 +11,13 @@ namespace yarep::input
     class InputManager : public IInputManager
     {
         public:
-            explicit InputManager(std::unique_ptr<Environment::IEnvInput> env_input, const std::vector<InputMap>& input_maps);
+            explicit InputManager(std::unique_ptr<environment::IEnvInput> env_input, const std::vector<InputMap>& input_maps);
 
             ~InputManager() override;
 
             void UpdateInput() override;
 
-            Environment::AppEventsSnapshot GetAppEventSnapshot() override;
+            environment::AppEventsSnapshot GetAppEventSnapshot() override;
 
             void EnableInputMap(const std::string& input_map_name) override;
 
@@ -30,7 +30,7 @@ namespace yarep::input
         private:
             void PopulateInputActions();
 
-            std::unique_ptr<Environment::IEnvInput> m_input_env;
+            std::unique_ptr<environment::IEnvInput> m_input_env;
             std::vector<InputMap> m_input_maps;
             std::set<int> m_active_map_indices;
 

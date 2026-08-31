@@ -95,21 +95,21 @@ namespace gameplay::maze_generator {
 
     void MazeBuilder::CreateKeyObject(const CellIndex& cell_index) const {
         const auto entity = m_game_world->CreateEntity("KeyItem");
-        const auto mesh_component = yarep::Components::MeshRenderer{
-            .Mesh = m_key_mesh,
-            .Material = m_key_material,
+        const auto mesh_component = yarep::components::MeshRenderer{
+            .mesh = m_key_mesh,
+            .material = m_key_material,
         };
         m_game_world->AddComponent(entity, mesh_component);
         const auto position = glm::vec3(cell_index.x * 2, 0.5f, cell_index.y * 2);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
         constexpr auto scale = glm::vec3(0.2f, 0.2f, 0.2f);
-        const auto transform_component = yarep::Components::Transform()
+        const auto transform_component = yarep::components::Transform()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);
         m_game_world->AddComponent(entity, transform_component);
 
-        constexpr auto collider = yarep::Components::BoxCollider{
+        constexpr auto collider = yarep::components::BoxCollider{
             .is_static = true,
             .width = 0.2f,
             .height = 1.0f,
@@ -126,13 +126,13 @@ namespace gameplay::maze_generator {
         const auto position = glm::vec3(cell_index.x * 2, 0.5f, cell_index.y * 2);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
         constexpr auto scale = glm::vec3(2.0f);
-        const auto transform_component = yarep::Components::Transform()
+        const auto transform_component = yarep::components::Transform()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);
         m_game_world->AddComponent(entity, transform_component);
 
-        constexpr auto collider = yarep::Components::BoxCollider{
+        constexpr auto collider = yarep::components::BoxCollider{
             .is_static = true,
             .is_trigger = true,
             .width = 0.5f,
@@ -147,7 +147,7 @@ namespace gameplay::maze_generator {
         const auto light_entity = m_game_world->CreateEntity(
                 std::format("Ceiling Light [{}|{}]", cell_index.x, cell_index.y)
                 );
-        const auto point_light_component = yarep::Components::PointLight()
+        const auto point_light_component = yarep::components::PointLight()
                 .SetColor(1.0f, 1.0f, 1.0f)
                 .SetIntensity(1.0f)
                 .SetConstant(1.0f)
@@ -158,7 +158,7 @@ namespace gameplay::maze_generator {
         m_game_world->AddComponent(light_entity, point_light_component);
         const auto position = glm::vec3(cell_index.x * 2, 1.9f, cell_index.y * 2);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        const auto transform_component = yarep::Components::Transform()
+        const auto transform_component = yarep::components::Transform()
                 .SetPosition(position)
                 .SetRotation(rotation);
         m_game_world->AddComponent(light_entity, transform_component);
@@ -191,14 +191,14 @@ namespace gameplay::maze_generator {
             const CellIndex& cell_idx,
             yarep::assets::MaterialHandle material) const {
         const auto entity = m_game_world->CreateEntity(std::format("FloorTile [{}|{}]", cell_idx.x, cell_idx.y));
-        const auto mesh_component = yarep::Components::MeshRenderer{
-            .Mesh = m_floor_mesh,
-            .Material = material,
+        const auto mesh_component = yarep::components::MeshRenderer{
+            .mesh = m_floor_mesh,
+            .material = material,
         };
         m_game_world->AddComponent(entity, mesh_component);
         const auto position = glm::vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        const auto transform_component = yarep::Components::Transform()
+        const auto transform_component = yarep::components::Transform()
                 .SetPosition(position)
                 .SetRotation(rotation);
         m_game_world->AddComponent(entity, transform_component);
@@ -238,22 +238,22 @@ namespace gameplay::maze_generator {
         glm::vec3 rotation_shift;
         GetShiftAndRotationVectorFromDirection(direction, shift_vector, rotation_shift);
 
-        const auto mesh_component = yarep::Components::MeshRenderer{
-            .Mesh = m_wall_mesh,
-            .Material = m_wall_material,
+        const auto mesh_component = yarep::components::MeshRenderer{
+            .mesh = m_wall_mesh,
+            .material = m_wall_material,
         };
 
         m_game_world->AddComponent(entity, mesh_component);
         const auto position = glm::vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2) + shift_vector;
         const auto rotation = glm::vec3(0.0f, 0.0f, 0.0f) + rotation_shift;
         const auto scale = glm::vec3(0.5f, 0.5f, 0.5f);
-        const auto transform_component = yarep::Components::Transform()
+        const auto transform_component = yarep::components::Transform()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);
         m_game_world->AddComponent(entity, transform_component);
 
-        constexpr auto collider = yarep::Components::BoxCollider{
+        constexpr auto collider = yarep::components::BoxCollider{
             .is_static = true,
             .width = 2.0f,
             .height = 2.0f,
@@ -277,15 +277,15 @@ namespace gameplay::maze_generator {
         const auto door_entity = m_game_world->CreateEntity(
                 std::format("Door [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))
                 );
-        const auto frame_mesh_component = yarep::Components::MeshRenderer{
-            .Mesh = m_door_frame,
-            .Material = m_door_material,
+        const auto frame_mesh_component = yarep::components::MeshRenderer{
+            .mesh = m_door_frame,
+            .material = m_door_material,
         };
-        const auto frame_transform_component = yarep::Components::Transform()
+        const auto frame_transform_component = yarep::components::Transform()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);
-        constexpr auto frame_door_trigger = yarep::Components::BoxCollider{
+        constexpr auto frame_door_trigger = yarep::components::BoxCollider{
             .is_static = true,
             .is_trigger = true,
             .width = 2.0f,
@@ -298,16 +298,16 @@ namespace gameplay::maze_generator {
         m_game_world->AddComponent(frame_entity, components::DoorTrigger{.door = door_entity});
 
 
-        const auto door_mesh_component = yarep::Components::MeshRenderer{
-            .Mesh = m_door,
-            .Material = m_door_material,
+        const auto door_mesh_component = yarep::components::MeshRenderer{
+            .mesh = m_door,
+            .material = m_door_material,
         };
 
-        const auto door_transform_component = yarep::Components::Transform()
+        const auto door_transform_component = yarep::components::Transform()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);
-        constexpr auto door_collider = yarep::Components::BoxCollider{
+        constexpr auto door_collider = yarep::components::BoxCollider{
             .is_static = true,
             .width = 2.0f,
             .height = 2.0f,
@@ -322,15 +322,15 @@ namespace gameplay::maze_generator {
 
     void MazeBuilder::CreateCeilingTile(const CellIndex& cell_idx) const {
         const auto entity = m_game_world->CreateEntity(std::format("CeilingTile [{}|{}]", cell_idx.x, cell_idx.y));
-        const auto mesh_component = yarep::Components::MeshRenderer{
-            .Mesh = m_ceiling_mesh,
-            .Material = m_ceiling_material,
+        const auto mesh_component = yarep::components::MeshRenderer{
+            .mesh = m_ceiling_mesh,
+            .material = m_ceiling_material,
         };
         m_game_world->AddComponent(entity, mesh_component);
         const auto position = glm::vec3(cell_idx.x * 2, 2.0f, cell_idx.y * 2);
         constexpr auto rotation = glm::vec3(180.0f, 0.0f, 0.0f);
         constexpr auto scale = glm::vec3(0.5f, 1.0f, 0.5f);
-        const auto transform_component = yarep::Components::Transform()
+        const auto transform_component = yarep::components::Transform()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);

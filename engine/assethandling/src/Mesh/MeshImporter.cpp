@@ -6,7 +6,7 @@
 #include <sstream>
 #include <unordered_map>
 
-namespace yarep::AssetHandling::Mesh
+namespace yarep::asset_handling::mesh
 {
     void MeshImporter::BuildMeshAssetFromObj(const std::string& obj_string,
                                              std::vector<MeshVertexAsset>& vertices,
@@ -22,9 +22,9 @@ namespace yarep::AssetHandling::Mesh
         size_t total_index_count = 0;
         for (auto& face : faces)
         {
-            estimated_unique_keys += face.Indices.size();
+            estimated_unique_keys += face.indices.size();
             FanTriangulateFace(face);
-            total_index_count += face.Indices.size();
+            total_index_count += face.indices.size();
         }
 
         auto face_index_vertex_map = std::unordered_map<FaceVertexIndex, uint32_t, FaceVertexIndexHasher>();
@@ -33,7 +33,7 @@ namespace yarep::AssetHandling::Mesh
         indices.reserve(total_index_count);
         for (auto& face : faces)
         {
-            for (auto& corner_indices : face.Indices)
+            for (auto& corner_indices : face.indices)
             {
                 auto new_index = static_cast<uint32_t>(vertices.size());
                 auto [it, inserted] = face_index_vertex_map.try_emplace(corner_indices, new_index);
@@ -55,19 +55,19 @@ namespace yarep::AssetHandling::Mesh
                                              const std::vector<glm::vec2>& vertex_uvs)
     {
         MeshVertexAsset vertex{};
-        if (IsIndexValid("PositionIndex", indices.PositionIndex, vertex_positions.size(), true))
+        if (IsIndexValid("PositionIndex", indices.position_index, vertex_positions.size(), true))
         {
-            vertex.position = vertex_positions[indices.PositionIndex - 1];
+            vertex.position = vertex_positions[indices.position_index - 1];
         }
-        if (IsIndexValid("UvIndex", indices.UvIndex, vertex_uvs.size(), false))
+        if (IsIndexValid("UvIndex", indices.uv_index, vertex_uvs.size(), false))
         {
-            vertex.uv = vertex_uvs[indices.UvIndex - 1];
+            vertex.uv = vertex_uvs[indices.uv_index - 1];
             vertex.uv.y = 1.0f - vertex.uv.y; // TODO: This is a quick fix here. Make this better configurable later!
 
         }
-        if (IsIndexValid("NormalIndex", indices.NormalIndex, vertex_normals.size(), false))
+        if (IsIndexValid("NormalIndex", indices.normal_index, vertex_normals.size(), false))
         {
-            vertex.normal = vertex_normals[indices.NormalIndex - 1];
+            vertex.normal = vertex_normals[indices.normal_index - 1];
         }
         return vertex;
     }
@@ -163,9 +163,9 @@ namespace yarep::AssetHandling::Mesh
             line_string.pop_back();
         }
 
-        if (const auto hashPos = line_string.find('#'); hashPos != std::string::npos)
+        if (const auto hash_pos = line_string.find('#'); hash_pos != std::string::npos)
         {
-            line_string = line_string.substr(0, hashPos);
+            line_string = line_string.substr(0, hash_pos);
         }
 
         auto only_whitespaces = [](const std::string& str)
@@ -216,31 +216,31 @@ namespace yarep::AssetHandling::Mesh
                 uv_index = ParseStringToIndex(uv_token, "UV", corner_token);
             }
             FaceVertexIndex vertex_indices{};
-            vertex_indices.PositionIndex = position_index;
-            vertex_indices.NormalIndex = normal_index;
-            vertex_indices.UvIndex = uv_index;
-            face.Indices.push_back(vertex_indices);
+            vertex_indices.position_index = position_index;
+            vertex_indices.normal_index = normal_index;
+            vertex_indices.uv_index = uv_index;
+            face.indices.push_back(vertex_indices);
         }
         faces.push_back(face);
     } // namespace
 
     void MeshImporter::FanTriangulateFace(Face& face)
     {
-        if (face.Indices.size() < 3)
+        if (face.indices.size() < 3)
         {
             throw std::runtime_error("Cannot have a face with less than three vertices!");
         }
 
         std::vector<FaceVertexIndex> triangulated_indices;
-        triangulated_indices.reserve(3 * (face.Indices.size() - 2));
-        const FaceVertexIndex anchor = face.Indices[0];
-        for (size_t i = 1; i < face.Indices.size() - 1; i++)
+        triangulated_indices.reserve(3 * (face.indices.size() - 2));
+        const FaceVertexIndex anchor = face.indices[0];
+        for (size_t i = 1; i < face.indices.size() - 1; i++)
         {
             triangulated_indices.push_back(anchor);
-            triangulated_indices.push_back(face.Indices[i]);
-            triangulated_indices.push_back(face.Indices[i + 1]);
+            triangulated_indices.push_back(face.indices[i]);
+            triangulated_indices.push_back(face.indices[i + 1]);
         }
-        face.Indices = triangulated_indices;
+        face.indices = triangulated_indices;
     }
 
     bool MeshImporter::TryParseVector3(std::istringstream& line_stream, glm::vec3& result)

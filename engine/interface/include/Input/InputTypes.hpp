@@ -27,7 +27,7 @@ namespace yarep::input
         #undef X
     };
 
-    constexpr std::array<std::pair<std::string_view, Key>, 9> KeyMap =
+    constexpr std::array<std::pair<std::string_view, Key>, 9> key_map =
     {
         {
             #define X(name) {#name, Key::name},
@@ -36,7 +36,7 @@ namespace yarep::input
         }
     };
 
-    #define MouseButtonList \
+    #define MOUSE_BUTTON_LIST \
         X(Unknown)  \
         X(Left) \
         X(Right) \
@@ -45,19 +45,19 @@ namespace yarep::input
     enum class MouseButton
     {
         #define X(name) name,
-        MouseButtonList
+        MOUSE_BUTTON_LIST
         #undef X
     };
 
-    constexpr std::array<std::pair<std::string_view, MouseButton>, 4> MouseButtonMap = {
+    constexpr std::array<std::pair<std::string_view, MouseButton>, 4> mouse_button_map = {
         {
             #define X(name) {#name, MouseButton::name},
-            MouseButtonList
+            MOUSE_BUTTON_LIST
             #undef X
         }
     };
 
-    #define PressStateList \
+    #define PRESS_STATE_LIST \
         X(Down) \
         X(Up) \
         X(Pressed)
@@ -66,14 +66,14 @@ namespace yarep::input
     enum class PressState
     {
         #define X(name) name,
-        PressStateList
+        PRESS_STATE_LIST
         #undef X
     };
 
-    constexpr std::array<std::pair<std::string_view, PressState>, 3> PressStateMap = {
+    constexpr std::array<std::pair<std::string_view, PressState>, 3> press_state_map = {
         {
             #define X(name) {#name, PressState::name},
-            PressStateList
+            PRESS_STATE_LIST
             #undef X
         }
     };

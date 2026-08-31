@@ -5,7 +5,7 @@
 #include "IEngineSystem.hpp"
 ECS_SYSTEM(TransformSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
-namespace yarep::Systems {
+namespace yarep::systems {
     class TransformSystem : public ecs::IEngineSystem {
     public:
         TransformSystem();

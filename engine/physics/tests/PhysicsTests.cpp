@@ -6,7 +6,7 @@
 #include <catch2/catch_all.hpp>
 #endif
 
-using namespace yarep::Physics;
+using namespace yarep::physics;
 
 TEST_CASE("Physics", "[Physics]") {
     REQUIRE(1 == 1);

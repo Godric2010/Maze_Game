@@ -5,7 +5,7 @@
 
 namespace yarep::input
 {
-    InputManager::InputManager(std::unique_ptr<Environment::IEnvInput> env_input,
+    InputManager::InputManager(std::unique_ptr<environment::IEnvInput> env_input,
                                const std::vector<InputMap>& input_maps)
     {
         m_input_env = std::move(env_input);
@@ -34,7 +34,7 @@ namespace yarep::input
     }
 
 
-    Environment::AppEventsSnapshot InputManager::GetAppEventSnapshot()
+    environment::AppEventsSnapshot InputManager::GetAppEventSnapshot()
     {
         return m_input_env->GetAppEventSnapshot();
     }

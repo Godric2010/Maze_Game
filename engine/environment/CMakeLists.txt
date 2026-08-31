@@ -5,11 +5,11 @@ message(STATUS "SDL2_LIBRARIES: ${SDL2_LIBRARIES}")
 
 add_library(Environment STATIC
         include/Window.hpp
-        src/SDLWindow.cpp
+        src/SdlWindow.cpp
         include/EnvironmentBuilder.hpp
         include/EnvInput.hpp
-        src/SDLInput.cpp
-        src/SDLInput.hpp
+        src/SdlInput.cpp
+        src/SdlInput.hpp
         src/Files/FileManager.cpp
         src/Files/FileManager.hpp
         include/IFileManager.hpp

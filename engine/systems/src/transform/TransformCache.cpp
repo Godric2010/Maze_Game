@@ -4,7 +4,7 @@
 #include <string>
 #include <Transform.hpp>
 
-namespace yarep::Systems::Transform {
+namespace yarep::systems::transform {
     TransformCache::TransformCache() = default;
 
     TransformCache::~TransformCache() = default;
@@ -37,7 +37,7 @@ namespace yarep::Systems::Transform {
         m_rect_transform_cache.erase(entity);
     }
 
-    bool TransformCache::IsDirty(const uint64_t entity, const Components::Transform* transform) {
+    bool TransformCache::IsDirty(const uint64_t entity, const components::Transform* transform) {
         if (!m_transform_cache.contains(entity)) {
             throw std::runtime_error("Transform cache does not exist for entity " + std::to_string(entity));
         }
@@ -47,7 +47,7 @@ namespace yarep::Systems::Transform {
         return cache_val != transform_version;
     }
 
-    void TransformCache::SetValue(const uint64_t entity, const Components::Transform* transform,
+    void TransformCache::SetValue(const uint64_t entity, const components::Transform* transform,
                                   const glm::mat4& transform_mat) {
         if (!m_transform_cache.contains(entity)) {
             throw std::runtime_error("Entity does not exist in Transform cache.");

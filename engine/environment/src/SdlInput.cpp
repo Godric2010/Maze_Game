@@ -1,15 +1,15 @@
-#include "SDLInput.hpp"
+#include "SdlInput.hpp"
 
-namespace yarep::Environment
+namespace yarep::environment
 {
-    SDLInput::SDLInput(SDLWindow& window)
+    SdlInput::SdlInput(SdlWindow& window)
     {
         m_app_events.has_focus = true;
         m_app_events.is_closed = false;
 
         const auto window_context = window.GetWindowContext();
         const auto window_center = glm::vec2(window_context.width / 2, window_context.height / 2);
-        SDL_WarpMouseInWindow(window_context.openGLContext.windowHandle,
+        SDL_WarpMouseInWindow(window_context.open_gl_context.window_handle,
                               static_cast<int>(window_center.x),
                               static_cast<int>(window_center.y)
         );
@@ -23,9 +23,9 @@ namespace yarep::Environment
         };
     }
 
-    SDLInput::~SDLInput() = default;
+    SdlInput::~SdlInput() = default;
 
-    void SDLInput::PrepareFrame()
+    void SdlInput::PrepareFrame()
     {
         m_keys_down.clear();
         m_keys_up.clear();
@@ -34,7 +34,7 @@ namespace yarep::Environment
         m_current_mouse_delta = glm::vec2(0.0f, 0.0f);
     }
 
-    void SDLInput::ShowMouseCursor(const bool visible)
+    void SdlInput::ShowMouseCursor(const bool visible)
     {
         if (visible)
         {
@@ -51,7 +51,7 @@ namespace yarep::Environment
         }
     }
 
-    void SDLInput::PumpInput()
+    void SdlInput::PumpInput()
     {
         m_poll();
         if (m_relative_mode)
@@ -71,12 +71,12 @@ namespace yarep::Environment
         }
     }
 
-    AppEventsSnapshot SDLInput::GetAppEventSnapshot()
+    AppEventsSnapshot SdlInput::GetAppEventSnapshot()
     {
         return m_app_events;
     }
 
-    InputSnapshot SDLInput::GetInputSnapshot()
+    InputSnapshot SdlInput::GetInputSnapshot()
     {
         auto snapshot = InputSnapshot{
             m_current_mouse_delta,
@@ -116,7 +116,7 @@ namespace yarep::Environment
         }
     }
 
-    inline MouseButton mapButton(const uint8_t button)
+    inline MouseButton MapButton(const uint8_t button)
     {
         switch (button)
         {
@@ -132,7 +132,7 @@ namespace yarep::Environment
     }
 
 
-    void SDLInput::ProcessInput(const SDL_Event& event)
+    void SdlInput::ProcessInput(const SDL_Event& event)
     {
         switch (event.type)
         {
@@ -175,7 +175,7 @@ namespace yarep::Environment
                 }
             case SDL_MOUSEBUTTONDOWN:
                 {
-                    const MouseButton mouse_down = mapButton(event.button.button);
+                    const MouseButton mouse_down = MapButton(event.button.button);
                     if (mouse_down == MouseButton::Unknown)
                         break;
                     m_buttons_down.insert(mouse_down);
@@ -184,7 +184,7 @@ namespace yarep::Environment
                 break;
             case SDL_MOUSEBUTTONUP:
                 {
-                    const MouseButton mouse_up = mapButton(event.button.button);
+                    const MouseButton mouse_up = MapButton(event.button.button);
                     if (mouse_up == MouseButton::Unknown)
                         break;
                     m_buttons_up.insert(mouse_up);

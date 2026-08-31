@@ -14,57 +14,57 @@ namespace yarep::ecs {
             const auto& lhs = system_metas[a.index];
             const auto& rhs = system_metas[b.index];
 
-            const auto lhsPhase = static_cast<PhaseType>(lhs.phase);
-            const auto rhsPhase = static_cast<PhaseType>(rhs.phase);
+            const auto lhs_phase = static_cast<PhaseType>(lhs.phase);
+            const auto rhs_phase = static_cast<PhaseType>(rhs.phase);
 
-            if (lhsPhase != rhsPhase) {
-                return lhsPhase > rhsPhase; // min-heap Verhalten über priority_queue
+            if (lhs_phase != rhs_phase) {
+                return lhs_phase > rhs_phase; // min-heap Verhalten über priority_queue
             }
 
             return lhs.name > rhs.name;
         };
 
-        std::unordered_map<std::string, std::size_t> nameToIndex;
-        nameToIndex.reserve(system_metas.size());
+        std::unordered_map<std::string, std::size_t> name_to_index;
+        name_to_index.reserve(system_metas.size());
 
         for (std::size_t i = 0; i < system_metas.size(); ++i) {
-            const auto inserted = nameToIndex.emplace(system_metas[i].name, i);
+            const auto inserted = name_to_index.emplace(system_metas[i].name, i);
             if (!inserted.second) {
                 throw std::runtime_error("Duplicate system name detected: " + system_metas[i].name);
             }
         }
 
-        std::vector<std::vector<std::size_t> > outgoingEdges(system_metas.size());
-        std::vector<std::size_t> inDegree(system_metas.size(), 0);
+        std::vector<std::vector<std::size_t> > outgoing_edges(system_metas.size());
+        std::vector<std::size_t> in_degree(system_metas.size(), 0);
 
         for (std::size_t i = 0; i < system_metas.size(); ++i) {
-            for (const auto& dependencyName: system_metas[i].dependencies) {
-                const auto it = nameToIndex.find(dependencyName);
-                if (it == nameToIndex.end()) {
+            for (const auto& dependency_name: system_metas[i].dependencies) {
+                const auto it = name_to_index.find(dependency_name);
+                if (it == name_to_index.end()) {
                     throw std::runtime_error(
-                            "System '" + system_metas[i].name + "' depends on unknown system '" + dependencyName + "'"
+                            "System '" + system_metas[i].name + "' depends on unknown system '" + dependency_name + "'"
                             );
                 }
 
-                const std::size_t dependencyIndex = it->second;
+                const std::size_t dependency_index = it->second;
 
-                if (dependencyIndex == i) {
+                if (dependency_index == i) {
                     throw std::runtime_error(
                             "System '" + system_metas[i].name + "' must not depend on itself"
                             );
                 }
 
                 // dependency -> current system
-                outgoingEdges[dependencyIndex].push_back(i);
-                ++inDegree[i];
+                outgoing_edges[dependency_index].push_back(i);
+                ++in_degree[i];
 
-                const auto dependencyPhase = static_cast<PhaseType>(system_metas[dependencyIndex].phase);
-                const auto currentPhase = static_cast<PhaseType>(system_metas[i].phase);
+                const auto dependency_phase = static_cast<PhaseType>(system_metas[dependency_index].phase);
+                const auto current_phase = static_cast<PhaseType>(system_metas[i].phase);
 
-                if (dependencyPhase > currentPhase) {
+                if (dependency_phase > current_phase) {
                     throw std::runtime_error(
                             "Phase violation: system '" + system_metas[i].name +
-                            "' depends on '" + dependencyName +
+                            "' depends on '" + dependency_name +
                             "', but dependency phase is later than dependent phase"
                             );
                 }
@@ -74,7 +74,7 @@ namespace yarep::ecs {
         std::priority_queue<QueueEntry, std::vector<QueueEntry>, decltype(cmp)> ready(cmp);
 
         for (std::size_t i = 0; i < system_metas.size(); ++i) {
-            if (inDegree[i] == 0) {
+            if (in_degree[i] == 0) {
                 ready.push(QueueEntry{i});
             }
         }
@@ -88,10 +88,10 @@ namespace yarep::ecs {
 
             result.push_back(system_metas[current.index]);
 
-            for (const auto nextIndex: outgoingEdges[current.index]) {
-                --inDegree[nextIndex];
-                if (inDegree[nextIndex] == 0) {
-                    ready.push(QueueEntry{nextIndex});
+            for (const auto next_index: outgoing_edges[current.index]) {
+                --in_degree[next_index];
+                if (in_degree[next_index] == 0) {
+                    ready.push(QueueEntry{next_index});
                 }
             }
         }

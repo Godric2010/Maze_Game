@@ -25,10 +25,10 @@ namespace gameplay::systems {
             player_inventory->key_collected = true;
             GameWorld()->DestroyEntity(potential_item_entity);
             const auto ui_entity = GameWorld()->GetEntityByName("KeyIndicator");
-            if (ui_entity == yarep::ecs::INVALID_ENTITY_ID) {
+            if (ui_entity == yarep::ecs::invalid_entity_id) {
                 return;
             }
-            const auto image_ui = GameWorld()->GetComponent<yarep::Components::UI::Image>(ui_entity);
+            const auto image_ui = GameWorld()->GetComponent<yarep::components::ui::Image>(ui_entity);
             image_ui->color = {0, 1, 0, 0.8f};
         }
     }

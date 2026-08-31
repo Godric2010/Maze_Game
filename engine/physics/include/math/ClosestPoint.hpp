@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include "Types.hpp"
 
-namespace yarep::Physics::Math {
+namespace yarep::physics::math {
     /**
      * @brief Computes the closest point within an axis-aligned bounding box (AABB) to a given point.
      *

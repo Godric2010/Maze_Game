@@ -11,7 +11,7 @@
 #include "Assets/AssetHandleTypes.hpp"
 #include "Ecs/Types.hpp"
 
-namespace yarep::Renderer {
+namespace yarep::renderer {
     struct CameraAsset {
         glm::mat4 view;
         glm::mat4 projection;
@@ -39,12 +39,12 @@ namespace yarep::Renderer {
     };
 
     struct DrawAsset {
-        ecs::EntityId Entity;
-        AssetHandling::RenderState RenderState;
-        size_t RenderQueueIndex;
-        assets::MeshHandle Mesh;
-        assets::MaterialHandle Material;
-        glm::mat4 Model;
-        glm::vec4 Color;
+        ecs::EntityId entity;
+        asset_handling::RenderState render_state;
+        size_t render_queue_index;
+        assets::MeshHandle mesh;
+        assets::MaterialHandle material;
+        glm::mat4 model;
+        glm::vec4 color;
     };
 }

@@ -7,9 +7,9 @@
 #include "OpenGlMaterial.hpp"
 #include "../../../resources/IGpuMaterialLibrary.hpp"
 
-namespace yarep::Renderer::RenderFramework::OpenGl
+namespace yarep::renderer::render_framework::open_gl
 {
-    class OpenGlMaterialLibrary : public Resources::IGpuMaterialLibrary
+    class OpenGlMaterialLibrary : public resources::IGpuMaterialLibrary
     {
     public:
         OpenGlMaterialLibrary();
@@ -17,7 +17,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
         ~OpenGlMaterialLibrary() override;
 
         void AddMaterial(const assets::MaterialHandle& material_handle,
-                         const AssetHandling::MaterialAsset& material_asset,
+                         const asset_handling::MaterialAsset& material_asset,
                          uint32_t revision) override;
 
         void RemoveMaterial(const assets::MaterialHandle& material) override;

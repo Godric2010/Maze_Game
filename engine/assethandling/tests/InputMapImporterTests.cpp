@@ -8,8 +8,8 @@
 #include "../src/InputMaps/InputMapImporter.hpp"
 
 using namespace yarep::input;
-using namespace yarep::AssetHandling;
-using namespace yarep::AssetHandling::InputMaps;
+using namespace yarep::asset_handling;
+using namespace yarep::asset_handling::input_maps;
 
 static void CompareInputMaps(const InputMap& actual, const InputMap& expected)
 {

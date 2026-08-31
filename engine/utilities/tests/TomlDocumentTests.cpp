@@ -13,7 +13,7 @@
 #include <glm/vec4.hpp>
 #include "../include/toml/TomlDocument.hpp"
 
-namespace yarep::Utilities::Toml::Tests
+namespace yarep::utilities::toml_utils::tests
 {
     namespace
     {
@@ -24,7 +24,7 @@ namespace yarep::Utilities::Toml::Tests
             Third
         };
 
-        constexpr std::array<std::pair<std::string_view, TestEnum>, 3> TestEnumMap{
+        constexpr std::array<std::pair<std::string_view, TestEnum>, 3> test_enum_map{
             {
                 {"first", TestEnum::First},
                 {"second", TestEnum::Second},
@@ -32,7 +32,7 @@ namespace yarep::Utilities::Toml::Tests
             }
         };
 
-        const std::string ValidToml = R"(
+        const std::string valid_toml = R"(
 name = "Maze"
 count = 42
 enabled = true
@@ -59,7 +59,7 @@ name = "Door"
 value = 20
 )";
 
-        const std::string WrongTypeToml = R"(
+        const std::string wrong_type_toml = R"(
 name = 123
 count = "forty-two"
 enabled = "true"
@@ -77,7 +77,7 @@ graphics = "not_a_table"
 items = "not_an_array"
 )";
 
-        const std::string InvalidToml = R"(
+        const std::string invalid_toml = R"(
 name = "Maze
 count = 42
 )";
@@ -85,17 +85,17 @@ count = 42
 
     TEST_CASE("TomlDocument - parses valid TOML", "[Utilities][Toml]")
     {
-        REQUIRE_NOTHROW(TomlDocument{ValidToml});
+        REQUIRE_NOTHROW(TomlDocument{valid_toml});
     }
 
     TEST_CASE("TomlDocument - throws on invalid TOML", "[Utilities][Toml]")
     {
-        REQUIRE_THROWS(TomlDocument{InvalidToml});
+        REQUIRE_THROWS(TomlDocument{invalid_toml});
     }
 
     TEST_CASE("TomlDocument - GetRootTable returns accessible root table", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
 
         const auto root = document.GetRootTable();
 
@@ -107,7 +107,7 @@ count = 42
 
     TEST_CASE("TomlDocument - GetRequiredTable returns nested table", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
 
         const auto window = document.GetRequiredTable("window");
 
@@ -118,14 +118,14 @@ count = 42
 
     TEST_CASE("TomlDocument - GetRequiredTable throws when table is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
 
         REQUIRE_THROWS(document.GetRequiredTable("missing_table"));
     }
 
     TEST_CASE("TomlDocument - GetOptionalTable returns nullopt when table is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
 
         const auto table = document.GetOptionalTable("missing_table");
 
@@ -134,14 +134,14 @@ count = 42
 
     TEST_CASE("TomlDocument - GetOptionalTable throws when field exists but is not a table", "[Utilities][Toml]")
     {
-        const TomlDocument document{WrongTypeToml};
+        const TomlDocument document{wrong_type_toml};
 
         REQUIRE_THROWS(document.GetRootTable().GetRequiredTable("window").GetOptionalTable("graphics"));
     }
 
     TEST_CASE("TomlTable - GetRequiredString reads string field", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE(root.GetRequiredString("name") == "Maze");
@@ -149,7 +149,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalString returns value when field exists", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         const auto value = root.GetOptionalString("name");
@@ -160,7 +160,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalString returns nullopt when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_FALSE(root.GetOptionalString("missing").has_value());
@@ -168,7 +168,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredString throws when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetRequiredString("missing"));
@@ -176,7 +176,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalString throws when type is wrong", "[Utilities][Toml]")
     {
-        const TomlDocument document{WrongTypeToml};
+        const TomlDocument document{wrong_type_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetOptionalString("name"));
@@ -184,7 +184,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredInt reads int field", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE(root.GetRequiredInt("count") == 42);
@@ -192,7 +192,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalInt returns nullopt when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_FALSE(root.GetOptionalInt("missing").has_value());
@@ -200,7 +200,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredInt throws when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetRequiredInt("missing"));
@@ -208,7 +208,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalInt throws when type is wrong", "[Utilities][Toml]")
     {
-        const TomlDocument document{WrongTypeToml};
+        const TomlDocument document{wrong_type_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetOptionalInt("count"));
@@ -216,7 +216,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredBool reads bool field", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE(root.GetRequiredBool("enabled"));
@@ -224,7 +224,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalBool returns nullopt when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_FALSE(root.GetOptionalBool("missing").has_value());
@@ -232,7 +232,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredBool throws when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetRequiredBool("missing"));
@@ -240,7 +240,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalBool throws when type is wrong", "[Utilities][Toml]")
     {
-        const TomlDocument document{WrongTypeToml};
+        const TomlDocument document{wrong_type_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetOptionalBool("enabled"));
@@ -248,7 +248,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredFloat reads float field", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE(root.GetRequiredFloat("ratio") == Catch::Approx(1.5f));
@@ -256,7 +256,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalFloat returns nullopt when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_FALSE(root.GetOptionalFloat("missing").has_value());
@@ -264,7 +264,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredFloat throws when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetRequiredFloat("missing"));
@@ -272,7 +272,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalFloat throws when type is wrong", "[Utilities][Toml]")
     {
-        const TomlDocument document{WrongTypeToml};
+        const TomlDocument document{wrong_type_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetOptionalFloat("ratio"));
@@ -280,7 +280,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredVec2 reads vec2 field", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         const auto value = root.GetRequiredVec2("position2");
@@ -291,7 +291,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalVec2 returns nullopt when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_FALSE(root.GetOptionalVec2("missing").has_value());
@@ -299,7 +299,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredVec2 throws when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetRequiredVec2("missing"));
@@ -307,7 +307,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalVec2 throws on invalid vec2 data", "[Utilities][Toml]")
     {
-        const TomlDocument document{WrongTypeToml};
+        const TomlDocument document{wrong_type_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetOptionalVec2("position2"));
@@ -315,7 +315,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredVec3 reads vec3 field", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         const auto value = root.GetRequiredVec3("position3");
@@ -327,7 +327,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalVec3 returns nullopt when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_FALSE(root.GetOptionalVec3("missing").has_value());
@@ -335,7 +335,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredVec3 throws when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetRequiredVec3("missing"));
@@ -343,7 +343,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalVec3 throws on invalid vec3 data", "[Utilities][Toml]")
     {
-        const TomlDocument document{WrongTypeToml};
+        const TomlDocument document{wrong_type_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetOptionalVec3("position3"));
@@ -351,7 +351,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredVec4 reads vec4 field", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         const auto value = root.GetRequiredVec4("position4");
@@ -364,7 +364,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalVec4 returns nullopt when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_FALSE(root.GetOptionalVec4("missing").has_value());
@@ -372,7 +372,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredVec4 throws when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetRequiredVec4("missing"));
@@ -380,7 +380,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalVec4 throws on invalid vec4 data", "[Utilities][Toml]")
     {
-        const TomlDocument document{WrongTypeToml};
+        const TomlDocument document{wrong_type_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetOptionalVec4("position4"));
@@ -388,43 +388,43 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredEnum reads enum value case-insensitive", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
-        const auto value = root.GetRequiredEnum("enum_value", TestEnumMap);
+        const auto value = root.GetRequiredEnum("enum_value", test_enum_map);
 
         REQUIRE(value == TestEnum::Second);
     }
 
     TEST_CASE("TomlTable - GetOptionalEnum returns nullopt when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
-        const auto value = root.GetOptionalEnum("missing_enum", TestEnumMap);
+        const auto value = root.GetOptionalEnum("missing_enum", test_enum_map);
 
         REQUIRE_FALSE(value.has_value());
     }
 
     TEST_CASE("TomlTable - GetRequiredEnum throws when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
-        REQUIRE_THROWS(root.GetRequiredEnum("missing_enum", TestEnumMap));
+        REQUIRE_THROWS(root.GetRequiredEnum("missing_enum", test_enum_map));
     }
 
     TEST_CASE("TomlTable - GetOptionalEnum throws when enum value is invalid", "[Utilities][Toml]")
     {
-        const TomlDocument document{WrongTypeToml};
+        const TomlDocument document{wrong_type_toml};
         const auto root = document.GetRootTable();
 
-        REQUIRE_THROWS(root.GetOptionalEnum("enum_value", TestEnumMap));
+        REQUIRE_THROWS(root.GetOptionalEnum("enum_value", test_enum_map));
     }
 
     TEST_CASE("TomlTable - GetRequiredTable reads nested table", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         const auto window = root.GetRequiredTable("window");
@@ -435,7 +435,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetRequiredTable throws when nested table is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         REQUIRE_THROWS(root.GetRequiredTable("missing_table"));
@@ -443,7 +443,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetOptionalTable returns nullopt when nested table is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         const auto table = root.GetOptionalTable("missing_table");
@@ -453,7 +453,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetTableList returns all tables from table array", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         const auto items = root.GetTableList("items");
@@ -467,7 +467,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetTableList returns empty list when field is missing", "[Utilities][Toml]")
     {
-        const TomlDocument document{ValidToml};
+        const TomlDocument document{valid_toml};
         const auto root = document.GetRootTable();
 
         const auto items = root.GetTableList("missing_items");
@@ -477,7 +477,7 @@ count = 42
 
     TEST_CASE("TomlTable - GetTableList throws when field exists but is not an array", "[Utilities][Toml]")
     {
-        const TomlDocument document{WrongTypeToml};
+        const TomlDocument document{wrong_type_toml};
         const auto root = document.GetRootTable();
 
         const auto tables = root.GetTableList("items");

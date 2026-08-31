@@ -1,7 +1,7 @@
 #pragma once
 #include "Types.hpp"
 
-namespace yarep::Physics::Math {
+namespace yarep::physics::math {
     /**
      * Performs swept collision detection between a moving sphere and an axis-aligned bounding box (AABB).
      *

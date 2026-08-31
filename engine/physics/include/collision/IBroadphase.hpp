@@ -8,7 +8,7 @@
 #include "Ecs/Types.hpp"
 #include "math/Types.hpp"
 
-namespace yarep::Physics::Collision {
+namespace yarep::physics::collision {
     struct QueryFilter {
         uint32_t category_bits{0xFFFFFFFF};
         uint32_t mask_bits{0xFFFFFFFF};
@@ -16,7 +16,7 @@ namespace yarep::Physics::Collision {
 
     struct BroadphaseProxy {
         ecs::EntityId entity{};
-        Math::AABB aabb{};
+        math::AABB aabb{};
         uint32_t category_bits{0xFFFFFFFF};
         uint32_t mask_bits{0xFFFFFFFF};
         bool is_static{false};
@@ -30,8 +30,8 @@ namespace yarep::Physics::Collision {
 
         virtual void Remove(ecs::EntityId entity) = 0;
 
-        virtual void Update(ecs::EntityId entity, const Math::AABB& new_aabb) = 0;
+        virtual void Update(ecs::EntityId entity, const math::AABB& new_aabb) = 0;
 
-        virtual void QueryAabb(const Math::AABB& area, std::vector<ecs::EntityId>& out, const QueryFilter* filter) = 0;
+        virtual void QueryAabb(const math::AABB& area, std::vector<ecs::EntityId>& out, const QueryFilter* filter) = 0;
     };
 }

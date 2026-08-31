@@ -8,7 +8,7 @@
 #include "AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 
-namespace yarep::Renderer::Resources
+namespace yarep::renderer::resources
 {
     class IShaderLibrary
     {
@@ -16,7 +16,7 @@ namespace yarep::Renderer::Resources
         virtual ~IShaderLibrary() = default;
 
         virtual void CompileShaders(
-            const std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset>>>& shaders) = 0;
+            const std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const asset_handling::ShaderAsset>>>& shaders) = 0;
 
         virtual void ClearShaders() = 0;
     };

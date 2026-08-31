@@ -3,9 +3,9 @@
 #include <ranges>
 
 
-namespace yarep::Renderer::RenderFramework::OpenGl
+namespace yarep::renderer::render_framework::open_gl
 {
-    OpenGlShaderLibrary::OpenGlShaderLibrary(AssetHandling::AssetHandler* asset_handler)
+    OpenGlShaderLibrary::OpenGlShaderLibrary(asset_handling::AssetHandler* asset_handler)
     {
         m_asset_handler = asset_handler;
     }
@@ -16,7 +16,7 @@ namespace yarep::Renderer::RenderFramework::OpenGl
     }
 
     void OpenGlShaderLibrary::CompileShaders(
-        const std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const AssetHandling::ShaderAsset>>>& shaders)
+        const std::vector<std::tuple<assets::ShaderHandle, std::shared_ptr<const asset_handling::ShaderAsset>>>& shaders)
     {
         for (auto& shader_with_handle : shaders)
         {
@@ -45,11 +45,11 @@ namespace yarep::Renderer::RenderFramework::OpenGl
 
     void OpenGlShaderLibrary::CompileShaders()
     {
-        const auto shader_handles = m_asset_handler->GetAllAssetHandlesOfType<AssetHandling::ShaderAsset>();
+        const auto shader_handles = m_asset_handler->GetAllAssetHandlesOfType<asset_handling::ShaderAsset>();
 
         for (auto& shader_handle : shader_handles)
         {
-            auto shader_asset = m_asset_handler->GetAsset<AssetHandling::ShaderAsset>(shader_handle);
+            auto shader_asset = m_asset_handler->GetAsset<asset_handling::ShaderAsset>(shader_handle);
             const std::string shader_name = shader_asset->name;
             const char* v_src = shader_asset->vertex_content.c_str();
             const char* f_src = shader_asset->fragment_content.c_str();

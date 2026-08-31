@@ -5,7 +5,7 @@
 #include <AssetHandler.hpp>
 #include "Types.hpp"
 
-namespace yarep::Text {
+namespace yarep::text {
     /**
      * @struct GlyphMetrics
      * Contains the metrics for one glyph, loaded from the freetype library out of the font-file
@@ -60,7 +60,7 @@ namespace yarep::Text {
      */
     class FontManager {
     public:
-        explicit FontManager(AssetHandling::AssetHandler* asset_handler);
+        explicit FontManager(asset_handling::AssetHandler* asset_handler);
 
         ~FontManager() = default;
 
@@ -73,7 +73,7 @@ namespace yarep::Text {
 
     private:
         std::unordered_map<FontHandle, Font> m_fonts;
-        AssetHandling::AssetHandler* m_asset_handler;
+        asset_handling::AssetHandler* m_asset_handler;
 
         static FontHandle GenerateFontHandle(const std::string& name, int pixel_size);
 

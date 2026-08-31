@@ -5,8 +5,8 @@
 #pragma once
 #include <glm/vec4.hpp>
 
-namespace yarep::Renderer::RenderFramework::OpenGL {
-    constexpr int MAX_POINT_LIGHTS = 64;
+namespace yarep::renderer::render_framework::open_gl {
+    constexpr int max_point_lights = 64;
 
     struct alignas(16) PointLightAsset {
         glm::vec4 position;
@@ -19,6 +19,6 @@ namespace yarep::Renderer::RenderFramework::OpenGL {
     struct alignas(16) GpuLightingData {
         glm::vec4 ambient_color_intensity;
         glm::ivec4 light_meta;
-        PointLightAsset point_light[MAX_POINT_LIGHTS];
+        PointLightAsset point_light[max_point_lights];
     };
 }

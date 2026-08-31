@@ -8,7 +8,7 @@
 #include "IBroadphase.hpp"
 
 
-namespace yarep::Physics::Collision
+namespace yarep::physics::collision
 {
     class BroadphaseBuilder
     {

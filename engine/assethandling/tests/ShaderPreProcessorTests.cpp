@@ -14,7 +14,7 @@ TEST_CASE("ShaderPreProcessorTests - Include gets replaced with included shader"
         {"helperB", "Content of helper B"},
     };
 
-    auto pre_processor = yarep::AssetHandling::Shader::ShaderPreProcessor(helper_map);
+    auto pre_processor = yarep::asset_handling::shader::ShaderPreProcessor(helper_map);
     const std::string test_string = "Test string start\n#include <helperA>\n#include <helperB>\nTest string end";
     auto processed = pre_processor.PreProcessShader(test_string);
 
@@ -29,7 +29,7 @@ TEST_CASE("ShaderPreProcessorTests - Recursive include gets resolved correctly")
         {"helperB", "#include <helperA>\nContent of helper B"},
     };
 
-    auto pre_processor = yarep::AssetHandling::Shader::ShaderPreProcessor(helper_map);
+    auto pre_processor = yarep::asset_handling::shader::ShaderPreProcessor(helper_map);
     const std::string test_string = "Test string start\n#include <helperB>\nTest string end";
     auto processed = pre_processor.PreProcessShader(test_string);
 
@@ -44,7 +44,7 @@ TEST_CASE("ShaderPreProcessorTest - Each include only happens once") {
         {"helperB", "#include <helperA>\nContent of helper B"},
     };
 
-    auto pre_processor = yarep::AssetHandling::Shader::ShaderPreProcessor(helper_map);
+    auto pre_processor = yarep::asset_handling::shader::ShaderPreProcessor(helper_map);
     const std::string test_string = "Test string start\n#include <helperA>\n#include <helperB>\nTest string end";
     auto processed = pre_processor.PreProcessShader(test_string);
 
@@ -59,7 +59,7 @@ TEST_CASE("ShaderPreProcessorTest - Empty include throws exception") {
         {"helperB", "#include <helperA>\nContent of helper B"},
     };
 
-    auto pre_processor = yarep::AssetHandling::Shader::ShaderPreProcessor(helper_map);
+    auto pre_processor = yarep::asset_handling::shader::ShaderPreProcessor(helper_map);
     const std::string test_string = "Test string start\n#include \n#include <helperB>\nTest string end";
     REQUIRE_THROWS(pre_processor.PreProcessShader(test_string));
 }
@@ -70,7 +70,7 @@ TEST_CASE("ShaderPreProcessorTest - Invalid include throws exception") {
         {"helperB", "#include <helperA>\nContent of helper B"},
     };
 
-    auto pre_processor = yarep::AssetHandling::Shader::ShaderPreProcessor(helper_map);
+    auto pre_processor = yarep::asset_handling::shader::ShaderPreProcessor(helper_map);
     const std::string test_string = "Test string start\n#include <helperC>\nTest string end";
     REQUIRE_THROWS(pre_processor.PreProcessShader(test_string));
 }
@@ -81,7 +81,7 @@ TEST_CASE("ShaderPreProcessorTest - Cyclic include throws exception") {
         {"helperB", "#include <helperA>\nContent of helper B"},
     };
 
-    auto pre_processor = yarep::AssetHandling::Shader::ShaderPreProcessor(helper_map);
+    auto pre_processor = yarep::asset_handling::shader::ShaderPreProcessor(helper_map);
     const std::string test_string = "Test string start\n#include <helperB>\nTest string end";
     REQUIRE_THROWS(pre_processor.PreProcessShader(test_string));
 }

@@ -64,9 +64,9 @@ namespace std
     template <typename Tag>
     struct hash<yarep::assets::AssetId<Tag>>
     {
-        size_t operator()(const yarep::assets::AssetId<Tag>& assetId) const noexcept
+        size_t operator()(const yarep::assets::AssetId<Tag>& asset_id) const noexcept
         {
-            return std::hash<size_t>{}(assetId.value);
+            return std::hash<size_t>{}(asset_id.value);
         }
     };
 }

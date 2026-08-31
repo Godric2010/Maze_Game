@@ -1,6 +1,6 @@
 #include "TextMeshBuilder.hpp"
 
-namespace yarep::Text {
+namespace yarep::text {
     TextMesh TextMeshBuilder::GenerateTextMesh(const TextLayout &layout) {
         TextMesh text_mesh{};
 

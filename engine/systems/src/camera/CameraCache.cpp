@@ -1,7 +1,7 @@
 #include "CameraCache.hpp"
 #include <stdexcept>
 
-namespace yarep::Systems::Camera {
+namespace yarep::systems::camera {
     CameraCache::CameraCache() = default;
 
     CameraCache::~CameraCache() = default;

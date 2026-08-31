@@ -5,7 +5,7 @@
 #include "Transform.hpp"
 
 
-namespace yarep::Systems::Transform {
+namespace yarep::systems::transform {
     struct TransformCacheValue {
         glm::vec3 last_position;
         glm::vec3 last_rotation;
@@ -36,9 +36,9 @@ namespace yarep::Systems::Transform {
 
         void DeregisterRectTransformEntity(uint64_t entity);
 
-        bool IsDirty(uint64_t entity, const Components::Transform* transform);
+        bool IsDirty(uint64_t entity, const components::Transform* transform);
 
-        void SetValue(uint64_t entity, const Components::Transform* transform,
+        void SetValue(uint64_t entity, const components::Transform* transform,
                       const glm::mat4& transform_mat);
 
         void SetValue(uint64_t entity, const RectTransformCacheValue& rect_transform_cache_value);

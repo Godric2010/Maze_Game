@@ -8,7 +8,7 @@
 #include <glm/vec2.hpp>
 #include "Ecs/Types.hpp"
 
-namespace yarep::Components::UI {
+namespace yarep::components::ui {
     enum class Anchor {
         TopLeft,
         TopCenter,

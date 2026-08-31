@@ -8,8 +8,8 @@
 #include <stdexcept>
 #include <spdlog/spdlog.h>
 
-namespace yarep::Text {
-    FontManager::FontManager(AssetHandling::AssetHandler* asset_handler) {
+namespace yarep::text {
+    FontManager::FontManager(asset_handling::AssetHandler* asset_handler) {
         m_asset_handler = asset_handler;
     }
 
@@ -33,7 +33,7 @@ namespace yarep::Text {
     }
 
     Font FontManager::BuildFont(const std::string& font_name, const int pixel_size) const {
-        auto font_asset = m_asset_handler->LoadAssetWithoutCaching<AssetHandling::FontAsset>(font_name);
+        auto font_asset = m_asset_handler->LoadAssetWithoutCaching<asset_handling::FontAsset>(font_name);
         auto font_bytes = font_asset.bytes;
 
         FT_Library ft_library = nullptr;

@@ -88,12 +88,12 @@ TEST_CASE("SystemMetaSorter - respects dependencies within same phase", "[ecs][s
     REQUIRE(names.size() == 3);
     REQUIRE(names[0] == "RectTransformSystem");
 
-    const auto buttonPos = std::ranges::find(names, "UiButtonSystem");
-    const auto textPos = std::ranges::find(names, "UiTextSystem");
-    const auto rectPos = std::ranges::find(names, "RectTransformSystem");
+    const auto button_pos = std::ranges::find(names, "UiButtonSystem");
+    const auto text_pos = std::ranges::find(names, "UiTextSystem");
+    const auto rect_pos = std::ranges::find(names, "RectTransformSystem");
 
-    REQUIRE(rectPos < buttonPos);
-    REQUIRE(rectPos < textPos);
+    REQUIRE(rect_pos < button_pos);
+    REQUIRE(rect_pos < text_pos);
 }
 
 TEST_CASE("SystemMetaSorter - respects dependencies across phases", "[ecs][systems][sorting]") {
