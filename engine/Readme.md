@@ -10,8 +10,8 @@ Therefore, this documentation targets other interested C++ and engine developers
 
 ## Architecture overview and design principles
 
-The engine is designed to keep a clear interface to the game using it. By implementing the *Engine* Library into a game project, the game gains access to
-all high-level interfaces to communicate with the engine itself. This *Engine*-Library serves as an interface, so the game logic can use engine functions.
+The engine is designed to keep a clear interface to the game using it. By implementing the *Yarep* Library into a game project, the game gains access to
+all high-level interfaces to communicate with the engine itself. This *Yarep*-Library serves as an interface, so the game logic can use engine functions.
 This allows the engine to hide internal functionality from gameplay, so no unintended calls can be made. Furthermore, this approach allows for a clear distinction
 between engine functionality and engine usage.
 
@@ -82,7 +82,7 @@ The debug library is an *internal* library, responsible for building debug outpu
 It relies heavily on the *UI* and *Render* library.
 
 ## How to: implement the engine into gameplay
-To use the engine in a game, the *Engine* interface-library needs to be linked against the gameplay library. This way, access to all engine-defined components, all datatypes and interfaces in *Interface* and *scene management* is provided.
+To use the engine in a game, the *Yarep* interface-library needs to be linked against the gameplay library. This way, access to all engine-defined components, all datatypes and interfaces in *Interface* and *scene management* is provided.
 Link the gameplay library and the engine library, as well as the core library of the engine, against the executable and create the engine first, then the gameplay library.
 This way, the gameplay stays clean, and the engine can be set up correctly by instantiating the Engine Controller.
 

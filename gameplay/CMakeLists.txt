@@ -37,4 +37,4 @@ add_library(Gameplay STATIC
         systems/DoorAnimation.hpp
 )
 
-target_link_libraries(Gameplay PUBLIC Engine Interface)
+target_link_libraries(Gameplay PUBLIC Yarep Interface)

@@ -14,5 +14,5 @@ add_subdirectory(debug)
 add_subdirectory(components)
 add_subdirectory(systems)
 
-add_library(Engine INTERFACE)
-target_link_libraries(Engine INTERFACE Interface Components SceneManagement)
+add_library(Yarep INTERFACE)
+target_link_libraries(Yarep INTERFACE Interface Components SceneManagement)
