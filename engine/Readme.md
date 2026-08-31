@@ -1,6 +1,6 @@
-# The Engine
+# YAREP: The Engine
 
-This is a modular, 3D engine written in C++, designed for learning and growing as an engine developer. It features a renderer, using OpenGL 4.1,
+YAREP stands for "yet another random engine project" and is a modular, 3D engine written in C++, designed for learning and growing as an engine developer. It features a renderer, using OpenGL 4.1,
 a custom entity-component-system and custom collision physics. It builds the foundation the [Maze Game](../README.md) is built upon.
 
 It has no intention to be a competitor to big, AAA Engines out in the market. There is no Editor, custom scripting or any of that. 
