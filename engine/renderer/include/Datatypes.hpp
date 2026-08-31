@@ -11,7 +11,7 @@
 #include "Assets/AssetHandleTypes.hpp"
 #include "Ecs/Types.hpp"
 
-namespace Engine::Renderer {
+namespace yarep::Renderer {
     struct CameraAsset {
         glm::mat4 view;
         glm::mat4 projection;

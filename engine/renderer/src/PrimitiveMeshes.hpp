@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Engine::Renderer
+namespace yarep::Renderer
 {
     inline AssetHandling::MeshAsset CreateUiPrimitive()
     {

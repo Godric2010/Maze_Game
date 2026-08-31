@@ -4,7 +4,7 @@
 #include "TextController.hpp"
 #include "../include/IDebugConsole.hpp"
 
-namespace Engine::Debug
+namespace yarep::Debug
 {
     struct TextMeshElement
     {

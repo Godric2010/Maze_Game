@@ -7,8 +7,8 @@
 
 #include "../include/SystemWorld.hpp"
 #include <memory>
-using namespace Engine;
-using namespace Engine::Ecs;
+using namespace yarep;
+using namespace yarep::Ecs;
 
 TEST_CASE("SceneWorldTests - Test Scene World Facade") {
     auto* world = new Ecs::World();

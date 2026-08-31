@@ -9,7 +9,7 @@
 
 #include "toml/TomlDocument.hpp"
 
-namespace Engine::AssetHandling::InputMaps
+namespace yarep::AssetHandling::InputMaps
 {
     const std::string MapName = "name";
     const std::string KeyBindingsName = "key_bindings";

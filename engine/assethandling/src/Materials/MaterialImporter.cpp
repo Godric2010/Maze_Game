@@ -1,6 +1,6 @@
 #include "MaterialImporter.hpp"
 
-namespace Engine::AssetHandling::Materials
+namespace yarep::AssetHandling::Materials
 {
     const std::string MaterialCategory = "material";
     const std::string TextureCategory = "textures";

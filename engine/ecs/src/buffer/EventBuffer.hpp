@@ -3,7 +3,7 @@
 
 #include "ComponentEventBus.hpp"
 
-namespace Engine::Ecs::Buffer {
+namespace yarep::Ecs::Buffer {
     template<typename T>
     class EventBuffer {
     public:

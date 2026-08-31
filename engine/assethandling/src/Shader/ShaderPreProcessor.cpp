@@ -3,7 +3,7 @@
 #include <sstream>
 #include <utility>
 
-namespace Engine::AssetHandling::Shader {
+namespace yarep::AssetHandling::Shader {
     ShaderPreProcessor::ShaderPreProcessor(std::unordered_map<std::string, std::string> helper_content_map) {
         m_shader_helper_content_map = std::move(helper_content_map);
     }

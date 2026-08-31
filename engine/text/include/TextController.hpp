@@ -9,7 +9,7 @@
 #include "../src/TextMeshBuilder.hpp"
 #include "../src/Utf8Decoder.hpp"
 
-namespace Engine::Text {
+namespace yarep::Text {
     /**
      * @class TextController
      * This class is responsible for orchestrating

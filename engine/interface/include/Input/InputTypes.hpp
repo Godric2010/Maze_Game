@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-namespace Engine::Input
+namespace yarep::Input
 {
     #define KEY_LIST \
         X(Unknown) \

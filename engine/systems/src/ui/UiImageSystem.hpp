@@ -7,7 +7,7 @@
 #include <TextController.hpp>
 #include "../CacheManager.hpp"
 
-namespace Engine::Systems {
+namespace yarep::Systems {
     ECS_SYSTEM(UiImageSystem, Ui, TAGS(ENGINE), DEPENDENCIES())
 
     class UiImageSystem : public Ecs::IEngineSystem {

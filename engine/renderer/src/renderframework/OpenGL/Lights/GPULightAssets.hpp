@@ -5,7 +5,7 @@
 #pragma once
 #include <glm/vec4.hpp>
 
-namespace Engine::Renderer::RenderFramework::OpenGL {
+namespace yarep::Renderer::RenderFramework::OpenGL {
     constexpr int MAX_POINT_LIGHTS = 64;
 
     struct alignas(16) PointLightAsset {

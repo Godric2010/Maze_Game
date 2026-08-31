@@ -6,7 +6,7 @@
 
 #include "Lights/GPULightAssets.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGl {
+namespace yarep::Renderer::RenderFramework::OpenGl {
     static auto MakeDrawAssetSortKey(const DrawAsset& mda) {
         return std::tuple{
             static_cast<uint8_t>(mda.RenderState),

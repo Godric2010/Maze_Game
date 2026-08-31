@@ -1,5 +1,5 @@
 #pragma once
-namespace Engine::Ecs::Buffer {
+namespace yarep::Ecs::Buffer {
     inline SystemCommandQueue::SystemCommandQueue() = default;
 
     inline SystemCommandQueue::~SystemCommandQueue() = default;

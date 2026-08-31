@@ -13,7 +13,7 @@
 #include <glm/vec4.hpp>
 #include "../include/toml/TomlDocument.hpp"
 
-namespace Engine::Utilities::Toml::Tests
+namespace yarep::Utilities::Toml::Tests
 {
     namespace
     {

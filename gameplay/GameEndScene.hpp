@@ -6,7 +6,7 @@ namespace gameplay {
         float time_to_completion;
     };
 
-    class GameEndScene : public Engine::SceneManagement::IScene {
+    class GameEndScene : public yarep::SceneManagement::IScene {
     public:
         explicit GameEndScene(GameEndShowData game_end_show_data);
 

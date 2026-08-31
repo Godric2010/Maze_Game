@@ -5,7 +5,7 @@
 #include "EntityManager.hpp"
 
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
     template<class T>
     class ComponentPool;
 

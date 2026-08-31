@@ -8,7 +8,7 @@
 #include "collision/IBroadphase.hpp"
 #include "collision/MoverSolver.hpp"
 
-namespace Engine::Systems::Physics {
+namespace yarep::Systems::Physics {
     ECS_SYSTEM(PhysicsSystem, Physics, TAGS(ENGINE), DEPENDENCIES())
 
     class PhysicsSystem final : public Ecs::IEngineSystem {
@@ -25,9 +25,9 @@ namespace Engine::Systems::Physics {
         const float m_epsilon = 1e-12f;
 
         Transform::TransformCache* m_transform_cache = nullptr;
-        std::unique_ptr<Engine::Physics::Collision::ColliderCache> m_collider_cache;
-        std::unique_ptr<Engine::Physics::Collision::IBroadphase> m_broadphase;
-        std::unique_ptr<Engine::Physics::Collision::ICollisionQueryService> m_collision_query_service;
+        std::unique_ptr<yarep::Physics::Collision::ColliderCache> m_collider_cache;
+        std::unique_ptr<yarep::Physics::Collision::IBroadphase> m_broadphase;
+        std::unique_ptr<yarep::Physics::Collision::ICollisionQueryService> m_collision_query_service;
 
         std::unordered_map<Ecs::EntityId, Ecs::EntityId> m_collided_entities;
         std::unordered_map<Ecs::EntityId, std::unordered_set<Ecs::EntityId> > m_triggered_entities;
@@ -53,13 +53,13 @@ namespace Engine::Systems::Physics {
                                        const std::vector<Ecs::EntityId>& trigger_candidates);
 
         void RaiseCollisionEvents(Ecs::EntityId target_entity,
-                                  const Engine::Physics::Collision::MoverResult& mover_result);
+                                  const yarep::Physics::Collision::MoverResult& mover_result);
 
         void RaiseTriggerEvents(Ecs::EntityId target_entity,
                                 std::unordered_set<Ecs::EntityId>& trigger_entities);
 
 
-        static Engine::Physics::Math::AABB BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest,
+        static yarep::Physics::Math::AABB BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest,
                                                           float radius) noexcept;
     };
 } // namespace

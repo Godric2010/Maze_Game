@@ -3,7 +3,7 @@
 
 #include "ISystemManager.hpp"
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
     class SystemMetaSorter {
     public:
         static std::vector<SystemMeta> SortSystemMetasByPhaseAndDependencies(

@@ -5,23 +5,23 @@
 
 #include "Assets/IAssetLibrary.hpp"
 
-class FakeApplication : public Engine::IApplication
+class FakeApplication : public yarep::IApplication
 {
 public:
     void Quit() override
     {
     }
 
-    void RegisterScene(const std::string& name, Engine::SceneManagement::SceneFactory scene_factory) override
+    void RegisterScene(const std::string& name, yarep::SceneManagement::SceneFactory scene_factory) override
     {
     }
 
-    void SetInitialScene(const std::string& name, const Engine::SceneManagement::SceneArgs& args) override
+    void SetInitialScene(const std::string& name, const yarep::SceneManagement::SceneArgs& args) override
     {
     }
 };
 
-class FakeInput : public Engine::Input::IInput
+class FakeInput : public yarep::Input::IInput
 {
 public:
     void EnableInputMap(const std::string& map_name) override
@@ -36,18 +36,18 @@ public:
     {
     }
 
-    Engine::Input::InputBuffer GetInput() override
+    yarep::Input::InputBuffer GetInput() override
     {
         return {};
     }
 };
 
-class FakeSystemManager : public Engine::Ecs::ISystemManager
+class FakeSystemManager : public yarep::Ecs::ISystemManager
 {
 public:
     ~FakeSystemManager() override = default;
 
-    void RegisterSystems(Engine::Ecs::World* world, Engine::Input::IInput* input) override
+    void RegisterSystems(yarep::Ecs::World* world, yarep::Input::IInput* input) override
     {
     }
 
@@ -73,47 +73,47 @@ public:
     }
 };
 
-class FakeAssetLibrary : public Engine::Assets::IAssetLibrary
+class FakeAssetLibrary : public yarep::Assets::IAssetLibrary
 {
 public:
     ~FakeAssetLibrary() override = default;
 
-    Engine::Assets::MeshHandle LoadMesh(const std::string& name) override
+    yarep::Assets::MeshHandle LoadMesh(const std::string& name) override
     {
         return {};
     }
 
-    Engine::Assets::MaterialHandle LoadMaterial(const std::string& name) override
+    yarep::Assets::MaterialHandle LoadMaterial(const std::string& name) override
     {
         return {};
     }
 
-    Engine::Assets::TextureHandle LoadTexture(const std::string& name) override
+    yarep::Assets::TextureHandle LoadTexture(const std::string& name) override
     {
         return {};
     }
 
-    std::optional<Engine::Assets::FontHandle> FindFont(const std::string& name) override
+    std::optional<yarep::Assets::FontHandle> FindFont(const std::string& name) override
     {
         return {};
     }
 
-    std::optional<Engine::Assets::MaterialHandle> FindMaterial(const std::string& name) override
+    std::optional<yarep::Assets::MaterialHandle> FindMaterial(const std::string& name) override
     {
         return {};
     }
 
-    std::optional<Engine::Assets::MeshHandle> FindMesh(const std::string& name) override
+    std::optional<yarep::Assets::MeshHandle> FindMesh(const std::string& name) override
     {
         return {};
     }
 
-    std::optional<Engine::Assets::TextureHandle> FindTexture(const std::string& name) override
+    std::optional<yarep::Assets::TextureHandle> FindTexture(const std::string& name) override
     {
         return {};
     }
 
-    std::optional<Engine::Assets::ShaderHandle> FindShader(const std::string& name) override
+    std::optional<yarep::Assets::ShaderHandle> FindShader(const std::string& name) override
     {
         return {};
     }

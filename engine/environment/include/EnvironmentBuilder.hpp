@@ -5,7 +5,7 @@
 #include "IFileManager.hpp"
 #include "Window.hpp"
 
-namespace Engine::Environment {
+namespace yarep::Environment {
     struct EnvironmentBuilder {
         /**
          * Create a new window instance.

@@ -12,7 +12,7 @@
 #include "Window.hpp"
 #include "Files/FileManager.hpp"
 
-namespace Engine::Environment {
+namespace yarep::Environment {
     std::unique_ptr<IWindow> EnvironmentBuilder::CreateEngineWindow() {
         return std::make_unique<SDLWindow>();
     }

@@ -1,7 +1,7 @@
 #include "RectTransformSystem.hpp"
 #include <glm/ext/matrix_transform.hpp>
 
-namespace Engine::Systems {
+namespace yarep::Systems {
     void RectTransformSystem::Initialize() {
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<Components::UI::RectTransform>(
                 [this](const Ecs::EntityId entity, const Components::UI::RectTransform& _) {

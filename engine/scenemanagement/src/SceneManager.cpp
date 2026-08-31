@@ -1,6 +1,6 @@
 #include "SceneManager.hpp"
 
-namespace Engine::SceneManagement
+namespace yarep::SceneManagement
 {
     SceneManager::SceneManager(IApplication& app,
                                Ecs::ISystemManager& system_manager, Input::IInput& input_manager,

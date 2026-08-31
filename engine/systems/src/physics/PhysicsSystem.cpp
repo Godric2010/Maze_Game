@@ -15,9 +15,9 @@
 #include "collision/MoverSolver.hpp"
 #include "math/TypeUtils.hpp"
 
-namespace Engine::Systems::Physics
+namespace yarep::Systems::Physics
 {
-    using namespace Engine::Physics;
+    using namespace yarep::Physics;
 
     PhysicsSystem::PhysicsSystem()
     {

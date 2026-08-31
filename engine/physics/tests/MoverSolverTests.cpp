@@ -13,12 +13,12 @@
 #include <catch2/catch_all.hpp>
 #endif
 
-using namespace Engine::Physics::Collision;
-using namespace Engine::Physics;
+using namespace yarep::Physics::Collision;
+using namespace yarep::Physics;
 
 TEST_CASE("MoverSolver stops at wall and slides", "[Physics]") {
     FakeCollisionQueryService query_service;
-    Engine::Ecs::EntityId entity = 1ull;
+    yarep::Ecs::EntityId entity = 1ull;
     query_service.aabbs.emplace(entity, Math::AABB{{-1, -1, 0}, {1, 1, 2}});
     std::vector candidates = {entity};
 

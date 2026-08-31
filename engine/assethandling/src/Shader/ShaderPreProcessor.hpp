@@ -4,7 +4,7 @@
 #include <unordered_set>
 #include <vector>
 
-namespace Engine::AssetHandling::Shader {
+namespace yarep::AssetHandling::Shader {
     class ShaderPreProcessor {
     public:
         explicit ShaderPreProcessor(std::unordered_map<std::string, std::string> helper_content_map);

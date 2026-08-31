@@ -4,7 +4,7 @@
 namespace gameplay {
     class GameplayManager {
     public:
-        explicit GameplayManager(Engine::IApplication& engine);
+        explicit GameplayManager(yarep::IApplication& engine);
 
         ~GameplayManager();
 
@@ -13,6 +13,6 @@ namespace gameplay {
         void Shutdown();
 
     private:
-        Engine::IApplication& m_engine;
+        yarep::IApplication& m_engine;
     };
 } // namespace

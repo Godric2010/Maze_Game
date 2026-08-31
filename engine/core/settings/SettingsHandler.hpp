@@ -10,7 +10,7 @@
 #include "toml/TomlDocument.hpp"
 
 
-namespace Engine::Core::Settings
+namespace yarep::Core::Settings
 {
     class SettingsHandler
     {

@@ -11,7 +11,7 @@
 #include "renderframework/Renderer.hpp"
 #include "resources/IGpuMaterialLibrary.hpp"
 
-namespace Engine::Renderer
+namespace yarep::Renderer
 {
     class RenderController : public IRenderController
     {

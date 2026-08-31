@@ -7,7 +7,7 @@
 #include "toml/TomlDocument.hpp"
 
 
-namespace Engine::AssetHandling::InputMaps
+namespace yarep::AssetHandling::InputMaps
 {
     class InputMapImporter
     {

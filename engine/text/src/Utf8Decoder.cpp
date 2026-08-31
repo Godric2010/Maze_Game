@@ -2,7 +2,7 @@
 
 #include <spdlog/spdlog.h>
 
-namespace Engine::Text {
+namespace yarep::Text {
     std::vector<uint32_t> Utf8Decoder::GenerateCodepointsFromText(const std::string &text) const {
         std::vector<uint32_t> result;
         result.reserve(text.size());

@@ -5,7 +5,7 @@
 #pragma once
 #include <typeindex>
 
-namespace Engine::Ecs{
+namespace yarep::Ecs{
     class IServiceToEcsProvider{
     public:
 

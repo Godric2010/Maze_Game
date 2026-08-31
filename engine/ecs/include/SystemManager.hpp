@@ -10,13 +10,13 @@
 #include "SystemWorld.hpp"
 #include "../../systems/src/CacheManager.hpp"
 
-namespace Engine::Input
+namespace yarep::Input
 {
     class IInput;
 }
 
 
-namespace Engine::Ecs
+namespace yarep::Ecs
 {
     class SystemManager : public ISystemManager
     {

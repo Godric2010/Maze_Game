@@ -8,7 +8,7 @@
 #include "AssetTypes.hpp"
 #include "Assets/IAssetLibrary.hpp"
 
-namespace Engine::AssetHandling
+namespace yarep::AssetHandling
 {
     template <typename T>
     struct AssetTraits;

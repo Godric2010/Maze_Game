@@ -10,7 +10,7 @@
 #include "../../systems/src/CacheManager.hpp"
 #include "Ecs/ISystem.hpp"
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
 
     class IEngineSystem : public ISystem {
         friend class SystemManager;

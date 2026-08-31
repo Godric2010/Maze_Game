@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-namespace Engine::Systems::UI {
+namespace yarep::Systems::UI {
     UiCache::UiCache() = default;
 
     UiCache::~UiCache() = default;

@@ -8,7 +8,7 @@
 #include "EnvInput.hpp"
 #include "Input/InputTypes.hpp"
 
-namespace Engine::Input {
+namespace yarep::Input {
     struct InputMapping {
         std::unordered_map<Key, Environment::Key> keys{
             {Key::Unknown, Environment::Key::Unknown},

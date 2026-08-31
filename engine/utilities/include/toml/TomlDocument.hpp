@@ -10,7 +10,7 @@
 #include <glm/glm.hpp>
 
 
-namespace Engine::Utilities::Toml
+namespace yarep::Utilities::Toml
 {
     class TomlTable
     {

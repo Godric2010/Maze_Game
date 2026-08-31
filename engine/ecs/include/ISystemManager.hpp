@@ -7,7 +7,7 @@
 #include "Ecs/ISystem.hpp"
 #include "Input/IInput.hpp"
 
-namespace Engine::Ecs
+namespace yarep::Ecs
 {
     enum class Phase
     {

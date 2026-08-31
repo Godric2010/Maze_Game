@@ -6,7 +6,7 @@
 #include "Input/InputBuffer.hpp"
 #include "Input/InputTypes.hpp"
 
-namespace Engine::Input
+namespace yarep::Input
 {
     class InputManager : public IInputManager
     {

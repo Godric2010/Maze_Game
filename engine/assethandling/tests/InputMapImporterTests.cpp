@@ -7,9 +7,9 @@
 
 #include "../src/InputMaps/InputMapImporter.hpp"
 
-using namespace Engine::Input;
-using namespace Engine::AssetHandling;
-using namespace Engine::AssetHandling::InputMaps;
+using namespace yarep::Input;
+using namespace yarep::AssetHandling;
+using namespace yarep::AssetHandling::InputMaps;
 
 static void CompareInputMaps(const InputMap& actual, const InputMap& expected)
 {

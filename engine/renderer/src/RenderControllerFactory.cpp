@@ -2,7 +2,7 @@
 
 #include "RenderController.hpp"
 
-namespace Engine::Renderer {
+namespace yarep::Renderer {
     std::unique_ptr<IRenderController> RenderControllerFactory::CreateRenderController(
             const Environment::WindowContext& window_context, AssetHandling::
             AssetHandler* asset_handler) {

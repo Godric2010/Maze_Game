@@ -6,9 +6,9 @@
 #include "ui/Image.hpp"
 
 
-using namespace Engine::Systems::UI;
+using namespace yarep::Systems::UI;
 
-namespace Engine::Systems
+namespace yarep::Systems
 {
     UiImageSystem::UiImageSystem() = default;
 

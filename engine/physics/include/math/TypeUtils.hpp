@@ -8,7 +8,7 @@
 
 #include "Types.hpp"
 
-namespace Engine::Physics::Math::Util {
+namespace yarep::Physics::Math::Util {
     inline OBB BuildWorldObb(const glm::vec3 & position, const glm::vec3 & rotation, const float width,
                              const float height, const float depth) {
         OBB obb{};

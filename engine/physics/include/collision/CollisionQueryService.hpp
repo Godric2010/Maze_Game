@@ -12,7 +12,7 @@
 #include "collision/ColliderCache.hpp"
 #include "math/Types.hpp"
 
-namespace Engine::Physics::Collision {
+namespace yarep::Physics::Collision {
     struct ICollisionQueryService {
         virtual ~ICollisionQueryService() = default;
 

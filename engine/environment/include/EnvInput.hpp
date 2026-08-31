@@ -8,7 +8,7 @@
 #include <vector>
 #include <glm/vec2.hpp>
 
-namespace Engine::Environment {
+namespace yarep::Environment {
     enum class Key {
         Unknown,
         W,

@@ -7,11 +7,11 @@
 #include <functional>
 #include "Types.hpp"
 
-namespace Engine::Input {
+namespace yarep::Input {
     class IInput;
 }
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
 #define ECS_SYSTEM(name, phase, tags, dependencies)
 
     class SystemWorld;

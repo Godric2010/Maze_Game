@@ -3,7 +3,7 @@
 #include <spdlog/spdlog.h>
 #include "toml/TomlDocument.hpp"
 
-namespace Engine::Core::Settings
+namespace yarep::Core::Settings
 {
     void SettingsHandler::WriteSettingsToDisk(Environment::Files::IFileManager* file_manager,
                                               const EngineSettings& settings)

@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <spdlog/spdlog.h>
 
-namespace Engine::Renderer::RenderFramework::OpenGl
+namespace yarep::Renderer::RenderFramework::OpenGl
 {
     OpenGLTextureLibrary::OpenGLTextureLibrary() = default;
 

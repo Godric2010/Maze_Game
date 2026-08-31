@@ -59,7 +59,7 @@ namespace gameplay
                 m_time_passed += duration;
 
                 SceneManager().LoadScene("GameEnd",
-                                         Engine::SceneManagement::SceneArgs{
+                                         yarep::SceneManagement::SceneArgs{
                                              .payload = GameEndShowData{
                                                  .time_to_completion = m_time_passed,
                                              }
@@ -67,9 +67,9 @@ namespace gameplay
                 );
                 continue;
             }
-            if (command.type() == typeid(Engine::Commands::UI::ButtonClickedCommand))
+            if (command.type() == typeid(yarep::Commands::UI::ButtonClickedCommand))
             {
-                auto button_clicked = std::any_cast<Engine::Commands::UI::ButtonClickedCommand>(command);
+                auto button_clicked = std::any_cast<yarep::Commands::UI::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
                 if (button_id == 1)
                 {
@@ -77,7 +77,7 @@ namespace gameplay
                 }
                 else if (button_id == 2)
                 {
-                    SceneManager().LoadScene("MainMenu", Engine::SceneManagement::SceneArgs{});
+                    SceneManager().LoadScene("MainMenu", yarep::SceneManagement::SceneArgs{});
                 }
                 else if (button_id == 3)
                 {
@@ -158,7 +158,7 @@ namespace gameplay
     {
         auto player = World().CreateEntity("Player");
         const auto [width, height, aspect_ratio] = Screen();
-        const auto camera_component = Engine::Components::Camera()
+        const auto camera_component = yarep::Components::Camera()
                                       .SetWidth(width)
                                       .SetHeight(height)
                                       .SetAspectRatio(aspect_ratio)
@@ -166,19 +166,19 @@ namespace gameplay
                                       .SetNearClip(0.01f)
                                       .SetFarClip(100.0f);
 
-        World().AddComponent<Engine::Components::Camera>(player, camera_component);
+        World().AddComponent<yarep::Components::Camera>(player, camera_component);
 
-        const auto camera_transform = Engine::Components::Transform()
+        const auto camera_transform = yarep::Components::Transform()
                                       .SetPosition(m_maze_builder->GetMazeStartPosition())
                                       .SetRotation(glm::vec3(-10.0f, 180.0f, 0.0f));
         World().AddComponent(player, camera_transform);
 
-        const auto camera_rigidbody = Engine::Components::Rigidbody()
+        const auto camera_rigidbody = yarep::Components::Rigidbody()
                                       .SetVelocityFixed(false)
                                       .SetVelocity(glm::vec3(0));
         World().AddComponent(player, camera_rigidbody);
 
-        constexpr auto camera_collider = Engine::Components::SphereCollider{
+        constexpr auto camera_collider = yarep::Components::SphereCollider{
             .is_static = false,
             .radius = 0.1f
         };
@@ -195,12 +195,12 @@ namespace gameplay
         const auto screen = Screen();
         constexpr glm::vec2 size = {100, 100};
         const glm::vec2 position = {screen.width - size.x - 50, screen.height - size.y - 50};
-        const auto transform = Engine::Components::UI::RectTransform()
+        const auto transform = yarep::Components::UI::RectTransform()
                                .SetPosition(position)
                                .SetSize(size);
         World().AddComponent(key_indicator, transform);
 
-        constexpr auto image = Engine::Components::UI::Image{.color = {1, 0, 0, 0.5}};
+        constexpr auto image = yarep::Components::UI::Image{.color = {1, 0, 0, 0.5}};
         World().AddComponent(key_indicator, image);
     }
 
@@ -212,23 +212,23 @@ namespace gameplay
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width * 0.9f, screen.height * 0.9f);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = Engine::Components::UI::RectTransform()
+        const auto bg_rect_transform = yarep::Components::UI::RectTransform()
                                        .SetPosition(bg_position)
                                        .SetSize(bg_size)
                                        .SetPivot(bg_pivot);
         World().AddComponent(pause_entity, bg_rect_transform);
 
-        constexpr auto bg_image = Engine::Components::UI::Image{.color = {0.3, 0.3, 0.3, 0.9}};
+        constexpr auto bg_image = yarep::Components::UI::Image{.color = {0.3, 0.3, 0.3, 0.9}};
         World().AddComponent(pause_entity, bg_image);
         m_pause_entities.push_back(pause_entity);
 
         const auto heading_entity = World().CreateEntity("Pause");
-        const auto heading_transform = Engine::Components::UI::RectTransform()
+        const auto heading_transform = yarep::Components::UI::RectTransform()
                                        .SetPosition(glm::vec2(0.0f, 300.0f))
                                        .SetPivot(glm::vec2(0.5f, 0.5f))
-                                       .SetAnchor(Engine::Components::UI::Anchor::TopCenter)
+                                       .SetAnchor(yarep::Components::UI::Anchor::TopCenter)
                                        .SetParent(pause_entity);
-        const auto heading_text = Engine::Components::UI::Text()
+        const auto heading_text = yarep::Components::UI::Text()
                                   .SetText("Pause")
                                   .SetFontName("SpaceFont.ttf")
                                   .SetFontSize(128.0f);
@@ -243,18 +243,18 @@ namespace gameplay
     }
 
     void GameScene::CreateUiButton(const glm::vec2& position, const glm::vec2& size, const std::string& content,
-                                   int button_id, const Engine::Ecs::EntityId& parent_entity)
+                                   int button_id, const yarep::Ecs::EntityId& parent_entity)
     {
         const auto button_entity = World().CreateEntity(content + "Button");
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto button_rect = Engine::Components::UI::RectTransform()
+        auto button_rect = yarep::Components::UI::RectTransform()
                            .SetPosition(position)
                            .SetSize(size)
                            .SetPivot(pivot)
-                           .SetAnchor(Engine::Components::UI::Anchor::TopCenter)
+                           .SetAnchor(yarep::Components::UI::Anchor::TopCenter)
                            .SetParent(parent_entity);
 
-        auto button = Engine::Components::UI::Button();
+        auto button = yarep::Components::UI::Button();
         button.button_id = button_id;
         button.enabled = true;
         button.default_color = {1.0f, 1.0f, 1.0f, 0.0f};
@@ -266,12 +266,12 @@ namespace gameplay
         World().AddComponent(button_entity, button_rect);
 
         const auto button_text_entity = World().CreateEntity(content + "ButtonText");
-        auto button_text_rect = Engine::Components::UI::RectTransform()
+        auto button_text_rect = yarep::Components::UI::RectTransform()
                                 .SetPosition(glm::vec2(0, 10))
                                 .SetPivot(glm::vec2(0.5f, 0.0f))
-                                .SetAnchor(Engine::Components::UI::Anchor::Center)
+                                .SetAnchor(yarep::Components::UI::Anchor::Center)
                                 .SetParent(button_entity);
-        auto button_text = Engine::Components::UI::Text()
+        auto button_text = yarep::Components::UI::Text()
                            .SetText(content)
                            .SetFontName("SpaceFont.ttf")
                            .SetFontSize(32);

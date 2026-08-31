@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <vector>
 
-namespace Engine::Text {
+namespace yarep::Text {
     /**
      * @typedef FontHandle
      * uint32_t representing a hash value from the fonts name and its size in pixels.

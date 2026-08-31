@@ -15,7 +15,7 @@
 #include "Shader/ShaderPreProcessor.hpp"
 #include "Textures/TextureImporter.hpp"
 
-namespace Engine::AssetHandling {
+namespace yarep::AssetHandling {
     using namespace Assets;
     template<typename T>
     struct AssetTraits;

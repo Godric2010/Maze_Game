@@ -10,7 +10,7 @@
 #include "settings/Settings.hpp"
 #include "settings/SettingsHandler.hpp"
 
-namespace Engine::Core {
+namespace yarep::Core {
     EngineController::EngineController() {
         m_services = std::make_unique<ServiceLocator>();
         m_cache_manager = Systems::CacheManagerFactory::CreateCacheManager();

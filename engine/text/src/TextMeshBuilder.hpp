@@ -2,7 +2,7 @@
 #include "LayoutEngine.hpp"
 #include "Types.hpp"
 
-namespace Engine::Text {
+namespace yarep::Text {
     /**
      * @class TextMeshBuilder
      * Build meshes in local space that can be used by the renderer to display text.

@@ -5,7 +5,7 @@
 #pragma once
 #include <cstdint>
 
-namespace Engine::Commands::UI {
+namespace yarep::Commands::UI {
     class ButtonClickedCommand {
     public:
         explicit ButtonClickedCommand(const uint32_t button_id) {

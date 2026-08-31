@@ -11,7 +11,7 @@
 #include "../src/SceneContext.hpp"
 #include "Input/IInput.hpp"
 
-namespace Engine::SceneManagement
+namespace yarep::SceneManagement
 {
     class SceneRegistry;
 

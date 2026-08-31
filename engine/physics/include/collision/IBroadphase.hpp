@@ -8,7 +8,7 @@
 #include "Ecs/Types.hpp"
 #include "math/Types.hpp"
 
-namespace Engine::Physics::Collision {
+namespace yarep::Physics::Collision {
     struct QueryFilter {
         uint32_t category_bits{0xFFFFFFFF};
         uint32_t mask_bits{0xFFFFFFFF};

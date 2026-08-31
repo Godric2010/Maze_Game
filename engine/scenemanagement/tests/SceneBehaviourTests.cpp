@@ -10,7 +10,7 @@
 #include "MockedClasses.hpp"
 #include "../src/SceneManager.hpp"
 
-using namespace Engine::SceneManagement;
+using namespace yarep::SceneManagement;
 static uint8_t last_scene_instance_id = 0;
 
 struct SceneProbe
@@ -31,7 +31,7 @@ void RunSingleUpdatePhase(SceneManager* scene_manager)
 class BehaviourTestScene : public IScene
 {
 private:
-    std::unordered_set<Engine::Ecs::EntityId> m_entities;
+    std::unordered_set<yarep::Ecs::EntityId> m_entities;
     std::shared_ptr<SceneProbe> m_scene_probe;
 
 public:
@@ -160,7 +160,7 @@ TEST_CASE("ISceneTests - Initialized Scene has context")
         720
     );
     const auto test_scene = std::make_unique<BehaviourTestScene>(std::make_shared<SceneProbe>());
-    const auto world = std::make_unique<Engine::Ecs::World>();
+    const auto world = std::make_unique<yarep::Ecs::World>();
     const auto world_adapter = std::make_unique<SceneWorld>(*world);
     const SceneContext ctx{
         .app = app,

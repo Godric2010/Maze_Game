@@ -9,7 +9,7 @@
 #include "Input/IInput.hpp"
 #include "Scene/ISceneManager.hpp"
 
-namespace Engine::SceneManagement {
+namespace yarep::SceneManagement {
     struct SceneContext {
         IApplication& app;
         ISceneManager& scene_manager;

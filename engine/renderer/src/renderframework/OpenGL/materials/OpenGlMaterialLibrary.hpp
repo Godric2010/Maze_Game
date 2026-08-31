@@ -7,7 +7,7 @@
 #include "OpenGlMaterial.hpp"
 #include "../../../resources/IGpuMaterialLibrary.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGl
+namespace yarep::Renderer::RenderFramework::OpenGl
 {
     class OpenGlMaterialLibrary : public Resources::IGpuMaterialLibrary
     {

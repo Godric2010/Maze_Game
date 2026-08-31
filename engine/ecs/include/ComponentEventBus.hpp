@@ -9,7 +9,7 @@
 
 #include "Ecs/Types.hpp"
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
     class ComponentEventBus {
     private:
         using ErasedAddFn = std::function<void(EntityId, const void *)>;

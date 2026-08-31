@@ -6,7 +6,7 @@
 #include "EngineBindToken.hpp"
 #include "Ecs/ISystem.hpp"
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
     class SystemBinder {
     public:
         static void BindSystem(

@@ -7,7 +7,7 @@
 
 #include "../include/Window.hpp"
 
-namespace Engine::Environment {
+namespace yarep::Environment {
     class SDLWindow final : public IWindow{
 
     public:

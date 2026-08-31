@@ -5,7 +5,7 @@
 #include <stdexcept>
 #include <fmt/format.h>
 
-namespace Engine::AssetHandling::Textures
+namespace yarep::AssetHandling::Textures
 {
     void TextureImporter::BuildTextureFromFile(TextureAsset& texture_asset, const std::vector<uint8_t>& bytes,
                                                const std::string& file_name)

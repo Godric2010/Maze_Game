@@ -1,7 +1,7 @@
 #include "SystemMetaSorter.hpp"
 #include <queue>
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
     std::vector<SystemMeta> SystemMetaSorter::SortSystemMetasByPhaseAndDependencies(
             const std::vector<SystemMeta>& system_metas) {
         using PhaseType = std::underlying_type_t<Phase>;

@@ -9,7 +9,7 @@
 #include "toml/TomlDocument.hpp"
 
 
-namespace Engine::AssetHandling::Materials
+namespace yarep::AssetHandling::Materials
 {
     struct MaterialTextureFileData
     {

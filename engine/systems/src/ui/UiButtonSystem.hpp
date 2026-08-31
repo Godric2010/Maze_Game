@@ -2,7 +2,7 @@
 #include "IEngineSystem.hpp"
 #include "IRenderController.hpp"
 
-namespace Engine::Systems {
+namespace yarep::Systems {
     ECS_SYSTEM(UiButtonSystem, Ui, TAGS(ENGINE), DEPENDENCIES())
     class UiButtonSystem : public Ecs::IEngineSystem {
     public:

@@ -5,7 +5,7 @@
 ECS_SYSTEM(PlayerControllerSystem, Input, TAGS(), DEPENDENCIES())
 
 namespace gameplay::systems {
-    class PlayerControllerSystem : public Engine::Ecs::ISystem {
+    class PlayerControllerSystem : public yarep::Ecs::ISystem {
     public:
         PlayerControllerSystem();
 
@@ -27,6 +27,6 @@ namespace gameplay::systems {
         const float m_max_pitch = 75.0f;
 
         void CalculateNewTransform(
-                Engine::Ecs::EntityId player_entity, const Engine::Input::InputBuffer& input, float delta_time) const;
+                yarep::Ecs::EntityId player_entity, const yarep::Input::InputBuffer& input, float delta_time) const;
     };
 } // namespace

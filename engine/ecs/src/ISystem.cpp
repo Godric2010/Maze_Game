@@ -5,7 +5,7 @@
 #include "SystemWorld.hpp"
 #include "World.hpp"
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
     void ISystem::Bind(EngineBindToken, Input::IInput& input, SystemWorld& world, CommandEvent command_event) {
         m_input = &input;
         m_world = &world;

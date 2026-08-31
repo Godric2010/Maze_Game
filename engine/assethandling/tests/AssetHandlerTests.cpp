@@ -8,9 +8,9 @@
 #include "../include/AssetHandler.hpp"
 #include "../include/AssetTypes.hpp"
 
-using namespace Engine::AssetHandling;
+using namespace yarep::AssetHandling;
 
-namespace Engine::AssetHandling
+namespace yarep::AssetHandling
 {
     struct TestAsset : Asset
     {

@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include "../renderer/include/Datatypes.hpp"
 
-namespace Engine::Components
+namespace yarep::Components
 {
     struct MeshRenderer
     {

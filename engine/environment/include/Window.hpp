@@ -7,7 +7,7 @@
 #include <SDL.h>
 #include <string>
 
-namespace Engine::Environment {
+namespace yarep::Environment {
     /**
      * @enum API
      * @brief Represents various graphics APIs that can be used in the application.

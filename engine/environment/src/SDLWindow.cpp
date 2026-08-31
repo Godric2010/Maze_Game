@@ -3,7 +3,7 @@
 #include <iostream>
 #include <ostream>
 
-namespace Engine::Environment
+namespace yarep::Environment
 {
     SDLWindow::SDLWindow()
     {

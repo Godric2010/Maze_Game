@@ -112,7 +112,7 @@ def build_system_ctors(metas: List[SystemMeta]) -> str:
         if not meta['isSystem']:
             continue
 
-        ctor = f"static std::unique_ptr<Engine::Ecs::ISystem> Create_{meta['name']}(){{\n"
+        ctor = f"static std::unique_ptr<yarep::Ecs::ISystem> Create_{meta['name']}(){{\n"
         ctor += f"\treturn std::make_unique<{meta['namespace']}::{meta['name']}>();\n"
         ctor += "}\n\n"
         system_ctors += ctor
@@ -134,9 +134,9 @@ def build_meta_list_entry(meta: SystemMeta) -> str:
     if not meta['isSystem']:
         return ""
 
-    meta_string = "\t\tEngine::Ecs::SystemMeta{\n"
+    meta_string = "\t\tyarep::Ecs::SystemMeta{\n"
     meta_string += f"\t\t\t.name = \"{meta['name']}\",\n"
-    meta_string += f"\t\t\t.phase = Engine::Ecs::Phase::{meta['phase']},\n"
+    meta_string += f"\t\t\t.phase = yarep::Ecs::Phase::{meta['phase']},\n"
     meta_string += build_string_list("tags", meta['tags'])
     meta_string += build_string_list("dependencies", meta['dependencies'])
     meta_string += f"\t\t\t.factory = &Create_{meta['name']}\n"
@@ -212,8 +212,8 @@ def build_cpp_string(meta_containers: List[SystemMeta]) -> str:
 """
     cpp_string += build_includes(meta_containers)
     cpp_string += build_system_ctors(meta_containers)
-    cpp_string += "std::vector<Engine::Ecs::SystemMeta> MazeGame::GetSystemsFromGeneratedSource(){\n"
-    cpp_string += "\tstd::vector<Engine::Ecs::SystemMeta> systems{\n"
+    cpp_string += "std::vector<yarep::Ecs::SystemMeta> MazeGame::GetSystemsFromGeneratedSource(){\n"
+    cpp_string += "\tstd::vector<yarep::Ecs::SystemMeta> systems{\n"
 
     for meta_container in meta_containers:
         cpp_string += build_meta_list_entry(meta_container)

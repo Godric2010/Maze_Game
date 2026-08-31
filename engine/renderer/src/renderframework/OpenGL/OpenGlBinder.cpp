@@ -1,7 +1,7 @@
 #include "OpenGlBinder.hpp"
 
 
-namespace Engine::Renderer::RenderFramework::OpenGl {
+namespace yarep::Renderer::RenderFramework::OpenGl {
     OpenGlBinder::OpenGlBinder() = default;
 
     OpenGlBinder::~OpenGlBinder() = default;

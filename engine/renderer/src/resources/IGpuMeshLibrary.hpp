@@ -6,7 +6,7 @@
 #include "AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 
-namespace Engine::Renderer::Resources
+namespace yarep::Renderer::Resources
 {
     class IGpuMeshLibrary
     {

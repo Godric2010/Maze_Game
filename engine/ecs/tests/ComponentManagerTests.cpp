@@ -6,7 +6,7 @@
 
 #include "../src/ComponentManager.hpp"
 
-using namespace Engine::Ecs;
+using namespace yarep::Ecs;
 
 struct ComponentManagerFixture {
     ComponentManager component_manager;

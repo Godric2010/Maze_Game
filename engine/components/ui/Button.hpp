@@ -6,7 +6,7 @@
 #include <glm/vec4.hpp>
 
 
-namespace Engine::Components::UI {
+namespace yarep::Components::UI {
     enum class ButtonState {
         Default,
         Highlighted,

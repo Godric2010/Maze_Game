@@ -3,7 +3,7 @@
 #include <vector>
 #include "AssetTypes.hpp"
 
-namespace Engine::AssetHandling::Mesh
+namespace yarep::AssetHandling::Mesh
 {
     class MeshImporter
     {

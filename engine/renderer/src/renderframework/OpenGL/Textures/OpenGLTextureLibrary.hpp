@@ -5,7 +5,7 @@
 #include "OpenGLTexture.hpp"
 #include "../../../resources/IGpuTextureLibrary.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGl
+namespace yarep::Renderer::RenderFramework::OpenGl
 {
     class OpenGLTextureLibrary : public Resources::IGpuTextureLibrary
     {

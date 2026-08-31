@@ -1,7 +1,7 @@
 #include "OpenGlMaterial.hpp"
 #include "OpenGlMaterialLibrary.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGl
+namespace yarep::Renderer::RenderFramework::OpenGl
 {
     OpenGlMaterialLibrary::OpenGlMaterialLibrary()
     {

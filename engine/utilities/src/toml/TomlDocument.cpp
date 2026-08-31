@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <spdlog/spdlog.h>
 
-namespace Engine::Utilities::Toml
+namespace yarep::Utilities::Toml
 {
     TomlTable::TomlTable(const toml::node_view<const toml::node> node)
     {

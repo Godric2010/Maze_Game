@@ -7,11 +7,11 @@ namespace gameplay::systems {
         ISystem::Initialize();
     }
 
-    void DoorAnimation::OnTriggerEnter(const Engine::Ecs::EntityId& target, const Engine::Ecs::EntityId& other) {
+    void DoorAnimation::OnTriggerEnter(const yarep::Ecs::EntityId& target, const yarep::Ecs::EntityId& other) {
         CheckIfPlayerHasKey(target, other);
     }
 
-    void DoorAnimation::OnTriggerExit(const Engine::Ecs::EntityId& target, const Engine::Ecs::EntityId& other) {
+    void DoorAnimation::OnTriggerExit(const yarep::Ecs::EntityId& target, const yarep::Ecs::EntityId& other) {
         const auto is_player = GameWorld()->GetComponent<components::Inventory>(target) != nullptr;
         const auto door_trigger = GameWorld()->GetComponent<components::DoorTrigger>(other);
         if (!is_player || door_trigger == nullptr) {
@@ -27,7 +27,7 @@ namespace gameplay::systems {
     void DoorAnimation::Run(float delta_time) {
         auto doors = GameWorld()->GetComponentsOfType<components::Door>();
         for (const auto [door, entity]: doors) {
-            auto door_transform = GameWorld()->GetComponent<Engine::Components::Transform>(entity);
+            auto door_transform = GameWorld()->GetComponent<yarep::Components::Transform>(entity);
             if (door_transform == nullptr) {
                 throw std::runtime_error("Door does not have a door transform");
             }
@@ -46,8 +46,8 @@ namespace gameplay::systems {
                         door->CurrentState = components::Door::State::Closed;
                     }
 
-                    if (GameWorld()->GetComponent<Engine::Components::BoxCollider>(entity) == nullptr) {
-                        GameWorld()->AddComponent<Engine::Components::BoxCollider>(
+                    if (GameWorld()->GetComponent<yarep::Components::BoxCollider>(entity) == nullptr) {
+                        GameWorld()->AddComponent<yarep::Components::BoxCollider>(
                                 entity,
                                 m_disabled_box_colliders[entity]
                                 );
@@ -58,10 +58,10 @@ namespace gameplay::systems {
                     door_transform->SetPosition(door_position);
                     break;
                 case components::Door::State::Opened: {
-                    const auto box_collider = GameWorld()->GetComponent<Engine::Components::BoxCollider>(entity);
+                    const auto box_collider = GameWorld()->GetComponent<yarep::Components::BoxCollider>(entity);
                     if (box_collider != nullptr) {
                         m_disabled_box_colliders[entity] = *box_collider;
-                        GameWorld()->RemoveComponent<Engine::Components::BoxCollider>(entity);
+                        GameWorld()->RemoveComponent<yarep::Components::BoxCollider>(entity);
                     }
                     break;
                 }
@@ -71,8 +71,8 @@ namespace gameplay::systems {
         }
     }
 
-    void DoorAnimation::CheckIfPlayerHasKey(const Engine::Ecs::EntityId target,
-                                            const Engine::Ecs::EntityId door_trigger_entity) {
+    void DoorAnimation::CheckIfPlayerHasKey(const yarep::Ecs::EntityId target,
+                                            const yarep::Ecs::EntityId door_trigger_entity) {
         const auto player_inventory = GameWorld()->GetComponent<components::Inventory>(target);
         const auto door_trigger = GameWorld()->GetComponent<components::DoorTrigger>(door_trigger_entity);
 

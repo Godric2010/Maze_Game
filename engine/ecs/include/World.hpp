@@ -11,7 +11,7 @@
 #include "../src/buffer/EventBuffer.hpp"
 #include "../src/buffer/SystemCommandQueue.hpp"
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
     class World {
     public:
         World();

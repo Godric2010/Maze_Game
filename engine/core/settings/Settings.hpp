@@ -6,7 +6,7 @@
 #include <array>
 #include <string>
 
-namespace Engine::Core::Settings
+namespace yarep::Core::Settings
 {
     # define WindowModeList \
         X(Windowed) \

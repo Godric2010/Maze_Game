@@ -1,7 +1,7 @@
 #pragma once
 #include "World.hpp"
 
-namespace Engine::SceneManagement {
+namespace yarep::SceneManagement {
     class SceneWorld {
     public:
         explicit SceneWorld(Ecs::World& world) : m_world(world) {

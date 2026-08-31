@@ -11,7 +11,7 @@
 #include "MockedClasses.hpp"
 #include "../src/SceneManager.hpp"
 
-class DemoScene : public Engine::SceneManagement::IScene
+class DemoScene : public yarep::SceneManagement::IScene
 {
 public:
     bool scene_is_active = false;
@@ -32,7 +32,7 @@ public:
 };
 
 
-static Engine::SceneManagement::SceneManager BuildSceneManager()
+static yarep::SceneManagement::SceneManager BuildSceneManager()
 {
     FakeApplication app{};
     FakeInput input{};
@@ -40,7 +40,7 @@ static Engine::SceneManagement::SceneManager BuildSceneManager()
     FakeAssetLibrary asset_library{};
 
 
-    return Engine::SceneManagement::SceneManager(
+    return yarep::SceneManagement::SceneManager(
         app,
         system_manager,
         input,
@@ -56,21 +56,21 @@ TEST_CASE("SceneManagerTests - Register single scene")
     auto scene_manager = BuildSceneManager();
 
     const DemoScene* demo_scene = nullptr;
-    const Engine::SceneManagement::SceneFactory scene_factory = [&](const Engine::SceneManagement::SceneArgs&)
+    const yarep::SceneManagement::SceneFactory scene_factory = [&](const yarep::SceneManagement::SceneArgs&)
     {
         auto scene = std::make_unique<DemoScene>();
         demo_scene = scene.get();
         return scene;
     };
     scene_manager.RegisterScene("MyScene", scene_factory);
-    scene_manager.LoadScene("MyScene", Engine::SceneManagement::SceneArgs{});
+    scene_manager.LoadScene("MyScene", yarep::SceneManagement::SceneArgs{});
     REQUIRE(demo_scene != nullptr);
 }
 
 TEST_CASE("SceneManagerTests - Register scene with same identifier twice")
 {
     const auto scene_manager = BuildSceneManager();
-    const Engine::SceneManagement::SceneFactory scene_factory = [&](const Engine::SceneManagement::SceneArgs&)
+    const yarep::SceneManagement::SceneFactory scene_factory = [&](const yarep::SceneManagement::SceneArgs&)
     {
         auto scene = std::make_unique<DemoScene>();
         return scene;
@@ -83,7 +83,7 @@ TEST_CASE("SceneManagerTests - Register same scene with two identifiers")
 {
     auto scene_manager = BuildSceneManager();
     std::vector<DemoScene*> scenes;
-    const Engine::SceneManagement::SceneFactory scene_factory = [&](const Engine::SceneManagement::SceneArgs&)
+    const yarep::SceneManagement::SceneFactory scene_factory = [&](const yarep::SceneManagement::SceneArgs&)
     {
         auto scene = std::make_unique<DemoScene>();
         scenes.push_back(scene.get());
@@ -92,9 +92,9 @@ TEST_CASE("SceneManagerTests - Register same scene with two identifiers")
     scene_manager.RegisterScene("MyScene01", scene_factory);
     scene_manager.RegisterScene("MyScene02", scene_factory);
 
-    scene_manager.LoadScene("MyScene01", Engine::SceneManagement::SceneArgs{});
+    scene_manager.LoadScene("MyScene01", yarep::SceneManagement::SceneArgs{});
     REQUIRE(scenes.size() == 1);
-    scene_manager.LoadScene("MyScene02", Engine::SceneManagement::SceneArgs{});
+    scene_manager.LoadScene("MyScene02", yarep::SceneManagement::SceneArgs{});
     REQUIRE(scenes.size() == 2);
     REQUIRE(scenes[0] != scenes[1]);
 }
@@ -102,7 +102,7 @@ TEST_CASE("SceneManagerTests - Register same scene with two identifiers")
 TEST_CASE("SceneManagerTests - Load Scene with unknown identifier")
 {
     auto scene_manager = BuildSceneManager();
-    REQUIRE_THROWS(scene_manager.LoadScene("MyScene", Engine::SceneManagement::SceneArgs{}));
+    REQUIRE_THROWS(scene_manager.LoadScene("MyScene", yarep::SceneManagement::SceneArgs{}));
 }
 
 
@@ -113,7 +113,7 @@ TEST_CASE("SceneManagerTests - Switch Scene but loaded two scenes before updatin
     FakeSystemManager system_manager{};
     FakeAssetLibrary asset_library{};
 
-    auto scene_manager = Engine::SceneManagement::SceneManager(
+    auto scene_manager = yarep::SceneManagement::SceneManager(
         app,
         system_manager,
         input,
@@ -123,7 +123,7 @@ TEST_CASE("SceneManagerTests - Switch Scene but loaded two scenes before updatin
     );
 
     std::vector<DemoScene*> scenes;
-    const Engine::SceneManagement::SceneFactory scene_factory = [&](const Engine::SceneManagement::SceneArgs&)
+    const yarep::SceneManagement::SceneFactory scene_factory = [&](const yarep::SceneManagement::SceneArgs&)
     {
         auto scene = std::make_unique<DemoScene>();
         scenes.push_back(scene.get());
@@ -132,11 +132,11 @@ TEST_CASE("SceneManagerTests - Switch Scene but loaded two scenes before updatin
     scene_manager.RegisterScene("MyScene01", scene_factory);
     scene_manager.RegisterScene("MyScene02", scene_factory);
 
-    scene_manager.LoadScene("MyScene01", Engine::SceneManagement::SceneArgs{});
+    scene_manager.LoadScene("MyScene01", yarep::SceneManagement::SceneArgs{});
     REQUIRE(scenes.size() == 1);
     REQUIRE_FALSE(scenes[0]->scene_is_active);
 
-    scene_manager.LoadScene("MyScene02", Engine::SceneManagement::SceneArgs{});
+    scene_manager.LoadScene("MyScene02", yarep::SceneManagement::SceneArgs{});
     REQUIRE(scenes.size() == 2);
     REQUIRE_FALSE(scenes[1]->scene_is_active);
 
@@ -154,7 +154,7 @@ TEST_CASE("SceneManagerTests - Update but no scene is loaded")
     FakeSystemManager system_manager{};
     FakeAssetLibrary asset_library{};
 
-    auto scene_manager = Engine::SceneManagement::SceneManager(
+    auto scene_manager = yarep::SceneManagement::SceneManager(
         app,
         system_manager,
         input,
@@ -164,7 +164,7 @@ TEST_CASE("SceneManagerTests - Update but no scene is loaded")
     );
 
     std::vector<DemoScene*> scenes;
-    const Engine::SceneManagement::SceneFactory scene_factory = [&](const Engine::SceneManagement::SceneArgs&)
+    const yarep::SceneManagement::SceneFactory scene_factory = [&](const yarep::SceneManagement::SceneArgs&)
     {
         auto scene = std::make_unique<DemoScene>();
         scenes.push_back(scene.get());

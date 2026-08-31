@@ -6,7 +6,7 @@
 #include "transform/TransformCache.hpp"
 #include "ui/UiCache.hpp"
 
-namespace Engine::Systems {
+namespace yarep::Systems {
     class CacheManager : public ICacheManager {
     public:
         CacheManager() {

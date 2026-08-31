@@ -13,7 +13,7 @@
 #include "math/Resolve.hpp"
 #include "math/Sweep.hpp"
 
-namespace Engine::Physics::Collision {
+namespace yarep::Physics::Collision {
     struct MoverInput {
         glm::vec3 position;
         float radius;

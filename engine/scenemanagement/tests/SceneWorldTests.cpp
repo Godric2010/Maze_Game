@@ -6,8 +6,8 @@
 #endif
 
 #include "SceneWorld.hpp"
-using namespace Engine;
-using namespace Engine::SceneManagement;
+using namespace yarep;
+using namespace yarep::SceneManagement;
 
 TEST_CASE("SceneWorldTests - Test Scene World Facade") {
     auto* world = new Ecs::World();

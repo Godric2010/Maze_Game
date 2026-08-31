@@ -5,7 +5,7 @@
 namespace gameplay::systems {
     ECS_SYSTEM(ExitSystem, Update, TAGS(), DEPENDENCIES())
 
-    class ExitSystem final : public Engine::Ecs::ISystem {
+    class ExitSystem final : public yarep::Ecs::ISystem {
     public:
         ExitSystem() = default;
 
@@ -15,12 +15,12 @@ namespace gameplay::systems {
 
         void Run(float delta_time) override;
 
-        void OnTriggerEnter(const Engine::Ecs::EntityId& target, const Engine::Ecs::EntityId& other) override;
+        void OnTriggerEnter(const yarep::Ecs::EntityId& target, const yarep::Ecs::EntityId& other) override;
 
-        void OnTriggerExit(const Engine::Ecs::EntityId& target, const Engine::Ecs::EntityId& other) override;
+        void OnTriggerExit(const yarep::Ecs::EntityId& target, const yarep::Ecs::EntityId& other) override;
 
     private:
-        void CheckIfPlayerHasKeyToExit(Engine::Ecs::EntityId target_entity,
-                                       Engine::Ecs::EntityId potential_exit_entity) const;
+        void CheckIfPlayerHasKeyToExit(yarep::Ecs::EntityId target_entity,
+                                       yarep::Ecs::EntityId potential_exit_entity) const;
     };
 } // namespace

@@ -9,7 +9,7 @@
 #include "../math/Types.hpp"
 #include "../../../ecs/src/Entity.hpp"
 
-namespace Engine::Physics::Collision {
+namespace yarep::Physics::Collision {
 
     struct BoxColliderInfo {
         Math::AABB world_box;

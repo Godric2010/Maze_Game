@@ -8,7 +8,7 @@
 
 ECS_SYSTEM(CameraSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
-namespace Engine::Systems {
+namespace yarep::Systems {
     class CameraSystem final : public Ecs::IEngineSystem {
     public:
         CameraSystem();

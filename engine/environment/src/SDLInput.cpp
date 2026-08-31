@@ -1,6 +1,6 @@
 #include "SDLInput.hpp"
 
-namespace Engine::Environment
+namespace yarep::Environment
 {
     SDLInput::SDLInput(SDLWindow& window)
     {

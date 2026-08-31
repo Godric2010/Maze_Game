@@ -7,7 +7,7 @@
 
 #include "collision/CollisionQueryService.hpp"
 
-namespace Engine::Physics::Collision {
+namespace yarep::Physics::Collision {
     class FakeCollisionQueryService final : public ICollisionQueryService {
     public:
         std::unordered_map<Ecs::EntityId, Math::AABB> aabbs;

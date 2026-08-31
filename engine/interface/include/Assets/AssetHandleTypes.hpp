@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Engine::Assets
+namespace yarep::Assets
 {
     template <typename Tag>
     struct AssetId
@@ -62,9 +62,9 @@ namespace Engine::Assets
 namespace std
 {
     template <typename Tag>
-    struct hash<Engine::Assets::AssetId<Tag>>
+    struct hash<yarep::Assets::AssetId<Tag>>
     {
-        size_t operator()(const Engine::Assets::AssetId<Tag>& assetId) const noexcept
+        size_t operator()(const yarep::Assets::AssetId<Tag>& assetId) const noexcept
         {
             return std::hash<size_t>{}(assetId.value);
         }

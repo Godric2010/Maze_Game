@@ -7,7 +7,7 @@
 #include "AssetHandler.hpp"
 #include "../../../resources/IShaderLibrary.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGl
+namespace yarep::Renderer::RenderFramework::OpenGl
 {
     class OpenGlShaderLibrary : public Resources::IShaderLibrary
     {

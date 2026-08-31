@@ -12,7 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
 
-using namespace Engine::Physics::Math;
+using namespace yarep::Physics::Math;
 
 static bool ApproxVec3(const glm::vec3& a, const glm::vec3& b, float eps = 1e-5f) {
     return glm::length2(a - b) <= eps * eps;

@@ -33,9 +33,9 @@ namespace gameplay
     {
         for (const std::any& command : commands)
         {
-            if (command.type() == typeid(Engine::Commands::UI::ButtonClickedCommand))
+            if (command.type() == typeid(yarep::Commands::UI::ButtonClickedCommand))
             {
-                auto button_clicked = std::any_cast<Engine::Commands::UI::ButtonClickedCommand>(command);
+                auto button_clicked = std::any_cast<yarep::Commands::UI::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
                 switch (m_menu_state)
                 {
@@ -61,7 +61,7 @@ namespace gameplay
     {
         const auto camera_entity = World().CreateEntity("MainCamera");
         const auto [width, height, aspect_ratio] = Screen();
-        const auto camera_component = Engine::Components::Camera()
+        const auto camera_component = yarep::Components::Camera()
                                       .SetWidth(width)
                                       .SetHeight(height)
                                       .SetAspectRatio(aspect_ratio)
@@ -69,9 +69,9 @@ namespace gameplay
                                       .SetNearClip(0.01f)
                                       .SetFarClip(1000.0f);
 
-        World().AddComponent<Engine::Components::Camera>(camera_entity, camera_component);
+        World().AddComponent<yarep::Components::Camera>(camera_entity, camera_component);
 
-        const auto camera_transform = Engine::Components::Transform();
+        const auto camera_transform = yarep::Components::Transform();
         World().AddComponent(camera_entity, camera_transform);
     }
 
@@ -95,36 +95,36 @@ namespace gameplay
         m_menu_state = new_state;
     }
 
-    Engine::Ecs::EntityId MainMenuScene::CreateMenuBackground() const
+    yarep::Ecs::EntityId MainMenuScene::CreateMenuBackground() const
     {
         const auto bg_entity = World().CreateEntity("MenuBackground");
         const auto screen = Screen();
         const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
         const auto bg_size = glm::vec2(screen.width, screen.height);
         constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
-        const auto bg_rect_transform = Engine::Components::UI::RectTransform()
+        const auto bg_rect_transform = yarep::Components::UI::RectTransform()
                                        .SetPosition(bg_position)
                                        .SetSize(bg_size)
                                        .SetPivot(bg_pivot);
         World().AddComponent(bg_entity, bg_rect_transform);
-        constexpr auto bg_image = Engine::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
+        constexpr auto bg_image = yarep::Components::UI::Image{.color = {0.2, 0.4, 0.2, 1.0}};
         World().AddComponent(bg_entity, bg_image);
         return bg_entity;
     }
 
-    Engine::Ecs::EntityId MainMenuScene::CreateMenuText(const std::string& content, const std::string& font_name,
+    yarep::Ecs::EntityId MainMenuScene::CreateMenuText(const std::string& content, const std::string& font_name,
                                                         const int font_size,
                                                         const glm::vec2 pos, const glm::vec2 size,
-                                                        const Engine::Ecs::EntityId parent_entity)
+                                                        const yarep::Ecs::EntityId parent_entity)
     {
         const auto text_entity = World().CreateEntity("MenuText_" + content);
-        const auto text_transform = Engine::Components::UI::RectTransform()
+        const auto text_transform = yarep::Components::UI::RectTransform()
                                     .SetPosition(pos)
                                     .SetSize(size)
-                                    .SetAnchor(Engine::Components::UI::Anchor::Center)
+                                    .SetAnchor(yarep::Components::UI::Anchor::Center)
                                     .SetPivot(glm::vec2{0.5f, 0.0f})
                                     .SetParent(parent_entity);
-        const auto text = Engine::Components::UI::Text()
+        const auto text = yarep::Components::UI::Text()
                           .SetText(content)
                           .SetFontName(font_name)
                           .SetFontSize(font_size);
@@ -134,22 +134,22 @@ namespace gameplay
         return text_entity;
     }
 
-    Engine::Ecs::EntityId MainMenuScene::CreateMenuButton(const std::string& name, uint32_t button_id, glm::vec2 pos,
+    yarep::Ecs::EntityId MainMenuScene::CreateMenuButton(const std::string& name, uint32_t button_id, glm::vec2 pos,
                                                           const std::string& content,
-                                                          Engine::Ecs::EntityId parent_entity)
+                                                          yarep::Ecs::EntityId parent_entity)
     {
         constexpr auto button_size = glm::vec2(200, 70);
         const auto button_entity = World().CreateEntity(name);
         constexpr auto pivot = glm::vec2(0.5f, 0.5f);
-        auto resume_rect = Engine::Components::UI::RectTransform()
+        auto resume_rect = yarep::Components::UI::RectTransform()
                            .SetPosition(pos)
                            .SetSize(button_size)
                            .SetPivot(pivot)
-                           .SetAnchor(Engine::Components::UI::Anchor::Center)
+                           .SetAnchor(yarep::Components::UI::Anchor::Center)
                            .SetParent(parent_entity);
         World().AddComponent(button_entity, resume_rect);
 
-        auto button = Engine::Components::UI::Button();
+        auto button = yarep::Components::UI::Button();
         button.button_id = button_id;
         button.enabled = true;
         button.default_color = m_button_default_color;
@@ -221,7 +221,7 @@ namespace gameplay
         if (button_id == m_easy_difficulty_button)
         {
             SceneManager().LoadScene("Game",
-                                     Engine::SceneManagement::SceneArgs{
+                                     yarep::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Easy
                                          }
@@ -231,7 +231,7 @@ namespace gameplay
         else if (button_id == m_medium_difficulty_button)
         {
             SceneManager().LoadScene("Game",
-                                     Engine::SceneManagement::SceneArgs{
+                                     yarep::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Medium
                                          }
@@ -241,7 +241,7 @@ namespace gameplay
         else if (button_id == m_hard_difficulty_button)
         {
             SceneManager().LoadScene("Game",
-                                     Engine::SceneManagement::SceneArgs{
+                                     yarep::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Hard
                                          }
@@ -255,7 +255,7 @@ namespace gameplay
         else if (button_id == m_dev_scene_button)
         {
             SceneManager().LoadScene("Game",
-                                     Engine::SceneManagement::SceneArgs{
+                                     yarep::SceneManagement::SceneArgs{
                                          .payload = GameSceneSettings{
                                              .difficulty = Difficulty::Developer
                                          }

@@ -12,7 +12,7 @@ ECS_SYSTEM(RenderSystem,
            )
         )
 
-namespace Engine::Systems {
+namespace yarep::Systems {
     class RenderSystem : public Ecs::IEngineSystem {
     public:
         RenderSystem();

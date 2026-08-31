@@ -6,7 +6,7 @@
 
 namespace gameplay
 {
-    GameplayManager::GameplayManager(Engine::IApplication& engine) : m_engine(engine)
+    GameplayManager::GameplayManager(yarep::IApplication& engine) : m_engine(engine)
     {
     }
 
@@ -15,14 +15,14 @@ namespace gameplay
     void GameplayManager::Initialize() const
     {
         m_engine.RegisterScene("MainMenu",
-                               [](const Engine::SceneManagement::SceneArgs& args)
+                               [](const yarep::SceneManagement::SceneArgs& args)
                                {
                                    return std::make_unique<MainMenuScene>();
                                }
         );
 
         m_engine.RegisterScene("Game",
-                               [](const Engine::SceneManagement::SceneArgs& args)
+                               [](const yarep::SceneManagement::SceneArgs& args)
                                {
                                    const auto game_scene_settings = std::any_cast<GameSceneSettings>(args.payload);
                                    return std::make_unique<GameScene>(game_scene_settings);
@@ -30,14 +30,14 @@ namespace gameplay
         );
 
         m_engine.RegisterScene("GameEnd",
-                               [](const Engine::SceneManagement::SceneArgs& args)
+                               [](const yarep::SceneManagement::SceneArgs& args)
                                {
                                    const auto game_end_data = std::any_cast<GameEndShowData>(args.payload);
                                    return std::make_unique<GameEndScene>(game_end_data);
                                }
         );
 
-        m_engine.SetInitialScene("MainMenu", Engine::SceneManagement::SceneArgs{});
+        m_engine.SetInitialScene("MainMenu", yarep::SceneManagement::SceneArgs{});
         // m_engine.SetInitialScene("Game", Engine::SceneManagement::SceneArgs{
         //                              GameSceneSettings{
         //                                  Difficulty::Developer

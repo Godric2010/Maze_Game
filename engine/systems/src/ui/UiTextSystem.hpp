@@ -8,7 +8,7 @@
 #include "ui/Text.hpp"
 
 
-namespace Engine::Systems {
+namespace yarep::Systems {
     ECS_SYSTEM(UiTextSystem, Ui, TAGS(ENGINE), DEPENDENCIES())
     class UiTextSystem : public Ecs::IEngineSystem {
     public:

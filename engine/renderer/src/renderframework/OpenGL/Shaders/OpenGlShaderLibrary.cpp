@@ -3,7 +3,7 @@
 #include <ranges>
 
 
-namespace Engine::Renderer::RenderFramework::OpenGl
+namespace yarep::Renderer::RenderFramework::OpenGl
 {
     OpenGlShaderLibrary::OpenGlShaderLibrary(AssetHandling::AssetHandler* asset_handler)
     {

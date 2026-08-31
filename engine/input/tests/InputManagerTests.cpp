@@ -6,9 +6,9 @@
 
 #include "../src/InputManager.hpp"
 
-using namespace Engine::Input;
+using namespace yarep::Input;
 
-class FakeEnvInput : public Engine::Environment::IEnvInput
+class FakeEnvInput : public yarep::Environment::IEnvInput
 {
     public:
         explicit FakeEnvInput() = default;
@@ -25,24 +25,24 @@ class FakeEnvInput : public Engine::Environment::IEnvInput
         {
         }
 
-        Engine::Environment::AppEventsSnapshot GetAppEventSnapshot() override
+        yarep::Environment::AppEventsSnapshot GetAppEventSnapshot() override
         {
-            const auto app_snapshot = Engine::Environment::AppEventsSnapshot{
+            const auto app_snapshot = yarep::Environment::AppEventsSnapshot{
                 .is_closed = false,
                 .has_focus = true,
             };
             return app_snapshot;
         }
 
-        Engine::Environment::InputSnapshot GetInputSnapshot() override
+        yarep::Environment::InputSnapshot GetInputSnapshot() override
         {
-            std::unordered_set keys_down = {Engine::Environment::Key::Space};
-            std::unordered_set keys_up = {Engine::Environment::Key::A};
-            std::unordered_set keys_held = {Engine::Environment::Key::Space};
-            std::unordered_set mouse_buttons_down = {Engine::Environment::MouseButton::Left};
-            std::unordered_set mouse_buttons_up = {Engine::Environment::MouseButton::Right};
-            std::unordered_set mouse_buttons_held = {Engine::Environment::MouseButton::Left};
-            const auto input_snapshot = Engine::Environment::InputSnapshot(glm::vec2(0.1, 0.3),
+            std::unordered_set keys_down = {yarep::Environment::Key::Space};
+            std::unordered_set keys_up = {yarep::Environment::Key::A};
+            std::unordered_set keys_held = {yarep::Environment::Key::Space};
+            std::unordered_set mouse_buttons_down = {yarep::Environment::MouseButton::Left};
+            std::unordered_set mouse_buttons_up = {yarep::Environment::MouseButton::Right};
+            std::unordered_set mouse_buttons_held = {yarep::Environment::MouseButton::Left};
+            const auto input_snapshot = yarep::Environment::InputSnapshot(glm::vec2(0.1, 0.3),
                                                                            glm::vec2(400, 658),
                                                                            keys_down,
                                                                            keys_held,

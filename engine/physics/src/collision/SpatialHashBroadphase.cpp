@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <unordered_set>
 
-namespace Engine::Physics::Collision {
+namespace yarep::Physics::Collision {
     SpatialHashBroadphase::SpatialHashBroadphase(const float cell_size) {
         m_cell_size = cell_size;
         m_inv_cell_size = (1.0f / cell_size);

@@ -6,7 +6,7 @@
 #include "Assets/AssetHandleTypes.hpp"
 #include "Input/InputTypes.hpp"
 
-namespace Engine::AssetHandling
+namespace yarep::AssetHandling
 {
     struct Asset
     {

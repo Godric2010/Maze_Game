@@ -5,7 +5,7 @@
 #include <AssetHandler.hpp>
 #include "Types.hpp"
 
-namespace Engine::Text {
+namespace yarep::Text {
     /**
      * @struct GlyphMetrics
      * Contains the metrics for one glyph, loaded from the freetype library out of the font-file

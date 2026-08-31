@@ -1,6 +1,6 @@
 #include "ServiceLocator.hpp"
 
-namespace Engine::Core {
+namespace yarep::Core {
     inline ServiceLocator::ServiceLocator() = default;
 
     inline ServiceLocator::~ServiceLocator() = default;

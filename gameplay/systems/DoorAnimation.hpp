@@ -7,7 +7,7 @@
 
 namespace gameplay::systems {
     ECS_SYSTEM(DoorAnimation, Update, TAGS(), DEPENDENCIES())
-    class DoorAnimation : public Engine::Ecs::ISystem {
+    class DoorAnimation : public yarep::Ecs::ISystem {
     public:
         DoorAnimation() = default;
 
@@ -17,9 +17,9 @@ namespace gameplay::systems {
 
         void Run(float delta_time) override;
 
-        void OnTriggerEnter(const Engine::Ecs::EntityId& target, const Engine::Ecs::EntityId& other) override;
+        void OnTriggerEnter(const yarep::Ecs::EntityId& target, const yarep::Ecs::EntityId& other) override;
 
-        void OnTriggerExit(const Engine::Ecs::EntityId& target, const Engine::Ecs::EntityId& other) override;
+        void OnTriggerExit(const yarep::Ecs::EntityId& target, const yarep::Ecs::EntityId& other) override;
 
     private:
         bool m_key_item_detected = false;
@@ -28,8 +28,8 @@ namespace gameplay::systems {
         float m_door_open_position = 1.8f;
         float m_door_close_position = 0.0f;
 
-        std::unordered_map<Engine::Ecs::EntityId, Engine::Components::BoxCollider> m_disabled_box_colliders;
+        std::unordered_map<yarep::Ecs::EntityId, yarep::Components::BoxCollider> m_disabled_box_colliders;
 
-        void CheckIfPlayerHasKey(const Engine::Ecs::EntityId target, const Engine::Ecs::EntityId door_trigger_entity);
+        void CheckIfPlayerHasKey(const yarep::Ecs::EntityId target, const yarep::Ecs::EntityId door_trigger_entity);
     };
 } // namespace

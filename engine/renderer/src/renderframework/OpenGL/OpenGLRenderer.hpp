@@ -13,7 +13,7 @@
 #include "Shaders/OpenGlShaderLibrary.hpp"
 #include "Textures/OpenGLTextureLibrary.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGl {
+namespace yarep::Renderer::RenderFramework::OpenGl {
     class OpenGlRenderer final : public IRenderer {
     public:
         explicit OpenGlRenderer(const Environment::WindowContext& window_context,

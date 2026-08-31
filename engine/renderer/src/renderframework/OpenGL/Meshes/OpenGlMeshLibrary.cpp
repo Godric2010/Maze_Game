@@ -4,7 +4,7 @@
 #include <ranges>
 #include <GL/glew.h>
 
-namespace Engine::Renderer::RenderFramework::OpenGl {
+namespace yarep::Renderer::RenderFramework::OpenGl {
     OpenGlMeshLibrary::OpenGlMeshLibrary() {
         m_meshes.clear();
     }

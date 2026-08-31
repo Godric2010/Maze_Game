@@ -6,7 +6,7 @@
 #include "IRenderController.hpp"
 #include "Window.hpp"
 
-namespace Engine::Renderer {
+namespace yarep::Renderer {
     class RenderControllerFactory {
     public:
         static std::unique_ptr<IRenderController> CreateRenderController(

@@ -9,7 +9,7 @@
 #include "renderframework/OpenGL/OpenGLRenderer.hpp"
 
 
-namespace Engine::Renderer
+namespace yarep::Renderer
 {
     RenderController::RenderController(const Environment::WindowContext& window_context,
                                        AssetHandling::AssetHandler* asset_handler)

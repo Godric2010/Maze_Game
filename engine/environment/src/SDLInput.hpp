@@ -4,7 +4,7 @@
 #include "EnvInput.hpp"
 #include "SDLWindow.hpp"
 
-namespace Engine::Environment {
+namespace yarep::Environment {
     class SDLInput final : public IEnvInput {
     public:
         explicit SDLInput(SDLWindow& window);

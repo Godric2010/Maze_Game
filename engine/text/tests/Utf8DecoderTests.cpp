@@ -21,7 +21,7 @@ static bool HasInvalidCharacters(const std::vector<uint32_t> &codepoints) {
 }
 
 TEST_CASE("Utf8DecoderTests - Set valid string, expect only valid codepoints", "[text][fast]") {
-    const auto decoder = std::make_unique<Engine::Text::Utf8Decoder>();
+    const auto decoder = std::make_unique<yarep::Text::Utf8Decoder>();
 
     SECTION("Use simple text, no spaces, no special characters") {
         const std::string text = "MyTestText";
@@ -54,7 +54,7 @@ TEST_CASE("Utf8DecoderTests - Set valid string, expect only valid codepoints", "
 }
 
 TEST_CASE("Utf8DecoderTests - Set non-ascii string, expect invalid codepoints", "[text][fast]") {
-    const auto decoder = std::make_unique<Engine::Text::Utf8Decoder>();
+    const auto decoder = std::make_unique<yarep::Text::Utf8Decoder>();
 
     SECTION("Invalid UTF-8 char") {
         const std::string text = "❤️";

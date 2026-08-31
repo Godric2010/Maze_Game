@@ -1,9 +1,9 @@
 #include "UiTextSystem.hpp"
 #include "ui/RectTransform.hpp"
 
-using namespace Engine::Systems::UI;
+using namespace yarep::Systems::UI;
 
-namespace Engine::Systems
+namespace yarep::Systems
 {
     UiTextSystem::UiTextSystem()
     {

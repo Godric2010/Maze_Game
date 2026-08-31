@@ -5,7 +5,7 @@
 #pragma once
 #include <glm/glm.hpp>
 
-namespace Engine::Components {
+namespace yarep::Components {
     struct Camera {
         Camera() {
             m_width = 0;

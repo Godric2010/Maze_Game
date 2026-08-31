@@ -6,7 +6,7 @@
 #include <cstdint>
 #include "Ecs/Types.hpp"
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
     inline constexpr EntityId INVALID_ENTITY_ID = 0;
 
     inline constexpr uint64_t INDEX_BITS = 40;

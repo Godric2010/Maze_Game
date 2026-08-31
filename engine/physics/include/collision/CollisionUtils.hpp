@@ -9,7 +9,7 @@
 #include "math/Overlap.hpp"
 #include "math/Types.hpp"
 
-namespace Engine::Physics::Collision {
+namespace yarep::Physics::Collision {
     inline bool CheckOverlapSphereWithBox(const BoxColliderInfo &box_collider, const glm::vec3 &position,
                                           const float radius) {
         const auto sphere = Math::Sphere{.center = position, .radius = radius};

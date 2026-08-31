@@ -10,7 +10,7 @@
 #include <ui/Text.hpp>
 
 
-namespace Engine::Systems {
+namespace yarep::Systems {
     RenderSystem::RenderSystem() {
         m_ambient_light = Renderer::AmbientLightAsset{
             .color = glm::vec3(1.0f, 1.0f, 1.0f),

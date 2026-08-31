@@ -9,8 +9,8 @@
 #include "AssetTypes.hpp"
 #include "../src/Materials/MaterialImporter.hpp"
 
-using namespace Engine::AssetHandling;
-using namespace Engine::AssetHandling::Materials;
+using namespace yarep::AssetHandling;
+using namespace yarep::AssetHandling::Materials;
 
 static void CompareTextureMaterialFileData(const MaterialTextureFileData& actual,
                                            const MaterialTextureFileData& expected)

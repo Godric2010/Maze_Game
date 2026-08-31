@@ -8,7 +8,7 @@
 #include "IDebugConsole.hpp"
 #include "../src/DebugConsole.hpp"
 
-namespace Engine::Debug
+namespace yarep::Debug
 {
     static std::unique_ptr<IDebugConsole> CreateDebugConsole(Text::TextController* text,
                                                              Renderer::IRenderController* render,

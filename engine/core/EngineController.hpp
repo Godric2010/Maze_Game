@@ -13,7 +13,7 @@
 #include "../scenemanagement/src/SceneManager.hpp"
 #include "../systems/src/CacheManager.hpp"
 
-namespace Engine::Core {
+namespace yarep::Core {
     /**
      * @class EngineController
      * The central engine controller that brings all elements of the engine together.

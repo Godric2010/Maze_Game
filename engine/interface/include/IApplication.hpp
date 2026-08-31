@@ -6,7 +6,7 @@
 #include "Scene/SceneArgs.hpp"
 #include "Input/InputTypes.hpp"
 
-namespace Engine {
+namespace yarep {
     class IApplication {
     public:
         virtual ~IApplication() = default;

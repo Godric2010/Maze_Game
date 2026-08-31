@@ -2,7 +2,7 @@
 #include <spdlog/spdlog.h>
 #include "IFileManager.hpp"
 
-namespace Engine::Text {
+namespace yarep::Text {
     TextController::TextController(AssetHandling::AssetHandler* asset_handler) {
         m_font_manager = std::make_unique<FontManager>(asset_handler);
         m_utf8_decoder = std::make_unique<Utf8Decoder>();

@@ -8,7 +8,7 @@
 #include <spdlog/spdlog.h>
 
 
-namespace Engine::Components {
+namespace yarep::Components {
     struct Transform {
     private:
         glm::vec3 m_position{};

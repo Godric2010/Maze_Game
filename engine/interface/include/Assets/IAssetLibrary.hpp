@@ -8,7 +8,7 @@
 
 #include "AssetHandleTypes.hpp"
 
-namespace Engine::Assets
+namespace yarep::Assets
 {
     class IAssetLibrary
     {

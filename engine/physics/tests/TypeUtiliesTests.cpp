@@ -16,32 +16,32 @@ void AssertVec3IsAsExpected(const glm::vec3 &expected, const glm::vec3 &actual) 
 TEST_CASE("Sphere Utilities - Resulting bounding box is as expected") {
     SECTION(
         "Sphere with valid radius - Bounding box center is sphere position") {
-        constexpr auto s = Engine::Physics::Math::Sphere{
+        constexpr auto s = yarep::Physics::Math::Sphere{
             .center = glm::vec3{4, 2, 1},
             .radius = 5
         };
 
-        const auto [min, max] = Engine::Physics::Math::Util::FromSphere(s);
+        const auto [min, max] = yarep::Physics::Math::Util::FromSphere(s);
         const auto result_center = min + ((max - min) * 0.5f);
         AssertVec3IsAsExpected(s.center, result_center);
     }
 
     SECTION("Sphere with negative radius - No Bounding box gets build") {
-        constexpr auto s = Engine::Physics::Math::Sphere{
+        constexpr auto s = yarep::Physics::Math::Sphere{
             .center = glm::vec3{4, 2, 1},
             .radius = -5
         };
 
-        REQUIRE_THROWS(Engine::Physics::Math::Util::FromSphere(s));
+        REQUIRE_THROWS(yarep::Physics::Math::Util::FromSphere(s));
     }
 
     SECTION("Sphere with no radius - Exception gets thrown") {
-        constexpr auto s = Engine::Physics::Math::Sphere{
+        constexpr auto s = yarep::Physics::Math::Sphere{
             .center = glm::vec3{4, 2, 1},
             .radius = 0,
         };
 
-        REQUIRE_THROWS(Engine::Physics::Math::Util::FromSphere(s));
+        REQUIRE_THROWS(yarep::Physics::Math::Util::FromSphere(s));
     }
 }
 
@@ -54,7 +54,7 @@ TEST_CASE("Orientated Bounding Box") {
 
     SECTION("Create OBB with no rotation - All values are as expected") {
         constexpr auto position = glm::vec3{1, 1, 1};
-        auto obb = Engine::Physics::Math::Util::BuildWorldObb(position, glm::vec3(0), width, height, depth);
+        auto obb = yarep::Physics::Math::Util::BuildWorldObb(position, glm::vec3(0), width, height, depth);
         AssertVec3IsAsExpected(position, obb.center);
         AssertVec3IsAsExpected(expected_half_extents, obb.half_extents);
     }

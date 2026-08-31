@@ -3,7 +3,7 @@
 #include <ui/RectTransform.hpp>
 #include "IEngineSystem.hpp"
 
-namespace Engine::Systems {
+namespace yarep::Systems {
     ECS_SYSTEM(RectTransformSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
     struct LayoutData {

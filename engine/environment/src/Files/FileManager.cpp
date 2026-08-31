@@ -5,7 +5,7 @@
 
 #include "ExecutablePath.hpp"
 
-namespace Engine::Environment::Files {
+namespace yarep::Environment::Files {
     FileManager::FileManager() {
         m_root_data_path = GetExecutableDirectory().string();
     }

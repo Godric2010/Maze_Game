@@ -12,7 +12,7 @@
 #include <glm/gtc/epsilon.hpp>       // epsilonEqual
 #include <cmath>
 
-using namespace Engine::Physics::Math;
+using namespace yarep::Physics::Math;
 // ---- Helpers ----
 static bool ApproxVec3(const glm::vec3& a, const glm::vec3& b, const float eps = 1e-5f) {
     return length2(a - b) <= eps * eps;

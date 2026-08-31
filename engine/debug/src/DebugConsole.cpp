@@ -2,7 +2,7 @@
 
 #include <ranges>
 
-namespace Engine::Debug
+namespace yarep::Debug
 {
     DebugConsole::DebugConsole(Text::TextController* text_controller, Renderer::IRenderController* render_controller,
                                AssetHandling::AssetHandler* asset_handler,

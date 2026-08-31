@@ -7,7 +7,7 @@
 #include "../src/ComponentPool.hpp"
 #include "../src/Entity.hpp"
 
-using namespace Engine::Ecs;
+using namespace yarep::Ecs;
 
 class TestClass {
 public:

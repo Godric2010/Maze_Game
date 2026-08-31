@@ -3,9 +3,9 @@
 #include "Commands/UI/ButtonClickedCommand.hpp"
 #include "ui/Button.hpp"
 
-using namespace Engine::Systems::UI;
+using namespace yarep::Systems::UI;
 
-namespace Engine::Systems
+namespace yarep::Systems
 {
     UiButtonSystem::UiButtonSystem()
     {

@@ -9,7 +9,7 @@
 
 #include "AssetTypes.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGl
+namespace yarep::Renderer::RenderFramework::OpenGl
 {
     struct GLUploadFormat
     {

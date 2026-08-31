@@ -7,7 +7,7 @@
 
 #include "../src/Entity.hpp"
 
-namespace Engine::Ecs {
+namespace yarep::Ecs {
 
     class PhysicsEventBus {
         using CollisionEventFunc = std::function<void(EntityId, EntityId)>;

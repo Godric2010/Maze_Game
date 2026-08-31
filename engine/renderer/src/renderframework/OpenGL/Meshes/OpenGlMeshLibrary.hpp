@@ -6,7 +6,7 @@
 #include "OpenGLMesh.hpp"
 #include "../../../resources/IGpuMeshLibrary.hpp"
 
-namespace Engine::Renderer::RenderFramework::OpenGl
+namespace yarep::Renderer::RenderFramework::OpenGl
 {
     class OpenGlMeshLibrary : public Resources::IGpuMeshLibrary
     {

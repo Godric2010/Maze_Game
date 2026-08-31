@@ -8,5 +8,5 @@
 #include "SystemManager.hpp"
 
 namespace MazeGame{
-    std::vector<Engine::Ecs::SystemMeta> GetSystemsFromGeneratedSource();
+    std::vector<yarep::Ecs::SystemMeta> GetSystemsFromGeneratedSource();
 }

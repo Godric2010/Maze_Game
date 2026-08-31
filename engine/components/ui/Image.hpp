@@ -6,7 +6,7 @@
 #include <glm/vec4.hpp>
 
 // ReSharper disable once CppInconsistentNaming
-namespace Engine::Components::UI{
+namespace yarep::Components::UI{
   struct Image{
     glm::vec4 color;
 };

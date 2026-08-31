@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Engine::Renderer::RenderFramework::OpenGl
+namespace yarep::Renderer::RenderFramework::OpenGl
 {
     struct OpenGLMesh
     {

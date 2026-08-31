@@ -4,7 +4,7 @@
 
 #include "TextController.hpp"
 
-namespace Engine::Systems::UI {
+namespace yarep::Systems::UI {
     class UiCache {
     public:
         struct TextElement {

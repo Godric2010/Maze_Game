@@ -2,7 +2,7 @@
 #include "../include/Datatypes.hpp"
 #include "AssetTypes.hpp"
 
-namespace Engine::Renderer::RenderFramework
+namespace yarep::Renderer::RenderFramework
 {
     /**
      *@class IRenderer

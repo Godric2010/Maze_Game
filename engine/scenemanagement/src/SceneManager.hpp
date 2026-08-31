@@ -6,7 +6,7 @@
 #include "Scene/ISceneManager.hpp"
 #include "Scene/SceneArgs.hpp"
 
-namespace Engine::SceneManagement
+namespace yarep::SceneManagement
 {
     class SceneManager : public ISceneManager
     {

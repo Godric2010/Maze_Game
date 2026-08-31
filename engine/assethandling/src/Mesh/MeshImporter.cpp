@@ -6,7 +6,7 @@
 #include <sstream>
 #include <unordered_map>
 
-namespace Engine::AssetHandling::Mesh
+namespace yarep::AssetHandling::Mesh
 {
     void MeshImporter::BuildMeshAssetFromObj(const std::string& obj_string,
                                              std::vector<MeshVertexAsset>& vertices,

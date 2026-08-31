@@ -4,7 +4,7 @@
 #include "collision/IBroadphase.hpp"
 #include "Ecs/Types.hpp"
 
-namespace Engine::Physics::Collision {
+namespace yarep::Physics::Collision {
     struct CellKey {
         int x, y, z;
         bool operator==(const CellKey& other) const noexcept{ return x == other.x && y == other.y && z == other.z; }

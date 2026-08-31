@@ -2,7 +2,7 @@
 #include "EnvironmentBuilder.hpp"
 #include "AssetTypesImpl.hpp"
 
-namespace Engine::AssetHandling {
+namespace yarep::AssetHandling {
     inline AssetHandler::AssetHandler() {
         m_file_reader = Environment::EnvironmentBuilder::CreateFileManager();
     }

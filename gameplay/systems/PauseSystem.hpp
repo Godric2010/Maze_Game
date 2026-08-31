@@ -4,7 +4,7 @@
 namespace gameplay::systems {
     ECS_SYSTEM(PauseSystem, Update, TAGS(), DEPENDENCIES())
 
-    class PauseSystem : public Engine::Ecs::ISystem {
+    class PauseSystem : public yarep::Ecs::ISystem {
     public:
         PauseSystem();
 

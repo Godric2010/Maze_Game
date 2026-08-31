@@ -1,6 +1,6 @@
 #include "CameraSystem.hpp"
 
-namespace Engine::Systems {
+namespace yarep::Systems {
     CameraSystem::CameraSystem() = default;
 
     CameraSystem::~CameraSystem() = default;

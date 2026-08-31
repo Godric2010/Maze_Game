@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <spdlog/spdlog.h>
 
-namespace Engine::Text {
+namespace yarep::Text {
     FontManager::FontManager(AssetHandling::AssetHandler* asset_handler) {
         m_asset_handler = asset_handler;
     }

@@ -7,7 +7,7 @@
 #include <memory>
 #include "AssetTypes.hpp"
 
-namespace Engine::Renderer
+namespace yarep::Renderer
 {
     class IRenderController 
     {

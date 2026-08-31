@@ -4,7 +4,7 @@
 #include "SystemBinder.hpp"
 #include "SystemMetaSorter.hpp"
 
-namespace Engine::Ecs
+namespace yarep::Ecs
 {
     SystemManager::SystemManager(const std::vector<SystemMeta>& system_metas,
                                  IServiceToEcsProvider* service_provider, Systems::ICacheManager* cache_manager)

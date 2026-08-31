@@ -11,7 +11,7 @@ namespace gameplay::systems {
     void KeyAnimation::Run(float delta_time) {
         auto entities = GameWorld()->GetComponentsOfType<components::KeyItem>();
         for (const auto entityId: entities | std::views::values) {
-            const auto transform = GameWorld()->GetComponent<Engine::Components::Transform>(entityId);
+            const auto transform = GameWorld()->GetComponent<yarep::Components::Transform>(entityId);
 
             auto rotation = transform->GetRotation();
             rotation.y += 10 * delta_time * m_rotation_speed;

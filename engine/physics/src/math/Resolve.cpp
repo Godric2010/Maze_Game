@@ -1,7 +1,7 @@
 #include "../../include/math/Resolve.hpp"
 
 
-namespace Engine::Physics::Math {
+namespace yarep::Physics::Math {
     namespace {
         constexpr float k_epsilon = 1e-6f;
     }
