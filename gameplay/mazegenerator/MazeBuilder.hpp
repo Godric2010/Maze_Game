@@ -7,7 +7,7 @@
 
 #include "Assets/IAssetLibrary.hpp"
 
-namespace Gameplay::Mazegenerator {
+namespace gameplay::maze_generator {
     class MazeBuilder {
     public:
         MazeBuilder(Engine::SceneManagement::SceneWorld* game_world, Engine::Assets::IAssetLibrary* renderer,

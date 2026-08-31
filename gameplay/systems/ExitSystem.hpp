@@ -2,7 +2,7 @@
 #include "IEngineSystem.hpp"
 #include "Ecs/Types.hpp"
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     ECS_SYSTEM(ExitSystem, Update, TAGS(), DEPENDENCIES())
 
     class ExitSystem final : public Engine::Ecs::ISystem {

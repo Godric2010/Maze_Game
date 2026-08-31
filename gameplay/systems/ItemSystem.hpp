@@ -1,7 +1,7 @@
 #pragma once
 #include "SystemManager.hpp"
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     ECS_SYSTEM(ItemSystem, Update, TAGS(), DEPENDENCIES())
 
     class ItemSystem : public Engine::Ecs::ISystem {

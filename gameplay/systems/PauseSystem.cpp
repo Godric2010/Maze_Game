@@ -4,7 +4,7 @@
 #include "../commands/PauseCommand.hpp"
 
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     PauseSystem::PauseSystem() = default;
 
     PauseSystem::~PauseSystem() = default;
@@ -19,7 +19,7 @@ namespace Gameplay::Systems {
 
         if (input.HasAction("resume")) {
             std::cout << "Resume game!" << std::endl;
-            const auto pause_command = Commands::PauseCommand(false);
+            const auto pause_command = commands::PauseCommand(false);
             SendCommand(pause_command);
             return;
         }

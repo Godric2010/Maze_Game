@@ -7,7 +7,7 @@
 #include "../components/Exit.hpp"
 #include "../components/Inventory.hpp"
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     void ExitSystem::Initialize() {
     }
 
@@ -26,13 +26,13 @@ namespace Gameplay::Systems {
 
     void ExitSystem::CheckIfPlayerHasKeyToExit(const Engine::Ecs::EntityId target_entity,
                                                const Engine::Ecs::EntityId potential_exit_entity) const {
-        const auto inventory = GameWorld()->GetComponent<Components::Inventory>(target_entity);
-        if (!inventory || !GameWorld()->GetComponent<Components::Exit>(potential_exit_entity))
+        const auto inventory = GameWorld()->GetComponent<components::Inventory>(target_entity);
+        if (!inventory || !GameWorld()->GetComponent<components::Exit>(potential_exit_entity))
             return;
 
         if (inventory->key_collected) {
             std::cout << "Exit successful! You win!!!!" << std::endl;
-            const auto level_finished = Commands::LevelFinished();
+            const auto level_finished = commands::LevelFinished();
             SendCommand(level_finished);
         } else {
             std::cout << "Exit failed! You need the key to exit!" << std::endl;

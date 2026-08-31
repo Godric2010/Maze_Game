@@ -8,7 +8,7 @@
 #include "../components/ui/RectTransform.hpp"
 #include "../components/ui/Text.hpp"
 
-namespace Gameplay {
+namespace gameplay {
     GameEndScene::GameEndScene(const GameEndShowData game_end_show_data) {
         m_time_to_completion = game_end_show_data.time_to_completion;
     }

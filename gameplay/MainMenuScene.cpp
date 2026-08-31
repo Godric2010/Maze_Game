@@ -8,7 +8,7 @@
 #include "ui/Text.hpp"
 
 
-namespace Gameplay
+namespace gameplay
 {
     MainMenuScene::MainMenuScene()
     {

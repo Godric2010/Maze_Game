@@ -4,7 +4,7 @@
 #include <ranges>
 #include <stack>
 
-namespace Gameplay::Mazegenerator {
+namespace gameplay::maze_generator {
     MazeAlgorithm::MazeAlgorithm(const uint32_t width, const uint32_t height, const int seed) {
         m_grid_width = width;
         m_grid_height = height;

@@ -1,7 +1,7 @@
 #pragma once
 #include "IEngineSystem.hpp"
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     ECS_SYSTEM(PauseSystem, Update, TAGS(), DEPENDENCIES())
 
     class PauseSystem : public Engine::Ecs::ISystem {

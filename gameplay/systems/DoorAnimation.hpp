@@ -5,7 +5,7 @@
 #include "../components/Door.hpp"
 #include "../components/DoorTrigger.hpp"
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     ECS_SYSTEM(DoorAnimation, Update, TAGS(), DEPENDENCIES())
     class DoorAnimation : public Engine::Ecs::ISystem {
     public:

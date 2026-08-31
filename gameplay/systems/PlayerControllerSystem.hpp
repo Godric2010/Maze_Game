@@ -4,7 +4,7 @@
 
 ECS_SYSTEM(PlayerControllerSystem, Input, TAGS(), DEPENDENCIES())
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     class PlayerControllerSystem : public Engine::Ecs::ISystem {
     public:
         PlayerControllerSystem();

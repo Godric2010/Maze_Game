@@ -4,7 +4,7 @@
 #include "IScene.hpp"
 #include "mazegenerator/MazeBuilder.hpp"
 
-namespace Gameplay {
+namespace gameplay {
     enum class Difficulty : int {
         Developer = 0,
         Easy = 1,
@@ -29,7 +29,7 @@ namespace Gameplay {
         void OnExit() override;
 
     private:
-        std::unique_ptr<Mazegenerator::MazeBuilder> m_maze_builder;
+        std::unique_ptr<maze_generator::MazeBuilder> m_maze_builder;
         Difficulty m_difficulty;
 
 

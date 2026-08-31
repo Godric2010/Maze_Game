@@ -1,7 +1,7 @@
 #pragma once
 #include "IScene.hpp"
 
-namespace Gameplay {
+namespace gameplay {
     struct GameEndShowData {
         float time_to_completion;
     };

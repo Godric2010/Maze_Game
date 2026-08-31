@@ -3,12 +3,12 @@
 #include <iostream>
 #include <ostream>
 
-namespace Gameplay {
+namespace gameplay {
     DebugGridDrawer::DebugGridDrawer() = default;
 
     DebugGridDrawer::~DebugGridDrawer() = default;
 
-    void DebugGridDrawer::DrawGrid(Mazegenerator::Maze &maze) {
+    void DebugGridDrawer::DrawGrid(maze_generator::Maze &maze) {
         m_start_idx = maze.entrance_cell;
         m_end_idx = maze.exit_cell;
         m_key_idx = maze.key_cell;
@@ -31,15 +31,15 @@ namespace Gameplay {
         std::cout << output << std::endl;
     }
 
-    std::string DebugGridDrawer::DrawCellTop(const Mazegenerator::Cell &c) {
+    std::string DebugGridDrawer::DrawCellTop(const maze_generator::Cell &c) {
         return std::string("+") + (c.wall_bits & (1u << 2) ? "---" : "   ") + "+";
     }
 
-    std::string DebugGridDrawer::DrawCellBottom(const Mazegenerator::Cell &c) {
+    std::string DebugGridDrawer::DrawCellBottom(const maze_generator::Cell &c) {
         return std::string("+") + (c.wall_bits & (1u << 0) ? "---" : "   ") + "+";
     }
 
-    std::string DebugGridDrawer::DrawCellMid(const Mazegenerator::Cell &c) {
+    std::string DebugGridDrawer::DrawCellMid(const maze_generator::Cell &c) {
         std::string left = c.wall_bits & (1u << 1) ? "|" : " ";
 
         std::string mid = " . ";
@@ -58,7 +58,7 @@ namespace Gameplay {
         return left + mid + right;
     }
 
-    Mazegenerator::Cell &DebugGridDrawer::GetCell(std::vector<Mazegenerator::Cell> &cells, const uint32_t x,
+    maze_generator::Cell &DebugGridDrawer::GetCell(std::vector<maze_generator::Cell> &cells, const uint32_t x,
                                                   const uint32_t y) {
         for (uint32_t i = 0; i < cells.size(); i++) {
             if (cells[i].cell_index.x == x && cells[i].cell_index.y == y) {

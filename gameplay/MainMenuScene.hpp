@@ -2,7 +2,7 @@
 #include "IScene.hpp"
 #include "ui/RectTransform.hpp"
 
-namespace Gameplay {
+namespace gameplay {
     enum class MenuState {
         Main,
         DifficultySelect,

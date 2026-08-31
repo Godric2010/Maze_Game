@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Gameplay::Components {
+namespace gameplay::components {
     struct DoorTrigger {
     public:
         Engine::Ecs::EntityId door;

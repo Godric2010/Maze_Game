@@ -12,7 +12,7 @@
 #include "../components/KeyItem.hpp"
 #include "Assets/IAssetLibrary.hpp"
 
-namespace Gameplay::Mazegenerator {
+namespace gameplay::maze_generator {
     MazeBuilder::MazeBuilder(Engine::SceneManagement::SceneWorld* game_world,
                              Engine::Assets::IAssetLibrary* renderer,
                              const bool enable_debug_view) : m_maze() {
@@ -117,7 +117,7 @@ namespace Gameplay::Mazegenerator {
         };
         m_game_world->AddComponent(entity, collider);
 
-        m_game_world->AddComponent(entity, Components::KeyItem{});
+        m_game_world->AddComponent(entity, components::KeyItem{});
     }
 
     void MazeBuilder::CreateExitTrigger(const CellIndex& cell_index) const {
@@ -140,7 +140,7 @@ namespace Gameplay::Mazegenerator {
             .depth = 0.5f
         };
         m_game_world->AddComponent(entity, collider);
-        m_game_world->AddComponent(entity, Components::Exit{});
+        m_game_world->AddComponent(entity, components::Exit{});
     }
 
     void MazeBuilder::CreateCeilingLight(CellIndex cell_index) const {
@@ -295,7 +295,7 @@ namespace Gameplay::Mazegenerator {
         m_game_world->AddComponent(frame_entity, frame_mesh_component);
         m_game_world->AddComponent(frame_entity, frame_transform_component);
         m_game_world->AddComponent(frame_entity, frame_door_trigger);
-        m_game_world->AddComponent(frame_entity, Components::DoorTrigger{.door = door_entity});
+        m_game_world->AddComponent(frame_entity, components::DoorTrigger{.door = door_entity});
 
 
         const auto door_mesh_component = Engine::Components::MeshRenderer{
@@ -316,7 +316,7 @@ namespace Gameplay::Mazegenerator {
         m_game_world->AddComponent(door_entity, door_mesh_component);
         m_game_world->AddComponent(door_entity, door_transform_component);
         m_game_world->AddComponent(door_entity, door_collider);
-        m_game_world->AddComponent(door_entity, Components::Door{});
+        m_game_world->AddComponent(door_entity, components::Door{});
     }
 
 

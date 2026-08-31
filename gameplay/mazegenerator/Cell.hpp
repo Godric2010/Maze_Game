@@ -5,7 +5,7 @@
 #pragma once
 #include <vector>
 
-namespace Gameplay::Mazegenerator {
+namespace gameplay::maze_generator {
     /**
      * @struct CellIndex
      * @brief Represents a utility struct to manage and work with the index of a cell
@@ -79,8 +79,8 @@ namespace Gameplay::Mazegenerator {
 }
 
 template<>
-struct std::hash<Gameplay::Mazegenerator::CellIndex> {
-    std::size_t operator()(const Gameplay::Mazegenerator::CellIndex &index) const noexcept {
+struct std::hash<gameplay::maze_generator::CellIndex> {
+    std::size_t operator()(const gameplay::maze_generator::CellIndex &index) const noexcept {
         return (static_cast<std::size_t>(index.x) << 32) ^ index.y;
     }
 }; // namespace

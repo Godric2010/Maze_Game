@@ -14,7 +14,7 @@ struct App {
         m_engine_controller = std::make_unique<Engine::Core::EngineController>();
         m_engine_controller->Initialize(systems);
 
-        m_gameplay_manager = std::make_unique<Gameplay::GameplayManager>(*m_engine_controller);
+        m_gameplay_manager = std::make_unique<gameplay::GameplayManager>(*m_engine_controller);
         m_gameplay_manager->Initialize();
     }
 
@@ -29,7 +29,7 @@ struct App {
 
 private:
     std::unique_ptr<Engine::Core::EngineController> m_engine_controller;
-    std::unique_ptr<Gameplay::GameplayManager> m_gameplay_manager;
+    std::unique_ptr<gameplay::GameplayManager> m_gameplay_manager;
 };
 
 

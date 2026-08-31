@@ -7,7 +7,7 @@
 
 #include "Cell.hpp"
 
-namespace Gameplay::Mazegenerator {
+namespace gameplay::maze_generator {
     /**
      * The maze struct contains all information needed to build a maze from.
      */

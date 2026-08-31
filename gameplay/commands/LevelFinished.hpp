@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Gameplay::Commands {
+namespace gameplay::commands {
     class LevelFinished {
     public:
         LevelFinished() = default;

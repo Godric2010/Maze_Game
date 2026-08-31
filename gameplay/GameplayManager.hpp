@@ -1,7 +1,7 @@
 #pragma once
 #include <IApplication.hpp>
 
-namespace Gameplay {
+namespace gameplay {
     class GameplayManager {
     public:
         explicit GameplayManager(Engine::IApplication& engine);

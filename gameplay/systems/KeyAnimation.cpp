@@ -4,12 +4,12 @@
 #include "Transform.hpp"
 #include "../components/KeyItem.hpp"
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     void KeyAnimation::Initialize() {
     }
 
     void KeyAnimation::Run(float delta_time) {
-        auto entities = GameWorld()->GetComponentsOfType<Components::KeyItem>();
+        auto entities = GameWorld()->GetComponentsOfType<components::KeyItem>();
         for (const auto entityId: entities | std::views::values) {
             const auto transform = GameWorld()->GetComponent<Engine::Components::Transform>(entityId);
 

@@ -3,7 +3,7 @@
 
 #include "Ecs/ISystem.hpp"
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     ECS_SYSTEM(KeyAnimation, Update, TAGS(), DEPENDENCIES())
 
     class KeyAnimation : public Engine::Ecs::ISystem {

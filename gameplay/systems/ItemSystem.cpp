@@ -3,7 +3,7 @@
 #include "../components/KeyItem.hpp"
 #include "../components/ui/Image.hpp"
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     ItemSystem::ItemSystem() = default;
 
     void ItemSystem::Initialize() {
@@ -18,8 +18,8 @@ namespace Gameplay::Systems {
 
     void ItemSystem::CheckIfItemGotPickedUp(const Engine::Ecs::EntityId target_entity,
                                             const Engine::Ecs::EntityId potential_item_entity) const {
-        const auto player_inventory = GameWorld()->GetComponent<Components::Inventory>(target_entity);
-        const auto is_key_item = GameWorld()->GetComponent<Components::KeyItem>(potential_item_entity) != nullptr;
+        const auto player_inventory = GameWorld()->GetComponent<components::Inventory>(target_entity);
+        const auto is_key_item = GameWorld()->GetComponent<components::KeyItem>(potential_item_entity) != nullptr;
 
         if (player_inventory != nullptr && is_key_item) {
             player_inventory->key_collected = true;

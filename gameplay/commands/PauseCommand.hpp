@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace Gameplay::Commands {
+namespace gameplay::commands {
     class PauseCommand {
     public:
         explicit PauseCommand(const bool is_paused) { m_is_paused = is_paused; };

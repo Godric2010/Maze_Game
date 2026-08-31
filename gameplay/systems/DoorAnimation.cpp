@@ -2,7 +2,7 @@
 
 #include "Collider.hpp"
 
-namespace Gameplay::Systems {
+namespace gameplay::systems {
     void DoorAnimation::Initialize() {
         ISystem::Initialize();
     }
@@ -12,20 +12,20 @@ namespace Gameplay::Systems {
     }
 
     void DoorAnimation::OnTriggerExit(const Engine::Ecs::EntityId& target, const Engine::Ecs::EntityId& other) {
-        const auto is_player = GameWorld()->GetComponent<Components::Inventory>(target) != nullptr;
-        const auto door_trigger = GameWorld()->GetComponent<Components::DoorTrigger>(other);
+        const auto is_player = GameWorld()->GetComponent<components::Inventory>(target) != nullptr;
+        const auto door_trigger = GameWorld()->GetComponent<components::DoorTrigger>(other);
         if (!is_player || door_trigger == nullptr) {
             return;
         }
 
-        auto door = GameWorld()->GetComponent<Components::Door>(door_trigger->door);
-        if (door->CurrentState != Components::Door::State::Closed) {
-            door->CurrentState = Components::Door::State::Closing;
+        auto door = GameWorld()->GetComponent<components::Door>(door_trigger->door);
+        if (door->CurrentState != components::Door::State::Closed) {
+            door->CurrentState = components::Door::State::Closing;
         }
     }
 
     void DoorAnimation::Run(float delta_time) {
-        auto doors = GameWorld()->GetComponentsOfType<Components::Door>();
+        auto doors = GameWorld()->GetComponentsOfType<components::Door>();
         for (const auto [door, entity]: doors) {
             auto door_transform = GameWorld()->GetComponent<Engine::Components::Transform>(entity);
             if (door_transform == nullptr) {
@@ -34,16 +34,16 @@ namespace Gameplay::Systems {
 
             auto door_position = door_transform->GetPosition();
             switch (door->CurrentState) {
-                case Components::Door::State::Opening:
+                case components::Door::State::Opening:
                     if (door_position.y > m_door_open_position) {
-                        door->CurrentState = Components::Door::State::Opened;
+                        door->CurrentState = components::Door::State::Opened;
                     }
                     door_position += glm::vec3(0, 1, 0) * delta_time * m_door_open_speed;
                     door_transform->SetPosition(door_position);
                     break;
-                case Components::Door::State::Closing:
+                case components::Door::State::Closing:
                     if (door_position.y < m_door_close_position) {
-                        door->CurrentState = Components::Door::State::Closed;
+                        door->CurrentState = components::Door::State::Closed;
                     }
 
                     if (GameWorld()->GetComponent<Engine::Components::BoxCollider>(entity) == nullptr) {
@@ -57,7 +57,7 @@ namespace Gameplay::Systems {
                     door_position += glm::vec3(0, -1, 0) * delta_time * m_door_open_speed;
                     door_transform->SetPosition(door_position);
                     break;
-                case Components::Door::State::Opened: {
+                case components::Door::State::Opened: {
                     const auto box_collider = GameWorld()->GetComponent<Engine::Components::BoxCollider>(entity);
                     if (box_collider != nullptr) {
                         m_disabled_box_colliders[entity] = *box_collider;
@@ -65,7 +65,7 @@ namespace Gameplay::Systems {
                     }
                     break;
                 }
-                case Components::Door::State::Closed:
+                case components::Door::State::Closed:
                     break;
             }
         }
@@ -73,16 +73,16 @@ namespace Gameplay::Systems {
 
     void DoorAnimation::CheckIfPlayerHasKey(const Engine::Ecs::EntityId target,
                                             const Engine::Ecs::EntityId door_trigger_entity) {
-        const auto player_inventory = GameWorld()->GetComponent<Components::Inventory>(target);
-        const auto door_trigger = GameWorld()->GetComponent<Components::DoorTrigger>(door_trigger_entity);
+        const auto player_inventory = GameWorld()->GetComponent<components::Inventory>(target);
+        const auto door_trigger = GameWorld()->GetComponent<components::DoorTrigger>(door_trigger_entity);
 
         if (player_inventory == nullptr || door_trigger == nullptr) {
             return;
         }
 
-        const auto door = GameWorld()->GetComponent<Components::Door>(door_trigger->door);
+        const auto door = GameWorld()->GetComponent<components::Door>(door_trigger->door);
         const bool door_unlocked = player_inventory->key_collected;
         m_key_item_detected = door_unlocked;
-        door->CurrentState = door_unlocked ? Components::Door::State::Opening : Components::Door::State::Closed;
+        door->CurrentState = door_unlocked ? components::Door::State::Opening : components::Door::State::Closed;
     }
 } // namespace

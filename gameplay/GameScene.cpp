@@ -16,7 +16,7 @@
 #include "ui/RectTransform.hpp"
 #include "ui/Text.hpp"
 
-namespace Gameplay
+namespace gameplay
 {
     GameScene::GameScene(const GameSceneSettings settings)
     {
@@ -44,14 +44,14 @@ namespace Gameplay
     {
         for (const auto& command : commands)
         {
-            if (command.type() == typeid(Commands::PauseCommand))
+            if (command.type() == typeid(commands::PauseCommand))
             {
-                auto pause_command = std::any_cast<Commands::PauseCommand>(command);
+                auto pause_command = std::any_cast<commands::PauseCommand>(command);
                 std::cout << "Enable Pause: " << (pause_command.IsPaused() ? "true" : "false") << std::endl;
                 pause_command.IsPaused() ? Pause() : Resume();
                 continue;
             }
-            if (command.type() == typeid(Commands::LevelFinished))
+            if (command.type() == typeid(commands::LevelFinished))
             {
                 const auto end_time = std::chrono::steady_clock::now();
                 const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - m_start_time).
@@ -95,7 +95,7 @@ namespace Gameplay
     void GameScene::CreateMaze()
     {
       
-        m_maze_builder = std::make_unique<Mazegenerator::MazeBuilder>(&World(),
+        m_maze_builder = std::make_unique<maze_generator::MazeBuilder>(&World(),
                                                                       &Assets(),
                                                                       true
         );
@@ -184,7 +184,7 @@ namespace Gameplay
         };
         World().AddComponent(player, camera_collider);
 
-        constexpr auto inventory = Components::Inventory();
+        constexpr auto inventory = components::Inventory();
         World().AddComponent(player, inventory);
     }
 

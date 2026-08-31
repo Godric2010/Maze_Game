@@ -4,7 +4,7 @@
 #include "GameScene.hpp"
 #include "MainMenuScene.hpp"
 
-namespace Gameplay
+namespace gameplay
 {
     GameplayManager::GameplayManager(Engine::IApplication& engine) : m_engine(engine)
     {

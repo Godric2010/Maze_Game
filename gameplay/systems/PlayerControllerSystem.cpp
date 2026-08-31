@@ -8,7 +8,7 @@
 #include "Transform.hpp"
 #include "../commands/PauseCommand.hpp"
 
-namespace Gameplay::Systems
+namespace gameplay::systems
 {
     PlayerControllerSystem::PlayerControllerSystem() = default;
 
@@ -30,7 +30,7 @@ namespace Gameplay::Systems
         {
             std::cout << "Enabled pause!" << std::endl;
 
-            const auto pause_command = Commands::PauseCommand(true);
+            const auto pause_command = commands::PauseCommand(true);
             SendCommand(pause_command);
             return;
         }
