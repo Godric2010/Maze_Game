@@ -1,5 +1,6 @@
 
 add_subdirectory(utilities)
+add_subdirectory(math)
 add_subdirectory(interface)
 add_subdirectory(input)
 add_subdirectory(core)
@@ -15,4 +16,4 @@ add_subdirectory(components)
 add_subdirectory(systems)
 
 add_library(Yarep INTERFACE)
-target_link_libraries(Yarep INTERFACE Interface Components SceneManagement)
+target_link_libraries(Yarep INTERFACE Interface Math Components SceneManagement)
