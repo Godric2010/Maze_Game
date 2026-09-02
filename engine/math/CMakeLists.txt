@@ -3,6 +3,8 @@ find_package(glm)
 
 add_library(Math STATIC
         include/Vec2.hpp
+        include/Vec3.hpp
+        include/Vec4.hpp
 )
 
 target_link_libraries(Math PRIVATE glm::glm)
