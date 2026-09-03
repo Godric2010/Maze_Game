@@ -6,6 +6,8 @@ add_library(Math STATIC
         include/Vec3.hpp
         include/Vec4.hpp
         include/Angle.hpp
+        include/Mat3.hpp
+        include/Mat4.hpp
 )
 
 target_link_libraries(Math PRIVATE glm::glm)
