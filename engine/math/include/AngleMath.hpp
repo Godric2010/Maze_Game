@@ -1,11 +1,11 @@
 #pragma once
 #include <cmath>
-#include <numbers>
 #include "Angle.hpp"
+#include "Constants.hpp"
 
 namespace yarep::math {
     inline Angle normalize_angle(Angle angle) {
-        constexpr float full_circle_rad = 2.0f * std::numbers::pi_v<float>;
+        constexpr float full_circle_rad = 2.0f * PI;
         float radians = std::fmod(angle.radians(), full_circle_rad);
         if (radians < 0.0f) {
             radians += full_circle_rad;
@@ -18,7 +18,7 @@ namespace yarep::math {
     }
 
     inline Angle delta_angle(Angle lhs, Angle rhs) {
-        constexpr auto half_circle_rad = std::numbers::pi_v<float>;
+        constexpr auto half_circle_rad = PI;
         const auto lhs_normalized = normalize_angle(lhs);
         const auto rhs_normalized = normalize_angle(rhs);
 
