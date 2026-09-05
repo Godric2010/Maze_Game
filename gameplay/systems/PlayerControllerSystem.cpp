@@ -5,7 +5,7 @@
 
 #include "Rigidbody.hpp"
 #include "SystemWorld.hpp"
-#include "Transform.hpp"
+#include "TransformMath.hpp"
 #include "../commands/PauseCommand.hpp"
 
 namespace gameplay::systems
