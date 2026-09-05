@@ -1,5 +1,6 @@
 #pragma once
 #include "Angle.hpp"
+#include "AngleMath.hpp"
 #include "Mat3.hpp"
 #include "Mat4.hpp"
 #include "Quaternion.hpp"
@@ -7,3 +8,4 @@
 #include "Vec2.hpp"
 #include "Vec3.hpp"
 #include "Vec4.hpp"
+#include "VectorMath.hpp"

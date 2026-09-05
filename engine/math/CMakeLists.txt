@@ -10,6 +10,7 @@ add_library(Math STATIC
         include/Mat4.hpp
         include/Quaternion.hpp
         include/Transform.hpp
+        include/AngleMath.hpp
 )
 
 target_link_libraries(Math PRIVATE glm::glm)
