@@ -27,7 +27,7 @@ namespace gameplay::systems {
     void DoorAnimation::Run(float delta_time) {
         auto doors = GameWorld()->GetComponentsOfType<components::Door>();
         for (const auto [door, entity]: doors) {
-            auto door_transform = GameWorld()->GetComponent<yarep::components::Transform>(entity);
+            auto door_transform = GameWorld()->GetComponent<yarep::components::TransformComponent>(entity);
             if (door_transform == nullptr) {
                 throw std::runtime_error("Door does not have a door transform");
             }

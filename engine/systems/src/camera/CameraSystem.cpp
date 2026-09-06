@@ -24,7 +24,7 @@ namespace yarep::systems {
     void CameraSystem::Run(float delta_time) {
         auto camera_components = EcsWorld()->GetComponentsOfType<components::Camera>();
         for (const auto [camera, entity]: camera_components) {
-            const auto camera_transform = EcsWorld()->GetComponent<components::Transform>(entity);
+            const auto camera_transform = EcsWorld()->GetComponent<components::TransformComponent>(entity);
             auto view_mat = CalculatedViewMat(camera_transform);
 
             const auto cache_val = Cache()->GetCameraCache()->GetCacheValue(entity);
@@ -37,7 +37,7 @@ namespace yarep::systems {
         }
     }
 
-    glm::mat4 CameraSystem::CalculatedViewMat(const components::Transform* transform) {
+    glm::mat4 CameraSystem::CalculatedViewMat(const components::TransformComponent* transform) {
         const auto cam_rotation = transform->GetRotation();
         const float pitch_rad = glm::radians(cam_rotation.x);
         const float yaw_rad = glm::radians(cam_rotation.y);

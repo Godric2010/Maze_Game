@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <glm/fwd.hpp>
 #include <glm/vec3.hpp>
-#include "Transform.hpp"
+#include "TransformComponent.hpp"
 
 
 namespace yarep::systems::transform {
@@ -36,9 +36,9 @@ namespace yarep::systems::transform {
 
         void DeregisterRectTransformEntity(uint64_t entity);
 
-        bool IsDirty(uint64_t entity, const components::Transform* transform);
+        bool IsDirty(uint64_t entity, const components::TransformComponent* transform);
 
-        void SetValue(uint64_t entity, const components::Transform* transform,
+        void SetValue(uint64_t entity, const components::TransformComponent* transform,
                       const glm::mat4& transform_mat);
 
         void SetValue(uint64_t entity, const RectTransformCacheValue& rect_transform_cache_value);

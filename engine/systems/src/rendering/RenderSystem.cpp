@@ -3,7 +3,7 @@
 #include <Camera.hpp>
 #include <Lights.hpp>
 #include <MeshRenderer.hpp>
-#include <Transform.hpp>
+#include <TransformComponent.hpp>
 #include <ui/Button.hpp>
 #include <ui/Image.hpp>
 #include <ui/RectTransform.hpp>
@@ -77,7 +77,7 @@ namespace yarep::systems {
     }
 
     renderer::CameraAsset RenderSystem::CreateCameraAsset(const ecs::EntityId& camera_entity,
-                                                          const components::Transform* camera_transform) const {
+                                                          const components::TransformComponent* camera_transform) const {
         const auto camera_cache_val = Cache()->GetCameraCache()->GetCacheValue(camera_entity);
         const renderer::CameraAsset camera_asset{
             .view = camera_cache_val.view,
@@ -97,14 +97,14 @@ namespace yarep::systems {
         frame_data.ambient_light = m_ambient_light;
 
         const auto [camera, cameraEntity] = EcsWorld()->GetComponentsOfType<components::Camera>()[0];
-        const auto camera_transform = EcsWorld()->GetComponent<components::Transform>(cameraEntity);
+        const auto camera_transform = EcsWorld()->GetComponent<components::TransformComponent>(cameraEntity);
         const auto camera_asset = CreateCameraAsset(cameraEntity, camera_transform);
         frame_data.camera = camera_asset;
 
         const auto point_lights = EcsWorld()->GetComponentsOfType<components::PointLight>();
         frame_data.lights.reserve(point_lights.size());
         for (auto [point_light, entity]: point_lights) {
-            const auto light_transform = EcsWorld()->GetComponent<components::Transform>(entity);
+            const auto light_transform = EcsWorld()->GetComponent<components::TransformComponent>(entity);
             const auto light_asset = renderer::LightAsset{
                 .position = light_transform->GetPosition(),
                 .color = point_light->GetColor(),

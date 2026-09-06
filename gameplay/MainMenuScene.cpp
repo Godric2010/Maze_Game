@@ -71,7 +71,7 @@ namespace gameplay
 
         World().AddComponent<yarep::components::Camera>(camera_entity, camera_component);
 
-        const auto camera_transform = yarep::components::Transform();
+        const auto camera_transform = yarep::components::TransformComponent();
         World().AddComponent(camera_entity, camera_transform);
     }
 

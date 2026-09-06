@@ -4,7 +4,7 @@ add_library(Components INTERFACE
         Camera.hpp
         Collider.hpp
         MeshRenderer.hpp
-        Transform.hpp
+        TransformComponent.hpp
         ui/Button.hpp
         ui/Image.hpp
         ui/RectTransform.hpp

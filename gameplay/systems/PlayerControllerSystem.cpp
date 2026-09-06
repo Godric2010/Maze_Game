@@ -5,7 +5,7 @@
 
 #include "Rigidbody.hpp"
 #include "SystemWorld.hpp"
-#include "TransformMath.hpp"
+#include "Transform.hpp"
 #include "../commands/PauseCommand.hpp"
 
 namespace gameplay::systems
@@ -42,7 +42,7 @@ namespace gameplay::systems
                                                        const yarep::input::InputBuffer& input,
                                                        const float delta_time) const
     {
-        const auto transform = GameWorld()->GetComponent<yarep::components::Transform>(player_entity);
+        const auto transform = GameWorld()->GetComponent<yarep::components::TransformComponent>(player_entity);
         const auto rigidbody = GameWorld()->GetComponent<yarep::components::Rigidbody>(player_entity);
         if (transform == nullptr || rigidbody == nullptr)
         {

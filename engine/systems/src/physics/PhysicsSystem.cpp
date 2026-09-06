@@ -8,7 +8,7 @@
 
 #include "Collider.hpp"
 #include "Rigidbody.hpp"
-#include "Transform.hpp"
+#include "TransformComponent.hpp"
 #include "collision/BroadphaseBuilder.hpp"
 #include "collision/IBroadphase.hpp"
 #include "collision/CollisionUtils.hpp"
@@ -36,7 +36,7 @@ namespace yarep::systems::physics
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::BoxCollider>(
             [this](const ecs::EntityId entity, const components::BoxCollider& box_collider)
             {
-                const components::Transform* transform = EcsWorld()->GetComponent<components::Transform>(entity);
+                const components::TransformComponent* transform = EcsWorld()->GetComponent<components::TransformComponent>(entity);
                 this->BuildBoxCollider(entity,
                                        box_collider,
                                        transform->GetPosition(),
@@ -56,7 +56,7 @@ namespace yarep::systems::physics
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::SphereCollider>(
             [this](const ecs::EntityId entity, const components::SphereCollider& sphere_collider)
             {
-                const components::Transform* transform = EcsWorld()->GetComponent<components::Transform>(entity);
+                const components::TransformComponent* transform = EcsWorld()->GetComponent<components::TransformComponent>(entity);
                 this->BuildSphereCollider(entity, sphere_collider, transform->GetPosition());
             }
         );
@@ -67,7 +67,7 @@ namespace yarep::systems::physics
         const auto movable_objects = EcsWorld()->GetComponentsOfType<components::Rigidbody>();
         for (const auto [rigidbody, entity] : movable_objects)
         {
-            auto transform = EcsWorld()->GetComponent<components::Transform>(entity);
+            auto transform = EcsWorld()->GetComponent<components::TransformComponent>(entity);
             if (transform == nullptr)
             {
                 throw std::runtime_error("A moveable object without a transform component is impossible to handle!");

@@ -168,7 +168,7 @@ namespace gameplay
 
         World().AddComponent<yarep::components::Camera>(player, camera_component);
 
-        const auto camera_transform = yarep::components::Transform()
+        const auto camera_transform = yarep::components::TransformComponent()
                                       .SetPosition(m_maze_builder->GetMazeStartPosition())
                                       .SetRotation(glm::vec3(-10.0f, 180.0f, 0.0f));
         World().AddComponent(player, camera_transform);

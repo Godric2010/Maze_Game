@@ -3,7 +3,7 @@
 #include <glm/gtx/euler_angles.hpp>
 
 #include <Camera.hpp>
-#include <Transform.hpp>
+#include <TransformComponent.hpp>
 #include "IEngineSystem.hpp"
 
 ECS_SYSTEM(CameraSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
@@ -21,7 +21,7 @@ namespace yarep::systems {
 
     private:
         static glm::mat4 CalculatedViewMat(
-                const components::Transform* transform);
+                const components::TransformComponent* transform);
         static glm::mat4 CalculateProjectionMat(const components::Camera *camera_component);
     };
 } // namespace

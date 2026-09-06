@@ -1,7 +1,7 @@
 #include "GameEndScene.hpp"
 
 #include "Camera.hpp"
-#include "../engine/components/Transform.hpp"
+#include "../engine/components/TransformComponent.hpp"
 #include "Commands/UI/ButtonClickedCommand.hpp"
 #include "../components/ui/Button.hpp"
 #include "../components/ui/Image.hpp"
@@ -56,7 +56,7 @@ namespace gameplay {
                 .SetFarClip(1000.0f);
         World().AddComponent<yarep::components::Camera>(camera_entity, camera_component);
 
-        const auto camera_transform = yarep::components::Transform();
+        const auto camera_transform = yarep::components::TransformComponent();
         World().AddComponent(camera_entity, camera_transform);
     }
 

@@ -9,7 +9,7 @@ add_library(Math STATIC
         include/Mat3.hpp
         include/Mat4.hpp
         include/Quaternion.hpp
-        include/TransformMath.hpp
+        include/Transform.hpp
         include/AngleMath.hpp
         include/Constants.hpp
         include/MatrixMath.hpp

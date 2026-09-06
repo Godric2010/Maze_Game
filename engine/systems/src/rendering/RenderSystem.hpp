@@ -1,7 +1,7 @@
 #pragma once
 #include <IRenderController.hpp>
 #include <IEngineSystem.hpp>
-#include <Transform.hpp>
+#include <TransformComponent.hpp>
 
 #include "MeshRenderer.hpp"
 
@@ -33,7 +33,7 @@ namespace yarep::systems {
         renderer::AmbientLightAsset m_ambient_light{};
 
         renderer::CameraAsset CreateCameraAsset(const ecs::EntityId& camera_entity,
-                                                const components::Transform* camera_transform) const;
+                                                const components::TransformComponent* camera_transform) const;
 
         void ClearDrawAssets();
 

@@ -9,7 +9,7 @@
 
 
 namespace yarep::components {
-    struct Transform {
+    struct TransformComponent {
     private:
         glm::vec3 m_position{};
         glm::vec3 m_rotation{};
@@ -17,26 +17,26 @@ namespace yarep::components {
         uint64_t m_version = 0;
 
     public:
-        Transform() {
+        TransformComponent() {
             m_position = glm::vec3(0.0f);
             m_rotation = glm::vec3(0.0f);
             m_scale = glm::vec3(1.0f);
             m_version = 0;
         }
 
-        Transform &SetPosition(const glm::vec3& position) {
+        TransformComponent &SetPosition(const glm::vec3& position) {
             m_position = position;
             m_version++;
             return *this;
         }
 
-        Transform &SetRotation(const glm::vec3& rotation) {
+        TransformComponent &SetRotation(const glm::vec3& rotation) {
             m_rotation = rotation;
             m_version++;
             return *this;
         }
 
-        Transform &SetScale(const glm::vec3& scale) {
+        TransformComponent &SetScale(const glm::vec3& scale) {
             m_scale = scale;
             m_version++;
             return *this;

@@ -5,7 +5,7 @@
 #include "Collider.hpp"
 #include "Lights.hpp"
 #include "MeshRenderer.hpp"
-#include "Transform.hpp"
+#include "TransformComponent.hpp"
 #include "../components/Door.hpp"
 #include "../components/DoorTrigger.hpp"
 #include "../components/Exit.hpp"
@@ -103,7 +103,7 @@ namespace gameplay::maze_generator {
         const auto position = glm::vec3(cell_index.x * 2, 0.5f, cell_index.y * 2);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
         constexpr auto scale = glm::vec3(0.2f, 0.2f, 0.2f);
-        const auto transform_component = yarep::components::Transform()
+        const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);
@@ -126,7 +126,7 @@ namespace gameplay::maze_generator {
         const auto position = glm::vec3(cell_index.x * 2, 0.5f, cell_index.y * 2);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
         constexpr auto scale = glm::vec3(2.0f);
-        const auto transform_component = yarep::components::Transform()
+        const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);
@@ -158,7 +158,7 @@ namespace gameplay::maze_generator {
         m_game_world->AddComponent(light_entity, point_light_component);
         const auto position = glm::vec3(cell_index.x * 2, 1.9f, cell_index.y * 2);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        const auto transform_component = yarep::components::Transform()
+        const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation);
         m_game_world->AddComponent(light_entity, transform_component);
@@ -198,7 +198,7 @@ namespace gameplay::maze_generator {
         m_game_world->AddComponent(entity, mesh_component);
         const auto position = glm::vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2);
         constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        const auto transform_component = yarep::components::Transform()
+        const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation);
         m_game_world->AddComponent(entity, transform_component);
@@ -247,7 +247,7 @@ namespace gameplay::maze_generator {
         const auto position = glm::vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2) + shift_vector;
         const auto rotation = glm::vec3(0.0f, 0.0f, 0.0f) + rotation_shift;
         const auto scale = glm::vec3(0.5f, 0.5f, 0.5f);
-        const auto transform_component = yarep::components::Transform()
+        const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);
@@ -281,7 +281,7 @@ namespace gameplay::maze_generator {
             .mesh = m_door_frame,
             .material = m_door_material,
         };
-        const auto frame_transform_component = yarep::components::Transform()
+        const auto frame_transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);
@@ -303,7 +303,7 @@ namespace gameplay::maze_generator {
             .material = m_door_material,
         };
 
-        const auto door_transform_component = yarep::components::Transform()
+        const auto door_transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);
@@ -330,7 +330,7 @@ namespace gameplay::maze_generator {
         const auto position = glm::vec3(cell_idx.x * 2, 2.0f, cell_idx.y * 2);
         constexpr auto rotation = glm::vec3(180.0f, 0.0f, 0.0f);
         constexpr auto scale = glm::vec3(0.5f, 1.0f, 0.5f);
-        const auto transform_component = yarep::components::Transform()
+        const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation)
                 .SetScale(scale);

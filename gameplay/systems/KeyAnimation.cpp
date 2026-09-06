@@ -1,6 +1,6 @@
 #include "KeyAnimation.hpp"
 #include "SystemWorld.hpp"
-#include "Transform.hpp"
+#include "TransformComponent.hpp"
 #include "../components/KeyItem.hpp"
 #include "ui/Button.hpp"
 
@@ -11,7 +11,7 @@ namespace gameplay::systems {
     void KeyAnimation::Run(float delta_time) {
         auto entities = GameWorld()->GetComponentsOfType<components::KeyItem>();
         for (const auto entity_id: entities | std::views::values) {
-            const auto transform = GameWorld()->GetComponent<yarep::components::Transform>(entity_id);
+            const auto transform = GameWorld()->GetComponent<yarep::components::TransformComponent>(entity_id);
 
             auto rotation = transform->GetRotation();
             rotation.y += 10 * delta_time * m_rotation_speed;

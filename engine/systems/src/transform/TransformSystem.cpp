@@ -1,5 +1,5 @@
 #include "TransformSystem.hpp"
-#include <Transform.hpp>
+#include <TransformComponent.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
 namespace yarep::systems {
@@ -8,8 +8,8 @@ namespace yarep::systems {
     TransformSystem::~TransformSystem() = default;
 
     void TransformSystem::Initialize() {
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::Transform>(
-                [this](const ecs::EntityId entity, const components::Transform& _) {
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::TransformComponent>(
+                [this](const ecs::EntityId entity, const components::TransformComponent& _) {
                     if (this->Cache()->GetTransformCache() == nullptr) {
                         throw std::runtime_error("TransformSystem: Transform cache is null");
                     }
@@ -17,7 +17,7 @@ namespace yarep::systems {
                 }
                 );
 
-        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::Transform>(
+        EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::TransformComponent>(
                 [this](const ecs::EntityId entity) {
                     this->Cache()->GetTransformCache()->DeregisterTransformEntity(entity);
                 }
@@ -25,7 +25,7 @@ namespace yarep::systems {
     }
 
     void TransformSystem::Run(float delta_time) {
-        const auto transform_components = EcsWorld()->GetComponentsOfType<components::Transform>();
+        const auto transform_components = EcsWorld()->GetComponentsOfType<components::TransformComponent>();
         for (const auto [transform, entity]: transform_components) {
             if (!Cache()->GetTransformCache()->IsDirty(entity, transform)) {
                 continue;
