@@ -6,6 +6,7 @@
 #include "Mat4.hpp"
 #include "MatrixMath.hpp"
 #include "Quaternion.hpp"
+#include "QuaternionMath.hpp"
 #include "TransformMath.hpp"
 #include "Vec2.hpp"
 #include "Vec3.hpp"
