@@ -12,6 +12,8 @@ add_library(Math STATIC
         include/TransformMath.hpp
         include/AngleMath.hpp
         include/Constants.hpp
+        include/MatrixMath.hpp
+        src/MatrixMath.cpp
 )
 
 target_link_libraries(Math PRIVATE glm::glm)

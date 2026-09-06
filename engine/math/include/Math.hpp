@@ -4,6 +4,7 @@
 #include "Constants.hpp"
 #include "Mat3.hpp"
 #include "Mat4.hpp"
+#include "MatrixMath.hpp"
 #include "Quaternion.hpp"
 #include "TransformMath.hpp"
 #include "Vec2.hpp"
