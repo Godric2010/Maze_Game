@@ -17,6 +17,8 @@ add_library(Math STATIC
         include/QuaternionMath.hpp
         src/QuaternionMath.cpp
         src/glm_conversions.hpp
+        include/TransformMath.hpp
+        src/TransformMath.cpp
 )
 
 target_link_libraries(Math PRIVATE glm::glm)
