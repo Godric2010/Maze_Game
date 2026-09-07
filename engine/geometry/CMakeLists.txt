@@ -4,6 +4,7 @@ add_library(Geometry STATIC
     include/AABB.hpp
         include/Contains.hpp
         src/Contains.cpp
+        include/Sphere.hpp
 )
 
 target_link_libraries(Geometry PUBLIC Math)
