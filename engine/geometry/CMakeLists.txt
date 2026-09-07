@@ -7,6 +7,7 @@ add_library(Geometry STATIC
         include/Sphere.hpp
         include/Ray.hpp
         include/OBB.hpp
+        include/RayHit.hpp
 )
 
 target_link_libraries(Geometry PUBLIC Math)
