@@ -8,6 +8,8 @@ add_library(Geometry STATIC
         include/Ray.hpp
         include/OBB.hpp
         include/RayHit.hpp
+        include/Bounds.hpp
+        src/Bounds.cpp
 )
 
 target_link_libraries(Geometry PUBLIC Math)
@@ -31,7 +33,7 @@ if (BUILD_TESTING)
     add_catch2_tests(
             TARGET GEOMETRY_tests
             PREFIX "geometry."
-            LINK Math
+            LINK Geometry
             SOURCES ${TEST_SOURCES}
     )
 endif ()
