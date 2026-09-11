@@ -10,6 +10,9 @@ add_library(Geometry STATIC
         include/RayHit.hpp
         include/Bounds.hpp
         src/Bounds.cpp
+        include/Intersects.hpp
+        src/Intersects.cpp
+        include/Plane.hpp
 )
 
 target_link_libraries(Geometry PUBLIC Math)
