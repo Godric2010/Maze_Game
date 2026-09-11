@@ -13,6 +13,8 @@ add_library(Geometry STATIC
         include/Intersects.hpp
         src/Intersects.cpp
         include/Plane.hpp
+        include/ClosestPoint.hpp
+        src/ClosestPoint.cpp
 )
 
 target_link_libraries(Geometry PUBLIC Math)

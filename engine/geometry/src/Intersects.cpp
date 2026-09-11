@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "Bounds.hpp"
+#include "ClosestPoint.hpp"
 #include "QuaternionMath.hpp"
 #include "VectorMath.hpp"
 
@@ -26,11 +27,7 @@ namespace yarep::geometry {
     }
 
     bool intersects(const Sphere& sphere, const AABB& aabb) {
-        const auto closest_point = math::Vec3{
-            std::clamp(sphere.center.x, aabb.min.x, aabb.max.x),
-            std::clamp(sphere.center.y, aabb.min.y, aabb.max.y),
-            std::clamp(sphere.center.z, aabb.min.z, aabb.max.z)
-        };
+        const auto closest_point = geometry::closest_point(aabb, sphere.center);
         const auto distance_sqrd = math::distance_squared(closest_point, sphere.center);
         return distance_sqrd <= sphere.radius * sphere.radius;
     }
@@ -40,15 +37,9 @@ namespace yarep::geometry {
     }
 
     bool intersects(const Sphere& sphere, const OBB& obb) {
-        const auto local_point = math::rotate(math::inverse(obb.rotation), sphere.center - obb.center);
-        const auto local_aabb = AABB{-obb.half_extents, obb.half_extents};
-        const auto closest_point = math::Vec3{
-            std::clamp(local_point.x, local_aabb.min.x, local_aabb.max.x),
-            std::clamp(local_point.y, local_aabb.min.y, local_aabb.max.y),
-            std::clamp(local_point.z, local_aabb.min.z, local_aabb.max.z)
-        };
+        const auto closest_point = geometry::closest_point(obb, sphere.center);
 
-        const auto distance_sqrd = math::distance_squared(closest_point, local_point);
+        const auto distance_sqrd = math::distance_squared(closest_point, sphere.center);
         const auto radius_sqrd = sphere.radius * sphere.radius;
         const auto delta = radius_sqrd - distance_sqrd;
         return delta > -intersection_epsilon;
