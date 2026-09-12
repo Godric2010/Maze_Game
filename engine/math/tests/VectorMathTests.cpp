@@ -1,8 +1,8 @@
 #if __APPLE__
-   #include <catch2/catch_test_macros.hpp>
-   #include <utility>
+#include <catch2/catch_test_macros.hpp>
+#include <utility>
 #else
-    #include <catch2/catch_all.hpp>
+#include <catch2/catch_all.hpp>
 #endif
 
 #include <cmath>
@@ -11,13 +11,15 @@
 
 using namespace yarep::math;
 
-namespace {
+namespace
+{
     constexpr float TEST_EPSILON = 0.00001f;
 
     bool test_near(
-            const float lhs,
-            const float rhs,
-            const float epsilon = TEST_EPSILON) {
+        const float lhs,
+        const float rhs,
+        const float epsilon = TEST_EPSILON)
+    {
         return std::abs(lhs - rhs) <= epsilon;
     }
 }
@@ -27,7 +29,8 @@ namespace {
 // Vec2
 // ============================================================================
 
-TEST_CASE("Vec2 length squared") {
+TEST_CASE("Vec2 length squared")
+{
     constexpr Vec2 positive{3, 4};
     constexpr Vec2 negative{-3, -4};
     constexpr Vec2 mixed{-3, 4};
@@ -39,7 +42,8 @@ TEST_CASE("Vec2 length squared") {
     REQUIRE(length_squared(zero) == 0);
 }
 
-TEST_CASE("Vec2 length") {
+TEST_CASE("Vec2 length")
+{
     constexpr Vec2 positive{3, 4};
     constexpr Vec2 negative{-3, -4};
     constexpr Vec2 irrational{1, 1};
@@ -53,7 +57,8 @@ TEST_CASE("Vec2 length") {
     REQUIRE(test_near(length(positive), length(-positive)));
 }
 
-TEST_CASE("Vec2 normalize") {
+TEST_CASE("Vec2 normalize")
+{
     constexpr Vec2 positive{3, 4};
     constexpr Vec2 mixed{-3, 4};
     constexpr Vec2 unit{1, 0};
@@ -77,7 +82,8 @@ TEST_CASE("Vec2 normalize") {
     REQUIRE(normalized_zero == Vec2{0, 0});
 }
 
-TEST_CASE("Vec2 dot") {
+TEST_CASE("Vec2 dot")
+{
     constexpr Vec2 a{1, 2};
     constexpr Vec2 b{3, 4};
 
@@ -99,7 +105,8 @@ TEST_CASE("Vec2 dot") {
     REQUIRE(dot(c, zero) == 0);
 }
 
-TEST_CASE("Vec2 distance squared") {
+TEST_CASE("Vec2 distance squared")
+{
     constexpr Vec2 a{1, 2};
     constexpr Vec2 b{4, 6};
 
@@ -113,7 +120,8 @@ TEST_CASE("Vec2 distance squared") {
     REQUIRE(distance_squared(negative, positive) == 25);
 }
 
-TEST_CASE("Vec2 distance") {
+TEST_CASE("Vec2 distance")
+{
     constexpr Vec2 a{1, 2};
     constexpr Vec2 b{4, 6};
 
@@ -127,7 +135,8 @@ TEST_CASE("Vec2 distance") {
     REQUIRE(test_near(distance(c, d), std::sqrt(2.0f)));
 }
 
-TEST_CASE("Vec2 lerp") {
+TEST_CASE("Vec2 lerp")
+{
     constexpr Vec2 from{-2, 4};
     constexpr Vec2 to{6, -4};
 
@@ -144,7 +153,8 @@ TEST_CASE("Vec2 lerp") {
     REQUIRE(lerp(from, from, 0.5f) == from);
 }
 
-TEST_CASE("Vec2 min") {
+TEST_CASE("Vec2 min")
+{
     constexpr Vec2 a{1, -4};
     constexpr Vec2 b{-2, 3};
 
@@ -155,7 +165,8 @@ TEST_CASE("Vec2 min") {
     REQUIRE(yarep::math::min(equal, equal) == equal);
 }
 
-TEST_CASE("Vec2 max") {
+TEST_CASE("Vec2 max")
+{
     constexpr Vec2 a{1, -4};
     constexpr Vec2 b{-2, 3};
 
@@ -166,40 +177,42 @@ TEST_CASE("Vec2 max") {
     REQUIRE(yarep::math::max(equal, equal) == equal);
 }
 
-TEST_CASE("Vec2 clamp") {
+TEST_CASE("Vec2 clamp")
+{
     constexpr Vec2 minimum{0, -2};
     constexpr Vec2 maximum{4, 2};
 
     REQUIRE(
-            yarep::math::clamp(Vec2{2, 0}, minimum, maximum)
-            == Vec2{2,
-            0}
-            );
+        yarep::math::clamp(Vec2{2, 0}, minimum, maximum)
+        == Vec2{2,
+        0}
+    );
 
     REQUIRE(
-            yarep::math::clamp(Vec2{5, -3}, minimum, maximum)
-            == Vec2{4,
-            -2}
-            );
+        yarep::math::clamp(Vec2{5, -3}, minimum, maximum)
+        == Vec2{4,
+        -2}
+    );
 
     REQUIRE(
-            yarep::math::clamp(Vec2{-5, 8}, minimum, maximum)
-            == Vec2{0,
-            2}
-            );
+        yarep::math::clamp(Vec2{-5, 8}, minimum, maximum)
+        == Vec2{0,
+        2}
+    );
 
     REQUIRE(
-            yarep::math::clamp(minimum, minimum, maximum)
-            == minimum
-            );
+        yarep::math::clamp(minimum, minimum, maximum)
+        == minimum
+    );
 
     REQUIRE(
-            yarep::math::clamp(maximum, minimum, maximum)
-            == maximum
-            );
+        yarep::math::clamp(maximum, minimum, maximum)
+        == maximum
+    );
 }
 
-TEST_CASE("Vec2 nearly equal") {
+TEST_CASE("Vec2 nearly equal")
+{
     constexpr float epsilon = 0.0001f;
 
     constexpr Vec2 a{1.0f, -2.0f};
@@ -222,7 +235,8 @@ TEST_CASE("Vec2 nearly equal") {
 // Vec3
 // ============================================================================
 
-TEST_CASE("Vec3 length squared") {
+TEST_CASE("Vec3 length squared")
+{
     constexpr Vec3 positive{2, 3, 6};
     constexpr Vec3 negative{-2, -3, -6};
     constexpr Vec3 mixed{-2, 3, -6};
@@ -234,7 +248,8 @@ TEST_CASE("Vec3 length squared") {
     REQUIRE(length_squared(zero) == 0);
 }
 
-TEST_CASE("Vec3 length") {
+TEST_CASE("Vec3 length")
+{
     constexpr Vec3 positive{2, 3, 6};
     constexpr Vec3 negative{-2, -3, -6};
     constexpr Vec3 irrational{1, 1, 1};
@@ -248,7 +263,8 @@ TEST_CASE("Vec3 length") {
     REQUIRE(test_near(length(positive), length(-positive)));
 }
 
-TEST_CASE("Vec3 normalize") {
+TEST_CASE("Vec3 normalize")
+{
     constexpr Vec3 positive{2, 3, 6};
     constexpr Vec3 mixed{-2, 3, -6};
     constexpr Vec3 unit{0, 1, 0};
@@ -274,7 +290,8 @@ TEST_CASE("Vec3 normalize") {
     REQUIRE(normalize(zero) == Vec3{0, 0, 0});
 }
 
-TEST_CASE("Vec3 dot") {
+TEST_CASE("Vec3 dot")
+{
     constexpr Vec3 a{1, 2, 3};
     constexpr Vec3 b{4, -5, 6};
 
@@ -295,7 +312,8 @@ TEST_CASE("Vec3 dot") {
     REQUIRE(dot(c, Vec3{0, 0, 0}) == 0);
 }
 
-TEST_CASE("Vec3 cross") {
+TEST_CASE("Vec3 cross")
+{
     constexpr Vec3 x_axis{1, 0, 0};
     constexpr Vec3 y_axis{0, 1, 0};
     constexpr Vec3 z_axis{0, 0, 1};
@@ -308,7 +326,7 @@ TEST_CASE("Vec3 cross") {
     constexpr Vec3 a{1, 2, 3};
     constexpr Vec3 b{4, 5, 6};
 
-    constexpr Vec3 result = cross(a, b);
+    Vec3 result = cross(a, b);
 
     REQUIRE(result == Vec3{-3, 6, -3});
 
@@ -322,7 +340,8 @@ TEST_CASE("Vec3 cross") {
     REQUIRE(cross(a, Vec3{0, 0, 0}) == Vec3{0, 0, 0});
 }
 
-TEST_CASE("Vec3 distance squared") {
+TEST_CASE("Vec3 distance squared")
+{
     constexpr Vec3 a{1, 2, 3};
     constexpr Vec3 b{3, 5, 9};
 
@@ -336,7 +355,8 @@ TEST_CASE("Vec3 distance squared") {
     REQUIRE(distance_squared(negative, positive) == 49);
 }
 
-TEST_CASE("Vec3 distance") {
+TEST_CASE("Vec3 distance")
+{
     constexpr Vec3 a{1, 2, 3};
     constexpr Vec3 b{3, 5, 9};
 
@@ -350,7 +370,8 @@ TEST_CASE("Vec3 distance") {
     REQUIRE(test_near(distance(c, d), std::sqrt(3.0f)));
 }
 
-TEST_CASE("Vec3 lerp") {
+TEST_CASE("Vec3 lerp")
+{
     constexpr Vec3 from{-2, 4, 6};
     constexpr Vec3 to{6, -4, -2};
 
@@ -366,7 +387,8 @@ TEST_CASE("Vec3 lerp") {
     REQUIRE(lerp(from, from, 0.5f) == from);
 }
 
-TEST_CASE("Vec3 min") {
+TEST_CASE("Vec3 min")
+{
     constexpr Vec3 a{1, -4, 8};
     constexpr Vec3 b{-2, 3, 5};
 
@@ -377,7 +399,8 @@ TEST_CASE("Vec3 min") {
     REQUIRE(yarep::math::min(equal, equal) == equal);
 }
 
-TEST_CASE("Vec3 max") {
+TEST_CASE("Vec3 max")
+{
     constexpr Vec3 a{1, -4, 8};
     constexpr Vec3 b{-2, 3, 5};
 
@@ -388,43 +411,45 @@ TEST_CASE("Vec3 max") {
     REQUIRE(yarep::math::max(equal, equal) == equal);
 }
 
-TEST_CASE("Vec3 clamp") {
+TEST_CASE("Vec3 clamp")
+{
     constexpr Vec3 minimum{0, -2, 1};
     constexpr Vec3 maximum{4, 2, 3};
 
     REQUIRE(
-            yarep::math::clamp(Vec3{2, 0, 2}, minimum, maximum)
-            == Vec3{2,
-            0,
-            2}
-            );
+        yarep::math::clamp(Vec3{2, 0, 2}, minimum, maximum)
+        == Vec3{2,
+        0,
+        2}
+    );
 
     REQUIRE(
-            yarep::math::clamp(Vec3{5, -3, 0.5f}, minimum, maximum)
-            == Vec3{4,
-            -2,
-            1}
-            );
+        yarep::math::clamp(Vec3{5, -3, 0.5f}, minimum, maximum)
+        == Vec3{4,
+        -2,
+        1}
+    );
 
     REQUIRE(
-            yarep::math::clamp(Vec3{-5, 8, 10}, minimum, maximum)
-            == Vec3{0,
-            2,
-            3}
-            );
+        yarep::math::clamp(Vec3{-5, 8, 10}, minimum, maximum)
+        == Vec3{0,
+        2,
+        3}
+    );
 
     REQUIRE(
-            yarep::math::clamp(minimum, minimum, maximum)
-            == minimum
-            );
+        yarep::math::clamp(minimum, minimum, maximum)
+        == minimum
+    );
 
     REQUIRE(
-            yarep::math::clamp(maximum, minimum, maximum)
-            == maximum
-            );
+        yarep::math::clamp(maximum, minimum, maximum)
+        == maximum
+    );
 }
 
-TEST_CASE("Vec3 nearly equal") {
+TEST_CASE("Vec3 nearly equal")
+{
     constexpr float epsilon = 0.0001f;
 
     constexpr Vec3 a{1.0f, -2.0f, 3.0f};
@@ -443,11 +468,11 @@ TEST_CASE("Vec3 nearly equal") {
     REQUIRE_FALSE(nearly_equal(a, far_z, epsilon));
 
     REQUIRE(
-            nearly_equal(
-                Vec3{0, 0, 0},
-                Vec3{0, 0, 0},
-                epsilon)
-            );
+        nearly_equal(
+            Vec3{0, 0, 0},
+            Vec3{0, 0, 0},
+            epsilon)
+    );
 }
 
 
@@ -455,7 +480,8 @@ TEST_CASE("Vec3 nearly equal") {
 // Vec4
 // ============================================================================
 
-TEST_CASE("Vec4 length squared") {
+TEST_CASE("Vec4 length squared")
+{
     constexpr Vec4 positive{1, 2, 2, 4};
     constexpr Vec4 negative{-1, -2, -2, -4};
     constexpr Vec4 mixed{-1, 2, -2, 4};
@@ -467,7 +493,8 @@ TEST_CASE("Vec4 length squared") {
     REQUIRE(length_squared(zero) == 0);
 }
 
-TEST_CASE("Vec4 length") {
+TEST_CASE("Vec4 length")
+{
     constexpr Vec4 positive{1, 2, 2, 4};
     constexpr Vec4 negative{-1, -2, -2, -4};
     constexpr Vec4 irrational{1, 1, 1, 0};
@@ -481,7 +508,8 @@ TEST_CASE("Vec4 length") {
     REQUIRE(test_near(length(positive), length(-positive)));
 }
 
-TEST_CASE("Vec4 normalize") {
+TEST_CASE("Vec4 normalize")
+{
     constexpr Vec4 positive{1, 2, 2, 4};
     constexpr Vec4 mixed{-1, 2, -2, 4};
     constexpr Vec4 unit{0, 0, 0, 1};
@@ -510,7 +538,8 @@ TEST_CASE("Vec4 normalize") {
     REQUIRE(normalize(zero) == Vec4{0, 0, 0, 0});
 }
 
-TEST_CASE("Vec4 dot") {
+TEST_CASE("Vec4 dot")
+{
     constexpr Vec4 a{1, 2, 3, 4};
     constexpr Vec4 b{4, -5, 6, -7};
 
@@ -531,7 +560,8 @@ TEST_CASE("Vec4 dot") {
     REQUIRE(dot(c, Vec4{0, 0, 0, 0}) == 0);
 }
 
-TEST_CASE("Vec4 distance squared") {
+TEST_CASE("Vec4 distance squared")
+{
     constexpr Vec4 a{1, 2, 3, 4};
     constexpr Vec4 b{2, 4, 5, 8};
 
@@ -545,7 +575,8 @@ TEST_CASE("Vec4 distance squared") {
     REQUIRE(distance_squared(negative, zero) == 25);
 }
 
-TEST_CASE("Vec4 distance") {
+TEST_CASE("Vec4 distance")
+{
     constexpr Vec4 a{1, 2, 3, 4};
     constexpr Vec4 b{2, 4, 5, 8};
 
@@ -559,7 +590,8 @@ TEST_CASE("Vec4 distance") {
     REQUIRE(test_near(distance(c, d), std::sqrt(3.0f)));
 }
 
-TEST_CASE("Vec4 lerp") {
+TEST_CASE("Vec4 lerp")
+{
     constexpr Vec4 from{-2, 4, 6, 8};
     constexpr Vec4 to{6, -4, -2, 0};
 
@@ -575,103 +607,107 @@ TEST_CASE("Vec4 lerp") {
     REQUIRE(lerp(from, from, 0.5f) == from);
 }
 
-TEST_CASE("Vec4 min") {
+TEST_CASE("Vec4 min")
+{
     constexpr Vec4 a{1, -4, 8, -10};
     constexpr Vec4 b{-2, 3, 5, 7};
 
     REQUIRE(
-            yarep::math::min(a, b)
-            == Vec4{-2,
-            -4,
-            5,
-            -10}
-            );
+        yarep::math::min(a, b)
+        == Vec4{-2,
+        -4,
+        5,
+        -10}
+    );
 
     REQUIRE(
-            yarep::math::min(b, a)
-            == Vec4{-2,
-            -4,
-            5,
-            -10}
-            );
+        yarep::math::min(b, a)
+        == Vec4{-2,
+        -4,
+        5,
+        -10}
+    );
 
     constexpr Vec4 equal{2, 2, 2, 2};
     REQUIRE(yarep::math::min(equal, equal) == equal);
 }
 
-TEST_CASE("Vec4 max") {
+TEST_CASE("Vec4 max")
+{
     constexpr Vec4 a{1, -4, 8, -10};
     constexpr Vec4 b{-2, 3, 5, 7};
 
     REQUIRE(
-            yarep::math::max(a, b)
-            == Vec4{1,
-            3,
-            8,
-            7}
-            );
+        yarep::math::max(a, b)
+        == Vec4{1,
+        3,
+        8,
+        7}
+    );
 
     REQUIRE(
-            yarep::math::max(b, a)
-            == Vec4{1,
-            3,
-            8,
-            7}
-            );
+        yarep::math::max(b, a)
+        == Vec4{1,
+        3,
+        8,
+        7}
+    );
 
     constexpr Vec4 equal{2, 2, 2, 2};
     REQUIRE(yarep::math::max(equal, equal) == equal);
 }
 
-TEST_CASE("Vec4 clamp") {
+TEST_CASE("Vec4 clamp")
+{
     constexpr Vec4 minimum{0, -2, 1, -4};
     constexpr Vec4 maximum{4, 2, 3, 4};
 
     REQUIRE(
-            yarep::math::clamp(
-                Vec4{2, 0, 2, 0},
-                minimum,
-                maximum)
-            == Vec4{2,
-            0,
-            2,
-            0}
-            );
+        yarep::math::clamp(
+            Vec4{2, 0, 2, 0},
+            minimum,
+            maximum)
+        == Vec4{2,
+        0,
+        2,
+        0}
+    );
 
     REQUIRE(
-            yarep::math::clamp(
-                Vec4{5, -3, 0.5f, 8},
-                minimum,
-                maximum)
-            == Vec4{4,
-            -2,
-            1,
-            4}
-            );
+        yarep::math::clamp(
+            Vec4{5, -3, 0.5f, 8},
+            minimum,
+            maximum)
+        == Vec4{4,
+        -2,
+        1,
+        4}
+    );
 
     REQUIRE(
-            yarep::math::clamp(
-                Vec4{-5, 8, 10, -10},
-                minimum,
-                maximum)
-            == Vec4{0,
-            2,
-            3,
-            -4}
-            );
+        yarep::math::clamp(
+            Vec4{-5, 8, 10, -10},
+            minimum,
+            maximum)
+        == Vec4{0,
+        2,
+        3,
+        -4}
+    );
 
     REQUIRE(
-            yarep::math::clamp(minimum, minimum, maximum)
-            == minimum
-            );
+        yarep::math::clamp(minimum, minimum, maximum)
+        == minimum
+    );
 
     REQUIRE(
-            yarep::math::clamp(maximum, minimum, maximum)
-            == maximum
-            );
+        yarep::math::clamp(maximum, minimum, maximum)
+        == maximum
+    );
 }
 
-TEST_CASE("Vec4 nearly equal") {
+TEST_CASE("Vec4 nearly equal")
+{
     constexpr float epsilon = 0.0001f;
 
     constexpr Vec4 a{1.0f, -2.0f, 3.0f, -4.0f};
@@ -694,37 +730,37 @@ TEST_CASE("Vec4 nearly equal") {
     REQUIRE(nearly_equal(a, close, epsilon));
 
     REQUIRE_FALSE(
-            nearly_equal(
-                a,
-                Vec4{1.0002f, -2, 3, -4},
-                epsilon)
-            );
+        nearly_equal(
+            a,
+            Vec4{1.0002f, -2, 3, -4},
+            epsilon)
+    );
 
     REQUIRE_FALSE(
-            nearly_equal(
-                a,
-                Vec4{1, -1.9998f, 3, -4},
-                epsilon)
-            );
+        nearly_equal(
+            a,
+            Vec4{1, -1.9998f, 3, -4},
+            epsilon)
+    );
 
     REQUIRE_FALSE(
-            nearly_equal(
-                a,
-                Vec4{1, -2, 3.0002f, -4},
-                epsilon)
-            );
+        nearly_equal(
+            a,
+            Vec4{1, -2, 3.0002f, -4},
+            epsilon)
+    );
 
     REQUIRE_FALSE(
-            nearly_equal(
-                a,
-                Vec4{1, -2, 3, -3.9998f},
-                epsilon)
-            );
+        nearly_equal(
+            a,
+            Vec4{1, -2, 3, -3.9998f},
+            epsilon)
+    );
 
     REQUIRE(
-            nearly_equal(
-                Vec4{0, 0, 0, 0},
-                Vec4{0, 0, 0, 0},
-                epsilon)
-            );
+        nearly_equal(
+            Vec4{0, 0, 0, 0},
+            Vec4{0, 0, 0, 0},
+            epsilon)
+    );
 }

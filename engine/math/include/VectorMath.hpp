@@ -30,7 +30,8 @@ namespace yarep::math {
         return std::sqrt(length_squared(vec));
     }
 
-    constexpr Vec2 normalize(const Vec2& vec) {
+    inline Vec2 normalize(const Vec2& vec)
+    {
         const float len = length(vec);
         if (len == 0.0f) {
             return {};
@@ -38,7 +39,7 @@ namespace yarep::math {
         return vec / len;
     }
 
-    constexpr Vec3 normalize(const Vec3& vec) {
+    inline Vec3 normalize(const Vec3& vec) {
         const float len = length(vec);
         if (len == 0.0f) {
             return {};
@@ -46,7 +47,7 @@ namespace yarep::math {
         return vec / len;
     }
 
-    constexpr Vec4 normalize(const Vec4& vec) {
+    inline Vec4 normalize(const Vec4& vec) {
         const float len = length(vec);
         if (len == 0.0f) {
             return {};
@@ -54,19 +55,19 @@ namespace yarep::math {
         return vec / len;
     }
 
-    constexpr float dot(const Vec2& lhs, const Vec2& rhs) {
+    inline float dot(const Vec2& lhs, const Vec2& rhs) {
         return lhs.x * rhs.x + lhs.y * rhs.y;
     }
 
-    constexpr float dot(const Vec3& lhs, const Vec3& rhs) {
+    inline float dot(const Vec3& lhs, const Vec3& rhs) {
         return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
     }
 
-    constexpr float dot(const Vec4& lhs, const Vec4& rhs) {
+    inline float dot(const Vec4& lhs, const Vec4& rhs) {
         return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z + lhs.w * rhs.w;
     }
 
-    constexpr Vec3 cross(const Vec3& lhs, const Vec3& rhs) {
+    inline Vec3 cross(const Vec3& lhs, const Vec3& rhs) {
         return {
             lhs.y * rhs.z - lhs.z * rhs.y,
             lhs.z * rhs.x - lhs.x * rhs.z,
@@ -74,7 +75,7 @@ namespace yarep::math {
         };
     }
 
-    constexpr float distance_squared(const Vec2& lhs, const Vec2& rhs) {
+    inline float distance_squared(const Vec2& lhs, const Vec2& rhs) {
         return length_squared(rhs - lhs);
     }
 
@@ -98,50 +99,50 @@ namespace yarep::math {
         return std::sqrt(distance_squared(lhs, rhs));
     }
 
-    constexpr Vec2 lerp(const Vec2& lhs, const Vec2& rhs, const float t) {
+    inline Vec2 lerp(const Vec2& lhs, const Vec2& rhs, const float t) {
         return lhs + t * (rhs - lhs);
     }
 
-    constexpr Vec3 lerp(const Vec3& lhs, const Vec3& rhs, const float t) {
+    inline Vec3 lerp(const Vec3& lhs, const Vec3& rhs, const float t) {
         return lhs + t * (rhs - lhs);
     }
 
-    constexpr Vec4 lerp(const Vec4& lhs, const Vec4& rhs, const float t) {
+    inline Vec4 lerp(const Vec4& lhs, const Vec4& rhs, const float t) {
         return lhs + t * (rhs - lhs);
     }
 
-    constexpr Vec2 min(const Vec2& lhs, const Vec2& rhs) {
+    inline Vec2 min(const Vec2& lhs, const Vec2& rhs) {
         return {std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y)};
     }
 
-    constexpr Vec3 min(const Vec3& lhs, const Vec3& rhs) {
+    inline Vec3 min(const Vec3& lhs, const Vec3& rhs) {
         return {std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y), std::min(lhs.z, rhs.z)};
     }
 
-    constexpr Vec4 min(const Vec4& lhs, const Vec4& rhs) {
+    inline Vec4 min(const Vec4& lhs, const Vec4& rhs) {
         return {std::min(lhs.x, rhs.x), std::min(lhs.y, rhs.y), std::min(lhs.z, rhs.z), std::min(lhs.w, rhs.w)};
     }
 
-    constexpr Vec2 max(const Vec2& lhs, const Vec2& rhs) {
+    inline Vec2 max(const Vec2& lhs, const Vec2& rhs) {
         return {std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y)};
     }
 
-    constexpr Vec3 max(const Vec3& lhs, const Vec3& rhs) {
+    inline Vec3 max(const Vec3& lhs, const Vec3& rhs) {
         return {std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y), std::max(lhs.z, rhs.z)};
     }
 
-    constexpr Vec4 max(const Vec4& lhs, const Vec4& rhs) {
+    inline Vec4 max(const Vec4& lhs, const Vec4& rhs) {
         return {std::max(lhs.x, rhs.x), std::max(lhs.y, rhs.y), std::max(lhs.z, rhs.z), std::max(lhs.w, rhs.w)};
     }
 
-    constexpr Vec2 clamp(const Vec2& vec, const Vec2& minimum, const Vec2& maximum) {
+    inline Vec2 clamp(const Vec2& vec, const Vec2& minimum, const Vec2& maximum) {
         return {
             std::clamp(vec.x, minimum.x, maximum.x),
             std::clamp(vec.y, minimum.y, maximum.y)
         };
     }
 
-    constexpr Vec3 clamp(const Vec3& vec, const Vec3& minimum, const Vec3& maximum) {
+    inline Vec3 clamp(const Vec3& vec, const Vec3& minimum, const Vec3& maximum) {
         return {
             std::clamp(vec.x, minimum.x, maximum.x),
             std::clamp(vec.y, minimum.y, maximum.y),
@@ -149,7 +150,7 @@ namespace yarep::math {
         };
     }
 
-    constexpr Vec4 clamp(const Vec4& vec, const Vec4& minimum, const Vec4& maximum) {
+    inline Vec4 clamp(const Vec4& vec, const Vec4& minimum, const Vec4& maximum) {
         return {
             std::clamp(vec.x, minimum.x, maximum.x),
             std::clamp(vec.y, minimum.y, maximum.y),
@@ -158,18 +159,18 @@ namespace yarep::math {
         };
     }
 
-    constexpr bool nearly_equal(const Vec2& lhs, const Vec2& rhs, const float tolerance) {
+    inline bool nearly_equal(const Vec2& lhs, const Vec2& rhs, const float tolerance) {
         return std::abs(lhs.x - rhs.x) <= tolerance
                && std::abs(lhs.y - rhs.y) <= tolerance;
     }
 
-    constexpr bool nearly_equal(const Vec3& lhs, const Vec3& rhs, const float tolerance) {
+    inline bool nearly_equal(const Vec3& lhs, const Vec3& rhs, const float tolerance) {
         return std::abs(lhs.x - rhs.x) <= tolerance &&
                std::abs(lhs.y - rhs.y) <= tolerance &&
                std::abs(lhs.z - rhs.z) <= tolerance;
     }
 
-    constexpr bool nearly_equal(const Vec4& lhs, const Vec4& rhs, const float tolerance) {
+    inline bool nearly_equal(const Vec4& lhs, const Vec4& rhs, const float tolerance) {
         return std::abs(lhs.x - rhs.x) <= tolerance &&
                std::abs(lhs.y - rhs.y) <= tolerance &&
                std::abs(lhs.z - rhs.z) <= tolerance &&

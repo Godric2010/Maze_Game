@@ -33,25 +33,25 @@ namespace yarep::math {
         return Angle::from_radians(delta);
     }
 
-    constexpr Angle lerp(Angle a, Angle b, const float t) {
+    inline Angle lerp(Angle a, Angle b, const float t) {
         const auto delta = delta_angle(a, b);
         const auto midway_rad = a.radians() + t * delta.radians();
         return Angle::from_radians(midway_rad);
     }
 
-    constexpr float sin(Angle angle) {
+    inline float sin(Angle angle) {
         return std::sin(angle.radians());
     }
 
-    constexpr float cos(Angle angle) {
+    inline float cos(Angle angle) {
         return std::cos(angle.radians());
     }
 
-    constexpr float tan(Angle angle) {
+    inline float tan(Angle angle) {
         return std::tan(angle.radians());
     }
 
-    constexpr bool nearly_equal(Angle a, Angle b, float tolerance) {
+    inline bool nearly_equal(Angle a, Angle b, float tolerance) {
         const auto delta = std::abs(delta_angle(a, b).radians());
         return delta < tolerance;
     }

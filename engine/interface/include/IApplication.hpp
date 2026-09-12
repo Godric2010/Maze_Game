@@ -4,9 +4,12 @@
 
 #pragma once
 #include "Scene/SceneArgs.hpp"
+#include <string>
 
-namespace yarep {
-    class IApplication {
+namespace yarep
+{
+    class IApplication
+    {
     public:
         virtual ~IApplication() = default;
 
