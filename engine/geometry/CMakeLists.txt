@@ -15,6 +15,10 @@ add_library(Geometry STATIC
         include/Plane.hpp
         include/ClosestPoint.hpp
         src/ClosestPoint.cpp
+        include/RayIntersection.hpp
+        src/RayIntersection.cpp
+        src/RayIntersectionHelper.cpp
+        src/RayIntersectionHelper.hpp
 )
 
 target_link_libraries(Geometry PUBLIC Math)
