@@ -1,4 +1,5 @@
 #include "RayIntersectionHelper.hpp"
+#include <algorithm>
 
 namespace yarep::geometry {
     bool slab_test_interval(const float origin, const float direction, const float slab_min,

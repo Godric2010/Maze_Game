@@ -6,13 +6,13 @@ add_library(Geometry STATIC
         src/Contains.cpp
         include/Sphere.hpp
         include/Ray.hpp
+        include/Plane.hpp
         include/OBB.hpp
         include/RayHit.hpp
         include/Bounds.hpp
         src/Bounds.cpp
         include/Intersects.hpp
         src/Intersects.cpp
-        include/Plane.hpp
         include/ClosestPoint.hpp
         src/ClosestPoint.cpp
         include/RayIntersection.hpp
