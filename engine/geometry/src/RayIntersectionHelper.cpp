@@ -1,5 +1,7 @@
 #include "RayIntersectionHelper.hpp"
 #include <algorithm>
+#include <cmath>
+#include <utility>
 
 namespace yarep::geometry {
     bool slab_test_interval(const float origin, const float direction, const float slab_min,
@@ -13,7 +15,17 @@ namespace yarep::geometry {
                 return false;
             }
 
-            // Inside -> This axis does not restrict the ray interval but also has infinite solutions. -> No further action required.
+            // Check if origin is boundary parallel to slab and change interval accordingly
+            if (origin == slab_min && 0.0f > interval.entry) {
+                interval.entry = 0.0f;
+                interval.entry_normal = min_normal;
+            }
+            else if ( origin == slab_max && 0.0f > interval.entry) {
+                interval.entry = 0.0f;
+                interval.entry_normal = max_normal;
+            }
+
+            // Parallel and inside/on boundary -> no further interval restriction.
             return true;
         }
 

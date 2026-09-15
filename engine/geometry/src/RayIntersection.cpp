@@ -119,10 +119,28 @@ namespace yarep::geometry {
     }
 
     std::optional<RayHit> ray_intersection(const Ray& ray, const OBB& obb) {
+        const auto inverse_rotation = math::inverse(obb.rotation);
 
+        const auto relative_ray = Ray{
+            math::rotate(inverse_rotation, ray.origin - obb.center),
+            math::rotate(inverse_rotation, ray.direction),
+        };
 
+        const auto obb_local_space_aabb = AABB{
+            -obb.half_extents,
+            obb.half_extents,
+        };
 
+        const auto local_ray_hit = ray_intersection(relative_ray, obb_local_space_aabb);
+        if (!local_ray_hit.has_value()) {
+            return {};
+        }
 
-        throw std::runtime_error("ray_intersection not implemented");
+        RayHit hit;
+        hit.point = obb.center + math::rotate(obb.rotation, local_ray_hit.value().point);
+        hit.distance = local_ray_hit.value().distance;
+        hit.normal = math::rotate(obb.rotation, local_ray_hit.value().normal);
+
+        return {hit};
     }
 }

@@ -467,6 +467,24 @@ TEST_CASE("Ray AABB - Non normalized direction reports world distance") {
             );
 }
 
+TEST_CASE("Ray AABB - Ray starting on surface and moving tangentially hits at zero distance") {
+    constexpr AABB bounds{
+        Vec3{-1, -1, -1},
+        Vec3{1, 1, 1}
+    };
+
+    constexpr Ray ray{
+        Vec3{-1, 0, 0},
+        Vec3{0, 1, 0}
+    };
+
+    require_hit(
+            ray_intersection(ray, bounds),
+            0.0f,
+            Vec3{-1, 0, 0},
+            Vec3{-1, 0, 0}
+            );
+}
 
 // ============================================================================
 // Ray <-> OBB
