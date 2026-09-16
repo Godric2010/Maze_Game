@@ -44,21 +44,21 @@ namespace yarep::asset_handling::mesh
             std::vector<FaceVertexIndex> indices;
         };
 
-        static void AnalyseString(const std::string& str, std::vector<glm::vec3>& vertex_positions,
-                                  std::vector<glm::vec3>& vertex_normals, std::vector<glm::vec2>& vertex_uvs,
+        static void AnalyseString(const std::string& str, std::vector<math::Vec3>& vertex_positions,
+                                  std::vector<math::Vec3>& vertex_normals, std::vector<math::Vec2>& vertex_uvs,
                                   std::vector<Face>& face);
 
 
-        static MeshVertexAsset BuildMeshVertex(FaceVertexIndex indices, const std::vector<glm::vec3>& vertex_positions,
-                                          const std::vector<glm::vec3>& vertex_normals,
-                                          const std::vector<glm::vec2>& vertex_uvs);
+        static MeshVertexAsset BuildMeshVertex(FaceVertexIndex indices, const std::vector<math::Vec3>& vertex_positions,
+                                          const std::vector<math::Vec3>& vertex_normals,
+                                          const std::vector<math::Vec2>& vertex_uvs);
 
         static bool IsIndexValid(const std::string& name, uint32_t index, size_t size, bool throw_error_at_zero_index);
         static bool TryGetValidLineString(std::string& line_string);
         static void ParseFace(std::istringstream& line_stream, std::vector<Face>& faces);
         static void FanTriangulateFace(Face& face);
-        static bool TryParseVector3(std::istringstream& line_stream, glm::vec3& result);
-        static bool TryParseVector2(std::istringstream& line_stream, glm::vec2& result);
+        static bool TryParseVector3(std::istringstream& line_stream, math::Vec3& result);
+        static bool TryParseVector2(std::istringstream& line_stream, math::Vec2& result);
         static uint32_t ParseStringToIndex(const std::string& token, const std::string& field_name,
                                            const std::string& full_token);
     };

@@ -3,18 +3,14 @@
 
 using namespace yarep::systems::ui;
 
-namespace yarep::systems
-{
-    UiTextSystem::UiTextSystem()
-    {
+namespace yarep::systems {
+    UiTextSystem::UiTextSystem() {
     }
 
-    UiTextSystem::~UiTextSystem()
-    {
+    UiTextSystem::~UiTextSystem() {
     }
 
-    void UiTextSystem::Initialize()
-    {
+    void UiTextSystem::Initialize() {
         m_transform_cache = Cache()->GetTransformCache();
         m_ui_cache = Cache()->GetUiCache();
         m_text_controller = ServiceLocator()->GetService<text::TextController>();
@@ -22,24 +18,20 @@ namespace yarep::systems
         m_asset_handler = ServiceLocator()->GetService<asset_handling::AssetHandler>();
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::ui::Text>(
-             [this](const ecs::EntityId entity, const components::ui::Text& _)
-             {
-                 this->RegisterTextElement(entity);
-             }
+                [this](const ecs::EntityId entity, const components::ui::Text& _) {
+                    this->RegisterTextElement(entity);
+                }
 
-            );
+                );
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::ui::Text>(
-             [this](const ecs::EntityId entity)
-             {
-                 this->m_ui_cache->DeregisterTextElement(entity);
-             }
-            );
+                [this](const ecs::EntityId entity) {
+                    this->m_ui_cache->DeregisterTextElement(entity);
+                }
+                );
     }
 
-    void UiTextSystem::RegisterTextElement(ecs::EntityId entity) const
-    {
-        if (this->m_ui_cache == nullptr)
-        {
+    void UiTextSystem::RegisterTextElement(ecs::EntityId entity) const {
+        if (this->m_ui_cache == nullptr) {
             throw std::runtime_error("UiSystem: Cache is null");
         }
 
@@ -54,8 +46,7 @@ namespace yarep::systems
         m_ui_cache->RegisterTextElement(entity, text_element);
     }
 
-    assets::MaterialHandle UiTextSystem::RegisterNewUiMaterial() const
-    {
+    assets::MaterialHandle UiTextSystem::RegisterNewUiMaterial() const {
         auto material_asset = asset_handling::MaterialAsset();
         material_asset.name = std::string("UiTextMaterial");
         material_asset.render_state = asset_handling::RenderState::UI;
@@ -68,86 +59,76 @@ namespace yarep::systems
         return handle;
     }
 
-    void UiTextSystem::Run(float delta_time)
-    {
+    void UiTextSystem::Run(float delta_time) {
         HandleTextLabels();
     }
 
-    void UiTextSystem::HandleTextLabels()
-    {
+    void UiTextSystem::HandleTextLabels() {
         auto text_labels = EcsWorld()->GetComponentsOfType<components::ui::Text>();
-        for (const auto [text, entity] : text_labels)
-        {
+        for (const auto [text, entity]: text_labels) {
             auto text_cache_value = m_ui_cache->GetTextElement(entity);
 
-            if (text->GetFontVersion() != text_cache_value.last_font_version)
-            {
+            if (text->GetFontVersion() != text_cache_value.last_font_version) {
                 auto [font_handle, new_atlas_created] = m_text_controller->LoadFont(text->GetFontName(),
-                         text->GetFontSize()
-                    );
+                            text->GetFontSize()
+                        );
 
                 bool font_texture_exists = m_font_textures.contains(font_handle);
-                if (font_texture_exists)
-                {
+                if (font_texture_exists) {
                     UpdateTextureFromFont(font_handle);
-                }
-                else
-                {
+                } else {
                     RegisterTextureHandleFromFont(font_handle);
                 }
                 text_cache_value.font_handle = font_handle;
                 text_cache_value.last_font_version = text->GetFontVersion();
 
                 const auto material_asset = m_asset_handler->GetAsset<asset_handling::MaterialAsset>(
-                     text_cache_value.material_handle);
+                        text_cache_value.material_handle
+                        );
                 auto font_texture_handle = m_font_textures[font_handle];
-                if (material_asset->albedo_texture.texture != font_texture_handle)
-                {
+                if (material_asset->albedo_texture.texture != font_texture_handle) {
                     m_asset_handler->UpdateMaterial(text_cache_value.material_handle,
-                                                    [font_texture_handle](asset_handling::MaterialAsset& material)
-                                                    {
+                                                    [font_texture_handle](asset_handling::MaterialAsset& material) {
                                                         material.albedo_texture.texture = font_texture_handle;
                                                         material.albedo_texture.uv_scale = math::Vec2(1, 1);
                                                         material.albedo_texture.tiling = math::Vec2(1, 1);
-                                                    });
+                                                    }
+                            );
                 }
 
                 m_ui_cache->SetTextElementValue(entity, text_cache_value);
             }
 
-            if (text->GetTextVersion() != text_cache_value.last_text_version)
-            {
+            if (text->GetTextVersion() != text_cache_value.last_text_version) {
                 UpdateTextMesh(entity, text_cache_value, text);
             }
         }
     }
 
     void UiTextSystem::UpdateTextMesh(const ecs::EntityId entity, UiCache::TextElement text_element,
-                                      const components::ui::Text* text) const
-    {
-        if (!text_element.font_handle.has_value())
-        {
+                                      const components::ui::Text* text) const {
+        if (!text_element.font_handle.has_value()) {
             return;
         }
         auto text_mesh = m_text_controller->BuildTextMesh(text_element.font_handle.value(),
                                                           text->GetText(),
                                                           text::TextAlignment::Left
-                                                         );
+                );
 
         auto new_mesh_asset = asset_handling::MeshAsset{};
-        for (const auto& vertex : text_mesh.vertices)
-        {
+        for (const auto& vertex: text_mesh.vertices) {
             asset_handling::MeshVertexAsset mesh_vertex{
-                .position = glm::vec3(vertex.x, vertex.y, 0),
-                .uv = glm::vec2(vertex.u, vertex.v),
+                .position = math::Vec3(vertex.x, vertex.y, 0),
+                .uv = math::Vec2(vertex.u, vertex.v),
             };
             new_mesh_asset.vertices.emplace_back(mesh_vertex);
         }
         new_mesh_asset.indices = text_mesh.indices;
-        m_asset_handler->UpdateMesh(text_element.mesh_handle, [new_mesh_asset](asset_handling::MeshAsset& mesh_asset)
-        {
-            mesh_asset = new_mesh_asset;
-        });
+        m_asset_handler->UpdateMesh(text_element.mesh_handle,
+                                    [new_mesh_asset](asset_handling::MeshAsset& mesh_asset) {
+                                        mesh_asset = new_mesh_asset;
+                                    }
+                );
 
         text_element.last_text_version = text->GetTextVersion();
         m_ui_cache->SetTextElementValue(entity, text_element);
@@ -156,8 +137,7 @@ namespace yarep::systems
         rect_transform->SetSize(glm::vec2(text_mesh.dimensions_width, text_mesh.dimensions_height));
     }
 
-    void UiTextSystem::RegisterTextureHandleFromFont(text::FontHandle font_handle)
-    {
+    void UiTextSystem::RegisterTextureHandleFromFont(text::FontHandle font_handle) {
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
         auto texture_asset = asset_handling::TextureAsset();
         texture_asset.width = width;
@@ -170,8 +150,7 @@ namespace yarep::systems
         m_font_textures[font_handle] = texture_handle;
     }
 
-    void UiTextSystem::UpdateTextureFromFont(text::FontHandle font_handle)
-    {
+    void UiTextSystem::UpdateTextureFromFont(text::FontHandle font_handle) {
         auto texture_handle = m_font_textures[font_handle];
         const auto [width, height, pixels] = m_text_controller->GetTextureDescription(font_handle);
         auto new_texture_asset = asset_handling::TextureAsset();
@@ -180,9 +159,10 @@ namespace yarep::systems
         new_texture_asset.format = asset_handling::PixelFormat::R8;
         new_texture_asset.pixels = pixels;
 
-        m_asset_handler->UpdateTexture(texture_handle, [new_texture_asset](asset_handling::TextureAsset& texture_asset)
-        {
-            texture_asset = new_texture_asset;
-        });
+        m_asset_handler->UpdateTexture(texture_handle,
+                                       [new_texture_asset](asset_handling::TextureAsset& texture_asset) {
+                                           texture_asset = new_texture_asset;
+                                       }
+                );
     }
 } // namespace

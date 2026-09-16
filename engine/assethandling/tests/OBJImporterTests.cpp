@@ -11,7 +11,7 @@
 
 using namespace yarep::asset_handling::mesh;
 
-bool AreVectorsEqual(const glm::vec3 actual, const glm::vec3 expected)
+bool AreVectorsEqual(const yarep::math::Vec3 actual, const yarep::math::Vec3 expected)
 {
     const float x_diff = std::abs(actual.x - expected.x);
     const float y_diff = std::abs(actual.y - expected.y);
@@ -26,7 +26,7 @@ bool AreVectorsEqual(const glm::vec3 actual, const glm::vec3 expected)
     return true;
 }
 
-bool AreVectorsEqual(const glm::vec2 actual, const glm::vec2 expected)
+bool AreVectorsEqual(const yarep::math::Vec2 actual, const yarep::math::Vec2 expected)
 {
     const float x_diff = std::abs(actual.x - expected.x);
     const float y_diff = std::abs(actual.y - expected.y);
@@ -58,9 +58,9 @@ f 1 2 3)";
     REQUIRE(vertices.size() == 3);
     REQUIRE(indices.size() == 3);
     REQUIRE(indices == std::vector<uint32_t>({0, 1, 2}));
-    REQUIRE(AreVectorsEqual(vertices[0].position, glm::vec3(0,0,0)));
-    REQUIRE(AreVectorsEqual(vertices[1].position, glm::vec3(1,0,0)));
-    REQUIRE(AreVectorsEqual(vertices[2].position, glm::vec3(0,1,0)));
+    REQUIRE(AreVectorsEqual(vertices[0].position, yarep::math::Vec3(0,0,0)));
+    REQUIRE(AreVectorsEqual(vertices[1].position, yarep::math::Vec3(1,0,0)));
+    REQUIRE(AreVectorsEqual(vertices[2].position, yarep::math::Vec3(0,1,0)));
 }
 
 TEST_CASE("OBJImporterTests - Analyse minimal quad mesh")
@@ -90,18 +90,18 @@ TEST_CASE("OBJImporterTests - Analyse minimal quad mesh")
     REQUIRE(vertices.size() == 4);
     REQUIRE(indices.size() == 6);
     REQUIRE(indices == std::vector<uint32_t>({0, 1, 2, 0, 2, 3}));
-    REQUIRE(AreVectorsEqual(vertices[0].position, glm::vec3(0,0,0)));
-    REQUIRE(AreVectorsEqual(vertices[1].position, glm::vec3(1,0,0)));
-    REQUIRE(AreVectorsEqual(vertices[2].position, glm::vec3(1,1,0)));
-    REQUIRE(AreVectorsEqual(vertices[3].position, glm::vec3(0,1,0)));
-    REQUIRE(AreVectorsEqual(vertices[0].normal, glm::vec3(0,0,1)));
-    REQUIRE(AreVectorsEqual(vertices[1].normal, glm::vec3(0,0,1)));
-    REQUIRE(AreVectorsEqual(vertices[2].normal, glm::vec3(0,0,1)));
-    REQUIRE(AreVectorsEqual(vertices[3].normal, glm::vec3(0,0,1)));
-    REQUIRE(AreVectorsEqual(vertices[0].uv, glm::vec2(0,1)));
-    REQUIRE(AreVectorsEqual(vertices[1].uv, glm::vec2(1,1)));
-    REQUIRE(AreVectorsEqual(vertices[2].uv, glm::vec2(1,0)));
-    REQUIRE(AreVectorsEqual(vertices[3].uv, glm::vec2(0,0)));
+    REQUIRE(AreVectorsEqual(vertices[0].position, yarep::math::Vec3(0,0,0)));
+    REQUIRE(AreVectorsEqual(vertices[1].position, yarep::math::Vec3(1,0,0)));
+    REQUIRE(AreVectorsEqual(vertices[2].position, yarep::math::Vec3(1,1,0)));
+    REQUIRE(AreVectorsEqual(vertices[3].position, yarep::math::Vec3(0,1,0)));
+    REQUIRE(AreVectorsEqual(vertices[0].normal, yarep::math::Vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[1].normal, yarep::math::Vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[2].normal, yarep::math::Vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[3].normal, yarep::math::Vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[0].uv, yarep::math::Vec2(0,1)));
+    REQUIRE(AreVectorsEqual(vertices[1].uv, yarep::math::Vec2(1,1)));
+    REQUIRE(AreVectorsEqual(vertices[2].uv, yarep::math::Vec2(1,0)));
+    REQUIRE(AreVectorsEqual(vertices[3].uv, yarep::math::Vec2(0,0)));
 }
 
 TEST_CASE("OBJImporterTests - Analyse cube fragment mesh")
@@ -138,18 +138,18 @@ f 1/1/1 2/2/1 3/3/1 4/4/1)";
     REQUIRE(vertices.size() == 4);
     REQUIRE(indices.size() == 6);
     REQUIRE(indices == std::vector<uint32_t>({0, 1, 2, 0, 2, 3}));
-    REQUIRE(AreVectorsEqual(vertices[0].position, glm::vec3(-1,-1,1)));
-    REQUIRE(AreVectorsEqual(vertices[1].position, glm::vec3(1,-1,1)));
-    REQUIRE(AreVectorsEqual(vertices[2].position, glm::vec3(1,1,1)));
-    REQUIRE(AreVectorsEqual(vertices[3].position, glm::vec3(-1,1,1)));
-    REQUIRE(AreVectorsEqual(vertices[0].normal, glm::vec3(0,0,1)));
-    REQUIRE(AreVectorsEqual(vertices[1].normal, glm::vec3(0,0,1)));
-    REQUIRE(AreVectorsEqual(vertices[2].normal, glm::vec3(0,0,1)));
-    REQUIRE(AreVectorsEqual(vertices[3].normal, glm::vec3(0,0,1)));
-    REQUIRE(AreVectorsEqual(vertices[0].uv, glm::vec2(0,1)));
-    REQUIRE(AreVectorsEqual(vertices[1].uv, glm::vec2(1,1)));
-    REQUIRE(AreVectorsEqual(vertices[2].uv, glm::vec2(1,0)));
-    REQUIRE(AreVectorsEqual(vertices[3].uv, glm::vec2(0,0)));
+    REQUIRE(AreVectorsEqual(vertices[0].position, yarep::math::Vec3(-1,-1,1)));
+    REQUIRE(AreVectorsEqual(vertices[1].position, yarep::math::Vec3(1,-1,1)));
+    REQUIRE(AreVectorsEqual(vertices[2].position, yarep::math::Vec3(1,1,1)));
+    REQUIRE(AreVectorsEqual(vertices[3].position, yarep::math::Vec3(-1,1,1)));
+    REQUIRE(AreVectorsEqual(vertices[0].normal, yarep::math::Vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[1].normal, yarep::math::Vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[2].normal, yarep::math::Vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[3].normal, yarep::math::Vec3(0,0,1)));
+    REQUIRE(AreVectorsEqual(vertices[0].uv, yarep::math::Vec2(0,1)));
+    REQUIRE(AreVectorsEqual(vertices[1].uv, yarep::math::Vec2(1,1)));
+    REQUIRE(AreVectorsEqual(vertices[2].uv, yarep::math::Vec2(1,0)));
+    REQUIRE(AreVectorsEqual(vertices[3].uv, yarep::math::Vec2(0,0)));
 }
 
 TEST_CASE("OBJImporterTests - CRLF + Inline comments, no exception")

@@ -27,9 +27,9 @@ namespace yarep::asset_handling {
     };
 
     struct MeshVertexAsset {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 uv;
+        math::Vec3 position;
+        math::Vec3 normal;
+        math::Vec2 uv;
     };
 
     struct MeshAsset : Asset {

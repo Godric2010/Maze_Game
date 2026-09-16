@@ -12,9 +12,9 @@ namespace yarep::asset_handling::mesh
                                              std::vector<MeshVertexAsset>& vertices,
                                              std::vector<uint32_t>& indices)
     {
-        std::vector<glm::vec3> vertex_positions;
-        std::vector<glm::vec3> vertex_normals;
-        std::vector<glm::vec2> vertex_uvs;
+        std::vector<math::Vec3> vertex_positions;
+        std::vector<math::Vec3> vertex_normals;
+        std::vector<math::Vec2> vertex_uvs;
         std::vector<Face> faces;
         AnalyseString(obj_string, vertex_positions, vertex_normals, vertex_uvs, faces);
 
@@ -50,9 +50,9 @@ namespace yarep::asset_handling::mesh
     }
 
     MeshVertexAsset MeshImporter::BuildMeshVertex(const FaceVertexIndex indices,
-                                             const std::vector<glm::vec3>& vertex_positions,
-                                             const std::vector<glm::vec3>& vertex_normals,
-                                             const std::vector<glm::vec2>& vertex_uvs)
+                                             const std::vector<math::Vec3>& vertex_positions,
+                                             const std::vector<math::Vec3>& vertex_normals,
+                                             const std::vector<math::Vec2>& vertex_uvs)
     {
         MeshVertexAsset vertex{};
         if (IsIndexValid("PositionIndex", indices.position_index, vertex_positions.size(), true))
@@ -72,8 +72,8 @@ namespace yarep::asset_handling::mesh
         return vertex;
     }
 
-    void MeshImporter::AnalyseString(const std::string& str, std::vector<glm::vec3>& vertex_positions,
-                                     std::vector<glm::vec3>& vertex_normals, std::vector<glm::vec2>& vertex_uvs,
+    void MeshImporter::AnalyseString(const std::string& str, std::vector<math::Vec3>& vertex_positions,
+                                     std::vector<math::Vec3>& vertex_normals, std::vector<math::Vec2>& vertex_uvs,
                                      std::vector<Face>& face)
     {
         std::stringstream stream(str);
@@ -96,7 +96,7 @@ namespace yarep::asset_handling::mesh
 
             if (prefix == "v")
             {
-                glm::vec3 pos;
+                math::Vec3 pos;
                 if (!TryParseVector3(line_stream, pos))
                 {
                     throw std::runtime_error("Cannot read vertex position! Invalid line string: '" + line_string + "'");
@@ -106,7 +106,7 @@ namespace yarep::asset_handling::mesh
             }
             if (prefix == "vn")
             {
-                glm::vec3 normal;
+                math::Vec3 normal;
                 if (!TryParseVector3(line_stream, normal))
                 {
                     throw std::runtime_error("Cannot read vertex normals! Invalid line string: '" + line_string + "'");
@@ -116,7 +116,7 @@ namespace yarep::asset_handling::mesh
             }
             if (prefix == "vt")
             {
-                glm::vec2 uv;
+                math::Vec2 uv;
                 if (!TryParseVector2(line_stream, uv))
                 {
                     throw std::runtime_error("Cannot read vertex UVs! Invalid line string: '" + line_string + "'");
@@ -243,25 +243,25 @@ namespace yarep::asset_handling::mesh
         face.indices = triangulated_indices;
     }
 
-    bool MeshImporter::TryParseVector3(std::istringstream& line_stream, glm::vec3& result)
+    bool MeshImporter::TryParseVector3(std::istringstream& line_stream, math::Vec3& result)
     {
         float x, y, z;
         if (!(line_stream >> x >> y >> z))
         {
             return false;
         }
-        result = glm::vec3(x, y, z);
+        result = math::Vec3(x, y, z);
         return true;
     }
 
-    bool MeshImporter::TryParseVector2(std::istringstream& line_stream, glm::vec2& result)
+    bool MeshImporter::TryParseVector2(std::istringstream& line_stream, math::Vec2& result)
     {
         float x, y;
         if (!(line_stream >> x >> y))
         {
             return false;
         }
-        result = glm::vec2(x, y);
+        result = math::Vec2(x, y);
         return true;
     }
 

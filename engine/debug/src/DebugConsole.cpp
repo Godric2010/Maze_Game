@@ -102,8 +102,8 @@ namespace yarep::debug
         for (auto& vertex : text_mesh.vertices)
         {
             asset_handling::MeshVertexAsset mesh_vertex{};
-            mesh_vertex.position = glm::vec3(vertex.x, vertex.y, 0);
-            mesh_vertex.uv = glm::vec2(vertex.u, vertex.v);
+            mesh_vertex.position = math::Vec3(vertex.x, vertex.y, 0);
+            mesh_vertex.uv = math::Vec2(vertex.u, vertex.v);
             text_vertices.push_back(mesh_vertex);
         }
 
