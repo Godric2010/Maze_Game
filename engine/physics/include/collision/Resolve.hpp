@@ -1,14 +1,12 @@
 #pragma once
 #define GLM_ENABLE_EXPERIMENTAL
-#include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
 
-#include "Types.hpp"
-#include "ClosestPoint.hpp"
-#include "Overlap.hpp"
+#include "AABB.hpp"
 #include "Sphere.hpp"
+#include "Types.hpp"
 
 namespace yarep::physics::collision {
     /**
@@ -30,7 +28,7 @@ namespace yarep::physics::collision {
      *         collision.
      * @throws None This function is declared `noexcept` and does not throw exceptions.
      */
-    CollisionHit Penetration(const Sphere &sphere, const AABB &box) noexcept;
+    CollisionHit Penetration(const geometry::Sphere &sphere, const geometry::AABB &box) noexcept;
 
     /**
      * Calculates collision penetration properties between two axis-aligned bounding boxes (AABBs).
@@ -50,7 +48,7 @@ namespace yarep::physics::collision {
      *         depth and collision normal.
      * @throws None This function is declared `noexcept` and does not throw exceptions.
      */
-    CollisionHit Penetration(const AABB &box_a, const AABB &box_b) noexcept;
+    CollisionHit Penetration(const geometry::AABB &box_a, const geometry::AABB &box_b) noexcept;
 
     /**
      * Calculates the sliding vector by removing the component of a given vector
@@ -66,5 +64,5 @@ namespace yarep::physics::collision {
      * @return The sliding vector obtained by projecting the input vector onto the surface.
      * @throws None This function is declared `noexcept` and does not throw exceptions.
      */
-    glm::vec3 Slide(const glm::vec3 &vec, const glm::vec3 &normal) noexcept;
+    math::Vec3 Slide(const math::Vec3 &vec, const math::Vec3 &normal) noexcept;
 } // namespace

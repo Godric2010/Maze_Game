@@ -39,16 +39,16 @@ namespace yarep::systems::physics {
         void BuildSphereCollider(ecs::EntityId entity, components::SphereCollider sphere_collider,
                                  glm::vec3 position) const;
 
-        void RunBroadphase(ecs::EntityId target_entity, float radius, const glm::vec3& position, glm::vec3 move_delta,
+        void RunBroadphase(ecs::EntityId target_entity, float radius, const math::Vec3& position, math::Vec3 move_delta,
                            std::vector<ecs::EntityId>& blocking_candidates,
                            std::vector<ecs::EntityId>& trigger_candidates) const;
 
-        void PerformCollisionSweep(ecs::EntityId target_entity, glm::vec3 position,
-                                   glm::vec3 move_delta, float radius,
+        void PerformCollisionSweep(ecs::EntityId target_entity, math::Vec3 position,
+                                   math::Vec3 move_delta, float radius,
                                    const std::vector<ecs::EntityId>& blocking_candidates,
-                                   glm::vec3* final_position);
+                                   math::Vec3* final_position);
 
-        void DetectTriggerInteractions(glm::vec3 final_position, float radius,
+        void DetectTriggerInteractions(math::Vec3 final_position, float radius,
                                        ecs::EntityId target_entity,
                                        const std::vector<ecs::EntityId>& trigger_candidates);
 
@@ -59,7 +59,5 @@ namespace yarep::systems::physics {
                                 std::unordered_set<ecs::EntityId>& trigger_entities);
 
 
-        static yarep::physics::collision::AABB BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest,
-                                                              float radius) noexcept;
     };
 } // namespace

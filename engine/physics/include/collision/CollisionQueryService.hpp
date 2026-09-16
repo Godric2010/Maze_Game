@@ -4,44 +4,44 @@
 
 #pragma once
 #include <unordered_map>
-#include <glm/glm.hpp>
 #include <vector>
 
-#include "../../../ecs/src/Entity.hpp"
-#include "collision/IBroadphase.hpp"
+#include "AABB.hpp"
+#include "OBB.hpp"
 #include "collision/ColliderCache.hpp"
-#include "Types.hpp"
+#include "collision/IBroadphase.hpp"
 
 namespace yarep::physics::collision {
     struct ICollisionQueryService {
         virtual ~ICollisionQueryService() = default;
 
-        virtual void QuerySphereSweep(const glm::vec3 &pos, const glm::vec3 &rest, float radius,
-                                      std::vector<ecs::EntityId> &out,
-                                      const QueryFilter *f) const = 0;
+        virtual void QuerySphereSweep(const math::Vec3& pos, const math::Vec3& rest, float radius,
+                                      std::vector<ecs::EntityId>& out,
+                                      const QueryFilter* f) const = 0;
 
-        [[nodiscard]] virtual const AABB *GetAabb(ecs::EntityId) const = 0;
+        [[nodiscard]] virtual const geometry::AABB* GetAabb(ecs::EntityId) const = 0;
 
-        [[nodiscard]] virtual const OBB *GetObb(ecs::EntityId) const = 0;
+        [[nodiscard]] virtual const geometry::OBB* GetObb(ecs::EntityId) const = 0;
     };
 
     class CollisionQueryService final : public ICollisionQueryService {
     public:
-        CollisionQueryService(IBroadphase &broadphase,
-                              ColliderCache &collider_cache)
+        CollisionQueryService(IBroadphase& broadphase,
+                              ColliderCache& collider_cache)
             : m_broadphase(broadphase), m_collider_cache(collider_cache) {
         }
 
-        void QuerySphereSweep(const glm::vec3 &pos, const glm::vec3 &rest, const float radius,
-                              std::vector<ecs::EntityId> &out, const QueryFilter *filter) const override {
-            const AABB swept = BuildSweptAabb(pos, rest, radius);
+        void QuerySphereSweep(const math::Vec3& pos, const math::Vec3& rest, const float radius,
+                              std::vector<ecs::EntityId>& out, const QueryFilter* filter) const override {
+            const geometry::AABB swept = BuildSweptAabb(pos, rest, radius);
             out.clear();
             m_broadphase.QueryAabb(swept, out, filter);
         }
 
-        [[nodiscard]] const AABB *GetAabb(const ecs::EntityId entity) const override {
+        [[nodiscard]] const geometry::AABB* GetAabb(const ecs::EntityId entity) const override {
             const auto it = m_collider_cache.box_colliders.find(entity);
-            if (m_collider_cache.box_colliders.end() == it) return nullptr;
+            if (m_collider_cache.box_colliders.end() == it)
+                return nullptr;
 
             if (it->second.is_trigger)
                 return nullptr;
@@ -49,9 +49,10 @@ namespace yarep::physics::collision {
             return &it->second.world_box;
         }
 
-        [[nodiscard]] const OBB *GetObb(const ecs::EntityId entity) const override {
+        [[nodiscard]] const geometry::OBB* GetObb(const ecs::EntityId entity) const override {
             const auto it = m_collider_cache.box_colliders.find(entity);
-            if (m_collider_cache.box_colliders.end() == it) return nullptr;
+            if (m_collider_cache.box_colliders.end() == it)
+                return nullptr;
 
             if (it->second.is_trigger)
                 return nullptr;
@@ -60,15 +61,16 @@ namespace yarep::physics::collision {
         }
 
     private:
-        IBroadphase &m_broadphase;
-        ColliderCache &m_collider_cache;
+        IBroadphase& m_broadphase;
+        ColliderCache& m_collider_cache;
 
-        static AABB BuildSweptAabb(const glm::vec3 &pos, const glm::vec3 &rest, const float radius) noexcept {
-            const glm::vec3 p0 = pos;
-            const glm::vec3 p1 = pos + rest;
+        static geometry::AABB BuildSweptAabb(const math::Vec3& pos, const math::Vec3& rest,
+                                             const float radius) noexcept {
+            const math::Vec3 p0 = pos;
+            const math::Vec3 p1 = pos + rest;
 
-            const glm::vec3 min = glm::min(p0, p1) - glm::vec3(radius);
-            const glm::vec3 max = glm::max(p0, p1) + glm::vec3(radius);
+            const math::Vec3 min = math::min(p0, p1) - math::Vec3{radius, radius, radius};
+            const math::Vec3 max = math::max(p0, p1) + math::Vec3{radius, radius, radius};
             return {min, max};
         }
     };

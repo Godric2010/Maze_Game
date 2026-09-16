@@ -1,6 +1,8 @@
 #pragma once
+#include <cmath>
 #include <unordered_map>
 
+#include "AABB.hpp"
 #include "collision/IBroadphase.hpp"
 #include "Ecs/Types.hpp"
 
@@ -28,9 +30,9 @@ namespace yarep::physics::collision {
 
         void Insert(const BroadphaseProxy& proxy) override;
         void Remove(ecs::EntityId entity) override;
-        void Update(ecs::EntityId entity, const AABB &new_aabb) override;
+        void Update(ecs::EntityId entity, const geometry::AABB &new_aabb) override;
 
-        void QueryAabb(const AABB &area, std::vector<ecs::EntityId> &out, const QueryFilter *filter) override;
+        void QueryAabb(const geometry::AABB &area, std::vector<ecs::EntityId> &out, const QueryFilter *filter) override;
 
     private:
         float m_cell_size;
@@ -40,11 +42,11 @@ namespace yarep::physics::collision {
         std::unordered_map<ecs::EntityId, std::vector<CellKey>> m_back_references;
         std::unordered_map<ecs::EntityId, BroadphaseProxy> m_proxies;
 
-        static inline int FloorToCell(const float v, const float inv_cell) {
+        static int FloorToCell(const float v, const float inv_cell) {
             return static_cast<int>(std::floor(v * inv_cell));
         }
 
-        void BoxToCells(const AABB& aabb, std::vector<CellKey>& tmp) const;
+        void BoxToCells(const geometry::AABB& aabb, std::vector<CellKey>& tmp) const;
 
         static inline bool PassFilter(const BroadphaseProxy& proxy, const QueryFilter* filter) {
             if (!filter) return true;

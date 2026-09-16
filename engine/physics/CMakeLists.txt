@@ -5,9 +5,6 @@ find_package(spdlog CONFIG)
 
 add_library(Physics STATIC
         include/collision/Types.hpp
-        src/collision/Overlap.cpp
-        src/collision/ClosestPoint.cpp
-        include/collision/ClosestPoint.hpp
         src/collision/Sweep.cpp
         include/collision/Sweep.hpp
         src/collision/Resolve.cpp
@@ -19,7 +16,6 @@ add_library(Physics STATIC
         include/collision/MoverSolver.hpp
         tests/MoverSolverTests.cpp
         tests/FakeCollisionQueryService.hpp
-        tests/TypeUtiliesTests.cpp
         include/collision/TypeUtils.hpp
         include/collision/CollisionUtils.hpp
         src/collision/BroadphaseBuilder.cpp

@@ -6,6 +6,7 @@
 #include <memory>
 // #include <spdlog/spdlog.h>
 
+#include "Bounds.hpp"
 #include "Collider.hpp"
 #include "Rigidbody.hpp"
 #include "TransformComponent.hpp"
@@ -15,79 +16,71 @@
 #include "collision/MoverSolver.hpp"
 #include "../../../physics/include/collision/TypeUtils.hpp"
 
-namespace yarep::systems::physics
-{
+namespace yarep::systems::physics {
     using namespace yarep::physics;
 
-    PhysicsSystem::PhysicsSystem()
-    {
+    PhysicsSystem::PhysicsSystem() {
         m_collider_cache = std::make_unique<collision::ColliderCache>();
         m_broadphase = collision::BroadphaseBuilder::BuildBroadphase(2);
         m_collision_query_service = std::make_unique<collision::CollisionQueryService>(
-            *m_broadphase,
-            *m_collider_cache
-        );
+                *m_broadphase,
+                *m_collider_cache
+                );
     }
 
-    void PhysicsSystem::Initialize()
-    {
+    void PhysicsSystem::Initialize() {
         m_transform_cache = Cache()->GetTransformCache();
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::BoxCollider>(
-            [this](const ecs::EntityId entity, const components::BoxCollider& box_collider)
-            {
-                const components::TransformComponent* transform = EcsWorld()->GetComponent<components::TransformComponent>(entity);
-                this->BuildBoxCollider(entity,
-                                       box_collider,
-                                       transform->GetPosition(),
-                                       transform->GetRotation(),
-                                       transform->GetScale()
+                [this](const ecs::EntityId entity, const components::BoxCollider& box_collider) {
+                    const components::TransformComponent* transform = EcsWorld()->GetComponent<
+                        components::TransformComponent>(entity);
+                    this->BuildBoxCollider(entity,
+                                           box_collider,
+                                           transform->GetPosition(),
+                                           transform->GetRotation(),
+                                           transform->GetScale()
+                            );
+                }
                 );
-            }
-        );
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentRemoveEvent<components::BoxCollider>(
-            [this](const ecs::EntityId entity)
-            {
-                this->m_collider_cache->box_colliders.erase(entity);
-            }
-        );
+                [this](const ecs::EntityId entity) {
+                    this->m_collider_cache->box_colliders.erase(entity);
+                }
+                );
 
         EcsWorld()->GetComponentEventBus()->SubscribeOnComponentAddEvent<components::SphereCollider>(
-            [this](const ecs::EntityId entity, const components::SphereCollider& sphere_collider)
-            {
-                const components::TransformComponent* transform = EcsWorld()->GetComponent<components::TransformComponent>(entity);
-                this->BuildSphereCollider(entity, sphere_collider, transform->GetPosition());
-            }
-        );
+                [this](const ecs::EntityId entity, const components::SphereCollider& sphere_collider) {
+                    const components::TransformComponent* transform = EcsWorld()->GetComponent<
+                        components::TransformComponent>(entity);
+                    this->BuildSphereCollider(entity, sphere_collider, transform->GetPosition());
+                }
+                );
     }
 
-    void PhysicsSystem::Run(const float fixed_delta_time)
-    {
+    void PhysicsSystem::Run(const float fixed_delta_time) {
         const auto movable_objects = EcsWorld()->GetComponentsOfType<components::Rigidbody>();
-        for (const auto [rigidbody, entity] : movable_objects)
-        {
+        for (const auto [rigidbody, entity]: movable_objects) {
             auto transform = EcsWorld()->GetComponent<components::TransformComponent>(entity);
-            if (transform == nullptr)
-            {
+            if (transform == nullptr) {
                 throw std::runtime_error("A moveable object without a transform component is impossible to handle!");
             }
-            auto velocity = rigidbody->GetVelocity();
-            if (glm::length2(velocity) < m_epsilon)
-            {
+            auto velocity_glm = rigidbody->GetVelocity();
+            auto velocity = math::Vec3{velocity_glm.x, velocity_glm.y, velocity_glm.z};
+            if (math::length_squared(velocity) < m_epsilon) {
                 continue;
             }
 
-            const glm::vec3 old_position = transform->GetPosition();
-            glm::vec3 move_delta = velocity * fixed_delta_time;
+            const glm::vec3 old_position_glm = transform->GetPosition();
+            const auto old_position = math::Vec3{old_position_glm.x, old_position_glm.y, old_position_glm.z};
+            math::Vec3 move_delta = velocity * fixed_delta_time;
 
-            if (length2(move_delta) < m_epsilon)
-            {
+            if (math::length_squared(move_delta) < m_epsilon) {
                 continue;
             }
             const auto it_sphere = m_collider_cache->sphere_colliders.find(entity);
-            if (it_sphere == m_collider_cache->sphere_colliders.end())
-            {
+            if (it_sphere == m_collider_cache->sphere_colliders.end()) {
                 continue;
             }
             const float radius = it_sphere->second.world_sphere.radius;
@@ -97,30 +90,33 @@ namespace yarep::systems::physics
             std::vector<ecs::EntityId> trigger_candidates;
             RunBroadphase(entity, radius, old_position, move_delta, blocking_candidates, trigger_candidates);
 
-            glm::vec3 final_position;
+            math::Vec3 final_position;
             PerformCollisionSweep(entity, old_position, move_delta, radius, blocking_candidates, &final_position);
             DetectTriggerInteractions(final_position, radius, entity, trigger_candidates);
 
-            if (rigidbody->IsVelocityFixed())
-            {
+            if (rigidbody->IsVelocityFixed()) {
                 constexpr auto zero_velocity = glm::vec3(0);
                 rigidbody->SetVelocity(zero_velocity);
             }
-            transform->SetPosition(final_position);
+            transform->SetPosition(glm::vec3{final_position.x, final_position.y, final_position.z});
         }
     }
 
     void PhysicsSystem::BuildBoxCollider(ecs::EntityId entity, const components::BoxCollider box_collider,
                                          const glm::vec3& position, const glm::vec3& rotation,
-                                         const glm::vec3& scale) const
-    {
-        const auto obb = physics::collision::util::BuildWorldObb(position,
-                                                   rotation,
-                                                   box_collider.width,
-                                                   box_collider.height,
-                                                   box_collider.depth
-        );
-        const auto aabb = physics::collision::util::ToTightAabb(obb);
+                                         const glm::vec3& scale) const {
+        auto pos = math::Vec3{position.x, position.y, position.z};
+        math::Quaternion rot = math::from_axis_angle(math::Vec3{1, 0, 0}, math::Angle::from_degrees(rotation.x)) *
+                               math::from_axis_angle(math::Vec3{0, 1, 0}, math::Angle::from_degrees(rotation.y)) *
+                               math::from_axis_angle(math::Vec3{0, 0, 1}, math::Angle::from_degrees(rotation.z));
+
+        const auto obb = collision::util::BuildWorldObb(pos,
+                                                        rot,
+                                                        box_collider.width,
+                                                        box_collider.height,
+                                                        box_collider.depth
+                );
+        const auto aabb = geometry::to_aabb(obb);
 
         collision::BoxColliderInfo info{};
         info.world_box = aabb;
@@ -129,18 +125,16 @@ namespace yarep::systems::physics
         info.is_trigger = box_collider.is_trigger;
 
         m_collider_cache->box_colliders.emplace(entity, info);
-        if (box_collider.is_static)
-        {
+        if (box_collider.is_static) {
             m_broadphase->Insert({entity, aabb, box_collider.is_static});
         }
     }
 
     void PhysicsSystem::BuildSphereCollider(ecs::EntityId entity, const components::SphereCollider sphere_collider,
-                                            const glm::vec3 position) const
-    {
-        physics::collision::Sphere sphere{};
+                                            const glm::vec3 position) const {
+        geometry::Sphere sphere{};
         sphere.radius = sphere_collider.radius;
-        sphere.center = position;
+        sphere.center = math::Vec3{position.x, position.y, position.z};
 
         collision::SphereColliderInfo info{};
         info.world_sphere = sphere;
@@ -148,18 +142,16 @@ namespace yarep::systems::physics
         info.is_trigger = sphere_collider.is_trigger;
 
         m_collider_cache->sphere_colliders.emplace(entity, info);
-        if (sphere_collider.is_static)
-        {
-            const auto proxy_sphere = physics::collision::util::FromSphere(sphere);
+        if (sphere_collider.is_static) {
+            const auto proxy_sphere = collision::util::FromSphere(sphere);
             m_broadphase->Insert({entity, proxy_sphere, sphere_collider.is_static});
         }
     }
 
-    void PhysicsSystem::RunBroadphase(const ecs::EntityId target_entity, const float radius, const glm::vec3& position,
-                                      const glm::vec3 move_delta,
+    void PhysicsSystem::RunBroadphase(const ecs::EntityId target_entity, const float radius, const math::Vec3& position,
+                                      const math::Vec3 move_delta,
                                       std::vector<ecs::EntityId>& blocking_candidates,
-                                      std::vector<ecs::EntityId>& trigger_candidates) const
-    {
+                                      std::vector<ecs::EntityId>& trigger_candidates) const {
         std::vector<ecs::EntityId> candidates;
         m_collision_query_service->QuerySphereSweep(position, move_delta, radius, candidates, nullptr);
 
@@ -167,34 +159,25 @@ namespace yarep::systems::physics
         blocking_candidates.reserve(candidates.size());
         trigger_candidates.reserve(candidates.size());
 
-        for (auto id : candidates)
-        {
+        for (auto id: candidates) {
             if (id == target_entity)
                 continue;
 
             if (auto it_box = m_collider_cache->box_colliders.find(id);
-                it_box != m_collider_cache->box_colliders.end())
-            {
-                if (it_box->second.is_trigger)
-                {
+                it_box != m_collider_cache->box_colliders.end()) {
+                if (it_box->second.is_trigger) {
                     trigger_candidates.push_back(id);
-                }
-                else
-                {
+                } else {
                     blocking_candidates.push_back(id);
                 }
                 continue;
             }
 
             if (auto it_sphere = m_collider_cache->sphere_colliders.find(id);
-                it_sphere != m_collider_cache->sphere_colliders.end())
-            {
-                if (it_sphere->second.is_trigger)
-                {
+                it_sphere != m_collider_cache->sphere_colliders.end()) {
+                if (it_sphere->second.is_trigger) {
                     trigger_candidates.push_back(id);
-                }
-                else
-                {
+                } else {
                     blocking_candidates.push_back(id);
                 }
                 continue;
@@ -203,10 +186,10 @@ namespace yarep::systems::physics
     }
 
     void PhysicsSystem::PerformCollisionSweep(const ecs::EntityId target_entity,
-                                              const glm::vec3 position, const glm::vec3 move_delta, const float radius,
+                                              const math::Vec3 position, const math::Vec3 move_delta,
+                                              const float radius,
                                               const std::vector<ecs::EntityId>& blocking_candidates,
-                                              glm::vec3* final_position)
-    {
+                                              math::Vec3* final_position) {
         spdlog::debug("Performing collision sweep");
         collision::MoverInput input;
         input.position = position;
@@ -221,13 +204,11 @@ namespace yarep::systems::physics
     }
 
     void PhysicsSystem::RaiseCollisionEvents(const ecs::EntityId target_entity,
-                                             const collision::MoverResult& mover_result)
-    {
+                                             const collision::MoverResult& mover_result) {
         ecs::PhysicsEvent event{};
         event.target_entity = target_entity;
 
-        if (!mover_result.collided && m_collided_entities[target_entity] != ecs::invalid_entity_id)
-        {
+        if (!mover_result.collided && m_collided_entities[target_entity] != ecs::invalid_entity_id) {
             event.other_collider_entity = m_collided_entities[target_entity];
             event.type = ecs::PhysicsEventType::OnCollisionExit;
             EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
@@ -235,15 +216,12 @@ namespace yarep::systems::physics
             return;
         }
 
-        if (mover_result.collided)
-        {
+        if (mover_result.collided) {
             const auto other_collider = mover_result.hit_entity.value();
-            if (m_collided_entities[target_entity] == other_collider)
-            {
+            if (m_collided_entities[target_entity] == other_collider) {
                 return;
             }
-            if (m_collided_entities[target_entity] != ecs::invalid_entity_id)
-            {
+            if (m_collided_entities[target_entity] != ecs::invalid_entity_id) {
                 event.other_collider_entity = m_collided_entities[target_entity];
                 event.type = ecs::PhysicsEventType::OnCollisionExit;
                 EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
@@ -256,29 +234,23 @@ namespace yarep::systems::physics
         }
     }
 
-    void PhysicsSystem::DetectTriggerInteractions(const glm::vec3 final_position,
+    void PhysicsSystem::DetectTriggerInteractions(const math::Vec3 final_position,
                                                   const float radius, const ecs::EntityId target_entity,
-                                                  const std::vector<ecs::EntityId>& trigger_candidates)
-    {
+                                                  const std::vector<ecs::EntityId>& trigger_candidates) {
         std::unordered_set<ecs::EntityId> current_inside;
         current_inside.reserve(trigger_candidates.size());
 
-        for (auto id : trigger_candidates)
-        {
+        for (auto id: trigger_candidates) {
             if (auto it_box = m_collider_cache->box_colliders.find(id);
-                it_box != m_collider_cache->box_colliders.end())
-            {
-                if (CheckOverlapSphereWithBox(it_box->second, final_position, radius))
-                {
+                it_box != m_collider_cache->box_colliders.end()) {
+                if (CheckOverlapSphereWithBox(it_box->second, final_position, radius)) {
                     current_inside.insert(id);
                 }
                 continue;
             }
             if (auto it_sphere = m_collider_cache->sphere_colliders.find(id);
-                it_sphere != m_collider_cache->sphere_colliders.end())
-            {
-                if (CheckOverlapSphereWithSphere(it_sphere->second, final_position, radius))
-                {
+                it_sphere != m_collider_cache->sphere_colliders.end()) {
+                if (CheckOverlapSphereWithSphere(it_sphere->second, final_position, radius)) {
                     current_inside.insert(id);
                 }
                 continue;
@@ -289,16 +261,13 @@ namespace yarep::systems::physics
     }
 
     void PhysicsSystem::RaiseTriggerEvents(ecs::EntityId target_entity,
-                                           std::unordered_set<ecs::EntityId>& trigger_entities)
-    {
-        if (!m_triggered_entities.contains(target_entity))
-        {
+                                           std::unordered_set<ecs::EntityId>& trigger_entities) {
+        if (!m_triggered_entities.contains(target_entity)) {
             ecs::PhysicsEvent event{};
             event.type = ecs::PhysicsEventType::OnTriggerEnter;
             event.target_entity = target_entity;
 
-            for (const auto id : trigger_entities)
-            {
+            for (const auto id: trigger_entities) {
                 event.other_collider_entity = id;
                 EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(event);
             }
@@ -306,53 +275,36 @@ namespace yarep::systems::physics
             return;
         }
         std::unordered_set<ecs::EntityId> exited_triggers;
-        for (const auto id : m_triggered_entities[target_entity])
-        {
-            if (!trigger_entities.contains(id))
-            {
+        for (const auto id: m_triggered_entities[target_entity]) {
+            if (!trigger_entities.contains(id)) {
                 exited_triggers.insert(id);
                 EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(ecs::PhysicsEvent{
-                        ecs::PhysicsEventType::OnTriggerExit,
-                        target_entity,
-                        id
-                    }
-                );
+                            ecs::PhysicsEventType::OnTriggerExit,
+                            target_entity,
+                            id
+                        }
+                        );
             }
         }
 
         std::unordered_set<ecs::EntityId> entered_triggers;
-        for (const auto id : trigger_entities)
-        {
-            if (!m_triggered_entities[target_entity].contains(id))
-            {
+        for (const auto id: trigger_entities) {
+            if (!m_triggered_entities[target_entity].contains(id)) {
                 entered_triggers.insert(id);
                 EcsWorld()->GetPhysicsEventBuffer()->EnqueueEvent(ecs::PhysicsEvent{
-                        ecs::PhysicsEventType::OnTriggerEnter,
-                        target_entity,
-                        id
-                    }
-                );
+                            ecs::PhysicsEventType::OnTriggerEnter,
+                            target_entity,
+                            id
+                        }
+                        );
             }
         }
 
-        for (const auto id : exited_triggers)
-        {
+        for (const auto id: exited_triggers) {
             m_triggered_entities[target_entity].erase(id);
         }
-        for (const auto id : entered_triggers)
-        {
+        for (const auto id: entered_triggers) {
             m_triggered_entities[target_entity].emplace(id);
         }
-    }
-
-
-    physics::collision::AABB PhysicsSystem::BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest, const float radius) noexcept
-    {
-        const glm::vec3 p0 = pos;
-        const glm::vec3 p1 = pos + rest;
-
-        const glm::vec3 min = glm::min(p0, p1) - glm::vec3(radius);
-        const glm::vec3 max = glm::max(p0, p1) + glm::vec3(radius);
-        return {min, max};
     }
 } // namespace

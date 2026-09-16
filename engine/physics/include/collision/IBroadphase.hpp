@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "Ecs/Types.hpp"
-#include "Types.hpp"
+#include <AABB.hpp>
 
 namespace yarep::physics::collision {
     struct QueryFilter {
@@ -16,7 +16,7 @@ namespace yarep::physics::collision {
 
     struct BroadphaseProxy {
         ecs::EntityId entity{};
-        AABB aabb{};
+        geometry::AABB aabb{};
         uint32_t category_bits{0xFFFFFFFF};
         uint32_t mask_bits{0xFFFFFFFF};
         bool is_static{false};
@@ -30,8 +30,9 @@ namespace yarep::physics::collision {
 
         virtual void Remove(ecs::EntityId entity) = 0;
 
-        virtual void Update(ecs::EntityId entity, const AABB& new_aabb) = 0;
+        virtual void Update(ecs::EntityId entity, const geometry::AABB& new_aabb) = 0;
 
-        virtual void QueryAabb(const AABB& area, std::vector<ecs::EntityId>& out, const QueryFilter* filter) = 0;
+        virtual void QueryAabb(const geometry::AABB& area, std::vector<ecs::EntityId>& out,
+                               const QueryFilter* filter) = 0;
     };
 }

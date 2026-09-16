@@ -3,21 +3,20 @@
 //
 
 #pragma once
-#include <glm/vec3.hpp>
 
 #include "ColliderCache.hpp"
-#include "Overlap.hpp"
+#include "Intersects.hpp"
 
 namespace yarep::physics::collision {
-    inline bool CheckOverlapSphereWithBox(const BoxColliderInfo &box_collider, const glm::vec3 &position,
+    inline bool CheckOverlapSphereWithBox(const BoxColliderInfo& box_collider, const math::Vec3& position,
                                           const float radius) {
-        const auto sphere = Sphere{.center = position, .radius = radius};
-        return Overlap(sphere, box_collider.world_obb);
+        const auto sphere = geometry::Sphere{position, radius};
+        return geometry::intersects(sphere, box_collider.world_obb);
     }
 
-    inline bool CheckOverlapSphereWithSphere(const SphereColliderInfo &sphere_collider, const glm::vec3 &position,
+    inline bool CheckOverlapSphereWithSphere(const SphereColliderInfo& sphere_collider, const math::Vec3& position,
                                              const float radius) {
-        const auto sphere = Sphere{.center = position, .radius = radius};
-        return Overlap(sphere, sphere_collider.world_sphere);
+        const auto sphere = geometry::Sphere{position, radius};
+        return geometry::intersects(sphere, sphere_collider.world_sphere);
     }
 }

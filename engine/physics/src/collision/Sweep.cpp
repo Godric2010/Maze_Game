@@ -3,6 +3,10 @@
 #include <algorithm>
 #include <iostream>
 #include <ostream>
+#include <glm/fwd.hpp>
+#include <glm/geometric.hpp>
+
+#include "Math.hpp"
 
 namespace yarep::physics::collision {
     namespace {
@@ -14,30 +18,35 @@ namespace yarep::physics::collision {
          * This function calculates the smallest 't' parameter at which a ray, defined by its origin and direction,
          * intersects the given AABB, within the specified length of the ray.
          *
-         * @param origin The starting point of the ray as a 3D vector.
+         * @param origin_vec
          * @param dir The direction of the ray as a normalized 3D vector.
          * @param len The maximum length of the ray.
          * @param box The axis-aligned bounding box to test against, defined by its minimum and maximum coordinates.
          * @return The minimum 't' value at which the ray enters the AABB. Returns a value greater than the ray length
          *         if there's no intersection.
          */
-        float RayAabbTEnter(const glm::vec3& origin, const glm::vec3& dir, const float len, const AABB& box) noexcept {
+        float RayAabbTEnter(const math::Vec3& origin_vec, const math::Vec3& dir_vec, const float len,
+                            const geometry::AABB& box) noexcept {
             float t_near = 0.0f;
             float t_far = len;
+            const std::array origin = {origin_vec.x, origin_vec.y, origin_vec.z};
+            const std::array dir = {dir_vec.x, dir_vec.y, dir_vec.z};
+            const std::array box_min = {box.min.x, box.min.y, box.min.z};
+            const std::array box_max = {box.max.x, box.max.y, box.max.z};
 
             for (int i = 0; i < 3; ++i) {
                 const float o = origin[i];
                 const float d = dir[i];
 
                 if (std::abs(d) < k_epsilon) {
-                    if (o < box.min[i] || o > box.max[i]) {
+                    if (o < box_min[i] || o > box_max[i]) {
                         return len + 1.0f;
                     }
                     continue;
                 }
 
-                float t1 = (box.min[i] - o) / d;
-                float t2 = (box.max[i] - o) / d;
+                float t1 = (box_min[i] - o) / d;
+                float t2 = (box_max[i] - o) / d;
                 if (t1 > t2) {
                     std::swap(t1, t2);
                 }
@@ -66,9 +75,9 @@ namespace yarep::physics::collision {
          * @param b The axis-aligned bounding box specified by its minimum and maximum coordinates.
          * @return The normal vector of the intersected AABB face, represented as a 3D vector.
          */
-        glm::vec3 NormalFromEntryPoint(const glm::vec3& origin, const glm::vec3& dir, const float t,
-                                       const AABB& b) noexcept {
-            const glm::vec3 p = origin + dir * t;
+        math::Vec3 NormalFromEntryPoint(const math::Vec3& origin, const math::Vec3& dir, const float t,
+                                        const geometry::AABB& b) noexcept {
+            const math::Vec3 p = origin + dir * t;
 
             const float dx_min = std::abs(p.x - b.min.x);
             const float dx_max = std::abs(b.max.x - p.x);
@@ -78,27 +87,27 @@ namespace yarep::physics::collision {
             const float dz_max = std::abs(b.max.z - p.z);
 
             float min = dx_min;
-            glm::vec3 normal(-1, 0, 0);
+            math::Vec3 normal(-1, 0, 0);
 
             if (dx_max < min) {
                 min = dx_max;
-                normal = glm::vec3(1, 0, 0);
+                normal = math::Vec3(1, 0, 0);
             }
             if (dy_min < min) {
                 min = dy_min;
-                normal = glm::vec3(0, -1, 0);
+                normal = math::Vec3(0, -1, 0);
             }
             if (dy_max < min) {
                 min = dy_max;
-                normal = glm::vec3(0, 1, 0);
+                normal = math::Vec3(0, 1, 0);
             }
             if (dz_min < min) {
                 min = dz_min;
-                normal = glm::vec3(0, 0, -1);
+                normal = math::Vec3(0, 0, -1);
             }
             if (dz_max < min) {
                 min = dz_max;
-                normal = glm::vec3(0, 0, 1);
+                normal = math::Vec3(0, 0, 1);
             }
             return normal;
         }
@@ -114,9 +123,9 @@ namespace yarep::physics::collision {
          * @param r The radius by which the AABB should be expanded. This value is applied uniformly along all axes.
          * @return A new AABB that represents the expanded bounding box.
          */
-        inline AABB ExpandedByRadius(const AABB& box, const float r) noexcept {
-            const auto vec_r = glm::vec3(r);
-            return AABB(box.min - vec_r, box.max + vec_r);
+        inline geometry::AABB ExpandedByRadius(const geometry::AABB& box, const float r) noexcept {
+            const auto vec_r = math::Vec3{r, r, r};
+            return geometry::AABB(box.min - vec_r, box.max + vec_r);
         }
 
         /**
@@ -133,12 +142,14 @@ namespace yarep::physics::collision {
          * @param vec_local The transformed motion vector in the local space of the OBB. This value is modified by the function.
          * @param aabb_local The axis-aligned bounding box in the local space of the OBB. This value is modified by the function.
          */
-        inline void ToLocalSphereAndMotion(const Sphere& sphere, const glm::vec3& vec, const OBB& box,
-                                           Sphere& sphere_local, glm::vec3& vec_local, AABB& aabb_local) noexcept {
-            const glm::mat3 r = box.orientation;
-            sphere_local.center = glm::transpose(r) * (sphere.center - box.center);
+        inline void ToLocalSphereAndMotion(const geometry::Sphere& sphere, const math::Vec3& vec,
+                                           const geometry::OBB& box,
+                                           geometry::Sphere& sphere_local, math::Vec3& vec_local,
+                                           geometry::AABB& aabb_local) noexcept {
+            const auto r = box.rotation;
+            sphere_local.center = math::rotate(math::inverse(r), sphere.center - box.center);
             sphere_local.radius = sphere.radius;
-            vec_local = glm::transpose(r) * vec;
+            vec_local = math::rotate(math::inverse(r), vec);
             aabb_local.min = -box.half_extents;
             aabb_local.max = box.half_extents;
         }
@@ -158,16 +169,16 @@ namespace yarep::physics::collision {
      *         the object includes the time of impact, collision point, collision normal, and penetration depth. If no
      *         collision occurs, the default CollisionHit values indicate no interaction.
      */
-    CollisionHit Sweep(const Sphere& sphere, const glm::vec3& vec, const AABB& box) noexcept {
+    CollisionHit Sweep(const geometry::Sphere& sphere, const math::Vec3& vec, const geometry::AABB& box) noexcept {
         CollisionHit hit{};
-        const float len = glm::length(vec);
+        const float len = math::length(vec);
         if (len < k_epsilon) {
             return hit;
         }
 
-        const glm::vec3 dir = vec / len;
+        const math::Vec3 dir = vec / len;
 
-        const AABB expanded = ExpandedByRadius(box, sphere.radius);
+        const geometry::AABB expanded = ExpandedByRadius(box, sphere.radius);
         const float t_enter = RayAabbTEnter(sphere.center, dir, len, expanded);
 
         if (t_enter <= len) {
@@ -194,10 +205,10 @@ namespace yarep::physics::collision {
      * @return A CollisionHit object containing information about whether a collision occurred, the time of impact,
      *         the collision point, the collision normal, and the penetration depth.
      */
-    CollisionHit Sweep(const Sphere& sphere, const glm::vec3& vec, const OBB& box) noexcept {
-        Sphere sphere_local{};
-        glm::vec3 vec_local{};
-        AABB aabb_local{};
+    CollisionHit Sweep(const geometry::Sphere& sphere, const math::Vec3& vec, const geometry::OBB& box) noexcept {
+        geometry::Sphere sphere_local{};
+        math::Vec3 vec_local{};
+        geometry::AABB aabb_local{};
         ToLocalSphereAndMotion(sphere, vec, box, sphere_local, vec_local, aabb_local);
 
         CollisionHit hit = Sweep(sphere_local, vec_local, aabb_local);
@@ -205,12 +216,12 @@ namespace yarep::physics::collision {
             return hit;
         }
 
-        const glm::mat3 r = box.orientation;
+        const auto r = box.rotation;
         CollisionHit hit_out{};
         hit_out.hit = true;
         hit_out.time_of_impact = hit.time_of_impact;
-        hit_out.point = box.center + r * hit.point;
-        hit_out.normal = glm::normalize(r * hit.normal);
+        hit_out.point = box.center + math::rotate(box.rotation, hit.point);
+        hit_out.normal = math::normalize(math::rotate(r, hit.normal));
         hit_out.penetration_depth = hit.penetration_depth;
         return hit_out;
     }
