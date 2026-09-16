@@ -52,10 +52,10 @@ static void CompareMaterialFileData(const MaterialFileData& actual,
     }
     {
         INFO("The base color is not as expected");
-        REQUIRE(actual.base_color.r == expected.base_color.r);
-        REQUIRE(actual.base_color.g == expected.base_color.g);
-        REQUIRE(actual.base_color.b == expected.base_color.b);
-        REQUIRE(actual.base_color.a == expected.base_color.a);
+        REQUIRE(actual.base_color.x == expected.base_color.x);
+        REQUIRE(actual.base_color.y == expected.base_color.y);
+        REQUIRE(actual.base_color.z == expected.base_color.z);
+        REQUIRE(actual.base_color.w == expected.base_color.w);
     }
     {
         INFO("The albedo texture data is not as expected");
