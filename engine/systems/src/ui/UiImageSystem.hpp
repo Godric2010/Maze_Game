@@ -26,7 +26,7 @@ namespace yarep::systems {
         renderer::IRenderController* m_render_controller = nullptr;
         asset_handling::AssetHandler* m_asset_handler = nullptr;
 
-        void RegisterImageElement(ecs::EntityId entity, glm::vec4 color) const;
+        void RegisterImageElement(ecs::EntityId entity, math::Vec4 color) const;
 
         assets::MaterialHandle RegisterNewUiMaterial() const;
     };

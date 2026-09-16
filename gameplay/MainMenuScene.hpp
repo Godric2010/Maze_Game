@@ -16,7 +16,7 @@ namespace gameplay {
 
         void OnStart() override;
 
-        void EvaluateSystemCommands(const std::vector<std::any> &commands) override;
+        void EvaluateSystemCommands(const std::vector<std::any>& commands) override;
 
         void OnExit() override;
 
@@ -34,10 +34,10 @@ namespace gameplay {
 
         MenuState m_menu_state = MenuState::Main;
 
-        glm::vec4 m_button_default_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.1f);
-        glm::vec4 m_button_highlight_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.3f);
-        glm::vec4 m_button_click_color = glm::vec4(1.0f, 1.0f, 1.0f, 0.8f);
-        glm::vec4 m_button_disabled_color = glm::vec4(0.0f, 0.0f, 0.0f, 0.1f);
+        yarep::math::Vec4 m_button_default_color = yarep::math::Vec4(1.0f, 1.0f, 1.0f, 0.1f);
+        yarep::math::Vec4 m_button_highlight_color = yarep::math::Vec4(1.0f, 1.0f, 1.0f, 0.3f);
+        yarep::math::Vec4 m_button_click_color = yarep::math::Vec4(1.0f, 1.0f, 1.0f, 0.8f);
+        yarep::math::Vec4 m_button_disabled_color = yarep::math::Vec4(0.0f, 0.0f, 0.0f, 0.1f);
 
         void SetupCamera() const;
 
@@ -45,12 +45,12 @@ namespace gameplay {
 
         yarep::ecs::EntityId CreateMenuBackground() const;
 
-        yarep::ecs::EntityId CreateMenuText(const std::string &content, const std::string &font_name, int font_size,
-                                             glm::vec2 pos,
-                                             glm::vec2 size, yarep::ecs::EntityId parent_entity);
+        yarep::ecs::EntityId CreateMenuText(const std::string& content, const std::string& font_name, int font_size,
+                                            glm::vec2 pos,
+                                            glm::vec2 size, yarep::ecs::EntityId parent_entity);
 
-        yarep::ecs::EntityId CreateMenuButton(const std::string &name, uint32_t button_id, glm::vec2 pos,
-                                               const std::string &content, yarep::ecs::EntityId parent_entity);
+        yarep::ecs::EntityId CreateMenuButton(const std::string& name, uint32_t button_id, glm::vec2 pos,
+                                              const std::string& content, yarep::ecs::EntityId parent_entity);
 
         void CreateMainMenuUiElements();
 

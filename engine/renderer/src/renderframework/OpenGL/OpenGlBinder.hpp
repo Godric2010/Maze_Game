@@ -6,6 +6,7 @@
 #include <tuple>
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <Math.hpp>
 
 #include "Meshes/OpenGlMesh.hpp"
 
@@ -43,7 +44,7 @@ namespace yarep::renderer::render_framework::open_gl {
         void BindLight(const ShaderBindings& shader_bindings, glm::vec3 light_pos, glm::vec3 light_color,
                        float ambient_strength);
 
-        void BindColor(const ShaderBindings& shader_bindings, glm::vec4 color);
+        void BindColor(const ShaderBindings& shader_bindings, math::Vec4 color);
 
         void BindSpecularStrength(const ShaderBindings& shader_bindings, float specular_strength);
 

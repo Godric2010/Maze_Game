@@ -46,7 +46,7 @@ namespace yarep::systems
         HandleButtons(input);
     }
 
-    void UiButtonSystem::RegisterButtonElement(const ecs::EntityId entity, const glm::vec4 color) const
+    void UiButtonSystem::RegisterButtonElement(const ecs::EntityId entity, const math::Vec4 color) const
     {
         if (this->m_ui_cache == nullptr)
         {
@@ -69,7 +69,7 @@ namespace yarep::systems
         material_asset.render_queue_index = 0;
         material_asset.shader_handle = m_asset_handler->GetHandleFromName<asset_handling::ShaderAsset>("ui");
         material_asset.albedo_texture = asset_handling::MaterialTexture{};
-        material_asset.base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        material_asset.base_color = math::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         const auto handle = m_asset_handler->RegisterAsset(material_asset);
         return handle;

@@ -62,7 +62,7 @@ namespace yarep::systems
         material_asset.render_queue_index = 0;
         material_asset.shader_handle = m_asset_handler->GetHandleFromName<asset_handling::ShaderAsset>("ui");
         material_asset.albedo_texture = asset_handling::MaterialTexture{};
-        material_asset.base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        material_asset.base_color = math::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
         const auto handle = m_asset_handler->RegisterAsset(material_asset);
         return handle;
@@ -107,8 +107,8 @@ namespace yarep::systems
                                                     [font_texture_handle](asset_handling::MaterialAsset& material)
                                                     {
                                                         material.albedo_texture.texture = font_texture_handle;
-                                                        material.albedo_texture.uv_scale = glm::vec2(1, 1);
-                                                        material.albedo_texture.tiling = glm::vec2(1, 1);
+                                                        material.albedo_texture.uv_scale = math::Vec2(1, 1);
+                                                        material.albedo_texture.tiling = math::Vec2(1, 1);
                                                     });
                 }
 

@@ -45,6 +45,6 @@ namespace yarep::renderer {
         assets::MeshHandle mesh;
         assets::MaterialHandle material;
         glm::mat4 model;
-        glm::vec4 color;
+        math::Vec4 color;
     };
 }

@@ -9,7 +9,7 @@ add_library(Utilities STATIC
         src/toml/TomlDocument.cpp
 )
 
-target_link_libraries(Utilities PUBLIC tomlplusplus::tomlplusplus glm::glm spdlog::spdlog)
+target_link_libraries(Utilities PUBLIC Math tomlplusplus::tomlplusplus glm::glm spdlog::spdlog)
 
 target_include_directories(Utilities PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

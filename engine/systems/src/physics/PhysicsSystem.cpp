@@ -114,13 +114,13 @@ namespace yarep::systems::physics
                                          const glm::vec3& position, const glm::vec3& rotation,
                                          const glm::vec3& scale) const
     {
-        const auto obb = math::util::BuildWorldObb(position,
+        const auto obb = physics::math::util::BuildWorldObb(position,
                                                    rotation,
                                                    box_collider.width,
                                                    box_collider.height,
                                                    box_collider.depth
         );
-        const auto aabb = math::util::ToTightAabb(obb);
+        const auto aabb = physics::math::util::ToTightAabb(obb);
 
         collision::BoxColliderInfo info{};
         info.world_box = aabb;
@@ -138,7 +138,7 @@ namespace yarep::systems::physics
     void PhysicsSystem::BuildSphereCollider(ecs::EntityId entity, const components::SphereCollider sphere_collider,
                                             const glm::vec3 position) const
     {
-        math::Sphere sphere{};
+        physics::math::Sphere sphere{};
         sphere.radius = sphere_collider.radius;
         sphere.center = position;
 
@@ -150,7 +150,7 @@ namespace yarep::systems::physics
         m_collider_cache->sphere_colliders.emplace(entity, info);
         if (sphere_collider.is_static)
         {
-            const auto proxy_sphere = math::util::FromSphere(sphere);
+            const auto proxy_sphere = physics::math::util::FromSphere(sphere);
             m_broadphase->Insert({entity, proxy_sphere, sphere_collider.is_static});
         }
     }
@@ -346,7 +346,7 @@ namespace yarep::systems::physics
     }
 
 
-    math::AABB PhysicsSystem::BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest, const float radius) noexcept
+    physics::math::AABB PhysicsSystem::BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest, const float radius) noexcept
     {
         const glm::vec3 p0 = pos;
         const glm::vec3 p1 = pos + rest;

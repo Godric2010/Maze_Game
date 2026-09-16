@@ -118,7 +118,7 @@ namespace yarep::debug
         material_asset.render_state = asset_handling::RenderState::UI;
         material_asset.render_queue_index = 99;
         material_asset.shader_handle = m_asset_handler->GetHandleFromName<asset_handling::ShaderAsset>("ui");
-        material_asset.base_color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        material_asset.base_color = math::Vec4(1.0f, 1.0f, 1.0f, 1.0f);
         material_asset.albedo_texture = asset_handling::MaterialTexture{};
         material_asset.albedo_texture.texture = m_texture_handle;
 
@@ -153,7 +153,7 @@ namespace yarep::debug
         draw_asset.mesh = text_mesh_element.mesh_handle;
         draw_asset.material = text_mesh_element.material_handle;
         draw_asset.render_queue_index = 1000 - queue_index;
-        draw_asset.color = glm::vec4(1, 0, 1, 1.0);
+        draw_asset.color = math::Vec4(1, 0, 1, 1.0);
 
         return draw_asset;
     }

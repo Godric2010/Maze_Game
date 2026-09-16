@@ -3,7 +3,7 @@
 //
 
 #pragma once
-#include <glm/vec4.hpp>
+#include <Math.hpp>
 
 
 namespace yarep::components::ui {
@@ -17,10 +17,10 @@ namespace yarep::components::ui {
     struct Button {
     public:
         uint32_t button_id;
-        glm::vec4 default_color;
-        glm::vec4 highlight_color;
-        glm::vec4 click_color;
-        glm::vec4 disabled_color;
+        math::Vec4 default_color;
+        math::Vec4 highlight_color;
+        math::Vec4 click_color;
+        math::Vec4 disabled_color;
         bool enabled;
 
     private:

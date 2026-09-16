@@ -19,7 +19,7 @@ namespace yarep::systems::ui {
         struct ColorElement {
             assets::MeshHandle mesh_handle;
             assets::MaterialHandle material_handle;
-            glm::vec4 color;
+            math::Vec4 color;
         };
 
         UiCache();

@@ -191,7 +191,7 @@ namespace yarep::systems {
         renderer::DrawAsset draw_asset{};
         draw_asset.render_state = asset_handling::RenderState::UI;
         draw_asset.entity = entity;
-        draw_asset.color = glm::vec4(1, 1, 1, 1);
+        draw_asset.color = math::Vec4(1, 1, 1, 1);
         draw_asset.mesh = text_element.mesh_handle;
         draw_asset.material = text_element.material_handle;
         m_ui_text_asset_map[entity] = draw_asset;

@@ -15,7 +15,7 @@ add_library(Interface INTERFACE
         include/Assets/IAssetLibrary.hpp
 )
 
-target_link_libraries(Interface INTERFACE glm::glm)
+target_link_libraries(Interface INTERFACE Math glm::glm)
 target_include_directories(Interface INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
         $<INSTALL_INTERFACE:include>

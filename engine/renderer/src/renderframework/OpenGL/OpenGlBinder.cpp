@@ -56,11 +56,11 @@ namespace yarep::renderer::render_framework::open_gl {
         glUniform1f(shader_bindings.light_ambient_bind, ambient_strength);
     }
 
-    void OpenGlBinder::BindColor(const ShaderBindings& shader_bindings, glm::vec4 color) {
+    void OpenGlBinder::BindColor(const ShaderBindings& shader_bindings, const math::Vec4 color) {
         if (shader_bindings.color_bind == -1) {
             return;
         }
-        glUniform4fv(shader_bindings.color_bind, 1, glm::value_ptr(color));
+        glUniform4f(shader_bindings.color_bind, color.x, color.y, color.z, color.w);
     }
 
     void OpenGlBinder::BindSpecularStrength(const ShaderBindings& shader_bindings, const float specular_strength) {

@@ -9,34 +9,35 @@
 #include "toml/TomlDocument.hpp"
 
 
-namespace yarep::asset_handling::materials
-{
-    struct MaterialTextureFileData
-    {
+namespace yarep::asset_handling::materials {
+    struct MaterialTextureFileData {
         std::string name;
-        glm::vec2 uv_scale;
-        glm::vec2 tiling;
+        math::Vec2 uv_scale;
+        math::Vec2 tiling;
     };
 
-    struct MaterialFileData
-    {
+    struct MaterialFileData {
         std::string name;
         RenderState render_state;
         size_t render_queue_index;
         std::string shader_name;
         MaterialTextureFileData albedo_texture;
-        glm::vec4 base_color;
+        math::Vec4 base_color;
     };
 
-    class MaterialImporter
-    {
+    class MaterialImporter {
     public:
         static void ExtractMaterialFileData(MaterialFileData& material_asset, const std::string& file_content);
 
     private:
-        static void ReadMaterialProperties(MaterialFileData& material_asset, const utilities::toml_utils::TomlTable& table);
-        static void ReadTextureProperties(MaterialTextureFileData& material_texture, const std::optional<utilities::toml_utils::TomlTable>& table,
+        static void ReadMaterialProperties(MaterialFileData& material_asset,
+                                           const utilities::toml_utils::TomlTable& table);
+
+        static void ReadTextureProperties(MaterialTextureFileData& material_texture,
+                                          const std::optional<utilities::toml_utils::TomlTable>& table,
                                           const std::string& texture_type);
-        static void ReadColorProperties(MaterialFileData& material_asset, const utilities::toml_utils::TomlTable& table);
+
+        static void ReadColorProperties(MaterialFileData& material_asset,
+                                        const utilities::toml_utils::TomlTable& table);
     };
 }

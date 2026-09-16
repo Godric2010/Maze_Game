@@ -1,11 +1,7 @@
 #include "InputMapImporter.hpp"
 
-#include <algorithm>
 #include <string>
-#include <cctype>
-#include <iostream>
 #include <catch2/generators/catch_generators.hpp>
-#include <toml++/toml.hpp>
 
 #include "toml/TomlDocument.hpp"
 

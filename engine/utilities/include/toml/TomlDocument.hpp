@@ -8,6 +8,7 @@
 #include <optional>
 #include <toml++/toml.hpp>
 #include <glm/glm.hpp>
+#include <Math.hpp>
 
 
 namespace yarep::utilities::toml_utils
@@ -30,14 +31,14 @@ namespace yarep::utilities::toml_utils
             float GetRequiredFloat(const std::string& field_name) const;
             std::optional<float> GetOptionalFloat(const std::string& field_name) const;
 
-            glm::vec2 GetRequiredVec2(const std::string& field_name) const;
-            std::optional<glm::vec2> GetOptionalVec2(const std::string& field_name) const;
+            math::Vec2 GetRequiredVec2(const std::string& field_name) const;
+            std::optional<math::Vec2> GetOptionalVec2(const std::string& field_name) const;
 
             glm::vec3 GetRequiredVec3(const std::string& field_name) const;
             std::optional<glm::vec3> GetOptionalVec3(const std::string& field_name) const;
 
-            glm::vec4 GetRequiredVec4(const std::string& field_name) const;
-            std::optional<glm::vec4> GetOptionalVec4(const std::string& field_name) const;
+            math::Vec4 GetRequiredVec4(const std::string& field_name) const;
+            std::optional<math::Vec4> GetOptionalVec4(const std::string& field_name) const;
 
             template <typename TEnum, size_t N>
             TEnum GetRequiredEnum(const std::string& field_name,
