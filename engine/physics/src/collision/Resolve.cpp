@@ -1,7 +1,7 @@
-#include "../../include/math/Resolve.hpp"
+#include "../../include/collision/Resolve.hpp"
 
 
-namespace yarep::physics::math {
+namespace yarep::physics::collision {
     namespace {
         constexpr float k_epsilon = 1e-6f;
     }

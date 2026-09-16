@@ -6,20 +6,20 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "../math/Types.hpp"
+#include "Types.hpp"
 #include "../../../ecs/src/Entity.hpp"
 
 namespace yarep::physics::collision {
 
     struct BoxColliderInfo {
-        math::AABB world_box;
-        math::OBB world_obb;
+        AABB world_box;
+        OBB world_obb;
         bool is_static;
         bool is_trigger;
     };
 
     struct SphereColliderInfo {
-        math::Sphere world_sphere;
+        Sphere world_sphere;
         bool is_static;
         bool is_trigger;
     };

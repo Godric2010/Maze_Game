@@ -2,7 +2,7 @@
 // Created by Sebastian Borsch on 06.10.25.
 //
 #include "FakeCollisionQueryService.hpp"
-#include "../include/math/Types.hpp"
+#include "../include/collision/Types.hpp"
 #include "collision/CollisionQueryService.hpp"
 #include "collision/MoverSolver.hpp"
 #if __APPLE__
@@ -19,7 +19,7 @@ using namespace yarep::physics;
 TEST_CASE("MoverSolver stops at wall and slides", "[Physics]") {
     FakeCollisionQueryService query_service;
     yarep::ecs::EntityId entity = 1ull;
-    query_service.aabbs.emplace(entity, math::AABB{{-1, -1, 0}, {1, 1, 2}});
+    query_service.aabbs.emplace(entity, AABB{{-1, -1, 0}, {1, 1, 2}});
     std::vector candidates = {entity};
 
     SECTION("Move Z-Axis negative") {

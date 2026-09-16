@@ -1,7 +1,7 @@
 #pragma once
 #include "Types.hpp"
 
-namespace yarep::physics::math {
+namespace yarep::physics:: collision {
     /**
      * Performs swept collision detection between a moving sphere and an axis-aligned bounding box (AABB).
      *
@@ -15,7 +15,7 @@ namespace yarep::physics::math {
      * @return A CollisionHit object containing information about the collision. If a collision occurs, details such as the
      *         point of impact and collision normal are included. If no collision occurs, the object indicates no collision.
      */
-    CollisionHit Sweep(const Sphere &sphere, const glm::vec3 &vec, const AABB &box) noexcept;
+    CollisionHit Sweep(const Sphere& sphere, const glm::vec3& vec, const AABB& box) noexcept;
 
     /**
      * Performs swept collision detection between a moving sphere and an oriented bounding box (OBB).
@@ -32,5 +32,5 @@ namespace yarep::physics::math {
      *         time of impact, point of impact, normal at the collision, and penetration depth are included. If no collision
      *         occurs, the returned object indicates no collision occurred.
      */
-    CollisionHit Sweep(const Sphere &sphere, const glm::vec3 &vec, const OBB &box) noexcept;
+    CollisionHit Sweep(const Sphere& sphere, const glm::vec3& vec, const OBB& box) noexcept;
 } // namespace

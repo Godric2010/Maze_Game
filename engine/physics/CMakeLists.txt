@@ -4,14 +4,14 @@ find_package(glm CONFIG REQUIRED)
 find_package(spdlog CONFIG)
 
 add_library(Physics STATIC
-        include/math/Types.hpp
-        src/math/Overlap.cpp
-        src/math/ClosestPoint.cpp
-        include/math/ClosestPoint.hpp
-        src/math/Sweep.cpp
-        include/math/Sweep.hpp
-        src/math/Resolve.cpp
-        include/math/Resolve.hpp
+        include/collision/Types.hpp
+        src/collision/Overlap.cpp
+        src/collision/ClosestPoint.cpp
+        include/collision/ClosestPoint.hpp
+        src/collision/Sweep.cpp
+        include/collision/Sweep.hpp
+        src/collision/Resolve.cpp
+        include/collision/Resolve.hpp
         src/collision/SpatialHashBroadphase.cpp
         src/collision/SpatialHashBroadphase.hpp
         include/collision/IBroadphase.hpp
@@ -20,7 +20,7 @@ add_library(Physics STATIC
         tests/MoverSolverTests.cpp
         tests/FakeCollisionQueryService.hpp
         tests/TypeUtiliesTests.cpp
-        include/math/TypeUtils.hpp
+        include/collision/TypeUtils.hpp
         include/collision/CollisionUtils.hpp
         src/collision/BroadphaseBuilder.cpp
         include/collision/BroadphaseBuilder.hpp
@@ -37,7 +37,7 @@ target_include_directories(Physics
         $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(Physics PUBLIC Interface PRIVATE glm::glm spdlog::spdlog)
+target_link_libraries(Physics PUBLIC Interface Geometry PRIVATE Math glm::glm spdlog::spdlog)
 
 if (BUILD_TESTING)
     include(testing)

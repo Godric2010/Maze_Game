@@ -6,12 +6,11 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <optional>
 #include <stdexcept>
-#include<glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
 #include "CollisionQueryService.hpp"
-#include "math/Resolve.hpp"
-#include "math/Sweep.hpp"
+#include "Resolve.hpp"
+#include "Sweep.hpp"
 
 namespace yarep::physics::collision {
     struct MoverInput {
@@ -31,8 +30,8 @@ namespace yarep::physics::collision {
 
     class MoverSolver {
     public:
-        static MoverResult Solve(const MoverInput &input, const ICollisionQueryService &query_service,
-                                 const std::vector<ecs::EntityId> &candidates) {
+        static MoverResult Solve(const MoverInput& input, const ICollisionQueryService& query_service,
+                                 const std::vector<ecs::EntityId>& candidates) {
             glm::vec3 position = input.position;
             glm::vec3 rest = input.delta;
             std::optional<ecs::EntityId> hit_entity;
@@ -44,9 +43,9 @@ namespace yarep::physics::collision {
                 glm::vec3 best_normal(0);
 
                 for (auto entity: candidates) {
-                    math::Sphere sphere(position, input.radius);
+                    Sphere sphere(position, input.radius);
 
-                    math::CollisionHit hit;
+                    CollisionHit hit;
                     if (!TryGetCollisionHit(entity, sphere, rest, query_service, hit)) {
                         throw std::runtime_error("No valid collider found");
                     }
@@ -62,7 +61,7 @@ namespace yarep::physics::collision {
                     float skin = 0.001f;
                     position += direction * best_time_of_impact + best_normal * skin;
                     glm::vec3 remaining = rest - direction * best_time_of_impact;
-                    rest = math::Slide(remaining, best_normal);
+                    rest = Slide(remaining, best_normal);
                     out.collided = true;
                     out.first_time_of_impact = std::min(out.first_time_of_impact, best_time_of_impact);
                     out.last_normal = best_normal;
@@ -76,16 +75,16 @@ namespace yarep::physics::collision {
             return out;
         }
 
-        static inline bool TryGetCollisionHit(const ecs::EntityId entity, const math::Sphere sphere,
-                                              const glm::vec3 &rest,
-                                              const ICollisionQueryService &query_service,
-                                              math::CollisionHit &hit) {
-            if (const auto *obb = query_service.GetObb(entity)) {
+        static inline bool TryGetCollisionHit(const ecs::EntityId entity, const Sphere sphere,
+                                              const glm::vec3& rest,
+                                              const ICollisionQueryService& query_service,
+                                              CollisionHit& hit) {
+            if (const auto* obb = query_service.GetObb(entity)) {
                 hit = Sweep(sphere, rest, *obb);
                 return true;
             }
 
-            if (const auto *aabb = query_service.GetAabb(entity)) {
+            if (const auto* aabb = query_service.GetAabb(entity)) {
                 hit = Sweep(sphere, rest, *aabb);
                 return true;
             }

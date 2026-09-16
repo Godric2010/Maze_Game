@@ -1,8 +1,11 @@
 #pragma once
 #include <glm/glm.hpp>
+
+#include "AABB.hpp"
+#include "OBB.hpp"
 #include "Types.hpp"
 
-namespace yarep::physics::math {
+namespace yarep::physics::collision {
     /**
      * @brief Computes the closest point within an axis-aligned bounding box (AABB) to a given point.
      *

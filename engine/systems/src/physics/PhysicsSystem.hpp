@@ -59,7 +59,7 @@ namespace yarep::systems::physics {
                                 std::unordered_set<ecs::EntityId>& trigger_entities);
 
 
-        static yarep::physics::math::AABB BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest,
-                                                          float radius) noexcept;
+        static yarep::physics::collision::AABB BuildSweptAabb(const glm::vec3& pos, const glm::vec3& rest,
+                                                              float radius) noexcept;
     };
 } // namespace

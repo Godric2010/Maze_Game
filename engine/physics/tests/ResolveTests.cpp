@@ -1,4 +1,5 @@
 // ReSharper disable CppUseStructuredBinding
+#include "collision/Resolve.hpp"
 #if __APPLE__
    #include <catch2/catch_test_macros.hpp>
    #include <utility>
@@ -6,13 +7,11 @@
     #include <catch2/catch_all.hpp>
 #endif
 
-#include "../include/math/Resolve.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>          // length2
-#include <glm/gtc/epsilon.hpp>       // epsilonEqual
 #include <cmath>
 
-using namespace yarep::physics::math;
+using namespace yarep::physics::collision;
 // ---- Helpers ----
 static bool ApproxVec3(const glm::vec3& a, const glm::vec3& b, const float eps = 1e-5f) {
     return length2(a - b) <= eps * eps;

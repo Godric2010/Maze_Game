@@ -1,10 +1,10 @@
-#include "../../include/math/Sweep.hpp"
+#include "../../include/collision/Sweep.hpp"
 
 #include <algorithm>
 #include <iostream>
 #include <ostream>
 
-namespace yarep::physics::math {
+namespace yarep::physics::collision {
     namespace {
         constexpr float k_epsilon = 1e-6f;
 
@@ -21,7 +21,7 @@ namespace yarep::physics::math {
          * @return The minimum 't' value at which the ray enters the AABB. Returns a value greater than the ray length
          *         if there's no intersection.
          */
-        float RayAabbTEnter(const glm::vec3 &origin, const glm::vec3 &dir, const float len, const AABB &box) noexcept {
+        float RayAabbTEnter(const glm::vec3& origin, const glm::vec3& dir, const float len, const AABB& box) noexcept {
             float t_near = 0.0f;
             float t_far = len;
 
@@ -66,8 +66,8 @@ namespace yarep::physics::math {
          * @param b The axis-aligned bounding box specified by its minimum and maximum coordinates.
          * @return The normal vector of the intersected AABB face, represented as a 3D vector.
          */
-        glm::vec3 NormalFromEntryPoint(const glm::vec3 &origin, const glm::vec3 &dir, const float t,
-                                       const AABB &b) noexcept {
+        glm::vec3 NormalFromEntryPoint(const glm::vec3& origin, const glm::vec3& dir, const float t,
+                                       const AABB& b) noexcept {
             const glm::vec3 p = origin + dir * t;
 
             const float dx_min = std::abs(p.x - b.min.x);
@@ -114,7 +114,7 @@ namespace yarep::physics::math {
          * @param r The radius by which the AABB should be expanded. This value is applied uniformly along all axes.
          * @return A new AABB that represents the expanded bounding box.
          */
-        inline AABB ExpandedByRadius(const AABB &box, const float r) noexcept {
+        inline AABB ExpandedByRadius(const AABB& box, const float r) noexcept {
             const auto vec_r = glm::vec3(r);
             return AABB(box.min - vec_r, box.max + vec_r);
         }
@@ -133,8 +133,8 @@ namespace yarep::physics::math {
          * @param vec_local The transformed motion vector in the local space of the OBB. This value is modified by the function.
          * @param aabb_local The axis-aligned bounding box in the local space of the OBB. This value is modified by the function.
          */
-        inline void ToLocalSphereAndMotion(const Sphere &sphere, const glm::vec3 &vec, const OBB &box,
-                                           Sphere &sphere_local, glm::vec3 &vec_local, AABB &aabb_local) noexcept {
+        inline void ToLocalSphereAndMotion(const Sphere& sphere, const glm::vec3& vec, const OBB& box,
+                                           Sphere& sphere_local, glm::vec3& vec_local, AABB& aabb_local) noexcept {
             const glm::mat3 r = box.orientation;
             sphere_local.center = glm::transpose(r) * (sphere.center - box.center);
             sphere_local.radius = sphere.radius;
@@ -158,7 +158,7 @@ namespace yarep::physics::math {
      *         the object includes the time of impact, collision point, collision normal, and penetration depth. If no
      *         collision occurs, the default CollisionHit values indicate no interaction.
      */
-    CollisionHit Sweep(const Sphere &sphere, const glm::vec3 &vec, const AABB &box) noexcept {
+    CollisionHit Sweep(const Sphere& sphere, const glm::vec3& vec, const AABB& box) noexcept {
         CollisionHit hit{};
         const float len = glm::length(vec);
         if (len < k_epsilon) {
@@ -194,7 +194,7 @@ namespace yarep::physics::math {
      * @return A CollisionHit object containing information about whether a collision occurred, the time of impact,
      *         the collision point, the collision normal, and the penetration depth.
      */
-    CollisionHit Sweep(const Sphere &sphere, const glm::vec3 &vec, const OBB &box) noexcept {
+    CollisionHit Sweep(const Sphere& sphere, const glm::vec3& vec, const OBB& box) noexcept {
         Sphere sphere_local{};
         glm::vec3 vec_local{};
         AABB aabb_local{};

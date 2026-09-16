@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
-namespace yarep::physics::math {
+namespace yarep::physics::collision {
     /**
      * @brief Checks for overlap between a sphere and an axis-aligned bounding box (AABB).
      *
@@ -19,7 +19,7 @@ namespace yarep::physics::math {
      * @return True if the sphere overlaps with the AABB, otherwise false.
      * @note This function operates in constant time and is marked as `noexcept`.
      */
-    bool Overlap(const Sphere &sphere, const AABB &bounding_box) noexcept;
+    bool Overlap(const Sphere& sphere, const AABB& bounding_box) noexcept;
 
 
     /**
@@ -52,7 +52,7 @@ namespace yarep::physics::math {
      * @note This function is marked as `noexcept` and operates using mathematical transformations
      * to ensure efficient computation.
      */
-    bool Overlap(const Sphere &sphere, const OBB &obb) noexcept;
+    bool Overlap(const Sphere& sphere, const OBB& obb) noexcept;
 
     /**
      * @brief Determines whether two axis-aligned bounding boxes (AABBs) overlap.
@@ -66,5 +66,5 @@ namespace yarep::physics::math {
      * @return True if the two AABBs overlap, otherwise false.
      * @note This function is marked as `noexcept` and operates in constant time.
      */
-    bool Overlap(const AABB &bounds_a, const AABB &bounds_b) noexcept;
+    bool Overlap(const AABB& bounds_a, const AABB& bounds_b) noexcept;
 } // namespace

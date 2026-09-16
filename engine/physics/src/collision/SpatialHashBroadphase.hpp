@@ -28,9 +28,9 @@ namespace yarep::physics::collision {
 
         void Insert(const BroadphaseProxy& proxy) override;
         void Remove(ecs::EntityId entity) override;
-        void Update(ecs::EntityId entity, const math::AABB &new_aabb) override;
+        void Update(ecs::EntityId entity, const AABB &new_aabb) override;
 
-        void QueryAabb(const math::AABB &area, std::vector<ecs::EntityId> &out, const QueryFilter *filter) override;
+        void QueryAabb(const AABB &area, std::vector<ecs::EntityId> &out, const QueryFilter *filter) override;
 
     private:
         float m_cell_size;
@@ -44,7 +44,7 @@ namespace yarep::physics::collision {
             return static_cast<int>(std::floor(v * inv_cell));
         }
 
-        void BoxToCells(const math::AABB& aabb, std::vector<CellKey>& tmp) const;
+        void BoxToCells(const AABB& aabb, std::vector<CellKey>& tmp) const;
 
         static inline bool PassFilter(const BroadphaseProxy& proxy, const QueryFilter* filter) {
             if (!filter) return true;

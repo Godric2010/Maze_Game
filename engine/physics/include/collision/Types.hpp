@@ -5,7 +5,7 @@
 #pragma once
 #include <glm/glm.hpp>
 
-namespace yarep::physics::math {
+namespace yarep::physics::collision {
     /**
      * @struct Ray
      * @brief Represents a 3D ray in space.

@@ -1,3 +1,5 @@
+#include "FakeCollisionQueryService.hpp"
+#include "collision/ClosestPoint.hpp"
 #if __APPLE__
    #include <catch2/catch_test_macros.hpp>
    #include <utility>
@@ -5,14 +7,13 @@
     #include <catch2/catch_all.hpp>
 #endif
 
-#include "../include/math/ClosestPoint.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/norm.hpp>
 
-using namespace yarep::physics::math;
+using namespace yarep::physics::collision;
 
 static bool ApproxVec3(const glm::vec3& a, const glm::vec3& b, float eps = 1e-5f) {
     return glm::length2(a - b) <= eps * eps;
