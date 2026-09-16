@@ -12,4 +12,11 @@ namespace yarep::geometry {
     OBB to_obb(const AABB& aabb, const math::Transform& transform);
 
     AABB transform_bounds(const AABB& aabb, const math::Transform& transform);
+
+    AABB expand(const AABB& aabb, float amount);
+
+    OBB expand(const OBB& aabb, float expansion);
+
+    AABB merge(const AABB& a, const AABB& b);
+
 }

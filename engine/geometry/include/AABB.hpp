@@ -28,4 +28,12 @@ namespace yarep::geometry {
             return min == other.min && max == other.max;
         }
     };
+
+    inline math::Vec3 center(const AABB& aabb) {
+        return (aabb.min + aabb.max) * 0.5f;
+    }
+
+    inline math::Vec3 half_extents(const AABB& aabb) {
+        return (aabb.max - aabb.min) * 0.5f;
+    }
 }

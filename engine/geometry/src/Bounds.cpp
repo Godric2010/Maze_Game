@@ -53,7 +53,7 @@ namespace yarep::geometry {
         const auto local_center = aabb.min + half_extents;
         const auto local_center_vec4 = math::Vec4(local_center.x, local_center.y, local_center.z, 1);
         const auto trs_matrix = math::to_matrix(transform);
-        const auto center_vec4 =  trs_matrix * local_center_vec4;
+        const auto center_vec4 = trs_matrix * local_center_vec4;
         const auto center = math::Vec3(center_vec4.x, center_vec4.y, center_vec4.z);
 
         // Scale obb half-extents
@@ -70,5 +70,26 @@ namespace yarep::geometry {
         const auto obb = to_obb(aabb, transform);
         const auto tight_aabb = to_aabb(obb);
         return tight_aabb;
+    }
+
+    AABB expand(const AABB& aabb, float amount) {
+        const math::Vec3 expansion{amount, amount, amount};
+        return {aabb.min - expansion, aabb.max + expansion};
+    }
+
+    OBB expand(const OBB& obb, float amount) {
+        const math::Vec3 expansion{amount, amount, amount};
+        return {
+            obb.center,
+            obb.half_extents + expansion,
+            obb.rotation
+        };
+    }
+
+    AABB merge(const AABB& a, const AABB& b) {
+        return {
+            math::min(a.min, b.min),
+            math::max(a.max, b.max),
+        };
     }
 }

@@ -892,3 +892,344 @@ TEST_CASE("transform_bounds - Transform bounds result matches AABB of transforme
             via_obb_result
             );
 }
+// ============================================================================
+// AABB Center
+// ============================================================================
+
+TEST_CASE("Bounds Center - Symmetric AABB returns origin") {
+    constexpr AABB bounds{
+        Vec3{-2, -4, -6},
+        Vec3{2, 4, 6}
+    };
+
+    require_vec3_near(
+        center(bounds),
+        Vec3{0, 0, 0}
+    );
+}
+
+
+TEST_CASE("Bounds Center - Asymmetric AABB returns geometric center") {
+    constexpr AABB bounds{
+        Vec3{2, -4, 10},
+        Vec3{6, 2, 14}
+    };
+
+    require_vec3_near(
+        center(bounds),
+        Vec3{4, -1, 12}
+    );
+}
+
+
+TEST_CASE("Bounds Center - Zero sized AABB returns its point") {
+    constexpr AABB bounds{
+        Vec3{3, -5, 7},
+        Vec3{3, -5, 7}
+    };
+
+    require_vec3_near(
+        center(bounds),
+        Vec3{3, -5, 7}
+    );
+}
+
+
+// ============================================================================
+// AABB Half Extents
+// ============================================================================
+
+TEST_CASE("Bounds Half Extents - Symmetric AABB returns half size") {
+    constexpr AABB bounds{
+        Vec3{-2, -4, -6},
+        Vec3{2, 4, 6}
+    };
+
+    require_vec3_near(
+        half_extents(bounds),
+        Vec3{2, 4, 6}
+    );
+}
+
+
+TEST_CASE("Bounds Half Extents - Asymmetric AABB returns half size") {
+    constexpr AABB bounds{
+        Vec3{2, -4, 10},
+        Vec3{6, 2, 14}
+    };
+
+    require_vec3_near(
+        half_extents(bounds),
+        Vec3{2, 3, 2}
+    );
+}
+
+
+TEST_CASE("Bounds Half Extents - Zero sized AABB returns zero") {
+    constexpr AABB bounds{
+        Vec3{3, -5, 7},
+        Vec3{3, -5, 7}
+    };
+
+    require_vec3_near(
+        half_extents(bounds),
+        Vec3{0, 0, 0}
+    );
+}
+
+
+// ============================================================================
+// Expand AABB
+// ============================================================================
+
+TEST_CASE("Bounds Expanded AABB - Expands equally in all directions") {
+    constexpr AABB bounds{
+        Vec3{-2, -3, -4},
+        Vec3{2, 3, 4}
+    };
+
+    require_aabb_near(
+        expand(bounds, 2.0f),
+        AABB{
+            Vec3{-4, -5, -6},
+            Vec3{4, 5, 6}
+        }
+    );
+}
+
+
+TEST_CASE("Bounds Expanded AABB - Expands asymmetric bounds") {
+    constexpr AABB bounds{
+        Vec3{2, -4, 10},
+        Vec3{6, 2, 14}
+    };
+
+    require_aabb_near(
+        expand(bounds, 1.5f),
+        AABB{
+            Vec3{0.5f, -5.5f, 8.5f},
+            Vec3{7.5f, 3.5f, 15.5f}
+        }
+    );
+}
+
+
+TEST_CASE("Bounds Expanded AABB - Zero expansion leaves bounds unchanged") {
+    constexpr AABB bounds{
+        Vec3{-2, -3, -4},
+        Vec3{2, 3, 4}
+    };
+
+    require_aabb_near(
+        expand(bounds, 0.0f),
+        bounds
+    );
+}
+
+
+TEST_CASE("Bounds Expanded AABB - Point AABB becomes volume") {
+    constexpr AABB bounds{
+        Vec3{3, -5, 7},
+        Vec3{3, -5, 7}
+    };
+
+    require_aabb_near(
+        expand(bounds, 2.0f),
+        AABB{
+            Vec3{1, -7, 5},
+            Vec3{5, -3, 9}
+        }
+    );
+}
+
+
+// ============================================================================
+// Expand OBB
+// ============================================================================
+
+TEST_CASE("Bounds Expanded OBB - Increases half extents") {
+    constexpr OBB bounds{
+        Vec3{10, -5, 7},
+        Vec3{2, 3, 4},
+        Quaternion::identity()
+    };
+
+    require_obb_near(
+        expand(bounds, 2.0f),
+        OBB{
+            Vec3{10, -5, 7},
+            Vec3{4, 5, 6},
+            Quaternion::identity()
+        }
+    );
+}
+
+
+TEST_CASE("Bounds Expanded OBB - Preserves rotation") {
+    const auto rotation =
+        from_axis_angle(
+            Vec3{0, 1, 0},
+            Angle::from_degrees(45)
+        );
+
+    const OBB bounds{
+        Vec3{10, -5, 7},
+        Vec3{2, 3, 4},
+        rotation
+    };
+
+    require_obb_near(
+        expand(bounds, 1.0f),
+        OBB{
+            Vec3{10, -5, 7},
+            Vec3{3, 4, 5},
+            rotation
+        }
+    );
+}
+
+
+TEST_CASE("Bounds Expanded OBB - Zero expansion leaves bounds unchanged") {
+    const auto rotation =
+        from_axis_angle(
+            Vec3{1, 2, 3},
+            Angle::from_degrees(57)
+        );
+
+    const OBB bounds{
+        Vec3{4, -2, 7},
+        Vec3{2, 3, 4},
+        rotation
+    };
+
+    require_obb_near(
+        expand(bounds, 0.0f),
+        bounds
+    );
+}
+
+
+TEST_CASE("Bounds Expanded OBB - Zero sized OBB becomes volume") {
+    constexpr OBB bounds{
+        Vec3{4, -2, 7},
+        Vec3{0, 0, 0},
+        Quaternion::identity()
+    };
+
+    require_obb_near(
+        expand(bounds, 2.0f),
+        OBB{
+            Vec3{4, -2, 7},
+            Vec3{2, 2, 2},
+            Quaternion::identity()
+        }
+    );
+}
+
+
+// ============================================================================
+// Merge AABB
+// ============================================================================
+
+TEST_CASE("Bounds Merge - Disjoint AABBs returns enclosing bounds") {
+    constexpr AABB lhs{
+        Vec3{-5, -2, -1},
+        Vec3{-2, 2, 1}
+    };
+
+    constexpr AABB rhs{
+        Vec3{3, -4, -6},
+        Vec3{7, 5, 8}
+    };
+
+    require_aabb_near(
+        merge(lhs, rhs),
+        AABB{
+            Vec3{-5, -4, -6},
+            Vec3{7, 5, 8}
+        }
+    );
+}
+
+
+TEST_CASE("Bounds Merge - Overlapping AABBs returns enclosing bounds") {
+    constexpr AABB lhs{
+        Vec3{-3, -3, -3},
+        Vec3{2, 2, 2}
+    };
+
+    constexpr AABB rhs{
+        Vec3{1, -1, -5},
+        Vec3{5, 4, 1}
+    };
+
+    require_aabb_near(
+        merge(lhs, rhs),
+        AABB{
+            Vec3{-3, -3, -5},
+            Vec3{5, 4, 2}
+        }
+    );
+}
+
+
+TEST_CASE("Bounds Merge - Contained AABB returns outer bounds") {
+    constexpr AABB outer{
+        Vec3{-5, -5, -5},
+        Vec3{5, 5, 5}
+    };
+
+    constexpr AABB inner{
+        Vec3{-1, -2, -3},
+        Vec3{1, 2, 3}
+    };
+
+    require_aabb_near(
+        merge(outer, inner),
+        outer
+    );
+
+    require_aabb_near(
+        merge(inner, outer),
+        outer
+    );
+}
+
+
+TEST_CASE("Bounds Merge - Merge is commutative") {
+    constexpr AABB lhs{
+        Vec3{-4, 2, -7},
+        Vec3{1, 8, 3}
+    };
+
+    constexpr AABB rhs{
+        Vec3{-2, -5, -1},
+        Vec3{6, 4, 10}
+    };
+
+    require_aabb_near(
+        merge(lhs, rhs),
+        merge(rhs, lhs)
+    );
+}
+
+
+TEST_CASE("Bounds Merge - Point AABB expands existing bounds") {
+    constexpr AABB bounds{
+        Vec3{-2, -2, -2},
+        Vec3{2, 2, 2}
+    };
+
+    constexpr AABB point{
+        Vec3{5, -4, 1},
+        Vec3{5, -4, 1}
+    };
+
+    require_aabb_near(
+        merge(bounds, point),
+        AABB{
+            Vec3{-2, -4, -2},
+            Vec3{5, 2, 2}
+        }
+    );
+}

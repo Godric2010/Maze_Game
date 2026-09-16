@@ -19,6 +19,8 @@ add_library(Geometry STATIC
         src/RayIntersection.cpp
         src/RayIntersectionHelper.cpp
         src/RayIntersectionHelper.hpp
+        include/NearestSurface.hpp
+        src/NearestSurface.cpp
 )
 
 target_link_libraries(Geometry PUBLIC Math)
