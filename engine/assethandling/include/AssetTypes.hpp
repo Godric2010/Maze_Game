@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <glm/glm.hpp>
 #include <Math.hpp>
 
 #include "Assets/AssetHandleTypes.hpp"

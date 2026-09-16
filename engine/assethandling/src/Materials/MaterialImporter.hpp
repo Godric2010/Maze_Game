@@ -4,7 +4,6 @@
 
 #pragma once
 #include <string>
-#include <glm/vec2.hpp>
 #include "AssetTypes.hpp"
 #include "toml/TomlDocument.hpp"
 

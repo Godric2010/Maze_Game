@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
 
-find_package(glm)
 find_package(lodepng)
 find_package(fmt CONFIG REQUIRED)
 
@@ -21,7 +20,7 @@ add_library(AssetHandling STATIC
         src/Shader/ShaderPreProcessor.hpp
 )
 
-target_link_libraries(AssetHandling PUBLIC Math Interface Environment glm::glm Utilities PRIVATE lodepng fmt::fmt)
+target_link_libraries(AssetHandling PUBLIC Math Interface Environment Utilities PRIVATE lodepng fmt::fmt)
 
 target_include_directories(AssetHandling
         PUBLIC
