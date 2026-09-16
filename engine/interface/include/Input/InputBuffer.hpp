@@ -1,7 +1,7 @@
 #pragma once
 #include <set>
 #include <string>
-#include <glm/vec2.hpp>
+#include <Vec2.hpp>
 
 #include "Input/InputTypes.hpp"
 
@@ -9,8 +9,8 @@ namespace yarep::input {
     struct InputBuffer {
         std::set<std::string> active_map_names;
         std::vector<InputAction> actions;
-        glm::vec2 mouse_position;
-        glm::vec2 mouse_delta;
+        math::Vec2 mouse_position;
+        math::Vec2 mouse_delta;
 
         [[nodiscard]] bool HasAction(const std::string& action_name) const {
             if (actions.empty())

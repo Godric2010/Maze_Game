@@ -75,7 +75,7 @@ namespace yarep::systems
         return handle;
     }
 
-    bool UiButtonSystem::IsMouseOverElement(glm::vec2 mouse_pos, const ecs::EntityId& rect_entity) const
+    bool UiButtonSystem::IsMouseOverElement(math::Vec2 mouse_pos, const ecs::EntityId& rect_entity) const
     {
         const auto cached_values = m_transform_cache->GetRectTransformValue(rect_entity);
         if (mouse_pos.x > cached_values.global_position.x &&

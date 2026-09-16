@@ -24,7 +24,7 @@ namespace yarep::systems {
 
         assets::MaterialHandle RegisterNewUiMaterial() const;
 
-        bool IsMouseOverElement(glm::vec2 mouse_pos, const ecs::EntityId& rect_entity) const;
+        bool IsMouseOverElement(math::Vec2 mouse_pos, const ecs::EntityId& rect_entity) const;
 
         void HandleButtons(const input::InputBuffer& input) const;
     };

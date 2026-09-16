@@ -8,7 +8,7 @@ namespace yarep::environment
         m_app_events.is_closed = false;
 
         const auto window_context = window.GetWindowContext();
-        const auto window_center = glm::vec2(window_context.width / 2, window_context.height / 2);
+        const auto window_center = math::Vec2(window_context.width / 2, window_context.height / 2);
         SDL_WarpMouseInWindow(window_context.open_gl_context.window_handle,
                               static_cast<int>(window_center.x),
                               static_cast<int>(window_center.y)
@@ -31,7 +31,7 @@ namespace yarep::environment
         m_keys_up.clear();
         m_buttons_down.clear();
         m_buttons_up.clear();
-        m_current_mouse_delta = glm::vec2(0.0f, 0.0f);
+        m_current_mouse_delta = math::Vec2(0.0f, 0.0f);
     }
 
     void SdlInput::ShowMouseCursor(const bool visible)
@@ -63,11 +63,11 @@ namespace yarep::environment
                 dx = dy = 0;
                 m_ignore_mouse_delta = false;
             }
-            m_current_mouse_delta = glm::vec2(dx, dy);
+            m_current_mouse_delta = math::Vec2(dx, dy);
         }
         else
         {
-            m_current_mouse_delta = glm::vec2(0, 0);
+            m_current_mouse_delta = math::Vec2(0, 0);
         }
     }
 
@@ -193,7 +193,7 @@ namespace yarep::environment
                 break;
             case SDL_MOUSEMOTION:
                 {
-                    const auto mouse_pos = glm::vec2(event.motion.x, event.motion.y);
+                    const auto mouse_pos = math::Vec2(event.motion.x, event.motion.y);
                     m_current_mouse_pos = mouse_pos;
                 }
                 break;

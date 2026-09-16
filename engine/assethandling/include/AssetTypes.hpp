@@ -1,7 +1,8 @@
 #pragma once
+#include <cstdint>
+#include <Math.hpp>
 #include <string>
 #include <vector>
-#include <Math.hpp>
 
 #include "Assets/AssetHandleTypes.hpp"
 #include "Input/InputTypes.hpp"

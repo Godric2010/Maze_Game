@@ -23,5 +23,5 @@ target_include_directories(Environment PUBLIC
 )
 
 target_link_libraries(Environment PUBLIC
-        SDL2::SDL2
+        SDL2::SDL2 Math
 )

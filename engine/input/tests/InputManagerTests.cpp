@@ -8,55 +8,48 @@
 
 using namespace yarep::input;
 
-class FakeEnvInput : public yarep::environment::IEnvInput
-{
-    public:
-        explicit FakeEnvInput() = default;
+class FakeEnvInput : public yarep::environment::IEnvInput {
+public:
+    explicit FakeEnvInput() = default;
 
-        void PrepareFrame() override
-        {
-        }
+    void PrepareFrame() override {
+    }
 
-        void PumpInput() override
-        {
-        }
+    void PumpInput() override {
+    }
 
-        void ShowMouseCursor(bool visible) override
-        {
-        }
+    void ShowMouseCursor(bool visible) override {
+    }
 
-        yarep::environment::AppEventsSnapshot GetAppEventSnapshot() override
-        {
-            const auto app_snapshot = yarep::environment::AppEventsSnapshot{
-                .is_closed = false,
-                .has_focus = true,
-            };
-            return app_snapshot;
-        }
+    yarep::environment::AppEventsSnapshot GetAppEventSnapshot() override {
+        const auto app_snapshot = yarep::environment::AppEventsSnapshot{
+            .is_closed = false,
+            .has_focus = true,
+        };
+        return app_snapshot;
+    }
 
-        yarep::environment::InputSnapshot GetInputSnapshot() override
-        {
-            std::unordered_set keys_down = {yarep::environment::Key::Space};
-            std::unordered_set keys_up = {yarep::environment::Key::A};
-            std::unordered_set keys_held = {yarep::environment::Key::Space};
-            std::unordered_set mouse_buttons_down = {yarep::environment::MouseButton::Left};
-            std::unordered_set mouse_buttons_up = {yarep::environment::MouseButton::Right};
-            std::unordered_set mouse_buttons_held = {yarep::environment::MouseButton::Left};
-            const auto input_snapshot = yarep::environment::InputSnapshot(glm::vec2(0.1, 0.3),
-                                                                           glm::vec2(400, 658),
-                                                                           keys_down,
-                                                                           keys_held,
-                                                                           keys_up,
-                                                                           mouse_buttons_down,
-                                                                           mouse_buttons_held,
-                                                                           mouse_buttons_up
-                                                                          );
-            return input_snapshot;
-        }
+    yarep::environment::InputSnapshot GetInputSnapshot() override {
+        std::unordered_set keys_down = {yarep::environment::Key::Space};
+        std::unordered_set keys_up = {yarep::environment::Key::A};
+        std::unordered_set keys_held = {yarep::environment::Key::Space};
+        std::unordered_set mouse_buttons_down = {yarep::environment::MouseButton::Left};
+        std::unordered_set mouse_buttons_up = {yarep::environment::MouseButton::Right};
+        std::unordered_set mouse_buttons_held = {yarep::environment::MouseButton::Left};
+        const auto input_snapshot = yarep::environment::InputSnapshot(yarep::math::Vec2(0.1, 0.3),
+                                                                      yarep::math::Vec2(400, 658),
+                                                                      keys_down,
+                                                                      keys_held,
+                                                                      keys_up,
+                                                                      mouse_buttons_down,
+                                                                      mouse_buttons_held,
+                                                                      mouse_buttons_up
+                );
+        return input_snapshot;
+    }
 };
 
-static InputMap CreateInputMap(const std::string& input_map_name)
-{
+static InputMap CreateInputMap(const std::string& input_map_name) {
     const auto input_map = InputMap{
         .name = input_map_name,
         .key_bindings = {
@@ -82,11 +75,11 @@ static InputMap CreateInputMap(const std::string& input_map_name)
     return input_map;
 }
 
-TEST_CASE("InputManagerTests - Register, Activate and Update Input Map")
-{
+TEST_CASE("InputManagerTests - Register, Activate and Update Input Map") {
     auto fake_env_input = std::make_unique<FakeEnvInput>();
     auto input_manager = std::make_unique<InputManager>(std::move(fake_env_input),
-                                                        std::vector{CreateInputMap("InputMap_A")});
+                                                        std::vector{CreateInputMap("InputMap_A")}
+            );
 
     input_manager->EnableInputMap("InputMap_A");
     input_manager->SetMouseVisibility(true);
@@ -97,22 +90,21 @@ TEST_CASE("InputManagerTests - Register, Activate and Update Input Map")
     REQUIRE(input_buffer.HasAction("Space_Down"));
     REQUIRE(input_buffer.HasAction("MLB_Down"));
     REQUIRE_FALSE(input_buffer.HasAction("Enter_Hold"));
-    REQUIRE(input_buffer.mouse_delta == glm::vec2(0.1f, 0.3f));
-    REQUIRE(input_buffer.mouse_position == glm::vec2(400, 658));
+    REQUIRE(input_buffer.mouse_delta == yarep::math::Vec2(0.1f, 0.3f));
+    REQUIRE(input_buffer.mouse_position == yarep::math::Vec2(400, 658));
 }
 
-TEST_CASE("InputManagerTests - Register same map name twice")
-{
+TEST_CASE("InputManagerTests - Register same map name twice") {
     auto fake_env_input = std::make_unique<FakeEnvInput>();
 
     const auto input_map_a1 = CreateInputMap("InputMap_A");
     const auto input_map_a2 = CreateInputMap("InputMap_A");
     REQUIRE_THROWS(std::make_unique<InputManager>(std::move(fake_env_input),
-                       std::vector{input_map_a1, input_map_a2}));
+                std::vector{input_map_a1, input_map_a2})
+            );
 }
 
-TEST_CASE("InputManagerTests - Activating same map twice")
-{
+TEST_CASE("InputManagerTests - Activating same map twice") {
     auto fake_env_input = std::make_unique<FakeEnvInput>();
 
     const auto input_map_a = CreateInputMap("InputMap_A");
@@ -127,8 +119,7 @@ TEST_CASE("InputManagerTests - Activating same map twice")
     REQUIRE(input_buffer.active_map_names.size() == 1);
 }
 
-TEST_CASE("InputManagerTests - Deactivating input map")
-{
+TEST_CASE("InputManagerTests - Deactivating input map") {
     auto fake_env_input = std::make_unique<FakeEnvInput>();
 
     const auto input_map_a = CreateInputMap("InputMap_A");
@@ -143,13 +134,13 @@ TEST_CASE("InputManagerTests - Deactivating input map")
     REQUIRE(input_buffer.active_map_names.empty());
 }
 
-TEST_CASE("InputManagerTests - Enable two maps at the same time")
-{
+TEST_CASE("InputManagerTests - Enable two maps at the same time") {
     auto fake_env_input = std::make_unique<FakeEnvInput>();
     const auto input_map_a = CreateInputMap("InputMap_A");
     const auto input_map_b = CreateInputMap("InputMap_B");
     auto input_manager = std::make_unique<InputManager>(std::move(fake_env_input),
-                                                        std::vector{input_map_a, input_map_b});
+                                                        std::vector{input_map_a, input_map_b}
+            );
     input_manager->EnableInputMap("InputMap_A");
     input_manager->EnableInputMap("InputMap_B");
     input_manager->UpdateInput();
@@ -159,8 +150,7 @@ TEST_CASE("InputManagerTests - Enable two maps at the same time")
     REQUIRE(input_buffer.IsMapActive("InputMap_B"));
 }
 
-TEST_CASE("InputManagerTests - Disable input map that was not active before")
-{
+TEST_CASE("InputManagerTests - Disable input map that was not active before") {
     auto fake_env_input = std::make_unique<FakeEnvInput>();
     const auto input_map_a = CreateInputMap("InputMap_A");
     auto input_manager = std::make_unique<InputManager>(std::move(fake_env_input), std::vector{input_map_a});
@@ -168,8 +158,7 @@ TEST_CASE("InputManagerTests - Disable input map that was not active before")
     REQUIRE_THROWS(input_manager->DisableInputMap("InputMap_A"));
 }
 
-TEST_CASE("InputManagerTests - No active input map")
-{
+TEST_CASE("InputManagerTests - No active input map") {
     auto fake_env_input = std::make_unique<FakeEnvInput>();
     const auto input_map_a = CreateInputMap("InputMap_A");
     auto input_manager = std::make_unique<InputManager>(std::move(fake_env_input), std::vector{input_map_a});
@@ -181,8 +170,7 @@ TEST_CASE("InputManagerTests - No active input map")
     REQUIRE(input_buffer.actions.empty());
 }
 
-TEST_CASE("InputManagerTests - AppSnapshot")
-{
+TEST_CASE("InputManagerTests - AppSnapshot") {
     auto fake_env_input = std::make_unique<FakeEnvInput>();
     const auto input_manager = std::make_unique<InputManager>(std::move(fake_env_input), std::vector<InputMap>{});
 

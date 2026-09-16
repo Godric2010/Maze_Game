@@ -33,8 +33,8 @@ namespace yarep::environment {
         std::unordered_set<MouseButton> m_buttons_down;
         std::unordered_set<MouseButton> m_buttons_up;
         std::unordered_set<MouseButton> m_buttons_held_pressed;
-        glm::vec2 m_current_mouse_pos{};
-        glm::vec2 m_current_mouse_delta{};
+        math::Vec2 m_current_mouse_pos{};
+        math::Vec2 m_current_mouse_delta{};
         bool m_relative_mode = false;
         bool m_ignore_mouse_delta = false;
     };

@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.31)
-find_package(glm)
 
 add_library(Input STATIC
         include/IInputManager.hpp
@@ -10,7 +9,7 @@ add_library(Input STATIC
         src/InputManagerBuilder.cpp
 )
 
-target_link_libraries(Input PUBLIC Environment Interface glm::glm)
+target_link_libraries(Input PUBLIC Environment Interface Math)
 
 if (COMMAND enable_coverage)
     message("Input- Enable coverage")

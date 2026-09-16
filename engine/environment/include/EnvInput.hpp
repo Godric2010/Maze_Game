@@ -3,10 +3,9 @@
 //
 
 #pragma once
+#include <Math.hpp>
 #include <unordered_set>
 #include <utility>
-#include <vector>
-#include <glm/vec2.hpp>
 
 namespace yarep::environment {
     enum class Key {
@@ -41,7 +40,7 @@ namespace yarep::environment {
 
     class InputSnapshot {
     public:
-        InputSnapshot(glm::vec2 mouse_delta, glm::vec2 mouse_pos, std::unordered_set<Key> keys_down,
+        InputSnapshot(math::Vec2 mouse_delta, math::Vec2 mouse_pos, std::unordered_set<Key> keys_down,
                       std::unordered_set<Key> keys_held, std::unordered_set<Key> keys_up,
                       std::unordered_set<MouseButton> mouse_down, std::unordered_set<MouseButton> mouse_held,
                       std::unordered_set<MouseButton> mouse_up) {
@@ -97,8 +96,8 @@ namespace yarep::environment {
             return m_mouse_held_this_frame.contains(button);
         };
 
-        [[nodiscard]] glm::vec2 GetMousePosition() const { return m_mouse_pos; }
-        [[nodiscard]] glm::vec2 GetMouseDelta() const { return m_mouse_delta; };
+        [[nodiscard]] math::Vec2 GetMousePosition() const { return m_mouse_pos; }
+        [[nodiscard]] math::Vec2 GetMouseDelta() const { return m_mouse_delta; };
 
     private:
         std::unordered_set<Key> m_key_down_this_frame;
@@ -109,8 +108,8 @@ namespace yarep::environment {
         std::unordered_set<MouseButton> m_mouse_up_this_frame;
         std::unordered_set<MouseButton> m_mouse_held_this_frame;
 
-        glm::vec2 m_mouse_delta{};
-        glm::vec2 m_mouse_pos{};
+        math::Vec2 m_mouse_delta{};
+        math::Vec2 m_mouse_pos{};
     };
 
     /**
