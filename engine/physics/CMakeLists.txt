@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
 
-find_package(glm CONFIG REQUIRED)
 find_package(spdlog CONFIG)
 
 add_library(Physics STATIC
@@ -33,7 +32,7 @@ target_include_directories(Physics
         $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(Physics PUBLIC Interface Geometry PRIVATE Math glm::glm spdlog::spdlog)
+target_link_libraries(Physics PUBLIC Interface Geometry PRIVATE Math spdlog::spdlog)
 
 if (BUILD_TESTING)
     include(testing)

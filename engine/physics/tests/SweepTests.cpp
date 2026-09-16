@@ -10,11 +10,6 @@
 #include <catch2/catch_all.hpp>
 #endif
 
-#include <glm/glm.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/constants.hpp>
-#include <glm/gtx/norm.hpp> // length2
 #include <cmath>
 using namespace yarep::physics::collision;
 

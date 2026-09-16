@@ -5,8 +5,8 @@
 #pragma once
 #include <vector>
 
-#include "Ecs/Types.hpp"
 #include <AABB.hpp>
+#include "Ecs/Types.hpp"
 
 namespace yarep::physics::collision {
     struct QueryFilter {

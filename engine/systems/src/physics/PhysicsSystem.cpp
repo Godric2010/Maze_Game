@@ -143,7 +143,7 @@ namespace yarep::systems::physics {
 
         m_collider_cache->sphere_colliders.emplace(entity, info);
         if (sphere_collider.is_static) {
-            const auto proxy_sphere = collision::util::FromSphere(sphere);
+            const auto proxy_sphere = geometry::to_aabb(sphere);
             m_broadphase->Insert({entity, proxy_sphere, sphere_collider.is_static});
         }
     }

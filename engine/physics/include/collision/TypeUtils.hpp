@@ -3,8 +3,6 @@
 //
 
 #pragma once
-#include "stdexcept"
-
 
 namespace yarep::physics::collision::util {
     inline geometry::OBB BuildWorldObb(const math::Vec3& position, const math::Quaternion& rotation, const float width,
@@ -18,13 +16,4 @@ namespace yarep::physics::collision::util {
         return obb;
     }
 
-
-    inline geometry::AABB FromSphere(const geometry::Sphere& sphere) {
-        if (sphere.radius <= 0.0f) {
-            throw std::invalid_argument("Sphere radius must be greater than 0.0");
-        }
-
-        const math::Vec3 r{sphere.radius, sphere.radius, sphere.radius};
-        return {sphere.center - r, sphere.center + r};
-    }
 }

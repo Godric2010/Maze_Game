@@ -4,12 +4,10 @@
 
 #pragma once
 #include <unordered_map>
-#include <unordered_set>
 
 #include "AABB.hpp"
 #include "OBB.hpp"
 #include "Sphere.hpp"
-#include "Types.hpp"
 #include "../../../ecs/src/Entity.hpp"
 
 namespace yarep::physics::collision {

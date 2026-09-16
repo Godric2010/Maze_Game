@@ -1,4 +1,4 @@
-#include "../../include/collision/Resolve.hpp"
+#include "collision/Resolve.hpp"
 
 #include "ClosestPoint.hpp"
 #include "Intersects.hpp"

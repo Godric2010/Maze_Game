@@ -1,6 +1,4 @@
 #pragma once
-#include <glm/vec3.hpp>
-
 #include "AABB.hpp"
 #include "OBB.hpp"
 #include "Sphere.hpp"

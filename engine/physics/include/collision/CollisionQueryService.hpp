@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "AABB.hpp"
+#include "Math.hpp"
 #include "OBB.hpp"
 #include "collision/ColliderCache.hpp"
 #include "collision/IBroadphase.hpp"

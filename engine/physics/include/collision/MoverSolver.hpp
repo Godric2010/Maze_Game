@@ -3,10 +3,8 @@
 //
 
 #pragma once
-#define GLM_ENABLE_EXPERIMENTAL
 #include <optional>
 #include <stdexcept>
-#include <glm/gtx/norm.hpp>
 
 #include "CollisionQueryService.hpp"
 #include "Resolve.hpp"
@@ -15,7 +13,7 @@
 namespace yarep::physics::collision {
     struct MoverInput {
         math::Vec3 position;
-        float radius;
+        float radius{};
         math::Vec3 delta;
         int max_iterations{3};
     };

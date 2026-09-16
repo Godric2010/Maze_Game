@@ -7,9 +7,7 @@
     #include <catch2/catch_all.hpp>
 #endif
 
-#include <glm/glm.hpp>
-#include <glm/gtx/norm.hpp>          // length2
-#include <cmath>
+#include "cmath"
 
 using namespace yarep::physics::collision;
 // ---- Helpers ----

@@ -1,11 +1,7 @@
-#include "../../include/collision/Sweep.hpp"
+#include "collision/Sweep.hpp"
 
 #include <algorithm>
 #include <iostream>
-#include <ostream>
-#include <glm/fwd.hpp>
-#include <glm/geometric.hpp>
-
 #include "Math.hpp"
 
 namespace yarep::physics::collision {
