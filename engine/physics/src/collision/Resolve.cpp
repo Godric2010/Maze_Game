@@ -2,6 +2,7 @@
 
 #include "ClosestPoint.hpp"
 #include "Intersects.hpp"
+#include "NearestSurface.hpp"
 #include "VectorMath.hpp"
 
 
@@ -33,19 +34,9 @@ namespace yarep::physics::collision {
             out.normal = delta / distance;
             out.penetration_depth = sphere.radius - distance;
         } else {
-            const float dx = std::min(std::abs(sphere.center.x - box.min.x), std::abs(box.max.x - sphere.center.x));
-            const float dy = std::min(std::abs(sphere.center.y - box.min.y), std::abs(box.max.y - sphere.center.y));
-            const float dz = std::min(std::abs(sphere.center.z - box.min.x), std::abs(box.max.x - sphere.center.z));
-
-            const math::Vec3 box_center = (box.min + box.max) * 0.5f;
-            if (dx <= dy && dx <= dz) {
-                out.normal = math::Vec3(sphere.center.x > box_center.x ? 1.0f : -1.0f, 0, 0);
-            } else if (dy <= dx && dy <= dz) {
-                out.normal = math::Vec3(0, sphere.center.y > box_center.y ? 1.0f : -1.0f, 0);
-            } else {
-                out.normal = math::Vec3(0, 0, sphere.center.z > box_center.z ? 1.0f : -1.0f);
-            }
-            out.penetration_depth = sphere.radius;
+            const auto surface = geometry::nearest_surface(box, sphere.center);
+            out.normal = surface.normal;
+            out.penetration_depth = surface.distance + sphere.radius;
         }
         return out;
     }
@@ -63,8 +54,8 @@ namespace yarep::physics::collision {
         out.hit = true;
         out.time_of_impact = 0.0f;
 
-        const math::Vec3 center_a = (box_a.min + box_a.max) * 0.5f;
-        const math::Vec3 center_b = (box_b.min + box_b.max) * 0.5f;
+        const math::Vec3 center_a = geometry::center(box_a);
+        const math::Vec3 center_b = geometry::center(box_b);
         if (overlap_x <= overlap_y && overlap_x <= overlap_z) {
             out.normal = math::Vec3(center_a.x < center_b.x ? -1.0f : 1.0f, 0.0f, 0.0);
             out.penetration_depth = overlap_x;

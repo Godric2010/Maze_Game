@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "AABB.hpp"
+#include "Bounds.hpp"
 #include "Math.hpp"
 #include "OBB.hpp"
 #include "collision/ColliderCache.hpp"
@@ -67,12 +68,17 @@ namespace yarep::physics::collision {
 
         static geometry::AABB BuildSweptAabb(const math::Vec3& pos, const math::Vec3& rest,
                                              const float radius) noexcept {
-            const math::Vec3 p0 = pos;
-            const math::Vec3 p1 = pos + rest;
+            const geometry::Sphere start{
+                pos,
+                radius
+            };
 
-            const math::Vec3 min = math::min(p0, p1) - math::Vec3{radius, radius, radius};
-            const math::Vec3 max = math::max(p0, p1) + math::Vec3{radius, radius, radius};
-            return {min, max};
+            const geometry::Sphere end{
+                pos + rest,
+                radius
+            };
+
+            return geometry::merge(geometry::to_aabb(start), geometry::to_aabb(end));
         }
     };
 }
