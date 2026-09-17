@@ -3,9 +3,9 @@
 #include "MazeAlgorithm.hpp"
 #include "SceneWorld.hpp"
 #include "Assets/AssetHandleTypes.hpp"
-#include <glm/glm.hpp>
-
+#include <Math.hpp>
 #include "Assets/IAssetLibrary.hpp"
+
 
 namespace gameplay::maze_generator {
     class MazeBuilder {
@@ -17,7 +17,7 @@ namespace gameplay::maze_generator {
 
         void BuildMaze(int width, int height, int seed);
 
-        glm::vec3 GetMazeStartPosition() const;
+        [[nodiscard]] yarep::math::Vec3 GetMazeStartPosition() const;
 
     private:
         yarep::scene_management::SceneWorld* m_game_world;
@@ -61,7 +61,7 @@ namespace gameplay::maze_generator {
 
         void CreateMazeCell(const Cell& cell) const;
 
-        static void GetShiftAndRotationVectorFromDirection(const Direction& direction, glm::vec3& shift_vector,
-                                                           glm::vec3& rotation_shift);
+        static void GetShiftAndRotationVectorFromDirection(const Direction& direction, yarep::math::Vec3& shift_vector,
+                                                           yarep::math::Quaternion& rotation);
     };
 } // namespace

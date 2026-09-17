@@ -9,11 +9,11 @@
 
 namespace yarep::systems::transform {
     struct TransformCacheValue {
-        glm::vec3 last_position;
-        glm::vec3 last_rotation;
-        glm::vec3 last_scale;
+        math::Vec3 last_position;
+        math::Quaternion last_rotation;
+        math::Vec3 last_scale;
         uint64_t last_version;
-        glm::mat4 transform_matrix;
+        math::Mat4 transform_matrix;
     };
 
     struct RectTransformCacheValue {
@@ -41,7 +41,7 @@ namespace yarep::systems::transform {
         bool IsDirty(uint64_t entity, const components::TransformComponent* transform);
 
         void SetValue(uint64_t entity, const components::TransformComponent* transform,
-                      const glm::mat4& transform_mat);
+                      const math::Mat4& transform_mat);
 
         void SetValue(uint64_t entity, const RectTransformCacheValue& rect_transform_cache_value);
 

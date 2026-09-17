@@ -14,7 +14,10 @@ namespace gameplay::systems {
             const auto transform = GameWorld()->GetComponent<yarep::components::TransformComponent>(entity_id);
 
             auto rotation = transform->GetRotation();
-            rotation.y += 10 * delta_time * m_rotation_speed;
+            rotation *= yarep::math::from_axis_angle(yarep::math::Vec3{0, 1, 0},
+                                                     yarep::math::Angle::from_degrees(10 * delta_time * m_rotation_speed
+                                                             )
+                    );
             transform->SetRotation(rotation);
 
             auto position = transform->GetPosition();

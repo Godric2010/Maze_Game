@@ -24,7 +24,7 @@ namespace yarep::renderer {
     };
 
     struct LightAsset {
-        glm::vec3 position;
+        math::Vec3 position;
         math::Vec3 color;
         float intensity;
         float constant_attenuation;

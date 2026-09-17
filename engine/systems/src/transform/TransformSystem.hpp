@@ -1,7 +1,4 @@
 #pragma once
-#include <glm/fwd.hpp>
-#include <glm/glm.hpp>
-
 #include "IEngineSystem.hpp"
 ECS_SYSTEM(TransformSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
@@ -15,8 +12,5 @@ namespace yarep::systems {
         void Initialize() override;
 
         void Run(float delta_time) override;
-
-    private:
-        static glm::mat4 CalculateModelMatrix(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
     };
 } // namespace

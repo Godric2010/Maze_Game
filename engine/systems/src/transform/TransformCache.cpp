@@ -48,7 +48,7 @@ namespace yarep::systems::transform {
     }
 
     void TransformCache::SetValue(const uint64_t entity, const components::TransformComponent* transform,
-                                  const glm::mat4& transform_mat) {
+                                  const math::Mat4& transform_mat) {
         if (!m_transform_cache.contains(entity)) {
             throw std::runtime_error("Entity does not exist in Transform cache.");
         }

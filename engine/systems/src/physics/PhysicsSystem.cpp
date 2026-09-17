@@ -69,8 +69,7 @@ namespace yarep::systems::physics {
                 continue;
             }
 
-            const glm::vec3 old_position_glm = transform->GetPosition();
-            const auto old_position = math::Vec3{old_position_glm.x, old_position_glm.y, old_position_glm.z};
+            const auto old_position = transform->GetPosition();
             math::Vec3 move_delta = velocity * fixed_delta_time;
 
             if (math::length_squared(move_delta) < m_epsilon) {
@@ -95,20 +94,16 @@ namespace yarep::systems::physics {
                 constexpr auto zero_velocity = math::Vec3{};
                 rigidbody->SetVelocity(zero_velocity);
             }
-            transform->SetPosition(glm::vec3{final_position.x, final_position.y, final_position.z});
+            transform->SetPosition(math::Vec3{final_position.x, final_position.y, final_position.z});
         }
     }
 
     void PhysicsSystem::BuildBoxCollider(ecs::EntityId entity, const components::BoxCollider box_collider,
-                                         const glm::vec3& position, const glm::vec3& rotation,
-                                         const glm::vec3& scale) const {
-        auto pos = math::Vec3{position.x, position.y, position.z};
-        math::Quaternion rot = math::from_axis_angle(math::Vec3{1, 0, 0}, math::Angle::from_degrees(rotation.x)) *
-                               math::from_axis_angle(math::Vec3{0, 1, 0}, math::Angle::from_degrees(rotation.y)) *
-                               math::from_axis_angle(math::Vec3{0, 0, 1}, math::Angle::from_degrees(rotation.z));
+                                         const math::Vec3& position, const math::Quaternion& rotation,
+                                         const math::Vec3& scale) const {
 
-        const auto obb = collision::util::BuildWorldObb(pos,
-                                                        rot,
+        const auto obb = collision::util::BuildWorldObb(position,
+                                                        rotation,
                                                         box_collider.width,
                                                         box_collider.height,
                                                         box_collider.depth
@@ -128,7 +123,7 @@ namespace yarep::systems::physics {
     }
 
     void PhysicsSystem::BuildSphereCollider(ecs::EntityId entity, const components::SphereCollider sphere_collider,
-                                            const glm::vec3 position) const {
+                                            const math::Vec3 position) const {
         geometry::Sphere sphere{};
         sphere.radius = sphere_collider.radius;
         sphere.center = math::Vec3{position.x, position.y, position.z};

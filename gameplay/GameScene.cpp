@@ -10,27 +10,24 @@
 #include "commands/LevelFinished.hpp"
 #include "commands/PauseCommand.hpp"
 #include "Commands/UI/ButtonClickedCommand.hpp"
+#include "components/FirstPersonControllerComponent.hpp"
 #include "components/Inventory.hpp"
 #include "ui/Button.hpp"
 #include "ui/Image.hpp"
 #include "ui/RectTransform.hpp"
 #include "ui/Text.hpp"
 
-namespace gameplay
-{
-    GameScene::GameScene(const GameSceneSettings settings)
-    {
+namespace gameplay {
+    GameScene::GameScene(const GameSceneSettings settings) {
         m_difficulty = settings.difficulty;
         m_is_paused = false;
     }
 
-    GameScene::~GameScene()
-    {
+    GameScene::~GameScene() {
         m_maze_builder.reset();
     }
 
-    void GameScene::OnStart()
-    {
+    void GameScene::OnStart() {
         std::cout << "GameScene::OnStart()" << std::endl;
         CreateMaze();
         CreateCamera();
@@ -40,22 +37,18 @@ namespace gameplay
         m_start_time = std::chrono::steady_clock::now();
     }
 
-    void GameScene::EvaluateSystemCommands(const std::vector<std::any>& commands)
-    {
-        for (const auto& command : commands)
-        {
-            if (command.type() == typeid(commands::PauseCommand))
-            {
+    void GameScene::EvaluateSystemCommands(const std::vector<std::any>& commands) {
+        for (const auto& command: commands) {
+            if (command.type() == typeid(commands::PauseCommand)) {
                 auto pause_command = std::any_cast<commands::PauseCommand>(command);
                 std::cout << "Enable Pause: " << (pause_command.IsPaused() ? "true" : "false") << std::endl;
                 pause_command.IsPaused() ? Pause() : Resume();
                 continue;
             }
-            if (command.type() == typeid(commands::LevelFinished))
-            {
+            if (command.type() == typeid(commands::LevelFinished)) {
                 const auto end_time = std::chrono::steady_clock::now();
                 const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - m_start_time).
-                    count();
+                        count();
                 m_time_passed += duration;
 
                 SceneManager().LoadScene("GameEnd",
@@ -64,47 +57,37 @@ namespace gameplay
                                                  .time_to_completion = m_time_passed,
                                              }
                                          }
-                );
+                        );
                 continue;
             }
-            if (command.type() == typeid(yarep::commands::ui::ButtonClickedCommand))
-            {
+            if (command.type() == typeid(yarep::commands::ui::ButtonClickedCommand)) {
                 auto button_clicked = std::any_cast<yarep::commands::ui::ButtonClickedCommand>(command);
                 const auto button_id = button_clicked.GetButtonId();
-                if (button_id == 1)
-                {
+                if (button_id == 1) {
                     Resume();
-                }
-                else if (button_id == 2)
-                {
+                } else if (button_id == 2) {
                     SceneManager().LoadScene("MainMenu", yarep::scene_management::SceneArgs{});
-                }
-                else if (button_id == 3)
-                {
+                } else if (button_id == 3) {
                     Application().Quit();
                 }
             }
         }
     }
 
-    void GameScene::OnExit()
-    {
+    void GameScene::OnExit() {
         std::cout << "GameScene::OnExit()" << std::endl;
     }
 
-    void GameScene::CreateMaze()
-    {
-      
+    void GameScene::CreateMaze() {
         m_maze_builder = std::make_unique<maze_generator::MazeBuilder>(&World(),
-                                                                      &Assets(),
-                                                                      true
-        );
+                                                                       &Assets(),
+                                                                       true
+                );
         int width = 0;
         int height = 0;
         int seed = 1337;
 
-        switch (m_difficulty)
-        {
+        switch (m_difficulty) {
             case Difficulty::Developer:
                 width = 5;
                 height = 5;
@@ -126,8 +109,7 @@ namespace gameplay
         m_maze_builder->BuildMaze(width, height, seed);
     }
 
-    void GameScene::Pause()
-    {
+    void GameScene::Pause() {
         const auto end_time = std::chrono::steady_clock::now();
         const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - m_start_time).count();
         m_time_passed += duration;
@@ -139,43 +121,50 @@ namespace gameplay
         Input().SetMouseVisibility(true);
     }
 
-    void GameScene::Resume()
-    {
+    void GameScene::Resume() {
         m_start_time = std::chrono::steady_clock::now();
         Input().DisableInputMap("UIInputMap");
         Input().DisableInputMap("PauseInputMap");
         Input().EnableInputMap("PlayerInputMap");
         Input().SetMouseVisibility(false);
 
-        for (const auto& entity : m_pause_entities)
-        {
+        for (const auto& entity: m_pause_entities) {
             World().DestroyEntity(entity);
         }
         m_pause_entities.clear();
     }
 
-    void GameScene::CreateCamera() const
-    {
+    void GameScene::CreateCamera() const {
         auto player = World().CreateEntity("Player");
         const auto [width, height, aspect_ratio] = Screen();
         const auto camera_component = yarep::components::Camera()
-                                      .SetWidth(width)
-                                      .SetHeight(height)
-                                      .SetAspectRatio(aspect_ratio)
-                                      .SetFieldOfView(60)
-                                      .SetNearClip(0.01f)
-                                      .SetFarClip(100.0f);
+                .SetWidth(width)
+                .SetHeight(height)
+                .SetAspectRatio(aspect_ratio)
+                .SetFieldOfView(60)
+                .SetNearClip(0.01f)
+                .SetFarClip(100.0f);
 
         World().AddComponent<yarep::components::Camera>(player, camera_component);
 
+        const auto initial_yaw = yarep::math::Angle::from_degrees(180.f);
+        const auto initial_pitch = yarep::math::Angle::from_degrees(-10.f);
+
         const auto camera_transform = yarep::components::TransformComponent()
-                                      .SetPosition(m_maze_builder->GetMazeStartPosition())
-                                      .SetRotation(glm::vec3(-10.0f, 180.0f, 0.0f));
+                .SetPosition(m_maze_builder->GetMazeStartPosition())
+                .SetRotation(yarep::math::from_yaw_pitch_roll(initial_yaw,
+                                                              initial_pitch,
+                                                              yarep::math::Angle::from_degrees(0)
+                                )
+                        );
         World().AddComponent(player, camera_transform);
 
+        const auto fps_controller = components::FirstPersonControllerComponent(initial_yaw, initial_pitch);
+        World().AddComponent(player, fps_controller);
+
         const auto camera_rigidbody = yarep::components::Rigidbody()
-                                      .SetVelocityFixed(false)
-                                      .SetVelocity(yarep::math::Vec3{});
+                .SetVelocityFixed(false)
+                .SetVelocity(yarep::math::Vec3{});
         World().AddComponent(player, camera_rigidbody);
 
         constexpr auto camera_collider = yarep::components::SphereCollider{
@@ -188,24 +177,22 @@ namespace gameplay
         World().AddComponent(player, inventory);
     }
 
-    void GameScene::CreateIngameUiOverlay() const
-    {
+    void GameScene::CreateIngameUiOverlay() const {
         const auto key_indicator = World().CreateEntity("KeyIndicator");
 
         const auto screen = Screen();
         constexpr yarep::math::Vec2 size = {100, 100};
         const yarep::math::Vec2 position = {screen.width - size.x - 50, screen.height - size.y - 50};
         const auto transform = yarep::components::ui::RectTransform()
-                               .SetPosition(position)
-                               .SetSize(size);
+                .SetPosition(position)
+                .SetSize(size);
         World().AddComponent(key_indicator, transform);
 
         constexpr auto image = yarep::components::ui::Image{.color = {1, 0, 0, 0.5}};
         World().AddComponent(key_indicator, image);
     }
 
-    void GameScene::CreatePauseUiOverlay()
-    {
+    void GameScene::CreatePauseUiOverlay() {
         const auto pause_entity = World().CreateEntity("PauseBackground");
 
         const auto screen = Screen();
@@ -213,9 +200,9 @@ namespace gameplay
         const auto bg_size = yarep::math::Vec2(screen.width * 0.9f, screen.height * 0.9f);
         constexpr auto bg_pivot = yarep::math::Vec2(0.5f, 0.5f);
         const auto bg_rect_transform = yarep::components::ui::RectTransform()
-                                       .SetPosition(bg_position)
-                                       .SetSize(bg_size)
-                                       .SetPivot(bg_pivot);
+                .SetPosition(bg_position)
+                .SetSize(bg_size)
+                .SetPivot(bg_pivot);
         World().AddComponent(pause_entity, bg_rect_transform);
 
         constexpr auto bg_image = yarep::components::ui::Image{.color = {0.3, 0.3, 0.3, 0.9}};
@@ -224,14 +211,14 @@ namespace gameplay
 
         const auto heading_entity = World().CreateEntity("Pause");
         const auto heading_transform = yarep::components::ui::RectTransform()
-                                       .SetPosition(yarep::math::Vec2(0.0f, 300.0f))
-                                       .SetPivot(yarep::math::Vec2(0.5f, 0.5f))
-                                       .SetAnchor(yarep::components::ui::Anchor::TopCenter)
-                                       .SetParent(pause_entity);
+                .SetPosition(yarep::math::Vec2(0.0f, 300.0f))
+                .SetPivot(yarep::math::Vec2(0.5f, 0.5f))
+                .SetAnchor(yarep::components::ui::Anchor::TopCenter)
+                .SetParent(pause_entity);
         const auto heading_text = yarep::components::ui::Text()
-                                  .SetText("Pause")
-                                  .SetFontName("SpaceFont.ttf")
-                                  .SetFontSize(128.0f);
+                .SetText("Pause")
+                .SetFontName("SpaceFont.ttf")
+                .SetFontSize(128.0f);
         World().AddComponent(heading_entity, heading_transform);
         World().AddComponent(heading_entity, heading_text);
         m_pause_entities.push_back(heading_entity);
@@ -242,17 +229,17 @@ namespace gameplay
         CreateUiButton(yarep::math::Vec2(0.0f, 800.0f), button_size, "Quit Game", 3, pause_entity);
     }
 
-    void GameScene::CreateUiButton(const yarep::math::Vec2& position, const yarep::math::Vec2& size, const std::string& content,
-                                   int button_id, const yarep::ecs::EntityId& parent_entity)
-    {
+    void GameScene::CreateUiButton(const yarep::math::Vec2& position, const yarep::math::Vec2& size,
+                                   const std::string& content,
+                                   int button_id, const yarep::ecs::EntityId& parent_entity) {
         const auto button_entity = World().CreateEntity(content + "Button");
         constexpr auto pivot = yarep::math::Vec2(0.5f, 0.5f);
         auto button_rect = yarep::components::ui::RectTransform()
-                           .SetPosition(position)
-                           .SetSize(size)
-                           .SetPivot(pivot)
-                           .SetAnchor(yarep::components::ui::Anchor::TopCenter)
-                           .SetParent(parent_entity);
+                .SetPosition(position)
+                .SetSize(size)
+                .SetPivot(pivot)
+                .SetAnchor(yarep::components::ui::Anchor::TopCenter)
+                .SetParent(parent_entity);
 
         auto button = yarep::components::ui::Button();
         button.button_id = button_id;
@@ -267,14 +254,14 @@ namespace gameplay
 
         const auto button_text_entity = World().CreateEntity(content + "ButtonText");
         auto button_text_rect = yarep::components::ui::RectTransform()
-                                .SetPosition(yarep::math::Vec2(0, 10))
-                                .SetPivot(yarep::math::Vec2(0.5f, 0.0f))
-                                .SetAnchor(yarep::components::ui::Anchor::Center)
-                                .SetParent(button_entity);
+                .SetPosition(yarep::math::Vec2(0, 10))
+                .SetPivot(yarep::math::Vec2(0.5f, 0.0f))
+                .SetAnchor(yarep::components::ui::Anchor::Center)
+                .SetParent(button_entity);
         auto button_text = yarep::components::ui::Text()
-                           .SetText(content)
-                           .SetFontName("SpaceFont.ttf")
-                           .SetFontSize(32);
+                .SetText(content)
+                .SetFontName("SpaceFont.ttf")
+                .SetFontSize(32);
 
         World().AddComponent(button_text_entity, button_text_rect);
         World().AddComponent(button_text_entity, button_text);

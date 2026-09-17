@@ -59,6 +59,12 @@ namespace yarep::math {
         return detail::from_glm_quat(glm_quat);
     }
 
+    Quaternion from_yaw_pitch_roll(const Angle& yaw, const Angle& pitch, const Angle& roll) {
+        return from_axis_angle(Vec3{0, 1, 0}, yaw) *
+               from_axis_angle(Vec3{1, 0, 0}, pitch) *
+               from_axis_angle(Vec3{0, 1, 0}, roll);
+    }
+
     Vec3 rotate(const Quaternion& quaternion, const Vec3& vector) {
         const auto glm_quat = detail::to_glm_quat(quaternion);
         const auto glm_vec3 = detail::to_glm_vec3(vector);

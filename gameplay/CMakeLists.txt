@@ -15,6 +15,7 @@ add_library(Gameplay STATIC
         components/Inventory.hpp
         components/KeyItem.hpp
         components/Exit.hpp
+        components/FirstPersonControllerComponent.hpp
         mazegenerator/MazeBuilder.cpp
         mazegenerator/MazeBuilder.hpp
         systems/ExitSystem.cpp

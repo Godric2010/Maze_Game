@@ -7,6 +7,7 @@
 #include "SystemWorld.hpp"
 #include "Transform.hpp"
 #include "../commands/PauseCommand.hpp"
+#include "../components/FirstPersonControllerComponent.hpp"
 
 namespace gameplay::systems {
     PlayerControllerSystem::PlayerControllerSystem() = default;
@@ -39,35 +40,37 @@ namespace gameplay::systems {
                                                        const float delta_time) const {
         const auto transform = GameWorld()->GetComponent<yarep::components::TransformComponent>(player_entity);
         const auto rigidbody = GameWorld()->GetComponent<yarep::components::Rigidbody>(player_entity);
-        if (transform == nullptr || rigidbody == nullptr) {
+        const auto fps_controller = GameWorld()->GetComponent<
+            components::FirstPersonControllerComponent>(player_entity);
+        if (transform == nullptr || rigidbody == nullptr || fps_controller == nullptr) {
             return;
         }
-        const auto cam_rotation = transform->GetRotation();
-        const auto cam_rotation_x = yarep::math::Angle::from_degrees(cam_rotation.x);
-        const auto cam_rotation_y = yarep::math::Angle::from_degrees(cam_rotation.y);
-        if (!m_initialized) {
-            m_pitch_target = cam_rotation_x;
-            m_yaw_target = cam_rotation_y;
-            m_initialized = true;
-        }
 
-        // Calculate camera rotation
+        // Set yaw/pitch targets
         const auto mouse_delta = input.mouse_delta;
-        m_yaw_target = m_yaw_target + yarep::math::Angle::from_degrees(-mouse_delta.x * m_sensitivity);
-        m_pitch_target = m_pitch_target + yarep::math::Angle::from_degrees(-mouse_delta.y * m_sensitivity);
-        m_pitch_target = yarep::math::Angle::from_radians(std::clamp(m_pitch_target.radians(),
-                                                                     m_min_pitch.radians(),
-                                                                     m_max_pitch.radians()
-                        )
+        auto yaw_target = fps_controller->GetYaw() +
+                          yarep::math::Angle::from_degrees(-mouse_delta.x * m_sensitivity);
+        auto pitch_target = fps_controller->GetPitch() +
+                            yarep::math::Angle::from_degrees(-mouse_delta.y * m_sensitivity);
+
+        pitch_target = yarep::math::Angle::from_radians(
+                std::clamp(pitch_target.radians(), m_min_pitch.radians(), m_max_pitch.radians())
                 );
 
-        float smoothing = 10.0f;
-        float t = 1.0f - std::exp(-smoothing * delta_time);
+        fps_controller->SetTargetYaw(yaw_target).SetTargetPitch(pitch_target);
 
-        auto pitch = yarep::math::lerp(cam_rotation_x, m_pitch_target, t);
-        auto yaw = yarep::math::lerp(cam_rotation_y, m_yaw_target, t);
 
-        auto new_camera_rotation = glm::vec3(pitch.degrees(), yaw.degrees(), cam_rotation.z);
+        // Smoothing
+        constexpr float smoothing = 10.0f;
+        const float t = 1.0f - std::exp(-smoothing * delta_time);
+
+        const auto pitch = yarep::math::lerp(fps_controller->GetPitch(), pitch_target, t);
+        const auto yaw = yarep::math::lerp(fps_controller->GetYaw(), yaw_target, t);
+
+        fps_controller->SetYaw(yaw).SetPitch(pitch);
+
+        // Write final runtime rotation
+        const auto new_camera_rotation = yarep::math::from_yaw_pitch_roll(yaw, pitch, yarep::math::Angle{});
         transform->SetRotation(new_camera_rotation);
 
         // Calculate camera position

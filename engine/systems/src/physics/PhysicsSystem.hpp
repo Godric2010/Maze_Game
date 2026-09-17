@@ -32,12 +32,12 @@ namespace yarep::systems::physics {
         std::unordered_map<ecs::EntityId, ecs::EntityId> m_collided_entities;
         std::unordered_map<ecs::EntityId, std::unordered_set<ecs::EntityId> > m_triggered_entities;
 
-        void BuildBoxCollider(ecs::EntityId entity, components::BoxCollider box_collider, const glm::vec3& position,
-                              const glm::vec3& rotation, const
-                              glm::vec3& scale) const;
+        void BuildBoxCollider(ecs::EntityId entity, components::BoxCollider box_collider, const math::Vec3& position,
+                              const math::Quaternion& rotation, const
+                              math::Vec3& scale) const;
 
         void BuildSphereCollider(ecs::EntityId entity, components::SphereCollider sphere_collider,
-                                 glm::vec3 position) const;
+                                 math::Vec3 position) const;
 
         void RunBroadphase(ecs::EntityId target_entity, float radius, const math::Vec3& position, math::Vec3 move_delta,
                            std::vector<ecs::EntityId>& blocking_candidates,
@@ -57,7 +57,5 @@ namespace yarep::systems::physics {
 
         void RaiseTriggerEvents(ecs::EntityId target_entity,
                                 std::unordered_set<ecs::EntityId>& trigger_entities);
-
-
     };
 } // namespace

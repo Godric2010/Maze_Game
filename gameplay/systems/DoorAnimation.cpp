@@ -38,7 +38,7 @@ namespace gameplay::systems {
                     if (door_position.y > m_door_open_position) {
                         door->current_state = components::Door::State::Opened;
                     }
-                    door_position += glm::vec3(0, 1, 0) * delta_time * m_door_open_speed;
+                    door_position += yarep::math::Vec3(0, 1, 0) * delta_time * m_door_open_speed;
                     door_transform->SetPosition(door_position);
                     break;
                 case components::Door::State::Closing:
@@ -54,7 +54,7 @@ namespace gameplay::systems {
                         m_disabled_box_colliders.erase(entity);
                     }
 
-                    door_position += glm::vec3(0, -1, 0) * delta_time * m_door_open_speed;
+                    door_position += yarep::math::Vec3(0, -1, 0) * delta_time * m_door_open_speed;
                     door_transform->SetPosition(door_position);
                     break;
                 case components::Door::State::Opened: {

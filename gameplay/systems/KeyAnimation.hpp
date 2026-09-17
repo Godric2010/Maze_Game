@@ -1,6 +1,5 @@
 #pragma once
-#include <glm/vec3.hpp>
-
+#include <Math.hpp>
 #include "Ecs/ISystem.hpp"
 
 namespace gameplay::systems {
@@ -23,7 +22,7 @@ namespace gameplay::systems {
         float m_min_height = 0.4f;
         float m_max_height = 0.6f;
 
-        glm::vec3 m_hover_direction = glm::vec3(0.0f, 1.0f, 0.0f);
+        yarep::math::Vec3 m_hover_direction = yarep::math::Vec3(0.0f, 1.0f, 0.0f);
         bool m_goes_up = true;
     };
 } // namespace

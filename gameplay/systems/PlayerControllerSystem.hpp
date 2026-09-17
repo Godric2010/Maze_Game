@@ -19,8 +19,6 @@ namespace gameplay::systems {
         const float m_movement_speed = 1.0f;
         const float m_sensitivity = 0.6f;
 
-        mutable yarep::math::Angle m_yaw_target{};
-        mutable yarep::math::Angle m_pitch_target{};
         mutable bool m_initialized = false;
 
         const yarep::math::Angle m_min_pitch = yarep::math::Angle::from_degrees(-60.0f);

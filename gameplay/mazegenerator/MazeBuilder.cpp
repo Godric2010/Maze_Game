@@ -49,8 +49,8 @@ namespace gameplay::maze_generator {
         CreateExitTrigger(m_maze.exit_cell);
     }
 
-    glm::vec3 MazeBuilder::GetMazeStartPosition() const {
-        return {m_maze.entrance_cell.x * 2, 1.1f, m_maze.entrance_cell.y * 2};
+    yarep::math::Vec3 MazeBuilder::GetMazeStartPosition() const {
+        return {m_maze.entrance_cell.x * 2.f, 1.1f, m_maze.entrance_cell.y * 2.f};
     }
 
 
@@ -100,9 +100,9 @@ namespace gameplay::maze_generator {
             .material = m_key_material,
         };
         m_game_world->AddComponent(entity, mesh_component);
-        const auto position = glm::vec3(cell_index.x * 2, 0.5f, cell_index.y * 2);
-        constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        constexpr auto scale = glm::vec3(0.2f, 0.2f, 0.2f);
+        const auto position = yarep::math::Vec3(cell_index.x * 2, 0.5f, cell_index.y * 2);
+        constexpr auto rotation = yarep::math::Quaternion();
+        constexpr auto scale = yarep::math::Vec3(0.2f, 0.2f, 0.2f);
         const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation)
@@ -123,9 +123,9 @@ namespace gameplay::maze_generator {
     void MazeBuilder::CreateExitTrigger(const CellIndex& cell_index) const {
         const auto entity = m_game_world->CreateEntity("ExitTrigger");
 
-        const auto position = glm::vec3(cell_index.x * 2, 0.5f, cell_index.y * 2);
-        constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-        constexpr auto scale = glm::vec3(2.0f);
+        const auto position = yarep::math::Vec3(cell_index.x * 2, 0.5f, cell_index.y * 2);
+        constexpr auto rotation = yarep::math::Quaternion();
+        constexpr auto scale = yarep::math::Vec3(2.0f, 2.0f, 2.0f);
         const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation)
@@ -156,8 +156,8 @@ namespace gameplay::maze_generator {
                 .SetEnabled(true);
 
         m_game_world->AddComponent(light_entity, point_light_component);
-        const auto position = glm::vec3(cell_index.x * 2, 1.9f, cell_index.y * 2);
-        constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+        const auto position = yarep::math::Vec3(cell_index.x * 2, 1.9f, cell_index.y * 2);
+        constexpr auto rotation = yarep::math::Quaternion();
         const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation);
@@ -169,7 +169,7 @@ namespace gameplay::maze_generator {
         const auto tile_material = DetermineFloorMaterialForCell(cell.cell_index);
         CreateCellFloorTile(cell.cell_index, tile_material);
         CreateCeilingTile(cell.cell_index);
-        if (cell.cell_index.x  == 4 && cell.cell_index.y == 0) {
+        if (cell.cell_index.x == 4 && cell.cell_index.y == 0) {
             CreateCeilingLight(cell.cell_index);
         }
 
@@ -196,34 +196,41 @@ namespace gameplay::maze_generator {
             .material = material,
         };
         m_game_world->AddComponent(entity, mesh_component);
-        const auto position = glm::vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2);
-        constexpr auto rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+        const auto position = yarep::math::Vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2);
+        constexpr auto rotation = yarep::math::Quaternion();
         const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation);
         m_game_world->AddComponent(entity, transform_component);
     }
 
-    void MazeBuilder::GetShiftAndRotationVectorFromDirection(const Direction& direction, glm::vec3& shift_vector,
-                                                             glm::vec3& rotation_shift) {
-        shift_vector = glm::vec3(0.0f);
-        rotation_shift = glm::vec3(0.0f);
+    void MazeBuilder::GetShiftAndRotationVectorFromDirection(const Direction& direction,
+                                                             yarep::math::Vec3& shift_vector,
+                                                             yarep::math::Quaternion& rotation) {
+        shift_vector = yarep::math::Vec3{};
+        rotation = yarep::math::Quaternion();
         switch (direction) {
             case Back:
-                shift_vector = glm::vec3(0.0f, 0.02f, -0.80f);
-                rotation_shift = glm::vec3(0.0f, 0.0f, 0.0f);
+                shift_vector = yarep::math::Vec3(0.0f, 0.02f, -0.80f);
+                // No rotation needed
                 break;
             case Front:
-                shift_vector = glm::vec3(0.0f, 0.02f, 0.8f);
-                rotation_shift = glm::vec3(0.0f, 180.0f, 0.0f);
+                shift_vector = yarep::math::Vec3(0.0f, 0.02f, 0.8f);
+                rotation = yarep::math::from_axis_angle(yarep::math::Vec3{0, 1, 0},
+                                                        yarep::math::Angle::from_degrees(180)
+                        );
                 break;
             case Left:
-                shift_vector = glm::vec3(-0.8f, 0.02f, 0.0f);
-                rotation_shift = glm::vec3(0.0f, 90.0f, 0.0f);
+                shift_vector = yarep::math::Vec3(-0.8f, 0.02f, 0.0f);
+                rotation = yarep::math::from_axis_angle(yarep::math::Vec3{0, 1, 0},
+                                                        yarep::math::Angle::from_degrees(90)
+                        );
                 break;
             case Right:
-                shift_vector = glm::vec3(0.8f, 0.02f, 0.0f);
-                rotation_shift = glm::vec3(0.0f, -90.0f, 0.0f);
+                shift_vector = yarep::math::Vec3(0.8f, 0.02f, 0.0f);
+                rotation = yarep::math::from_axis_angle(yarep::math::Vec3{0, 1, 0},
+                                                        yarep::math::Angle::from_degrees(-90)
+                        );
                 break;
         }
     }
@@ -234,9 +241,9 @@ namespace gameplay::maze_generator {
                 std::format("WallTile [{}|{}]-{}", cell_idx.x, cell_idx.y, static_cast<int>(direction))
                 );
 
-        glm::vec3 shift_vector;
-        glm::vec3 rotation_shift;
-        GetShiftAndRotationVectorFromDirection(direction, shift_vector, rotation_shift);
+        yarep::math::Vec3 shift_vector;
+        yarep::math::Quaternion rotation;
+        GetShiftAndRotationVectorFromDirection(direction, shift_vector, rotation);
 
         const auto mesh_component = yarep::components::MeshRenderer{
             .mesh = m_wall_mesh,
@@ -244,9 +251,8 @@ namespace gameplay::maze_generator {
         };
 
         m_game_world->AddComponent(entity, mesh_component);
-        const auto position = glm::vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2) + shift_vector;
-        const auto rotation = glm::vec3(0.0f, 0.0f, 0.0f) + rotation_shift;
-        const auto scale = glm::vec3(0.5f, 0.5f, 0.5f);
+        const auto position = yarep::math::Vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2) + shift_vector;
+        const auto scale = yarep::math::Vec3(0.5f, 0.5f, 0.5f);
         const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation)
@@ -263,12 +269,11 @@ namespace gameplay::maze_generator {
     }
 
     void MazeBuilder::CreateDoorTile(const CellIndex& cell_idx, const Direction& direction) const {
-        glm::vec3 shift_vector;
-        glm::vec3 rotation_shift;
-        GetShiftAndRotationVectorFromDirection(direction, shift_vector, rotation_shift);
-        const auto position = glm::vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2) + shift_vector;
-        const auto rotation = glm::vec3(0.0f, 0.0f, 0.0f) + rotation_shift;
-        const auto scale = glm::vec3(0.5f, 0.5f, 0.5f);
+        yarep::math::Vec3 shift_vector;
+        yarep::math::Quaternion rotation;
+        GetShiftAndRotationVectorFromDirection(direction, shift_vector, rotation);
+        const auto position = yarep::math::Vec3(cell_idx.x * 2, 0.0f, cell_idx.y * 2) + shift_vector;
+        const auto scale = yarep::math::Vec3(0.5f, 0.5f, 0.5f);
 
 
         const auto frame_entity = m_game_world->CreateEntity(
@@ -327,9 +332,11 @@ namespace gameplay::maze_generator {
             .material = m_ceiling_material,
         };
         m_game_world->AddComponent(entity, mesh_component);
-        const auto position = glm::vec3(cell_idx.x * 2, 2.0f, cell_idx.y * 2);
-        constexpr auto rotation = glm::vec3(180.0f, 0.0f, 0.0f);
-        constexpr auto scale = glm::vec3(0.5f, 1.0f, 0.5f);
+        const auto position = yarep::math::Vec3(cell_idx.x * 2, 2.0f, cell_idx.y * 2);
+        const auto rotation = yarep::math::from_axis_angle(yarep::math::Vec3{1, 0, 0},
+                                                           yarep::math::Angle::from_degrees(180.f)
+                );
+        constexpr auto scale = yarep::math::Vec3(0.5f, 1.0f, 0.5f);
         const auto transform_component = yarep::components::TransformComponent()
                 .SetPosition(position)
                 .SetRotation(rotation)

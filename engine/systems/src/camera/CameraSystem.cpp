@@ -1,5 +1,7 @@
 #include "CameraSystem.hpp"
 
+#include <glm/gtx/quaternion.hpp>
+
 namespace yarep::systems {
     CameraSystem::CameraSystem() = default;
 
@@ -37,20 +39,30 @@ namespace yarep::systems {
         }
     }
 
+    //Temp function
+    static glm::quat to_glm_quat(const math::Quaternion& quaternion) {
+        return glm::quat{
+            quaternion.w,
+            quaternion.x,
+            quaternion.y,
+            quaternion.z
+        };
+    }
+
     glm::mat4 CameraSystem::CalculatedViewMat(const components::TransformComponent* transform) {
         const auto cam_rotation = transform->GetRotation();
-        const float pitch_rad = glm::radians(cam_rotation.x);
-        const float yaw_rad = glm::radians(cam_rotation.y);
-        const float roll_rad = glm::radians(cam_rotation.z);
 
-        const glm::mat4 r = glm::yawPitchRoll(yaw_rad, pitch_rad, roll_rad);
+        const glm::mat4 r = glm::toMat4(to_glm_quat(cam_rotation));
 
         constexpr auto local_forward = glm::vec3(0, 0, -1);
         constexpr auto local_up = glm::vec3(0, 1, 0);
         const glm::vec3 forward = normalize(r * glm::vec4(local_forward, 0.0f));
         const glm::vec3 up = normalize(r * glm::vec4(local_up, 0.0f));
 
-        const glm::vec3 eye = transform->GetPosition();
+        const glm::vec3 eye = glm::vec3(transform->GetPosition().x,
+                                        transform->GetPosition().y,
+                                        transform->GetPosition().z
+                );
         const glm::vec3 target = eye + forward;
 
         return lookAt(eye, target, up);

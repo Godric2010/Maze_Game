@@ -20,6 +20,8 @@ namespace yarep::math {
 
     Quaternion from_axis_angle(const Vec3& axis, const Angle& angle);
 
+    Quaternion from_yaw_pitch_roll(const Angle& yaw, const Angle& pitch, const Angle& roll);
+
     Vec3 rotate(const Quaternion& quaternion, const Vec3& vector);
 
     Mat3 to_mat3(const Quaternion& quaternion);

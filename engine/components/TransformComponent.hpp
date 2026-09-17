@@ -4,47 +4,43 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
+#include <Math.hpp>
 #include <spdlog/spdlog.h>
-
 
 namespace yarep::components {
     struct TransformComponent {
     private:
-        glm::vec3 m_position{};
-        glm::vec3 m_rotation{};
-        glm::vec3 m_scale{};
+        math::Transform m_transform;
         uint64_t m_version = 0;
 
     public:
         TransformComponent() {
-            m_position = glm::vec3(0.0f);
-            m_rotation = glm::vec3(0.0f);
-            m_scale = glm::vec3(1.0f);
+            m_transform = math::Transform();
             m_version = 0;
         }
 
-        TransformComponent &SetPosition(const glm::vec3& position) {
-            m_position = position;
+        TransformComponent &SetPosition(const math::Vec3& position) {
+            m_transform.position = position;
             m_version++;
             return *this;
         }
 
-        TransformComponent &SetRotation(const glm::vec3& rotation) {
-            m_rotation = rotation;
+        TransformComponent &SetRotation(const math::Quaternion& rotation) {
+            m_transform.rotation = rotation;
             m_version++;
             return *this;
         }
 
-        TransformComponent &SetScale(const glm::vec3& scale) {
-            m_scale = scale;
+        TransformComponent &SetScale(const math::Vec3& scale) {
+            m_transform.scale = scale;
             m_version++;
             return *this;
         }
 
-        [[nodiscard]] glm::vec3 GetPosition() const { return this->m_position; }
-        [[nodiscard]] glm::vec3 GetRotation() const { return this->m_rotation; }
-        [[nodiscard]] glm::vec3 GetScale() const { return this->m_scale; }
+        [[nodiscard]] math::Vec3 GetPosition() const { return this->m_transform.position; }
+        [[nodiscard]] math::Quaternion GetRotation() const { return this->m_transform.rotation; }
+        [[nodiscard]] math::Vec3 GetScale() const { return this->m_transform.scale; }
+        [[nodiscard]] math::Transform GetTransform() const { return m_transform; }
         [[nodiscard]] uint64_t GetVersion() const { return this->m_version; }
     };
 }
