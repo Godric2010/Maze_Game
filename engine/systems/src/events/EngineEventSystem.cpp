@@ -1,8 +1,5 @@
 #include "EngineEventSystem.hpp"
 
-#include <iostream>
-#include <ostream>
-
 namespace yarep::systems {
     void EngineEventSystem::Initialize() {
     }

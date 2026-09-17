@@ -1,15 +1,13 @@
 #pragma once
-#include <glm/vec3.hpp>
-
 #include "IEngineSystem.hpp"
 
 ECS_SYSTEM(EngineEventSystem, EngineEvents, TAGS(ENGINE), DEPENDENCIES())
 
 namespace yarep::systems {
     struct TransformCommand {
-        glm::vec3 translation;
-        glm::vec3 rotation;
-        glm::vec3 scale;
+        math::Vec3 translation;
+        math::Vec3 rotation;
+        math::Vec3 scale;
     };
 
     class EngineEventSystem final : public ecs::IEngineSystem {
