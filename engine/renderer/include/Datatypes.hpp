@@ -4,8 +4,6 @@
 
 #pragma once
 #include <vector>
-#include <glm/fwd.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include "AssetTypes.hpp"
 #include "Assets/AssetHandleTypes.hpp"
@@ -13,9 +11,9 @@
 
 namespace yarep::renderer {
     struct CameraAsset {
-        glm::mat4 view;
-        glm::mat4 projection;
-        glm::vec4 camera_position;
+        math::Mat4 view;
+        math::Mat4 projection;
+        math::Vec4 camera_position;
     };
 
     struct AmbientLightAsset {

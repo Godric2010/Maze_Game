@@ -1,7 +1,4 @@
 #pragma once
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/euler_angles.hpp>
-
 #include <Camera.hpp>
 #include <TransformComponent.hpp>
 #include "IEngineSystem.hpp"
@@ -20,8 +17,8 @@ namespace yarep::systems {
         void Run(float delta_time) override;
 
     private:
-        static glm::mat4 CalculatedViewMat(
+        static math::Mat4 CalculatedViewMat(
                 const components::TransformComponent* transform);
-        static glm::mat4 CalculateProjectionMat(const components::Camera *camera_component);
+        static math::Mat4 CalculateProjectionMat(const components::Camera* camera_component);
     };
 } // namespace

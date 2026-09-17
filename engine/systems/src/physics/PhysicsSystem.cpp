@@ -63,8 +63,7 @@ namespace yarep::systems::physics {
             if (transform == nullptr) {
                 throw std::runtime_error("A moveable object without a transform component is impossible to handle!");
             }
-            auto velocity_glm = rigidbody->GetVelocity();
-            auto velocity = math::Vec3{velocity_glm.x, velocity_glm.y, velocity_glm.z};
+            auto velocity = rigidbody->GetVelocity();
             if (math::length_squared(velocity) < m_epsilon) {
                 continue;
             }

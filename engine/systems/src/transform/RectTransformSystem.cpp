@@ -1,5 +1,4 @@
 #include "RectTransformSystem.hpp"
-#include <glm/ext/matrix_transform.hpp>
 
 namespace yarep::systems {
     void RectTransformSystem::Initialize() {

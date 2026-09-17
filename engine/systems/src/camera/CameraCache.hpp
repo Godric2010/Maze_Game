@@ -1,14 +1,15 @@
 #pragma once
+#include <cstdint>
 #include <unordered_map>
-#include <glm/fwd.hpp>
-#include <glm/ext/matrix_transform.hpp>
+
+#include "Mat4.hpp"
 
 namespace yarep::systems::camera {
     class CameraCache {
     public:
         struct Element {
-            glm::mat4 projection;
-            glm::mat4 view;
+            math::Mat4 projection;
+            math::Mat4 view;
             uint64_t version;
         };
 
@@ -20,7 +21,7 @@ namespace yarep::systems::camera {
 
         void DeregisterEntity(uint64_t entity);
 
-        void SetCacheValue(uint64_t entity, const glm::mat4& view, const glm::mat4& projection, uint64_t version);
+        void SetCacheValue(uint64_t entity, const math::Mat4& view, const math::Mat4& projection, uint64_t version);
 
         const Element &GetCacheValue(uint64_t entity);
 

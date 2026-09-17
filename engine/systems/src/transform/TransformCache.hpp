@@ -1,8 +1,5 @@
 #pragma once
 #include <unordered_map>
-#include <glm/fwd.hpp>
-#include <glm/vec3.hpp>
-
 #include "Math.hpp"
 #include "TransformComponent.hpp"
 

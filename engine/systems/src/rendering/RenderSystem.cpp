@@ -80,14 +80,11 @@ namespace yarep::systems {
                                                           const components::TransformComponent* camera_transform)
     const {
         const auto camera_cache_val = Cache()->GetCameraCache()->GetCacheValue(camera_entity);
-        const auto cam_pos = glm::vec3(camera_transform->GetPosition().x,
-                                       camera_transform->GetPosition().y,
-                                       camera_transform->GetPosition().z
-                );
+        const auto cam_pos = camera_transform->GetPosition();
         const renderer::CameraAsset camera_asset{
             .view = camera_cache_val.view,
             .projection = camera_cache_val.projection,
-            .camera_position = glm::vec4(cam_pos, 1.0f)
+            .camera_position = math::Vec4(cam_pos.x, cam_pos.y, cam_pos.z, 1.0f)
         };
         return camera_asset;
     }

@@ -22,7 +22,7 @@ namespace yarep::systems::camera {
         throw std::runtime_error("Camera Cache unregister: Entity does not exists");
     }
 
-    void CameraCache::SetCacheValue(const uint64_t entity, const glm::mat4& view, const glm::mat4& projection,
+    void CameraCache::SetCacheValue(const uint64_t entity, const math::Mat4& view, const math::Mat4& projection,
                                     const uint64_t version) {
         if (!m_cache.contains(entity)) {
             throw std::runtime_error("Camera Cache set value: Entity does not exists");

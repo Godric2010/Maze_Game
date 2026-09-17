@@ -1,7 +1,5 @@
 #include "CameraSystem.hpp"
 
-#include <glm/gtx/quaternion.hpp>
-
 namespace yarep::systems {
     CameraSystem::CameraSystem() = default;
 
@@ -39,40 +37,26 @@ namespace yarep::systems {
         }
     }
 
-    //Temp function
-    static glm::quat to_glm_quat(const math::Quaternion& quaternion) {
-        return glm::quat{
-            quaternion.w,
-            quaternion.x,
-            quaternion.y,
-            quaternion.z
-        };
-    }
-
-    glm::mat4 CameraSystem::CalculatedViewMat(const components::TransformComponent* transform) {
+    math::Mat4 CameraSystem::CalculatedViewMat(const components::TransformComponent* transform) {
         const auto cam_rotation = transform->GetRotation();
 
-        const glm::mat4 r = glm::toMat4(to_glm_quat(cam_rotation));
+        constexpr auto local_forward = math::Vec3(0, 0, -1);
+        constexpr auto local_up = math::Vec3(0, 1, 0);
+        const auto forward = math::normalize(math::rotate(cam_rotation, local_forward));
+        const auto up = math::normalize(math::rotate(cam_rotation, local_up));
 
-        constexpr auto local_forward = glm::vec3(0, 0, -1);
-        constexpr auto local_up = glm::vec3(0, 1, 0);
-        const glm::vec3 forward = normalize(r * glm::vec4(local_forward, 0.0f));
-        const glm::vec3 up = normalize(r * glm::vec4(local_up, 0.0f));
+        const math::Vec3 eye = transform->GetPosition();
+        const math::Vec3 target = eye + forward;
 
-        const glm::vec3 eye = glm::vec3(transform->GetPosition().x,
-                                        transform->GetPosition().y,
-                                        transform->GetPosition().z
-                );
-        const glm::vec3 target = eye + forward;
-
-        return lookAt(eye, target, up);
+        return math::look_at(eye, target, up);
     }
 
-    glm::mat4 CameraSystem::CalculateProjectionMat(const components::Camera* camera_component) {
-        return glm::perspective(glm::radians(camera_component->GetFieldOfView()),
-                                camera_component->GetAspectRatio(),
-                                camera_component->GetNearClip(),
-                                camera_component->GetFarClip()
+    math::Mat4 CameraSystem::CalculateProjectionMat(const components::Camera* camera_component) {
+        const auto fov_y = math::Angle::from_degrees(camera_component->GetFieldOfView());
+        return math::perspective(fov_y,
+                                 camera_component->GetAspectRatio(),
+                                 camera_component->GetNearClip(),
+                                 camera_component->GetFarClip()
                 );
     }
 } // namespace
