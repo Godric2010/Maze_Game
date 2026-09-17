@@ -7,7 +7,6 @@
 #include <string>
 #include <optional>
 #include <toml++/toml.hpp>
-#include <glm/glm.hpp>
 #include <Math.hpp>
 
 
@@ -34,8 +33,8 @@ namespace yarep::utilities::toml_utils
             math::Vec2 GetRequiredVec2(const std::string& field_name) const;
             std::optional<math::Vec2> GetOptionalVec2(const std::string& field_name) const;
 
-            glm::vec3 GetRequiredVec3(const std::string& field_name) const;
-            std::optional<glm::vec3> GetOptionalVec3(const std::string& field_name) const;
+            math::Vec3 GetRequiredVec3(const std::string& field_name) const;
+            std::optional<math::Vec3> GetOptionalVec3(const std::string& field_name) const;
 
             math::Vec4 GetRequiredVec4(const std::string& field_name) const;
             std::optional<math::Vec4> GetOptionalVec4(const std::string& field_name) const;

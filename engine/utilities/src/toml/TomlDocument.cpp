@@ -118,14 +118,14 @@ namespace yarep::utilities::toml_utils {
         return math::Vec2(x.value(), y.value());
     }
 
-    glm::vec3 TomlTable::GetRequiredVec3(const std::string& field_name) const {
+    math::Vec3 TomlTable::GetRequiredVec3(const std::string& field_name) const {
         if (const auto value = GetOptionalVec3(field_name); value.has_value()) {
             return value.value();
         }
         throw std::runtime_error("Required field in toml table is missing: " + field_name);
     }
 
-    std::optional<glm::vec3> TomlTable::GetOptionalVec3(const std::string& field_name) const {
+    std::optional<math::Vec3> TomlTable::GetOptionalVec3(const std::string& field_name) const {
         const auto array = m_node[field_name].as_array();
         if (!array) {
             return std::nullopt;
@@ -151,7 +151,7 @@ namespace yarep::utilities::toml_utils {
             throw std::runtime_error("Field contains non-float element for vec3: " + field_name);
         }
 
-        return glm::vec3(x.value(), y.value(), z.value());
+        return math::Vec3(x.value(), y.value(), z.value());
     }
 
     math::Vec4 TomlTable::GetRequiredVec4(const std::string& field_name) const {

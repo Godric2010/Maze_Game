@@ -8,9 +8,6 @@
 #include <array>
 #include <string>
 #include <string_view>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
 #include "../include/toml/TomlDocument.hpp"
 
 namespace yarep::utilities::toml_utils::tests
