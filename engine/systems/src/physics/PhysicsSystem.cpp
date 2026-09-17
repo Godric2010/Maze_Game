@@ -1,8 +1,5 @@
 #include "PhysicsSystem.hpp"
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/euler_angles.hpp>
-#include <glm/gtx/norm.hpp>
 #include <memory>
 // #include <spdlog/spdlog.h>
 
@@ -11,10 +8,10 @@
 #include "Rigidbody.hpp"
 #include "TransformComponent.hpp"
 #include "collision/BroadphaseBuilder.hpp"
-#include "collision/IBroadphase.hpp"
 #include "collision/CollisionUtils.hpp"
+#include "collision/IBroadphase.hpp"
 #include "collision/MoverSolver.hpp"
-#include "../../../physics/include/collision/TypeUtils.hpp"
+#include "collision/TypeUtils.hpp"
 
 namespace yarep::systems::physics {
     using namespace yarep::physics;
@@ -95,7 +92,7 @@ namespace yarep::systems::physics {
             DetectTriggerInteractions(final_position, radius, entity, trigger_candidates);
 
             if (rigidbody->IsVelocityFixed()) {
-                constexpr auto zero_velocity = glm::vec3(0);
+                constexpr auto zero_velocity = math::Vec3{};
                 rigidbody->SetVelocity(zero_velocity);
             }
             transform->SetPosition(glm::vec3{final_position.x, final_position.y, final_position.z});

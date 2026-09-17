@@ -175,7 +175,7 @@ namespace gameplay
 
         const auto camera_rigidbody = yarep::components::Rigidbody()
                                       .SetVelocityFixed(false)
-                                      .SetVelocity(glm::vec3(0));
+                                      .SetVelocity(yarep::math::Vec3{});
         World().AddComponent(player, camera_rigidbody);
 
         constexpr auto camera_collider = yarep::components::SphereCollider{
