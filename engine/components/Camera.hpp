@@ -3,7 +3,6 @@
 //
 
 #pragma once
-#include <glm/glm.hpp>
 
 namespace yarep::components {
     struct Camera {

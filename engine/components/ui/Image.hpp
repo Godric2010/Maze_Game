@@ -3,7 +3,6 @@
 //
 
 #pragma once
-#include <glm/vec4.hpp>
 
 // ReSharper disable once CppInconsistentNaming
 namespace yarep::components::ui {

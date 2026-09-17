@@ -3,8 +3,7 @@
 //
 
 #pragma once
-#include <glm/glm.hpp>
-#include "../renderer/include/Datatypes.hpp"
+#include "Assets/AssetHandleTypes.hpp"
 
 namespace yarep::components
 {

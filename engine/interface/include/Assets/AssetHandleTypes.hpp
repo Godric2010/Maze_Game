@@ -3,52 +3,43 @@
 //
 
 #pragma once
+#include <cstddef>
+#include <memory>
 
-namespace yarep::assets
-{
-    template <typename Tag>
-    struct AssetId
-    {
+namespace yarep::assets {
+    template<typename Tag>
+    struct AssetId {
         std::size_t value{0};
 
-        explicit constexpr operator bool() const noexcept
-        {
+        explicit constexpr operator bool() const noexcept {
             return value != 0;
         }
 
-        friend bool operator==(const AssetId& a, const AssetId& b) noexcept
-        {
+        friend bool operator==(const AssetId& a, const AssetId& b) noexcept {
             return a.value == b.value;
         }
 
-        friend bool operator!=(const AssetId& a, const AssetId& b) noexcept
-        {
+        friend bool operator!=(const AssetId& a, const AssetId& b) noexcept {
             return a.value != b.value;
         }
     };
 
-    struct ShaderTag
-    {
+    struct ShaderTag {
     };
 
-    struct TextureTag
-    {
+    struct TextureTag {
     };
 
-    struct MeshTag
-    {
+    struct MeshTag {
     };
 
-    struct FontTag
-    {
+    struct FontTag {
     };
 
-    struct MaterialTag
-    {
+    struct MaterialTag {
     };
 
-    struct InputMapTag
-    {
+    struct InputMapTag {
     };
 
     using ShaderHandle = AssetId<ShaderTag>;
@@ -59,13 +50,10 @@ namespace yarep::assets
     using InputMapHandle = AssetId<InputMapTag>;
 }
 
-namespace std
-{
-    template <typename Tag>
-    struct hash<yarep::assets::AssetId<Tag>>
-    {
-        size_t operator()(const yarep::assets::AssetId<Tag>& asset_id) const noexcept
-        {
+namespace std {
+    template<typename Tag>
+    struct hash<yarep::assets::AssetId<Tag> > {
+        size_t operator()(const yarep::assets::AssetId<Tag>& asset_id) const noexcept {
             return std::hash<size_t>{}(asset_id.value);
         }
     };
