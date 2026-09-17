@@ -23,11 +23,22 @@ namespace yarep::math {
             return {x * scalar, y * scalar};
         }
 
+        constexpr Vec2 operator*(const Vec2& vec) const {
+            return {x * vec.x, y * vec.y};
+        }
+
         constexpr Vec2 operator/(const float scalar) const {
             if (scalar == 0) {
                 throw std::runtime_error("Cannot divide by zero");
             }
             return {x / scalar, y / scalar};
+        }
+
+        Vec2 operator/(const Vec2& vec) const {
+            if (vec.x == 0 || vec.y == 0) {
+                throw std::runtime_error("Cannot divide by zero");
+            }
+            return {x / vec.x, y / vec.y};
         }
 
         constexpr Vec2 &operator+=(const Vec2& rhs) {

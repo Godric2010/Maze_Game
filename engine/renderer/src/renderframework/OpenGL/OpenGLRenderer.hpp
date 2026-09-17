@@ -44,7 +44,7 @@ namespace yarep::renderer::render_framework::open_gl {
             ShaderBindings shader_fields;
             assets::MeshHandle mesh;
             GLsizei mesh_indices_count;
-            glm::mat4 projection_matrix;
+            math::Mat4 projection_matrix;
         };
 
         GLuint m_camera_ubo;
@@ -79,6 +79,6 @@ namespace yarep::renderer::render_framework::open_gl {
 
         void BindShaders(const assets::ShaderHandle& shader);
 
-        void DrawElement(const glm::mat4& model_matrix);
+        void DrawElement(const math::Mat4& model_matrix);
     };
 } // namespace

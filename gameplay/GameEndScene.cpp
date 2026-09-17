@@ -63,9 +63,9 @@ namespace gameplay {
     void GameEndScene::CreateVictoryUiElements() const {
         const auto bg_entity = World().CreateEntity("MenuBackground");
         const auto screen = Screen();
-        const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
-        const auto bg_size = glm::vec2(screen.width, screen.height);
-        constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
+        const auto bg_position = yarep::math::Vec2(screen.width / 2.0f, screen.height / 2.0f);
+        const auto bg_size = yarep::math::Vec2(screen.width, screen.height);
+        constexpr auto bg_pivot = yarep::math::Vec2(0.5f, 0.5f);
         const auto bg_rect_transform = yarep::components::ui::RectTransform()
                 .SetPosition(bg_position)
                 .SetSize(bg_size)
@@ -76,8 +76,8 @@ namespace gameplay {
 
         const auto heading_entity = World().CreateEntity("Heading");
         const auto heading_transform = yarep::components::ui::RectTransform()
-                .SetPosition(glm::vec2(0.0f, 300))
-                .SetPivot(glm::vec2(0.5f, 0.0f))
+                .SetPosition(yarep::math::Vec2(0.0f, 300))
+                .SetPivot(yarep::math::Vec2(0.5f, 0.0f))
                 .SetAnchor(yarep::components::ui::Anchor::TopCenter)
                 .SetParent(bg_entity);
         const auto heading_text = yarep::components::ui::Text()
@@ -90,8 +90,8 @@ namespace gameplay {
 
         const auto sub_heading_entity = World().CreateEntity("SubHeading");
         const auto sub_heading_transform = yarep::components::ui::RectTransform()
-                .SetPosition(glm::vec2(0.0f, 420.0f))
-                .SetPivot(glm::vec2(0.5f, 0.0f))
+                .SetPosition(yarep::math::Vec2(0.0f, 420.0f))
+                .SetPivot(yarep::math::Vec2(0.5f, 0.0f))
                 .SetAnchor(yarep::components::ui::Anchor::TopCenter)
                 .SetParent(bg_entity);
         const auto sub_heading_text = yarep::components::ui::Text()
@@ -108,8 +108,8 @@ namespace gameplay {
                                             + std::to_string(static_cast<int>(seconds));
         const auto time_display_entity = World().CreateEntity("TimeDisplay");
         const auto time_display_transform = yarep::components::ui::RectTransform()
-                .SetPosition(glm::vec2(0.0f, 550.0f))
-                .SetPivot(glm::vec2(0.5f, 0.0f))
+                .SetPosition(yarep::math::Vec2(0.0f, 550.0f))
+                .SetPivot(yarep::math::Vec2(0.5f, 0.0f))
                 .SetAnchor(yarep::components::ui::Anchor::TopCenter)
                 .SetParent(bg_entity);
         const auto time_display_text = yarep::components::ui::Text()
@@ -119,10 +119,10 @@ namespace gameplay {
         World().AddComponent(time_display_entity, time_display_text);
         World().AddComponent(time_display_entity, time_display_transform);
 
-        constexpr auto button_size = glm::vec2(200, 70);
+        constexpr auto button_size = yarep::math::Vec2(200, 70);
         const auto main_menu_button = World().CreateEntity("MainMenuButton");
-        constexpr auto pos = glm::vec2(0, 900);
-        constexpr auto pivot = glm::vec2(0.5f, 0.5f);
+        constexpr auto pos = yarep::math::Vec2(0, 900);
+        constexpr auto pivot = yarep::math::Vec2(0.5f, 0.5f);
         auto main_menu_button_rect = yarep::components::ui::RectTransform()
                 .SetPosition(pos)
                 .SetSize(button_size)
@@ -142,8 +142,8 @@ namespace gameplay {
 
         const auto menu_button_text_entity = World().CreateEntity("MenuButton");
         const auto menu_button_text_transform = yarep::components::ui::RectTransform()
-                .SetPosition(glm::vec2(0, 10))
-                .SetPivot(glm::vec2(0.5f, 0.0f))
+                .SetPosition(yarep::math::Vec2(0, 10))
+                .SetPivot(yarep::math::Vec2(0.5f, 0.0f))
                 .SetAnchor(yarep::components::ui::Anchor::Center)
                 .SetParent(main_menu_button);
         const auto menu_button_text = yarep::components::ui::Text()

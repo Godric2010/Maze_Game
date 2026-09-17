@@ -134,7 +134,7 @@ namespace yarep::systems {
         m_ui_cache->SetTextElementValue(entity, text_element);
 
         const auto rect_transform = EcsWorld()->GetComponent<components::ui::RectTransform>(entity);
-        rect_transform->SetSize(glm::vec2(text_mesh.dimensions_width, text_mesh.dimensions_height));
+        rect_transform->SetSize(math::Vec2(text_mesh.dimensions_width, text_mesh.dimensions_height));
     }
 
     void UiTextSystem::RegisterTextureHandleFromFont(text::FontHandle font_handle) {

@@ -119,13 +119,24 @@ namespace yarep::systems {
         return frame_data;
     }
 
+    // Temp function! Remove as soon as possible
+    static math::Mat4 from_glm_mat4(const glm::mat4& mat) {
+        return math::Mat4{
+            {mat[0][0], mat[0][1], mat[0][2], mat[0][3]},
+            {mat[1][0], mat[1][1], mat[1][2], mat[1][3]},
+            {mat[2][0], mat[2][1], mat[2][2], mat[2][3]},
+            {mat[3][0], mat[3][1], mat[3][2], mat[3][3]}
+        };
+    }
+
     void RenderSystem::FillMeshDrawAssets() {
         for (auto [entity, mesh_draw_asset]: m_draw_asset_map) {
             if (!m_asset_handler->GetAsset<asset_handling::MeshAsset>(mesh_draw_asset.mesh)->IsValid()) {
                 continue;
             }
 
-            mesh_draw_asset.model = Cache()->GetTransformCache()->GetTransformValue(entity).transform_matrix;
+            const auto transform_mat_glm = Cache()->GetTransformCache()->GetTransformValue(entity).transform_matrix;
+            mesh_draw_asset.model = from_glm_mat4(transform_mat_glm);
             m_draw_assets.push_back(mesh_draw_asset);
         }
     }

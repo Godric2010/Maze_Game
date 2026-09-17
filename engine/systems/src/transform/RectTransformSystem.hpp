@@ -7,10 +7,10 @@ namespace yarep::systems {
     ECS_SYSTEM(RectTransformSystem, LateUpdate, TAGS(ENGINE), DEPENDENCIES())
 
     struct LayoutData {
-        glm::vec2 local_position;
-        glm::vec2 local_size;
-        glm::vec2 pivot;
-        glm::vec2 anchor_point;
+        math::Vec2 local_position;
+        math::Vec2 local_size;
+        math::Vec2 pivot;
+        math::Vec2 anchor_point;
         uint8_t parent_layer;
     };
 
@@ -25,7 +25,7 @@ namespace yarep::systems {
         void Run(float delta_time) override;
 
     private:
-        static glm::vec2 GetAnchorValue(const components::ui::Anchor& anchor);
+        static math::Vec2 GetAnchorValue(const components::ui::Anchor& anchor);
 
         LayoutData CreateLayoutData(const components::ui::RectTransform* rect_transform);
 
@@ -33,7 +33,7 @@ namespace yarep::systems {
 
         transform::RectTransformCacheValue GetParentLayoutResult(const ecs::EntityId& parent_entity);
 
-        glm::vec2 m_world_origin = glm::vec2(0.0f);
-        glm::vec2 m_world_scale = glm::vec2(1920, 1080);
+        math::Vec2 m_world_origin = math::Vec2{};
+        math::Vec2 m_world_scale = math::Vec2(1920, 1080);
     };
 } // namespace

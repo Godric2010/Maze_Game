@@ -2,6 +2,8 @@
 #include <unordered_map>
 #include <glm/fwd.hpp>
 #include <glm/vec3.hpp>
+
+#include "Math.hpp"
 #include "TransformComponent.hpp"
 
 
@@ -16,9 +18,9 @@ namespace yarep::systems::transform {
 
     struct RectTransformCacheValue {
         uint64_t last_version;
-        glm::vec2 global_position;
-        glm::vec2 global_size;
-        glm::mat4 global_matrix;
+        math::Vec2 global_position;
+        math::Vec2 global_size;
+        math::Mat4 global_matrix;
         uint8_t layer;
     };
 

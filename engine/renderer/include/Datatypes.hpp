@@ -44,7 +44,7 @@ namespace yarep::renderer {
         size_t render_queue_index;
         assets::MeshHandle mesh;
         assets::MaterialHandle material;
-        glm::mat4 model;
+        math::Mat4 model;
         math::Vec4 color;
     };
 }

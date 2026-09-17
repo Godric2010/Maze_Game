@@ -34,7 +34,7 @@ namespace yarep::systems {
         }
     }
 
-    glm::vec2 RectTransformSystem::GetAnchorValue(const components::ui::Anchor& anchor) {
+    math::Vec2 RectTransformSystem::GetAnchorValue(const components::ui::Anchor& anchor) {
         switch (anchor) {
             case components::ui::Anchor::TopLeft:
                 return {0.0f, 0.0f};
@@ -81,17 +81,20 @@ namespace yarep::systems {
     transform::RectTransformCacheValue RectTransformSystem::CreateUiLayoutResult(const LayoutData& rect_layout) {
         transform::RectTransformCacheValue result{};
 
-        const glm::vec2 global_position = rect_layout.anchor_point + rect_layout.local_position - rect_layout.local_size
-                                          * rect_layout.pivot;
+        const math::Vec2 global_position = rect_layout.anchor_point + rect_layout.local_position - rect_layout.
+                                           local_size
+                                           * rect_layout.pivot;
 
         result.global_position = global_position;
         result.global_size = rect_layout.local_size;
         result.layer = rect_layout.parent_layer + 1;
 
-        auto matrix = glm::mat4(1.0f);
-        matrix = translate(matrix, glm::vec3(result.global_position.x, result.global_position.y, 0.0f));
-        matrix = scale(matrix, glm::vec3(result.global_size.x, result.global_size.y, 1.0f));
-        result.global_matrix = matrix;
+        const auto transform = math::Transform{
+            math::Vec3{result.global_position.x, result.global_position.y, 0.0f},
+            math::Quaternion{},
+            math::Vec3{result.global_size.x, result.global_size.y, 1.0f},
+        };
+        result.global_matrix = to_matrix(transform);
 
         return result;
     }

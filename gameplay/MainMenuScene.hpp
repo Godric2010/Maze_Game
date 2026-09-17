@@ -46,10 +46,10 @@ namespace gameplay {
         yarep::ecs::EntityId CreateMenuBackground() const;
 
         yarep::ecs::EntityId CreateMenuText(const std::string& content, const std::string& font_name, int font_size,
-                                            glm::vec2 pos,
-                                            glm::vec2 size, yarep::ecs::EntityId parent_entity);
+                                            yarep::math::Vec2 pos,
+                                            yarep::math::Vec2 size, yarep::ecs::EntityId parent_entity);
 
-        yarep::ecs::EntityId CreateMenuButton(const std::string& name, uint32_t button_id, glm::vec2 pos,
+        yarep::ecs::EntityId CreateMenuButton(const std::string& name, uint32_t button_id, yarep::math::Vec2 pos,
                                               const std::string& content, yarep::ecs::EntityId parent_entity);
 
         void CreateMainMenuUiElements();

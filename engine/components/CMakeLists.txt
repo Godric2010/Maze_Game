@@ -13,7 +13,7 @@ add_library(Components INTERFACE
         Lights.hpp
 )
 
-target_link_libraries(Components INTERFACE ECS)
+target_link_libraries(Components INTERFACE Math ECS)
 
 target_include_directories(Components
         INTERFACE

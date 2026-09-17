@@ -99,9 +99,9 @@ namespace gameplay
     {
         const auto bg_entity = World().CreateEntity("MenuBackground");
         const auto screen = Screen();
-        const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
-        const auto bg_size = glm::vec2(screen.width, screen.height);
-        constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
+        const auto bg_position = yarep::math::Vec2(screen.width / 2.0f, screen.height / 2.0f);
+        const auto bg_size = yarep::math::Vec2(screen.width, screen.height);
+        constexpr auto bg_pivot = yarep::math::Vec2(0.5f, 0.5f);
         const auto bg_rect_transform = yarep::components::ui::RectTransform()
                                        .SetPosition(bg_position)
                                        .SetSize(bg_size)
@@ -114,7 +114,7 @@ namespace gameplay
 
     yarep::ecs::EntityId MainMenuScene::CreateMenuText(const std::string& content, const std::string& font_name,
                                                         const int font_size,
-                                                        const glm::vec2 pos, const glm::vec2 size,
+                                                        const yarep::math::Vec2 pos, const yarep::math::Vec2 size,
                                                         const yarep::ecs::EntityId parent_entity)
     {
         const auto text_entity = World().CreateEntity("MenuText_" + content);
@@ -122,7 +122,7 @@ namespace gameplay
                                     .SetPosition(pos)
                                     .SetSize(size)
                                     .SetAnchor(yarep::components::ui::Anchor::Center)
-                                    .SetPivot(glm::vec2{0.5f, 0.0f})
+                                    .SetPivot(yarep::math::Vec2{0.5f, 0.0f})
                                     .SetParent(parent_entity);
         const auto text = yarep::components::ui::Text()
                           .SetText(content)
@@ -134,13 +134,13 @@ namespace gameplay
         return text_entity;
     }
 
-    yarep::ecs::EntityId MainMenuScene::CreateMenuButton(const std::string& name, uint32_t button_id, glm::vec2 pos,
+    yarep::ecs::EntityId MainMenuScene::CreateMenuButton(const std::string& name, uint32_t button_id, yarep::math::Vec2 pos,
                                                           const std::string& content,
                                                           yarep::ecs::EntityId parent_entity)
     {
-        constexpr auto button_size = glm::vec2(200, 70);
+        constexpr auto button_size = yarep::math::Vec2(200, 70);
         const auto button_entity = World().CreateEntity(name);
-        constexpr auto pivot = glm::vec2(0.5f, 0.5f);
+        constexpr auto pivot = yarep::math::Vec2(0.5f, 0.5f);
         auto resume_rect = yarep::components::ui::RectTransform()
                            .SetPosition(pos)
                            .SetSize(button_size)
@@ -159,7 +159,7 @@ namespace gameplay
         World().AddComponent(button_entity, button);
         m_active_state_entities.push_back(button_entity);
 
-        CreateMenuText(content, "SpaceFont.ttf", 32, glm::vec2(0, 10), glm::vec2(1, 1), button_entity);
+        CreateMenuText(content, "SpaceFont.ttf", 32, yarep::math::Vec2(0, 10), yarep::math::Vec2(1, 1), button_entity);
         return button_entity;
     }
 
@@ -168,15 +168,15 @@ namespace gameplay
         CreateMenuText("Space Maze",
                        "SpaceFont.ttf",
                        128,
-                       glm::vec2(0.0f, -300),
-                       glm::vec2(1, 1),
+                       yarep::math::Vec2(0.0f, -300),
+                       yarep::math::Vec2(1, 1),
                        m_background_entity
                       );
 
-        auto position = glm::vec2(0.0f, -100.0f);
+        auto position = yarep::math::Vec2(0.0f, -100.0f);
         CreateMenuButton("StartGameButton", m_start_game_button, position, "Start", m_background_entity);
 
-        position = glm::vec2(0.0f, 100.0f);
+        position = yarep::math::Vec2(0.0f, 100.0f);
         CreateMenuButton("QuitGameButton", m_quit_button, position, "Quit", m_background_entity);
     }
 
@@ -196,24 +196,24 @@ namespace gameplay
     {
         CreateMenuButton("EasyDifficultyButton",
                          m_easy_difficulty_button,
-                         glm::vec2(-300, 0.0f),
+                         yarep::math::Vec2(-300, 0.0f),
                          "Easy",
                          m_background_entity
                         );
         CreateMenuButton("MediumDifficultyButton",
                          m_medium_difficulty_button,
-                         glm::vec2(0.0f, 0.0f),
+                         yarep::math::Vec2(0.0f, 0.0f),
                          "Medium",
                          m_background_entity
                         );
         CreateMenuButton("HardDifficultyButton",
                          m_hard_difficulty_button,
-                         glm::vec2(300, 0.0f),
+                         yarep::math::Vec2(300, 0.0f),
                          "Hard",
                          m_background_entity
                         );
-        CreateMenuButton("BackButton", m_back_button, glm::vec2(-300, 300), "<-", m_background_entity);
-        CreateMenuButton("DevSceneButton", m_dev_scene_button, glm::vec2(300, 300), "Dev", m_background_entity);
+        CreateMenuButton("BackButton", m_back_button, yarep::math::Vec2(-300, 300), "<-", m_background_entity);
+        CreateMenuButton("DevSceneButton", m_dev_scene_button, yarep::math::Vec2(300, 300), "Dev", m_background_entity);
     }
 
     void MainMenuScene::EvaluateDifficultyUiElementCommands(const uint32_t button_id)

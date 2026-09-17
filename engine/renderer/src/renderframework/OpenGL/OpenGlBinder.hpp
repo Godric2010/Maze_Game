@@ -56,9 +56,9 @@ namespace yarep::renderer::render_framework::open_gl {
 
         GLsizei BindMesh(OpenGlMesh mesh);
 
-        void BindModelMatrix(const ShaderBindings& shader_bindings, glm::mat4 proj_matrix);
+        void BindModelMatrix(const ShaderBindings& shader_bindings, math::Mat4 model_matrix);
 
-        void BindNormalMatrix(const ShaderBindings& shader_bindings, glm::mat3 normal_matrix);
+        void BindNormalMatrix(const ShaderBindings& shader_bindings, math::Mat3 normal_matrix);
 
     private:
         std::tuple<GLuint, ShaderBindings> m_bound_shader{};

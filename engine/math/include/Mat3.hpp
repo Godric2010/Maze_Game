@@ -30,6 +30,10 @@ namespace yarep::math {
             };
         }
 
+        constexpr float* data() {
+            return values.data();
+        }
+
         constexpr float &operator()(std::size_t row, std::size_t column) {
             return values[column * 3 + row];
         }

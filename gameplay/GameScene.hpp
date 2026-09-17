@@ -52,7 +52,7 @@ namespace gameplay {
 
         void CreatePauseUiOverlay() ;
 
-        void CreateUiButton(const glm::vec2& position, const glm::vec2& size, const std::string& content, int button_id,
+        void CreateUiButton(const yarep::math::Vec2& position, const yarep::math::Vec2& size, const std::string& content, int button_id,
                             const yarep::ecs::EntityId& parent_entity);
     };
 } // namespace

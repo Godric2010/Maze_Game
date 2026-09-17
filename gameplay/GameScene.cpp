@@ -193,8 +193,8 @@ namespace gameplay
         const auto key_indicator = World().CreateEntity("KeyIndicator");
 
         const auto screen = Screen();
-        constexpr glm::vec2 size = {100, 100};
-        const glm::vec2 position = {screen.width - size.x - 50, screen.height - size.y - 50};
+        constexpr yarep::math::Vec2 size = {100, 100};
+        const yarep::math::Vec2 position = {screen.width - size.x - 50, screen.height - size.y - 50};
         const auto transform = yarep::components::ui::RectTransform()
                                .SetPosition(position)
                                .SetSize(size);
@@ -209,9 +209,9 @@ namespace gameplay
         const auto pause_entity = World().CreateEntity("PauseBackground");
 
         const auto screen = Screen();
-        const auto bg_position = glm::vec2(screen.width / 2.0f, screen.height / 2.0f);
-        const auto bg_size = glm::vec2(screen.width * 0.9f, screen.height * 0.9f);
-        constexpr auto bg_pivot = glm::vec2(0.5f, 0.5f);
+        const auto bg_position = yarep::math::Vec2(screen.width / 2.0f, screen.height / 2.0f);
+        const auto bg_size = yarep::math::Vec2(screen.width * 0.9f, screen.height * 0.9f);
+        constexpr auto bg_pivot = yarep::math::Vec2(0.5f, 0.5f);
         const auto bg_rect_transform = yarep::components::ui::RectTransform()
                                        .SetPosition(bg_position)
                                        .SetSize(bg_size)
@@ -224,8 +224,8 @@ namespace gameplay
 
         const auto heading_entity = World().CreateEntity("Pause");
         const auto heading_transform = yarep::components::ui::RectTransform()
-                                       .SetPosition(glm::vec2(0.0f, 300.0f))
-                                       .SetPivot(glm::vec2(0.5f, 0.5f))
+                                       .SetPosition(yarep::math::Vec2(0.0f, 300.0f))
+                                       .SetPivot(yarep::math::Vec2(0.5f, 0.5f))
                                        .SetAnchor(yarep::components::ui::Anchor::TopCenter)
                                        .SetParent(pause_entity);
         const auto heading_text = yarep::components::ui::Text()
@@ -236,17 +236,17 @@ namespace gameplay
         World().AddComponent(heading_entity, heading_text);
         m_pause_entities.push_back(heading_entity);
 
-        constexpr auto button_size = glm::vec2(300, 70);
-        CreateUiButton(glm::vec2(0.0f, 400.0f), button_size, "Resume Game", 1, pause_entity);
-        CreateUiButton(glm::vec2(0.0f, 600.0f), button_size, "Main Menu", 2, pause_entity);
-        CreateUiButton(glm::vec2(0.0f, 800.0f), button_size, "Quit Game", 3, pause_entity);
+        constexpr auto button_size = yarep::math::Vec2(300, 70);
+        CreateUiButton(yarep::math::Vec2(0.0f, 400.0f), button_size, "Resume Game", 1, pause_entity);
+        CreateUiButton(yarep::math::Vec2(0.0f, 600.0f), button_size, "Main Menu", 2, pause_entity);
+        CreateUiButton(yarep::math::Vec2(0.0f, 800.0f), button_size, "Quit Game", 3, pause_entity);
     }
 
-    void GameScene::CreateUiButton(const glm::vec2& position, const glm::vec2& size, const std::string& content,
+    void GameScene::CreateUiButton(const yarep::math::Vec2& position, const yarep::math::Vec2& size, const std::string& content,
                                    int button_id, const yarep::ecs::EntityId& parent_entity)
     {
         const auto button_entity = World().CreateEntity(content + "Button");
-        constexpr auto pivot = glm::vec2(0.5f, 0.5f);
+        constexpr auto pivot = yarep::math::Vec2(0.5f, 0.5f);
         auto button_rect = yarep::components::ui::RectTransform()
                            .SetPosition(position)
                            .SetSize(size)
@@ -267,8 +267,8 @@ namespace gameplay
 
         const auto button_text_entity = World().CreateEntity(content + "ButtonText");
         auto button_text_rect = yarep::components::ui::RectTransform()
-                                .SetPosition(glm::vec2(0, 10))
-                                .SetPivot(glm::vec2(0.5f, 0.0f))
+                                .SetPosition(yarep::math::Vec2(0, 10))
+                                .SetPivot(yarep::math::Vec2(0.5f, 0.0f))
                                 .SetAnchor(yarep::components::ui::Anchor::Center)
                                 .SetParent(button_entity);
         auto button_text = yarep::components::ui::Text()

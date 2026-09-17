@@ -183,11 +183,17 @@ namespace yarep::renderer::render_framework::open_gl {
             switch (render_state) {
                 case asset_handling::RenderState::Opaque:
                     m_bind_cache->BindOpaquePassParameters();
-                    m_context.projection_matrix = glm::mat4(1.0);
+                    m_context.projection_matrix = math::Mat4::identity();
                     break;
                 case asset_handling::RenderState::UI:
                     m_bind_cache->BindUiPassParameters();
-                    m_context.projection_matrix = glm::ortho(0.f, m_window_size.x, m_window_size.y, 0.f, -1.0f, 1.0f);
+                    m_context.projection_matrix = math::orthographic(0.f,
+                                                                     m_window_size.x,
+                                                                     m_window_size.y,
+                                                                     0.f,
+                                                                     -1.0f,
+                                                                     1.0f
+                            );
                     break;
                 default:
                     throw std::runtime_error("Unknown render state");
@@ -232,12 +238,12 @@ namespace yarep::renderer::render_framework::open_gl {
         m_bind_cache->BindShader();
     }
 
-    void OpenGlRenderer::DrawElement(const glm::mat4& model_matrix) {
+    void OpenGlRenderer::DrawElement(const math::Mat4& model_matrix) {
         if (m_context.mesh_indices_count == 0) {
             return;
         }
-        const glm::mat4 model_projection_matrix = m_context.projection_matrix * model_matrix;
-        const glm::mat3 normal_matrix = glm::transpose(glm::inverse(glm::mat3(model_matrix)));
+        const math::Mat4 model_projection_matrix = m_context.projection_matrix * model_matrix;
+        const math::Mat3 normal_matrix = math::normal_matrix(model_matrix);
         m_bind_cache->BindModelMatrix(m_context.shader_fields, model_projection_matrix);
         m_bind_cache->BindNormalMatrix(m_context.shader_fields, normal_matrix);
         glDrawElements(GL_TRIANGLES, m_context.mesh_indices_count, GL_UNSIGNED_INT, nullptr);

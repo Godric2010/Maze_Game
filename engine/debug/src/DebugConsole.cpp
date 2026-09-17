@@ -2,14 +2,12 @@
 
 #include <ranges>
 
-namespace yarep::debug
-{
+namespace yarep::debug {
     DebugConsole::DebugConsole(text::TextController* text_controller, renderer::IRenderController* render_controller,
                                asset_handling::AssetHandler* asset_handler,
                                const environment::WindowContext& context,
                                const uint32_t column_width) : m_font_handle(0),
-                                                              m_texture_handle(0)
-    {
+                                                              m_texture_handle(0) {
         m_text_controller = text_controller;
         m_render_controller = render_controller;
         m_asset_handler = asset_handler;
@@ -31,8 +29,7 @@ namespace yarep::debug
         // m_render_controller->RegisterTexture(*asset, m_texture_handle);
     }
 
-    DebugConsole::~DebugConsole()
-    {
+    DebugConsole::~DebugConsole() {
         m_text_controller = nullptr;
         m_render_controller = nullptr;
         m_column_width = 0;
@@ -41,10 +38,8 @@ namespace yarep::debug
         m_font_handle = 0;
     }
 
-    void DebugConsole::PushValue(const std::string& label, const size_t value)
-    {
-        if (m_label_id_map.contains(label))
-        {
+    void DebugConsole::PushValue(const std::string& label, const size_t value) {
+        if (m_label_id_map.contains(label)) {
             const auto id = m_label_id_map[label];
             UpdateTextElements(id, std::to_string(value));
             return;
@@ -56,11 +51,9 @@ namespace yarep::debug
         m_text_elements.emplace(m_current_label_id, text_element);
     }
 
-    void DebugConsole::PushToFrame()
-    {
+    void DebugConsole::PushToFrame() {
         std::vector<renderer::DrawAsset> draw_assets;
-        for (const auto& [id, text] : m_text_elements)
-        {
+        for (const auto& [id, text]: m_text_elements) {
             const uint8_t row = id;
             auto label_asset = CreateUiDrawAsset(0, row, text.label_mesh, 2);
             auto content_asset = CreateUiDrawAsset(1, row, text.content_mesh, 1);
@@ -71,15 +64,13 @@ namespace yarep::debug
         m_render_controller->SubmitDebugInfos(draw_assets);
     }
 
-    void DebugConsole::UpdateTextElements(const uint8_t id, const std::string& content)
-    {
+    void DebugConsole::UpdateTextElements(const uint8_t id, const std::string& content) {
         m_text_elements[id].content = content;
         m_text_elements[id].content_mesh = CreateTextMeshElement(content);
     }
 
     TextElement DebugConsole::CreateTextElement(const std::string& label,
-                                                const std::string& content) const
-    {
+                                                const std::string& content) const {
         TextElement text_element{};
         text_element.label = label;
         text_element.content = content;
@@ -90,17 +81,15 @@ namespace yarep::debug
         return text_element;
     }
 
-    TextMeshElement DebugConsole::CreateTextMeshElement(const std::string& text) const
-    {
+    TextMeshElement DebugConsole::CreateTextMeshElement(const std::string& text) const {
         const text::TextMesh text_mesh = m_text_controller->BuildTextMesh(
-                                                                          m_font_handle,
-                                                                          text,
-                                                                          text::TextAlignment::Left
-                                                                         );
+                m_font_handle,
+                text,
+                text::TextAlignment::Left
+                );
 
         std::vector<asset_handling::MeshVertexAsset> text_vertices;
-        for (auto& vertex : text_mesh.vertices)
-        {
+        for (auto& vertex: text_mesh.vertices) {
             asset_handling::MeshVertexAsset mesh_vertex{};
             mesh_vertex.position = math::Vec3(vertex.x, vertex.y, 0);
             mesh_vertex.uv = math::Vec2(vertex.u, vertex.v);
@@ -134,8 +123,7 @@ namespace yarep::debug
 
     renderer::DrawAsset DebugConsole::CreateUiDrawAsset(const uint8_t col, const uint8_t row,
                                                         const TextMeshElement& text_mesh_element,
-                                                        const uint8_t queue_index) const
-    {
+                                                        const uint8_t queue_index) const {
         constexpr float height_offset = 30;
         constexpr float row_offset = 20;
         constexpr uint8_t max_columns = 2;
@@ -143,13 +131,15 @@ namespace yarep::debug
         const float pos_x = m_window_width - static_cast<float>(max_columns - col) * m_column_width;
         const float pos_y = height_offset + static_cast<float>(row) * row_offset;
 
-        auto model_mat = glm::mat4(1.0f);
-        model_mat = glm::translate(model_mat, glm::vec3(pos_x, pos_y, 0.0f));
-        model_mat = glm::scale(model_mat, glm::vec3(text_mesh_element.width, text_mesh_element.height, 1.0f));
+        const auto transform = math::Transform{
+            math::Vec3(pos_x, pos_y, 0.0f),
+            math::Quaternion{},
+            math::Vec3{text_mesh_element.width, text_mesh_element.height, 1.0f},
+        };
 
         renderer::DrawAsset draw_asset{};
         draw_asset.render_state = asset_handling::RenderState::UI;
-        draw_asset.model = model_mat;
+        draw_asset.model = math::to_matrix(transform);
         draw_asset.mesh = text_mesh_element.mesh_handle;
         draw_asset.material = text_mesh_element.material_handle;
         draw_asset.render_queue_index = 1000 - queue_index;

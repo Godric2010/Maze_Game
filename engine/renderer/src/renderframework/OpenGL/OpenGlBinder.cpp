@@ -107,17 +107,17 @@ namespace yarep::renderer::render_framework::open_gl {
         return std::get<1>(m_bound_mesh);
     }
 
-    void OpenGlBinder::BindModelMatrix(const ShaderBindings& shader_bindings, glm::mat4 proj_matrix) {
+    void OpenGlBinder::BindModelMatrix(const ShaderBindings& shader_bindings, math::Mat4 model_matrix) {
         if (shader_bindings.model_bind == -1) {
             return;
         }
-        glUniformMatrix4fv(shader_bindings.model_bind, 1, GL_FALSE, glm::value_ptr(proj_matrix));
+        glUniformMatrix4fv(shader_bindings.model_bind, 1, GL_FALSE, model_matrix.data());
     }
 
-    void OpenGlBinder::BindNormalMatrix(const ShaderBindings& shader_bindings, glm::mat3 normal_matrix) {
+    void OpenGlBinder::BindNormalMatrix(const ShaderBindings& shader_bindings, math::Mat3 normal_matrix) {
         if (shader_bindings.normal_mat_bind == -1) {
             return;
         }
-        glUniformMatrix3fv(shader_bindings.normal_mat_bind, 1, GL_FALSE, glm::value_ptr(normal_matrix));
+        glUniformMatrix3fv(shader_bindings.normal_mat_bind, 1, GL_FALSE, normal_matrix.data());
     }
 } // namespace
