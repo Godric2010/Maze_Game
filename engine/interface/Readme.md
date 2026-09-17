@@ -25,7 +25,7 @@ The interface library provides access to various regions of the engine, separate
 
 ## Design rules
 Interface is designed to give curated access to the engine. No in-depth details of the engines' functionality should be visible here.
-Furthermore, the library is designed to be small and lightweight. Except for dependencies to the glm library, no other dependencies should be added.
+Furthermore, the library is designed to be small and lightweight, with zero external dependencies.
 The goal is to have an extensible facade for the gameplay section that should be kept non-breaking if not a major version of the engine is released.
 Datatypes should be kept minimalistic and small, following a similar plain-old-data pattern as it is seen in the [Components Library](../components/Readme.md).
 
@@ -54,7 +54,7 @@ To access the input from the input map, consult the Input access property inside
 consult the [Input Library Readme](../input/Readme.md)
 
 ## Dependencies
-Interface is designed to have as few dependencies to external libraries as possible. Currently, the glm library is the only dependency Interface has.
+Interface is designed to have as few dependencies to external libraries as possible. Currently, the yarep::math library is the only dependency Interface has.
 Many Engine Libraries implement Interface to work on the provided datatypes or define functionality that is provided by the Interface Library.
 
 ```

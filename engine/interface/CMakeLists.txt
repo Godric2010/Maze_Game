@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.31)
 
-find_package(glm)
-
 add_library(Interface INTERFACE
         include/IApplication.hpp
         include/Input/IInput.hpp
@@ -15,7 +13,7 @@ add_library(Interface INTERFACE
         include/Assets/IAssetLibrary.hpp
 )
 
-target_link_libraries(Interface INTERFACE Math glm::glm)
+target_link_libraries(Interface INTERFACE Math)
 target_include_directories(Interface INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>
         $<INSTALL_INTERFACE:include>

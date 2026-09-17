@@ -18,7 +18,7 @@ Physics does not do anything beyond calculating the collision based on the provi
 it does not change anything in the engine. It is a simple request-answer library.
 
 ## Dependencies
-Physics is very math-heavy and therefore uses the glm math library for all of its calculations. Furthermore, it depends on the
+Physics is very math-heavy and therefore uses the math and geometry libraries for all of its calculations. Furthermore, it depends on the
 [Interface](../interface/Readme.md) library to gain access to the defined entities, which are used as keys for the collision caches.
 Apart from these, the physics library is supposed to be independent of any other engine library. The dependency from interface will be removed
 in future iterations of this library to ensure a clean, decoupled code base.

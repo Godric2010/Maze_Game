@@ -42,7 +42,7 @@ active input map actions will be submitted.
 
 ## Dependencies
 The input library is used widespreadly in the engine for various purposes. Therefore, it keeps its own dependencies small.
-It depends only on the Environment library and the Interface library, as well as the glm math library.
+It depends only on the Environment library and the Interface library, as well as the math library.
 
 ## Non-Goals
 The library is no direct event dispatcher. The whole library is input-pull-based. Furthermore, this library should never know
