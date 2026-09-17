@@ -10,14 +10,14 @@ namespace yarep::renderer::render_framework::open_gl {
 
     struct alignas(16) PointLightAsset {
         glm::vec4 position;
-        glm::vec4 color_intensity;
-        glm::vec4 attenuation;
+        math::Vec4 color_intensity;
+        math::Vec4 attenuation;
     };
 
     static_assert(sizeof(PointLightAsset) == 48);
 
     struct alignas(16) GpuLightingData {
-        glm::vec4 ambient_color_intensity;
+        math::Vec4 ambient_color_intensity;
         glm::ivec4 light_meta;
         PointLightAsset point_light[max_point_lights];
     };

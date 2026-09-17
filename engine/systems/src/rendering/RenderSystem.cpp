@@ -13,7 +13,7 @@
 namespace yarep::systems {
     RenderSystem::RenderSystem() {
         m_ambient_light = renderer::AmbientLightAsset{
-            .color = glm::vec3(1.0f, 1.0f, 1.0f),
+            .color = math::Vec3(1.0f, 1.0f, 1.0f),
             .intensity = 0.02f
         };
     }
@@ -77,7 +77,8 @@ namespace yarep::systems {
     }
 
     renderer::CameraAsset RenderSystem::CreateCameraAsset(const ecs::EntityId& camera_entity,
-                                                          const components::TransformComponent* camera_transform) const {
+                                                          const components::TransformComponent* camera_transform)
+    const {
         const auto camera_cache_val = Cache()->GetCameraCache()->GetCacheValue(camera_entity);
         const renderer::CameraAsset camera_asset{
             .view = camera_cache_val.view,

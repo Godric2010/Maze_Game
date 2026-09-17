@@ -61,7 +61,7 @@ namespace yarep::renderer::render_framework::open_gl {
 
         glGenBuffers(1, &m_lighting_ubo);
         glBindBuffer(GL_UNIFORM_BUFFER, m_lighting_ubo);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(open_gl::GpuLightingData), nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(GpuLightingData), nullptr, GL_DYNAMIC_DRAW);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);
         glBindBufferBase(GL_UNIFORM_BUFFER, light_binding_point, m_lighting_ubo);
 
@@ -122,14 +122,13 @@ namespace yarep::renderer::render_framework::open_gl {
     }
 
     void OpenGlRenderer::BindLights(const std::vector<LightAsset>& lights, const AmbientLightAsset& ambient) const {
-        auto lighting_data = open_gl::GpuLightingData{};
-        lighting_data.ambient_color_intensity = glm::vec4(ambient.color.r,
-                                                          ambient.color.g,
-                                                          ambient.color.b,
-                                                          ambient.intensity
+        auto lighting_data = GpuLightingData{};
+        lighting_data.ambient_color_intensity = math::Vec4(ambient.color.x,
+                                                           ambient.color.y,
+                                                           ambient.color.z,
+                                                           ambient.intensity
                 );
-
-        auto max_lights = std::min(static_cast<int>(lights.size()), open_gl::max_point_lights);
+        auto max_lights = std::min(static_cast<int>(lights.size()), max_point_lights);
         lighting_data.light_meta.x = max_lights;
         for (auto i = 0; i < max_lights; i++) {
             const auto& light_asset = lights[i];
@@ -138,19 +137,19 @@ namespace yarep::renderer::render_framework::open_gl {
                                                   light_asset.position.z,
                                                   1.0f
                     );
-            const auto light_color_intensity = glm::vec4(light_asset.color.r,
-                                                         light_asset.color.g,
-                                                         light_asset.color.b,
-                                                         light_asset.intensity
+            const auto light_color_intensity = math::Vec4(light_asset.color.x,
+                                                          light_asset.color.y,
+                                                          light_asset.color.z,
+                                                          light_asset.intensity
                     );
 
-            const auto light_attenuation = glm::vec4(light_asset.constant_attenuation,
-                                                     light_asset.linear_attenuation,
-                                                     light_asset.quadratic_attenuation,
-                                                     0.0f
+            const auto light_attenuation = math::Vec4(light_asset.constant_attenuation,
+                                                      light_asset.linear_attenuation,
+                                                      light_asset.quadratic_attenuation,
+                                                      0.0f
                     );
 
-            auto point_light_asset = open_gl::PointLightAsset{
+            auto point_light_asset = PointLightAsset{
                 .position = light_position,
                 .color_intensity = light_color_intensity,
                 .attenuation = light_attenuation,
@@ -158,7 +157,7 @@ namespace yarep::renderer::render_framework::open_gl {
             lighting_data.point_light[i] = point_light_asset;
         }
 
-        constexpr auto buffer_size = static_cast<GLsizeiptr>(sizeof(open_gl::GpuLightingData));
+        constexpr auto buffer_size = static_cast<GLsizeiptr>(sizeof(GpuLightingData));
         glBindBuffer(GL_UNIFORM_BUFFER, m_lighting_ubo);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, buffer_size, &lighting_data);
         glBindBuffer(GL_UNIFORM_BUFFER, 0);

@@ -3,12 +3,12 @@
 //
 
 #pragma once
-#include <glm/vec3.hpp>
+#include <Math.hpp>
 
 namespace yarep::components {
     struct PointLight {
     private:
-        glm::vec3 m_color{};
+        math::Vec3 m_color{};
         float m_intensity;
 
         float m_constant;
@@ -19,7 +19,7 @@ namespace yarep::components {
 
     public:
         PointLight() {
-            m_color = glm::vec3(0.0f, 0.0f, 0.0f);
+            m_color = math::Vec3(0.0f, 0.0f, 0.0f);
             m_intensity = 0.0f;
             m_constant = 0.0f;
             m_linear = 0.0f;
@@ -28,7 +28,7 @@ namespace yarep::components {
         }
 
         PointLight &SetColor(const float r, const float g, const float b) {
-            m_color = glm::vec3(r, g, b);
+            m_color = math::Vec3(r, g, b);
             return *this;
         }
 
@@ -63,7 +63,7 @@ namespace yarep::components {
             return *this;
         }
 
-        [[nodiscard]] glm::vec3 GetColor() const { return m_color; }
+        [[nodiscard]] math::Vec3 GetColor() const { return m_color; }
         [[nodiscard]] float GetIntensity() const { return m_intensity; }
         [[nodiscard]] float GetConstant() const { return m_constant; }
         [[nodiscard]] float GetLinear() const { return m_linear; }

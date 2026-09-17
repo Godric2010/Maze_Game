@@ -19,13 +19,13 @@ namespace yarep::renderer {
     };
 
     struct AmbientLightAsset {
-        glm::vec3 color;
+        math::Vec3 color;
         float intensity;
     };
 
     struct LightAsset {
         glm::vec3 position;
-        glm::vec3 color;
+        math::Vec3 color;
         float intensity;
         float constant_attenuation;
         float linear_attenuation;
