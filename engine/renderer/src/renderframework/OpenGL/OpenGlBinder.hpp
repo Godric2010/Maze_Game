@@ -5,7 +5,6 @@
 #pragma once
 #include <tuple>
 #include <GL/glew.h>
-#include <glm/gtc/type_ptr.hpp>
 #include <Math.hpp>
 
 #include "Meshes/OpenGlMesh.hpp"
@@ -41,7 +40,7 @@ namespace yarep::renderer::render_framework::open_gl {
 
         ShaderBindings BindShaderFields(GLuint shader);
 
-        void BindLight(const ShaderBindings& shader_bindings, glm::vec3 light_pos, glm::vec3 light_color,
+        void BindLight(const ShaderBindings& shader_bindings, math::Vec3 light_pos, math::Vec3 light_color,
                        float ambient_strength);
 
         void BindColor(const ShaderBindings& shader_bindings, math::Vec4 color);

@@ -1,6 +1,5 @@
 #pragma once
 #include <GL/glew.h>
-#include <glm/gtc/type_ptr.hpp>
 #include <spdlog/spdlog.h>
 #include <memory>
 #include "Window.hpp"
@@ -62,7 +61,7 @@ namespace yarep::renderer::render_framework::open_gl {
 
         Context m_context{};
 
-        glm::vec2 m_window_size{};
+        math::Vec2 m_window_size{};
         uint32_t m_draw_calls = 0;
 
         void BindCamera(const CameraAsset& camera) const;

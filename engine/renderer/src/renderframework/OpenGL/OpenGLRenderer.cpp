@@ -28,7 +28,7 @@ namespace yarep::renderer::render_framework::open_gl {
         if (rc != GLEW_OK) {
             throw std::runtime_error("Failed to initialize GLEW");
         }
-        m_window_size = {window_context.width, window_context.height};
+        m_window_size = math::Vec2{static_cast<float>(window_context.width), static_cast<float>(window_context.height)};
         glViewport(0, 0, window_context.drawable_width, window_context.drawable_height);
         m_bind_cache = std::make_unique<OpenGlBinder>();
         m_material_library = material_library;
@@ -132,10 +132,10 @@ namespace yarep::renderer::render_framework::open_gl {
         lighting_data.light_meta.x = max_lights;
         for (auto i = 0; i < max_lights; i++) {
             const auto& light_asset = lights[i];
-            const auto light_position = glm::vec4(light_asset.position.x,
-                                                  light_asset.position.y,
-                                                  light_asset.position.z,
-                                                  1.0f
+            const auto light_position = math::Vec4(light_asset.position.x,
+                                                   light_asset.position.y,
+                                                   light_asset.position.z,
+                                                   1.0f
                     );
             const auto light_color_intensity = math::Vec4(light_asset.color.x,
                                                           light_asset.color.y,

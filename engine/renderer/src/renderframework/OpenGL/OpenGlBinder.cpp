@@ -44,15 +44,16 @@ namespace yarep::renderer::render_framework::open_gl {
         return std::get<1>(m_bound_shader);
     }
 
-    void OpenGlBinder::BindLight(const ShaderBindings& shader_bindings, glm::vec3 light_pos, glm::vec3 light_color,
+    void OpenGlBinder::BindLight(const ShaderBindings& shader_bindings, const math::Vec3 light_pos,
+                                 const math::Vec3 light_color,
                                  const float ambient_strength) {
         if (shader_bindings.light_position_bind == -1 ||
             shader_bindings.light_color_bind == -1 ||
             shader_bindings.light_ambient_bind == -1) {
             return;
         }
-        glUniform3fv(shader_bindings.light_position_bind, 1, glm::value_ptr(light_pos));
-        glUniform3fv(shader_bindings.light_color_bind, 1, glm::value_ptr(light_color));
+        glUniform3f(shader_bindings.light_position_bind, light_pos.x, light_pos.y, light_pos.z);
+        glUniform3f(shader_bindings.light_color_bind, light_color.x, light_color.y, light_color.z);
         glUniform1f(shader_bindings.light_ambient_bind, ambient_strength);
     }
 

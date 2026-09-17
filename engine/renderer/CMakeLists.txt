@@ -1,5 +1,4 @@
 find_package(GLEW CONFIG REQUIRED)
-find_package(glm CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 add_library(Renderer STATIC
         include/Datatypes.hpp
@@ -10,7 +9,7 @@ add_library(Renderer STATIC
         src/RenderController.cpp
         src/resources/IGpuMeshLibrary.hpp
         src/resources/IGpuTextureLibrary.hpp
-        src/resources/IShaderLibrary.hpp 
+        src/resources/IShaderLibrary.hpp
         src/resources/IGpuMaterialLibrary.hpp
         src/renderframework/Renderer.hpp
         src/renderframework/OpenGL/OpenGlBinder.cpp
@@ -31,7 +30,7 @@ add_library(Renderer STATIC
 
 )
 
-target_link_libraries(Renderer PUBLIC Interface PRIVATE Environment AssetHandling GLEW::GLEW glm::glm spdlog::spdlog)
+target_link_libraries(Renderer PUBLIC Interface PRIVATE Environment AssetHandling GLEW::GLEW spdlog::spdlog)
 
 target_include_directories(Renderer
         PUBLIC
