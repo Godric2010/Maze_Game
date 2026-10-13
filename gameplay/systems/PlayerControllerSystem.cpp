@@ -61,7 +61,7 @@ namespace gameplay::systems {
 
 
         // Smoothing
-        constexpr float smoothing = 10.0f;
+        constexpr float smoothing = 100.0f;
         const float t = 1.0f - std::exp(-smoothing * delta_time);
 
         const auto pitch = yarep::math::lerp(fps_controller->GetPitch(), pitch_target, t);
