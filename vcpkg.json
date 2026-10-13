@@ -1,7 +1,7 @@
 {
   "name": "maze-game",
   "version-string": "1.0.0",
-  "builtin-baseline": "8f28427e139dc155faa17ce0055dd612019866ba",
+  "builtin-baseline": "e456309491fd875487bf02b8a0dca76c1b1b00cc",
   "dependencies": [
     {
       "name": "catch2",
@@ -25,18 +25,7 @@
     },
     {
       "name": "sdl2",
-      "version>=": "2.32.8",
-      "default-features": false,
-      "features": [
-        {
-          "name": "x11",
-          "platform": "linux"
-        },
-        {
-          "name": "wayland",
-          "platform": "linux"
-        }
-      ]
+      "version>=": "2.32.8"
     },
     {
       "name": "spdlog",
