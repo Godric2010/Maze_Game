@@ -26,7 +26,7 @@ namespace yarep::asset_handling {
         inline static const auto dir_name = std::string("shaders");
 
         static std::vector<ShaderAsset> LoadMany(const AssetLoadContext context,
-                                                 const std::vector<environment::files::File>& file_paths) {
+                                                 const std::vector<environment::files::File> &file_paths) {
             std::unordered_map<std::string, std::string> vert_shader_content_map;
             std::unordered_map<std::string, std::string> frag_shader_content_map;
             std::unordered_map<std::string, std::string> helper_shader_content_map;
@@ -55,7 +55,7 @@ namespace yarep::asset_handling {
 
             std::vector<ShaderAsset> shader_assets;
             shader_assets.reserve(vert_shader_content_map.size());
-            for (const auto& [name, vert_content]: vert_shader_content_map) {
+            for (const auto &[name, vert_content]: vert_shader_content_map) {
                 auto shader_asset = ShaderAsset();
                 shader_asset.name = name;
                 shader_asset.vertex_content = vert_content;
@@ -67,7 +67,7 @@ namespace yarep::asset_handling {
         }
 
     private:
-        static std::string GetShaderFileContent(const AssetLoadContext context, const std::string& file) {
+        static std::string GetShaderFileContent(const AssetLoadContext context, const std::string &file) {
             const std::string path = dir_name + "/" + file;
             auto content = context.file_reader->ReadTextFromResourceFile(path);
             if (!content.Ok()) {
@@ -76,9 +76,9 @@ namespace yarep::asset_handling {
             return content.value;
         }
 
-        static void ProcessShaders(shader::ShaderPreProcessor& pre_processor,
-                                   std::unordered_map<std::string, std::string>& shader_content_map) {
-            for (auto& [shader_name, content]: shader_content_map) {
+        static void ProcessShaders(shader::ShaderPreProcessor &pre_processor,
+                                   std::unordered_map<std::string, std::string> &shader_content_map) {
+            for (auto &[shader_name, content]: shader_content_map) {
                 const auto original = content;
                 const auto processed = pre_processor.PreProcessShader(original);
                 shader_content_map[shader_name] = processed;
@@ -92,7 +92,7 @@ namespace yarep::asset_handling {
         inline static const auto dir_name = std::string("fonts");
 
         static FontAsset Load(const AssetLoadContext context,
-                              const std::string& asset_name) {
+                              const std::string &asset_name) {
             const auto font_content = context.file_reader->ReadBinaryFromResourceFile(dir_name + "/" + asset_name);
             if (!font_content.Ok()) {
                 throw std::runtime_error("Failed to load font asset" + asset_name);
@@ -110,7 +110,7 @@ namespace yarep::asset_handling {
         inline static const auto dir_name = std::string("meshes");
 
         static MeshAsset Load(const AssetLoadContext context,
-                              const std::string& asset_name) {
+                              const std::string &asset_name) {
             const auto mesh_content = context.file_reader->ReadTextFromResourceFile(dir_name + "/" + asset_name);
             if (!mesh_content.Ok()) {
                 throw std::runtime_error("Failed to load mesh asset " + asset_name);
@@ -118,10 +118,12 @@ namespace yarep::asset_handling {
 
             std::vector<MeshVertexAsset> vertices;
             std::vector<uint32_t> indices;
-            mesh::MeshImporter::BuildMeshAssetFromObj(mesh_content.value, vertices, indices);
+            geometry::AABB bounds;
+            mesh::MeshImporter::BuildMeshAssetFromObj(mesh_content.value, vertices, indices, bounds);
             auto mesh_asset = MeshAsset();
-            mesh_asset.vertices = vertices;
-            mesh_asset.indices = indices;
+            mesh_asset.vertices = std::move(vertices);
+            mesh_asset.indices = std::move(indices);
+            mesh_asset.local_aabb = bounds;
             return mesh_asset;
         }
     };
@@ -132,7 +134,7 @@ namespace yarep::asset_handling {
         inline static const auto dir_name = std::string("textures");
 
         static TextureAsset Load(const AssetLoadContext context,
-                                 const std::string& asset_name) {
+                                 const std::string &asset_name) {
             const auto texture_content = context.file_reader->ReadBinaryFromResourceFile(dir_name + "/" + asset_name);
             if (!texture_content.Ok()) {
                 throw std::runtime_error("Failed to load texture asset " + asset_name);
@@ -149,7 +151,7 @@ namespace yarep::asset_handling {
         inline static const auto dir_name = std::string("materials");
 
         static MaterialAsset Load(AssetLoadContext context,
-                                  const std::string& asset_name) {
+                                  const std::string &asset_name) {
             const auto toml_file_content = context.file_reader->ReadTextFromResourceFile(dir_name + "/" + asset_name);
             if (!toml_file_content.Ok()) {
                 throw std::runtime_error("Failed to load material asset " + asset_name);
@@ -184,10 +186,10 @@ namespace yarep::asset_handling {
         inline static const auto dir_name = std::string("inputmaps");
 
         static std::vector<InputMapAsset> LoadMany(const AssetLoadContext context,
-                                                   const std::vector<environment::files::File>& files) {
+                                                   const std::vector<environment::files::File> &files) {
             std::vector<InputMapAsset> input_maps;
             input_maps.reserve(files.size());
-            for (const auto& [extension, name]: files) {
+            for (const auto &[extension, name]: files) {
                 const std::string path = dir_name + "/" + name + extension;
                 const auto toml_file_content = context.file_reader->ReadTextFromResourceFile(path);
                 if (!toml_file_content.Ok()) {
@@ -200,7 +202,7 @@ namespace yarep::asset_handling {
         }
 
     private:
-        static InputMapAsset LoadInputMap(const std::string& toml_file_content) {
+        static InputMapAsset LoadInputMap(const std::string &toml_file_content) {
             input::InputMap input_map;
             input_maps::InputMapImporter::ExtractInputMapFromFileData(input_map, toml_file_content);
             auto input_map_asset = InputMapAsset();

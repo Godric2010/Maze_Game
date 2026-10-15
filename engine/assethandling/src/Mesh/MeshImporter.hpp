@@ -10,7 +10,7 @@ namespace yarep::asset_handling::mesh
     public:
         static void BuildMeshAssetFromObj(const std::string& obj_string,
                                           std::vector<MeshVertexAsset>& vertices,
-                                          std::vector<uint32_t>& indices);
+                                          std::vector<uint32_t>& indices, geometry::AABB &bounds);
     private:
         struct FaceVertexIndex
         {
@@ -61,5 +61,6 @@ namespace yarep::asset_handling::mesh
         static bool TryParseVector2(std::istringstream& line_stream, math::Vec2& result);
         static uint32_t ParseStringToIndex(const std::string& token, const std::string& field_name,
                                            const std::string& full_token);
+        static geometry::AABB BuildAABBFromVertices(const std::vector<MeshVertexAsset> &vertices);
     };
 } // namespace

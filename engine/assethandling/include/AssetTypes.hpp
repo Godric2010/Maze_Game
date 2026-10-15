@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "../../geometry/include/Bounds.hpp"
 #include "Assets/AssetHandleTypes.hpp"
 #include "Input/InputTypes.hpp"
 
@@ -36,6 +37,8 @@ namespace yarep::asset_handling {
         std::vector<MeshVertexAsset> vertices;
         std::vector<uint32_t> indices;
 
+        geometry::AABB local_aabb;
+
         bool IsValid() const {
             return vertices.size() >= 3 && indices.size() >= 3;
         }
@@ -54,21 +57,21 @@ namespace yarep::asset_handling {
         std::vector<uint8_t> pixels;
     };
 
-    #define RENDER_STATE_LIST \
+#define RENDER_STATE_LIST \
         X(Opaque) \
         X(UI)
 
     enum class RenderState {
-        #define X(name) name,
+#define X(name) name,
         RENDER_STATE_LIST
-        #undef X
+#undef X
     };
 
     constexpr std::array<std::pair<std::string_view, RenderState>, 2> render_state_map = {
         {
-            #define X(name) {#name, RenderState::name},
+#define X(name) {#name, RenderState::name},
             RENDER_STATE_LIST
-            #undef X
+#undef X
         }
     };
 

@@ -6,12 +6,10 @@
 #include <sstream>
 #include <unordered_map>
 
-namespace yarep::asset_handling::mesh
-{
-    void MeshImporter::BuildMeshAssetFromObj(const std::string& obj_string,
-                                             std::vector<MeshVertexAsset>& vertices,
-                                             std::vector<uint32_t>& indices)
-    {
+namespace yarep::asset_handling::mesh {
+    void MeshImporter::BuildMeshAssetFromObj(const std::string &obj_string,
+                                             std::vector<MeshVertexAsset> &vertices,
+                                             std::vector<uint32_t> &indices, geometry::AABB &bounds) {
         std::vector<math::Vec3> vertex_positions;
         std::vector<math::Vec3> vertex_normals;
         std::vector<math::Vec2> vertex_uvs;
@@ -20,8 +18,7 @@ namespace yarep::asset_handling::mesh
 
         size_t estimated_unique_keys = 0;
         size_t total_index_count = 0;
-        for (auto& face : faces)
-        {
+        for (auto &face: faces) {
             estimated_unique_keys += face.indices.size();
             FanTriangulateFace(face);
             total_index_count += face.indices.size();
@@ -31,15 +28,12 @@ namespace yarep::asset_handling::mesh
         face_index_vertex_map.reserve(estimated_unique_keys);
         vertices.reserve(estimated_unique_keys);
         indices.reserve(total_index_count);
-        for (auto& face : faces)
-        {
-            for (auto& corner_indices : face.indices)
-            {
+        for (auto &face: faces) {
+            for (auto &corner_indices: face.indices) {
                 auto new_index = static_cast<uint32_t>(vertices.size());
                 auto [it, inserted] = face_index_vertex_map.try_emplace(corner_indices, new_index);
 
-                if (inserted)
-                {
+                if (inserted) {
                     auto mesh_vertex = BuildMeshVertex(corner_indices, vertex_positions, vertex_normals, vertex_uvs);
                     vertices.push_back(mesh_vertex);
                 }
@@ -47,46 +41,38 @@ namespace yarep::asset_handling::mesh
                 indices.push_back(it->second);
             }
         }
+        bounds = BuildAABBFromVertices(vertices);
     }
 
     MeshVertexAsset MeshImporter::BuildMeshVertex(const FaceVertexIndex indices,
-                                             const std::vector<math::Vec3>& vertex_positions,
-                                             const std::vector<math::Vec3>& vertex_normals,
-                                             const std::vector<math::Vec2>& vertex_uvs)
-    {
+                                                  const std::vector<math::Vec3> &vertex_positions,
+                                                  const std::vector<math::Vec3> &vertex_normals,
+                                                  const std::vector<math::Vec2> &vertex_uvs) {
         MeshVertexAsset vertex{};
-        if (IsIndexValid("PositionIndex", indices.position_index, vertex_positions.size(), true))
-        {
+        if (IsIndexValid("PositionIndex", indices.position_index, vertex_positions.size(), true)) {
             vertex.position = vertex_positions[indices.position_index - 1];
         }
-        if (IsIndexValid("UvIndex", indices.uv_index, vertex_uvs.size(), false))
-        {
+        if (IsIndexValid("UvIndex", indices.uv_index, vertex_uvs.size(), false)) {
             vertex.uv = vertex_uvs[indices.uv_index - 1];
             vertex.uv.y = 1.0f - vertex.uv.y; // TODO: This is a quick fix here. Make this better configurable later!
-
         }
-        if (IsIndexValid("NormalIndex", indices.normal_index, vertex_normals.size(), false))
-        {
+        if (IsIndexValid("NormalIndex", indices.normal_index, vertex_normals.size(), false)) {
             vertex.normal = vertex_normals[indices.normal_index - 1];
         }
         return vertex;
     }
 
-    void MeshImporter::AnalyseString(const std::string& str, std::vector<math::Vec3>& vertex_positions,
-                                     std::vector<math::Vec3>& vertex_normals, std::vector<math::Vec2>& vertex_uvs,
-                                     std::vector<Face>& face)
-    {
+    void MeshImporter::AnalyseString(const std::string &str, std::vector<math::Vec3> &vertex_positions,
+                                     std::vector<math::Vec3> &vertex_normals, std::vector<math::Vec2> &vertex_uvs,
+                                     std::vector<Face> &face) {
         std::stringstream stream(str);
-        if (str.empty())
-        {
+        if (str.empty()) {
             throw std::invalid_argument("The string cannot be empty");
         }
 
         std::string line_string;
-        while (std::getline(stream, line_string, '\n'))
-        {
-            if (!TryGetValidLineString(line_string))
-            {
+        while (std::getline(stream, line_string, '\n')) {
+            if (!TryGetValidLineString(line_string)) {
                 continue;
             }
             std::istringstream line_stream(line_string);
@@ -94,108 +80,87 @@ namespace yarep::asset_handling::mesh
             std::string prefix;
             line_stream >> prefix;
 
-            if (prefix == "v")
-            {
+            if (prefix == "v") {
                 math::Vec3 pos;
-                if (!TryParseVector3(line_stream, pos))
-                {
+                if (!TryParseVector3(line_stream, pos)) {
                     throw std::runtime_error("Cannot read vertex position! Invalid line string: '" + line_string + "'");
                 }
                 vertex_positions.emplace_back(pos);
                 continue;
             }
-            if (prefix == "vn")
-            {
+            if (prefix == "vn") {
                 math::Vec3 normal;
-                if (!TryParseVector3(line_stream, normal))
-                {
+                if (!TryParseVector3(line_stream, normal)) {
                     throw std::runtime_error("Cannot read vertex normals! Invalid line string: '" + line_string + "'");
                 }
                 vertex_normals.emplace_back(normal);
                 continue;
             }
-            if (prefix == "vt")
-            {
+            if (prefix == "vt") {
                 math::Vec2 uv;
-                if (!TryParseVector2(line_stream, uv))
-                {
+                if (!TryParseVector2(line_stream, uv)) {
                     throw std::runtime_error("Cannot read vertex UVs! Invalid line string: '" + line_string + "'");
                 }
                 vertex_uvs.emplace_back(uv);
                 continue;
             }
-            if (prefix == "f")
-            {
+            if (prefix == "f") {
                 ParseFace(line_stream, face);
                 continue;
             }
         }
     }
 
-    bool MeshImporter::IsIndexValid(const std::string& name, const uint32_t index, const size_t size,
-                                    const bool throw_error_at_zero_index)
-    {
-        if (index == 0)
-        {
-            if (throw_error_at_zero_index)
-            {
+    bool MeshImporter::IsIndexValid(const std::string &name, const uint32_t index, const size_t size,
+                                    const bool throw_error_at_zero_index) {
+        if (index == 0) {
+            if (throw_error_at_zero_index) {
                 throw std::out_of_range("Invalid " + name + " index: Zero is not valid!");
             }
             return false;
         }
-        if (index > size)
-        {
+        if (index > size) {
             throw std::out_of_range("Invalid " + name + " index: " + std::to_string(index) + " is out of bounds!");
         }
         return true;
     }
 
-    bool MeshImporter::TryGetValidLineString(std::string& line_string)
-    {
-        if (line_string.empty())
-        {
+    bool MeshImporter::TryGetValidLineString(std::string &line_string) {
+        if (line_string.empty()) {
             return false;
         }
 
         // Handle Windows CRLF: if the line ends with '\r', remove it.
-        if (line_string.back() == '\r')
-        {
+        if (line_string.back() == '\r') {
             line_string.pop_back();
         }
 
-        if (const auto hash_pos = line_string.find('#'); hash_pos != std::string::npos)
-        {
+        if (const auto hash_pos = line_string.find('#'); hash_pos != std::string::npos) {
             line_string = line_string.substr(0, hash_pos);
         }
 
-        auto only_whitespaces = [](const std::string& str)
-        {
+        auto only_whitespaces = [](const std::string &str) {
             return std::ranges::all_of(str, [](const unsigned char c) { return std::isspace(c); });
         };
 
-        if (only_whitespaces(line_string))
-        {
+        if (only_whitespaces(line_string)) {
             return false;
         }
         return true;
     }
 
-    void MeshImporter::ParseFace(std::istringstream& line_stream, std::vector<Face>& faces)
-    {
+    void MeshImporter::ParseFace(std::istringstream &line_stream, std::vector<Face> &faces) {
         std::vector<std::string> corner_tokens;
         std::string token;
-        while (line_stream >> token)
-        {
+        while (line_stream >> token) {
             corner_tokens.push_back(token);
         }
 
-        if (corner_tokens.size() < 3)
-        {
+        if (corner_tokens.size() < 3) {
             throw std::runtime_error("Cannot have a face with less than three vertices!");
         }
         Face face{};
-        for (const auto& corner_token : corner_tokens)
-        {
+        for (const auto &corner_token: corner_tokens) {
             std::istringstream token_stream(corner_token);
 
             std::string position_token, normal_token, uv_token;
@@ -207,12 +172,10 @@ namespace yarep::asset_handling::mesh
 
             uint32_t position_index = 0, normal_index = 0, uv_index = 0;
             position_index = ParseStringToIndex(position_token, "Position", corner_token);
-            if (!normal_token.empty())
-            {
+            if (!normal_token.empty()) {
                 normal_index = ParseStringToIndex(normal_token, "Normal", corner_token);
             }
-            if (!uv_token.empty())
-            {
+            if (!uv_token.empty()) {
                 uv_index = ParseStringToIndex(uv_token, "UV", corner_token);
             }
             FaceVertexIndex vertex_indices{};
@@ -224,18 +187,15 @@ namespace yarep::asset_handling::mesh
         faces.push_back(face);
     } // namespace
 
-    void MeshImporter::FanTriangulateFace(Face& face)
-    {
-        if (face.indices.size() < 3)
-        {
+    void MeshImporter::FanTriangulateFace(Face &face) {
+        if (face.indices.size() < 3) {
             throw std::runtime_error("Cannot have a face with less than three vertices!");
         }
 
         std::vector<FaceVertexIndex> triangulated_indices;
         triangulated_indices.reserve(3 * (face.indices.size() - 2));
         const FaceVertexIndex anchor = face.indices[0];
-        for (size_t i = 1; i < face.indices.size() - 1; i++)
-        {
+        for (size_t i = 1; i < face.indices.size() - 1; i++) {
             triangulated_indices.push_back(anchor);
             triangulated_indices.push_back(face.indices[i]);
             triangulated_indices.push_back(face.indices[i + 1]);
@@ -243,47 +203,54 @@ namespace yarep::asset_handling::mesh
         face.indices = triangulated_indices;
     }
 
-    bool MeshImporter::TryParseVector3(std::istringstream& line_stream, math::Vec3& result)
-    {
+    bool MeshImporter::TryParseVector3(std::istringstream &line_stream, math::Vec3 &result) {
         float x, y, z;
-        if (!(line_stream >> x >> y >> z))
-        {
+        if (!(line_stream >> x >> y >> z)) {
             return false;
         }
         result = math::Vec3(x, y, z);
         return true;
     }
 
-    bool MeshImporter::TryParseVector2(std::istringstream& line_stream, math::Vec2& result)
-    {
+    bool MeshImporter::TryParseVector2(std::istringstream &line_stream, math::Vec2 &result) {
         float x, y;
-        if (!(line_stream >> x >> y))
-        {
+        if (!(line_stream >> x >> y)) {
             return false;
         }
         result = math::Vec2(x, y);
         return true;
     }
 
-    uint32_t MeshImporter::ParseStringToIndex(const std::string& token, const std::string& field_name,
-                                              const std::string& full_token)
-    {
-        try
-        {
+    uint32_t MeshImporter::ParseStringToIndex(const std::string &token, const std::string &field_name,
+                                              const std::string &full_token) {
+        try {
             const int value = std::stoi(token);
-            if (value < 0)
-            {
+            if (value < 0) {
                 throw std::runtime_error("Negative index numbers are not supported!");
             }
             return static_cast<uint32_t>(value);
-        }
-        catch (const std::invalid_argument&)
-        {
+        } catch (const std::invalid_argument &) {
             throw std::runtime_error("Invalid " + field_name + " index in token '" + full_token + "'");
-        }
-        catch (const std::out_of_range&)
-        {
+        } catch (const std::out_of_range &) {
             throw std::runtime_error("Out of range " + field_name + " index in token '" + full_token + "'");
         }
+    }
+
+    geometry::AABB MeshImporter::BuildAABBFromVertices(const std::vector<MeshVertexAsset> &vertices) {
+        geometry::AABB aabb;
+        auto min = math::Vec3(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity(),
+                              std::numeric_limits<float>::infinity());
+        auto max = math::Vec3(-std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity(),
+                              -std::numeric_limits<float>::infinity());
+
+        for (const auto &vertex: vertices) {
+            min = math::min(min, vertex.position);
+            max = math::max(max, vertex.position);
+        }
+
+        aabb.min = min;
+        aabb.max = max;
+
+        return aabb;
     }
 }
