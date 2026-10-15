@@ -44,5 +44,6 @@ namespace yarep::renderer {
         assets::MaterialHandle material;
         math::Mat4 model;
         math::Vec4 color;
+        geometry::AABB world_aabb;
     };
 }

@@ -122,11 +122,14 @@ namespace yarep::systems {
 
     void RenderSystem::FillMeshDrawAssets() {
         for (auto [entity, mesh_draw_asset]: m_draw_asset_map) {
-            if (!m_asset_handler->GetAsset<asset_handling::MeshAsset>(mesh_draw_asset.mesh)->IsValid()) {
+            const auto mesh_asset = m_asset_handler->GetAsset<asset_handling::MeshAsset>(mesh_draw_asset.mesh);
+            if (!mesh_asset->IsValid()) {
                 continue;
             }
+            const auto transform_matrix = Cache()->GetTransformCache()->GetTransformValue(entity).transform_matrix;
 
-            mesh_draw_asset.model = Cache()->GetTransformCache()->GetTransformValue(entity).transform_matrix;
+            mesh_draw_asset.model = transform_matrix;
+            mesh_draw_asset.world_aabb = geometry::transform_bounds(mesh_asset->local_aabb, transform_matrix);
             m_draw_assets.push_back(mesh_draw_asset);
         }
     }

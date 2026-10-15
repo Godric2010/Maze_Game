@@ -1,22 +1,24 @@
 #pragma once
 #include "AABB.hpp"
+#include "Mat4.hpp"
 #include "OBB.hpp"
 #include "Sphere.hpp"
 #include "Transform.hpp"
 
 namespace yarep::geometry {
-    AABB to_aabb(const Sphere& sphere);
+    AABB to_aabb(const Sphere &sphere);
 
-    AABB to_aabb(const OBB& obb);
+    AABB to_aabb(const OBB &obb);
 
-    OBB to_obb(const AABB& aabb, const math::Transform& transform);
+    OBB to_obb(const AABB &aabb, const math::Transform &transform);
 
-    AABB transform_bounds(const AABB& aabb, const math::Transform& transform);
+    AABB transform_bounds(const AABB &aabb, const math::Transform &transform);
 
-    AABB expand(const AABB& aabb, float amount);
+    AABB transform_bounds(const AABB &aabb, const math::Mat4 &matrix);
 
-    OBB expand(const OBB& aabb, float expansion);
+    AABB expand(const AABB &aabb, float amount);
 
-    AABB merge(const AABB& a, const AABB& b);
+    OBB expand(const OBB &aabb, float expansion);
 
+    AABB merge(const AABB &a, const AABB &b);
 }
