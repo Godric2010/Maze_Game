@@ -3,6 +3,7 @@
 #include <IEngineSystem.hpp>
 #include <TransformComponent.hpp>
 
+#include "Lights.hpp"
 #include "MeshRenderer.hpp"
 
 ECS_SYSTEM(RenderSystem,
@@ -27,9 +28,11 @@ namespace yarep::systems {
         const renderer::IRenderController* m_render_controller{};
         const asset_handling::AssetHandler* m_asset_handler{};
         std::vector<renderer::DrawAsset> m_draw_assets;
+        std::vector<renderer::LightAsset> m_light_assets;
         std::unordered_map<ecs::EntityId, renderer::DrawAsset> m_draw_asset_map;
         std::unordered_map<ecs::EntityId, renderer::DrawAsset> m_ui_draw_asset_map;
         std::unordered_map<ecs::EntityId, renderer::DrawAsset> m_ui_text_asset_map;
+        std::unordered_map<ecs::EntityId, renderer::LightAsset> m_light_asset_map;
         renderer::AmbientLightAsset m_ambient_light{};
 
         renderer::CameraAsset CreateCameraAsset(const ecs::EntityId& camera_entity,
@@ -37,7 +40,9 @@ namespace yarep::systems {
 
         void ClearDrawAssets();
 
-        renderer::FrameData FillFrameData() const;
+        void ClearLightAssets();
+
+        renderer::FrameData FillFrameData();
 
         void FillMeshDrawAssets();
 
@@ -45,10 +50,15 @@ namespace yarep::systems {
 
         void FillUiDrawAssets();
 
+        void FillLightDrawAssets();
+
         void RegisterDrawAssets(const ecs::EntityId& entity, const components::MeshRenderer& mesh_renderer);
 
         void RegisterColorUiAssets(const ecs::EntityId& entity);
 
         void RegisterTextUiAssets(const ecs::EntityId& entity);
+
+        void RegisterLightAssets(const ecs::EntityId& entity, const components::PointLight &light);
+
     };
 } // namespace
